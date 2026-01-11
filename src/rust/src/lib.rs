@@ -11,6 +11,7 @@ use crate::umap::*;
 extendr_module! {
     mod manifoldsR;
     fn rs_umap;
+    fn rs_umap_parametric;
 }
 
 //////////
