@@ -1,24 +1,24 @@
-pub mod parametric_umap;
 pub mod r_rust_interface;
+pub mod tsne;
 pub mod umap;
 
 use extendr_api::prelude::*;
 
-use crate::parametric_umap::*;
 use crate::r_rust_interface::*;
+use crate::tsne::*;
 use crate::umap::*;
 
 extendr_module! {
     mod manifoldsR;
     fn rs_umap;
-    fn rs_umap_parametric;
+    fn rs_tsne;
 }
 
 //////////
 // UMAP //
 //////////
 
-/// UMAP implementation in bixverse
+/// UMAP implementation
 ///
 /// @param embd Numerical matrix. The data to use to generate the embeddings.
 /// Should be of dimensions samples x features.
@@ -62,47 +62,32 @@ fn rs_umap(
     faer_to_r_matrix(res.as_ref())
 }
 
-/////////////////////
-// Parametric UMAP //
-/////////////////////
+//////////
+// tSNE //
+//////////
 
-/// UMAP implementation in bixverse (parametric)
+/// tSNE implementation
 ///
-/// @param embd Numerical matrix. The data to use to generate the embeddings.
-/// Should be of dimensions samples x features.
-/// @param n_dim Integer. Number of UMAP dimensions to return.
-/// @param min_dist Numeric. Minimum distance to use.
-/// @param spread Numeric. Spread parameter to use.
-/// @param k Integer. Number of nearest neighbours to consider
-/// @param umap_params Named list. List that contains all of the key parameters
-/// for the UMAP generation.
-/// @param seed Integer. Seed for reproducibility.
-/// @param verbose Boolean. Controls verbosity of the function.
-///
-/// @return The UMAP embeddings.
+/// @return The tSNE embeddings.
 ///
 /// @export
 #[extendr]
 #[allow(clippy::too_many_arguments)]
-fn rs_umap_parametric(
+fn rs_tsne(
     embd: RMatrix<f64>,
     n_dim: usize,
-    min_dist: f64,
-    spread: f64,
-    k: usize,
-    umap_params: List,
+    perplexity: f64,
+    tsne_params: List,
     seed: usize,
     verbose: bool,
 ) -> RMatrix<f64> {
     let embd = r_matrix_to_faer_fp32(&embd);
 
-    let res = umap_parametric(
+    let res = tsne_simple(
         embd.as_ref(),
         n_dim,
-        k,
-        min_dist as f32,
-        spread as f32,
-        umap_params,
+        perplexity as f32,
+        tsne_params,
         seed,
         verbose,
     );

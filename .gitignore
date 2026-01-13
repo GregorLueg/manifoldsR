@@ -1,13 +1,13 @@
+# R
 .Rproj.user
 .Rhistory
-.RData
-.httr-oauth
+
+# Apple
 .DS_Store
-.quarto
+inst/doc
+**/.quarto/
+/doc/
+/Meta/
 src/rust/vendor
 src/Makevars
 src/Makevars.win
-
-# others
-
-workbench.R

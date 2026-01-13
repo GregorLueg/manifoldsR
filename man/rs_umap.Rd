@@ -2,7 +2,7 @@
 % Please edit documentation in R/extendr-wrappers.R
 \name{rs_umap}
 \alias{rs_umap}
-\title{UMAP implementation in bixverse}
+\title{UMAP implementation}
 \usage{
 rs_umap(embd, n_dim, min_dist, spread, k, umap_params, seed, verbose)
 }
@@ -29,5 +29,5 @@ for the UMAP generation.}
 The UMAP embeddings.
 }
 \description{
-UMAP implementation in bixverse
+UMAP implementation
 }

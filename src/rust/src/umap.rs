@@ -9,6 +9,25 @@ use manifolds_rs::*;
 // Params //
 ////////////
 
+/// InternalUmapParams
+///
+/// Internal representation of various parameters needed for the UMAP
+/// implementation in `manifolds-rs`.
+///
+/// ### Fields
+///
+/// * `knn_method` - Which of the approximate nearest neighbour searches to use.
+/// * `param_knn` - The nearest neighbour parameters that are forwarded to the
+///   approximate nearest neighbour methods.
+/// * `umap_graph` - The UMAP graph generation parameters.
+/// * `init` - Which initialisation to use. One of `"spectral"`, `"pca"`, or
+///   `"random"`.
+/// * `randomised` - When setting initialisation to `"pca"` shall randomised
+///   SVD be used (can make it faster on large data sets).
+/// * `optimiser` - Which of the possible optimisers to use. One of `"sgd"`,
+///   `"adam"` or `"adam_parallel"`.
+/// * `param_optimiser` - The UMAP optimisation parameters.
+#[derive(Debug)]
 pub struct InternalUmapParams {
     // knn
     pub knn_method: String,
@@ -18,7 +37,7 @@ pub struct InternalUmapParams {
     // embedding initialisation
     pub init: String,
     pub randomised: bool,
-    // optimisation of the embedding
+    // optimisation of the embedding - normal UMAP
     pub optimiser: String,
     pub param_optimiser: OptimParams<f32>,
 }
@@ -42,7 +61,6 @@ impl InternalUmapParams {
 
         let umap_params = r_list.into_hashmap();
 
-        // distance
         let init = std::string::String::from(
             umap_params
                 .get("init")
@@ -237,6 +255,7 @@ fn get_params_umap_optim(r_list: List, min_dist: f32, spread: f32) -> OptimParam
         gamma,
         n_epochs,
         neg_sample_rate,
+        // use defaults here...
         None,
         None,
         None,
@@ -285,6 +304,7 @@ pub fn umap_simple(
         Some(umap_params_internal.optimiser),
         Some(umap_params_internal.knn_method),
         Some(umap_params_internal.init),
+        None,
         Some(umap_params_internal.param_knn),
         Some(umap_params_internal.param_optimiser),
         Some(umap_params_internal.umap_graph),

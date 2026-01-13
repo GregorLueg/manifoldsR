@@ -10,7 +10,7 @@
 #' @useDynLib manifoldsR, .registration = TRUE
 NULL
 
-#' UMAP implementation in bixverse
+#' UMAP implementation
 #'
 #' @param embd Numerical matrix. The data to use to generate the embeddings.
 #' Should be of dimensions samples x features.
@@ -28,23 +28,12 @@ NULL
 #' @export
 rs_umap <- function(embd, n_dim, min_dist, spread, k, umap_params, seed, verbose) .Call(wrap__rs_umap, embd, n_dim, min_dist, spread, k, umap_params, seed, verbose)
 
-#' UMAP implementation in bixverse (parametric)
+#' tSNE implementation
 #'
-#' @param embd Numerical matrix. The data to use to generate the embeddings.
-#' Should be of dimensions samples x features.
-#' @param n_dim Integer. Number of UMAP dimensions to return.
-#' @param min_dist Numeric. Minimum distance to use.
-#' @param spread Numeric. Spread parameter to use.
-#' @param k Integer. Number of nearest neighbours to consider
-#' @param umap_params Named list. List that contains all of the key parameters
-#' for the UMAP generation.
-#' @param seed Integer. Seed for reproducibility.
-#' @param verbose Boolean. Controls verbosity of the function.
-#'
-#' @return The UMAP embeddings.
+#' @return The tSNE embeddings.
 #'
 #' @export
-rs_umap_parametric <- function(embd, n_dim, min_dist, spread, k, umap_params, seed, verbose) .Call(wrap__rs_umap_parametric, embd, n_dim, min_dist, spread, k, umap_params, seed, verbose)
+rs_tsne <- function(embd, n_dim, perplexity, tsne_params, seed, verbose) .Call(wrap__rs_tsne, embd, n_dim, perplexity, tsne_params, seed, verbose)
 
 
 # nolint end
