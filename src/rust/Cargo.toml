@@ -1,5 +1,5 @@
 [package]
-name = 'manifoldsR'
+name = 'manifoldsr'
 publish = false
 version = '0.1.0'
 edition = '2021'
@@ -7,7 +7,7 @@ rust-version = '1.85'
 
 [lib]
 crate-type = ['staticlib']
-name = 'manifoldsR'
+name = 'manifoldsr'
 
 [dependencies]
 extendr-api = '0.8.1'
