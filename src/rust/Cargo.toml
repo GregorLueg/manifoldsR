@@ -13,7 +13,7 @@ name = 'manifoldsr'
 extendr-api = '0.8.1'
 faer = "0.23.2"
 faer-entity = "0.20.1"
-manifolds-rs = { git = "https://github.com/GregorLueg/manifolds-rs/", branch = "feat-parametric-umap" }
+manifolds-rs = { git = "https://github.com/GregorLueg/manifolds-rs/", branch = "feat-optim-improv" }
 
 [profile.test]
 opt-level = 3

@@ -1,8 +1,6 @@
 use extendr_api::List;
 use faer::{Mat, MatRef};
-use manifolds_rs::data::nearest_neighbours::NearestNeighbourParams;
-use manifolds_rs::training::optimiser::OptimParams;
-use manifolds_rs::training::UmapGraphParams;
+use manifolds_rs::prelude::*;
 use manifolds_rs::*;
 
 ////////////
@@ -39,7 +37,7 @@ pub struct InternalUmapParams {
     pub randomised: bool,
     // optimisation of the embedding - normal UMAP
     pub optimiser: String,
-    pub param_optimiser: OptimParams<f32>,
+    pub param_optimiser: UmapOptimParams<f32>,
 }
 
 impl InternalUmapParams {
@@ -79,7 +77,7 @@ impl InternalUmapParams {
             umap_params
                 .get("knn_method")
                 .and_then(|v| v.as_str())
-                .unwrap_or("annoy"),
+                .unwrap_or("hnsw"),
         );
 
         let randomised = umap_params
@@ -224,12 +222,12 @@ pub fn get_params_umap_graph(r_list: List) -> UmapGraphParams<f32> {
 ///
 /// ### Returns
 ///
-/// The `OptimParams` with sensible defaults if not found in the list.
-fn get_params_umap_optim(r_list: List, min_dist: f32, spread: f32) -> OptimParams<f32> {
+/// The `UmapOptimParams` with sensible defaults if not found in the list.
+fn get_params_umap_optim(r_list: List, min_dist: f32, spread: f32) -> UmapOptimParams<f32> {
     let optim_params = r_list.into_hashmap();
 
     let lr = optim_params
-        .get("search_budget")
+        .get("lr")
         .and_then(|v| v.as_real())
         .map(|v| v as f32);
 
@@ -248,7 +246,7 @@ fn get_params_umap_optim(r_list: List, min_dist: f32, spread: f32) -> OptimParam
         .and_then(|v| v.as_real())
         .map(|v| v as f32);
 
-    OptimParams::from_min_dist_spread(
+    UmapOptimParams::from_min_dist_spread(
         min_dist,
         spread,
         lr,

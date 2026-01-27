@@ -3,6 +3,7 @@ pub mod tsne;
 pub mod umap;
 
 use extendr_api::prelude::*;
+use manifolds_rs::prelude::*;
 
 use crate::r_rust_interface::*;
 use crate::tsne::*;
@@ -12,6 +13,9 @@ extendr_module! {
     mod manifoldsR;
     fn rs_umap;
     fn rs_tsne;
+    fn rs_data_swiss_role;
+    fn rs_data_clusters;
+    fn rs_data_tree;
 }
 
 //////////
@@ -19,6 +23,8 @@ extendr_module! {
 //////////
 
 /// UMAP implementation
+///
+/// @description This is the wrapper function into the Rust interface for UMAP.
 ///
 /// @param embd Numerical matrix. The data to use to generate the embeddings.
 /// Should be of dimensions samples x features.
@@ -68,6 +74,22 @@ fn rs_umap(
 
 /// tSNE implementation
 ///
+/// @description This is the wrapper function into the Rust interface for tSNE.
+/// You have the option to use the Barnes-Hut implemetation or the
+/// FFT-accelerated version to approximate the repulsive forces.
+///
+/// @param embd Numerical matrix. The data to use to generate the embeddings.
+/// Should be of dimensions samples x features.
+/// @param n_dim Integer. Number of tSNE dimensions to return. Needs to be two,
+/// others are not supported.
+/// @param perplexity Numeric. The tSNE perplexity parameter.
+/// @param approx_type String. One of `c("fft", "bh")`. Which of the two
+/// approximations to use.
+/// @param tsne_params Named list. List that contains all of the key parameters
+/// for the tSNE generation.
+/// @param seed Integer. Seed for reproducibility.
+/// @param verbose Boolean. Controls verbosity of the function.
+///
 /// @return The tSNE embeddings.
 ///
 /// @export
@@ -77,6 +99,7 @@ fn rs_tsne(
     embd: RMatrix<f64>,
     n_dim: usize,
     perplexity: f64,
+    approx_type: String,
     tsne_params: List,
     seed: usize,
     verbose: bool,
@@ -86,6 +109,7 @@ fn rs_tsne(
     let res = tsne_simple(
         embd.as_ref(),
         n_dim,
+        &approx_type,
         perplexity as f32,
         tsne_params,
         seed,
@@ -93,4 +117,75 @@ fn rs_tsne(
     );
 
     faer_to_r_matrix(res.as_ref())
+}
+
+/////////////////////////
+// Synthetic data sets //
+/////////////////////////
+
+/// Generates the SwissRole data
+///
+/// @description Generates synthetic data, i.e., the Swiss role to test
+/// different manifold learning techniques
+///
+/// @param n_samples Integer. Number of data points to generate.
+/// @param noise Numeric. How much noise to add.
+/// @param seed Integer. For reproducibility purposes
+///
+/// @return The Swiss role synthetic data with the desired parameters.
+///
+/// @export
+#[extendr]
+fn rs_data_swiss_role(n_samples: usize, noise: f64, seed: usize) -> RMatrix<f64> {
+    let res = generate_swiss_roll(n_samples, noise, seed as u64);
+
+    faer_to_r_matrix(res.as_ref())
+}
+
+/// Generates clustered data
+///
+/// @description Generates synthetic data with clear cluster structure.
+///
+/// @param n_samples Integer. Number of data points to generate.
+/// @param dim Integer. Dimensionality of the data
+/// @param n_clusters Integer. Number of clusters to produce in the data.
+/// @param seed Integer. For reproducibility purposes
+///
+/// @return A list with the following elements:
+/// \itemize{
+///  \item data - Numerical matrix with the data.
+///  \item clusters - Cluster assignments
+/// }
+///
+/// @export
+#[extendr]
+fn rs_data_clusters(n_samples: usize, dim: usize, n_clusters: usize, seed: usize) -> List {
+    let (res, clusters) = generate_clustered_data(n_samples, dim, n_clusters, seed as u64);
+
+    list!(data = faer_to_r_matrix(res.as_ref()), clusters = clusters)
+}
+
+/// Generates tree-like data with branches
+///
+/// @description Generates synthetic data that has a tree-like structure to
+/// simulate evolution/trajectory of data.
+///
+/// @param n_samples Integer. Number of data points to generate.
+/// @param dim Integer. Dimensionality of the data
+/// @param n_branches Integer. Number of branches to produce in the data.
+/// @param noise Numeric. How much noise to add.
+/// @param seed Integer. For reproducibility purposes
+///
+/// @return A list with the following elements:
+/// \itemize{
+///  \item data - Numerical matrix with the data.
+///  \item clusters - Cluster assignments
+/// }
+///
+/// @export
+#[extendr]
+fn rs_data_tree(n_samples: usize, dim: usize, n_branches: usize, noise: f64, seed: usize) -> List {
+    let (res, branches) = generate_tree_structure(n_samples, n_branches, dim, noise, seed as u64);
+
+    list!(data = faer_to_r_matrix(res.as_ref()), branches = branches)
 }
