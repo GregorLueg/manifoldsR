@@ -10,7 +10,7 @@ rextendr::document()
 
 # synthetic data ---------------------------------------------------------------
 
-n_samples <- 100000L
+n_samples <- 1000000L
 
 swissrole <- rs_data_swiss_role(n_samples = n_samples, noise = 0.1, seed = 42L)
 
@@ -41,7 +41,6 @@ pca_swiss_role_df <- as.data.frame(pca_swiss_role$x[, 1:2]) %>%
   `colnames<-`(c("PC1", "PC2")) %>%
   dplyr::mutate(z_axis = swissrole[, 3])
 
-set.seed(123)
 ggplot(
   data = pca_swiss_role_df[sample(1:nrow(pca_swiss_role_df), 50000), ],
   mapping = aes(x = PC1, y = PC2)
@@ -114,10 +113,10 @@ umap_clustered <- rs_umap(
   n_dim = 2,
   min_dist = 0.5,
   spread = 1,
-  k = 5L,
+  k = 15L,
   umap_params = list(
     knn_method = "hnsw",
-    optimiser = "sgd",
+    optimiser = "adam_parallel",
     init = "spectral",
     n_epochs = 250L
   ),

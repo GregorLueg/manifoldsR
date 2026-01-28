@@ -296,13 +296,19 @@ pub fn umap_simple(
 ) -> Mat<f32> {
     let umap_params_internal = InternalUmapParams::from_r_list(umap_params, min_dist, spread);
 
+    let init_range = if umap_params_internal.init == "pca" {
+        Some(0.1_f32)
+    } else {
+        None
+    };
+
     let umap_params = UmapParams::new(
         Some(n_dim),
         Some(k),
         Some(umap_params_internal.optimiser),
         Some(umap_params_internal.knn_method),
         Some(umap_params_internal.init),
-        None,
+        init_range,
         Some(umap_params_internal.param_knn),
         Some(umap_params_internal.param_optimiser),
         Some(umap_params_internal.umap_graph),
