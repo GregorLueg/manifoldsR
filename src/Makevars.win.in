@@ -25,8 +25,12 @@ $(STATLIB):
 	fi
 
 	# Build the project using Cargo with additional flags
+	# Because Windows is an awful system, I need to pass flags directly through
+	# here. This will now assume that fftw is installed on the system
 	export CARGO_HOME=$(CARGOTMP) && \
 	export LIBRARY_PATH="$(LIBRARY_PATH);$(CURDIR)/$(TARGET_DIR)/libgcc_mock" && \
+	export FFTW_SYS_USE_SYSTEM_FFTW=1 && \
+	export PKG_CONFIG_PATH="C:/msys64/mingw64/lib/pkgconfig" && \
 	RUSTFLAGS="$(RUSTFLAGS) --print=native-static-libs -C target-cpu=native" cargo build @CRAN_FLAGS@ --target=$(TARGET) --lib --release --manifest-path=rust/Cargo.toml --target-dir=$(TARGET_DIR)
 
 	# Always clean up CARGOTMP

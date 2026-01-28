@@ -10,7 +10,7 @@ rextendr::document()
 
 # synthetic data ---------------------------------------------------------------
 
-n_samples <- 100000L
+n_samples <- 1000000L
 
 swissrole <- rs_data_swiss_role(n_samples = n_samples, noise = 0.1, seed = 42L)
 
@@ -117,7 +117,7 @@ umap_clustered <- rs_umap(
   umap_params = list(
     knn_method = "hnsw",
     optimiser = "adam_parallel",
-    init = "spectral",
+    init = "pca",
     n_epochs = 500L
   ),
   seed = 42L,
