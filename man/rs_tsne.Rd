@@ -4,11 +4,32 @@
 \alias{rs_tsne}
 \title{tSNE implementation}
 \usage{
-rs_tsne(embd, n_dim, perplexity, tsne_params, seed, verbose)
+rs_tsne(embd, n_dim, perplexity, approx_type, tsne_params, seed, verbose)
+}
+\arguments{
+\item{embd}{Numerical matrix. The data to use to generate the embeddings.
+Should be of dimensions samples x features.}
+
+\item{n_dim}{Integer. Number of tSNE dimensions to return. Needs to be two,
+others are not supported.}
+
+\item{perplexity}{Numeric. The tSNE perplexity parameter.}
+
+\item{approx_type}{String. One of \code{c("fft", "bh")}. Which of the two
+approximations to use.}
+
+\item{tsne_params}{Named list. List that contains all of the key parameters
+for the tSNE generation.}
+
+\item{seed}{Integer. Seed for reproducibility.}
+
+\item{verbose}{Boolean. Controls verbosity of the function.}
 }
 \value{
 The tSNE embeddings.
 }
 \description{
-tSNE implementation
+This is the wrapper function into the Rust interface for tSNE.
+You have the option to use the Barnes-Hut implemetation or the
+FFT-accelerated version to approximate the repulsive forces.
 }

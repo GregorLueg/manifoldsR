@@ -12,6 +12,8 @@ NULL
 
 #' UMAP implementation
 #'
+#' @description This is the wrapper function into the Rust interface for UMAP.
+#'
 #' @param embd Numerical matrix. The data to use to generate the embeddings.
 #' Should be of dimensions samples x features.
 #' @param n_dim Integer. Number of UMAP dimensions to return.
@@ -30,10 +32,78 @@ rs_umap <- function(embd, n_dim, min_dist, spread, k, umap_params, seed, verbose
 
 #' tSNE implementation
 #'
+#' @description This is the wrapper function into the Rust interface for tSNE.
+#' You have the option to use the Barnes-Hut implemetation or the
+#' FFT-accelerated version to approximate the repulsive forces.
+#'
+#' @param embd Numerical matrix. The data to use to generate the embeddings.
+#' Should be of dimensions samples x features.
+#' @param n_dim Integer. Number of tSNE dimensions to return. Needs to be two,
+#' others are not supported.
+#' @param perplexity Numeric. The tSNE perplexity parameter.
+#' @param approx_type String. One of `c("fft", "bh")`. Which of the two
+#' approximations to use.
+#' @param tsne_params Named list. List that contains all of the key parameters
+#' for the tSNE generation.
+#' @param seed Integer. Seed for reproducibility.
+#' @param verbose Boolean. Controls verbosity of the function.
+#'
 #' @return The tSNE embeddings.
 #'
 #' @export
-rs_tsne <- function(embd, n_dim, perplexity, tsne_params, seed, verbose) .Call(wrap__rs_tsne, embd, n_dim, perplexity, tsne_params, seed, verbose)
+rs_tsne <- function(embd, n_dim, perplexity, approx_type, tsne_params, seed, verbose) .Call(wrap__rs_tsne, embd, n_dim, perplexity, approx_type, tsne_params, seed, verbose)
+
+#' Generates the SwissRole data
+#'
+#' @description Generates synthetic data, i.e., the Swiss role to test
+#' different manifold learning techniques
+#'
+#' @param n_samples Integer. Number of data points to generate.
+#' @param noise Numeric. How much noise to add.
+#' @param seed Integer. For reproducibility purposes
+#'
+#' @return The Swiss role synthetic data with the desired parameters.
+#'
+#' @export
+rs_data_swiss_role <- function(n_samples, noise, seed) .Call(wrap__rs_data_swiss_role, n_samples, noise, seed)
+
+#' Generates clustered data
+#'
+#' @description Generates synthetic data with clear cluster structure.
+#'
+#' @param n_samples Integer. Number of data points to generate.
+#' @param dim Integer. Dimensionality of the data
+#' @param n_clusters Integer. Number of clusters to produce in the data.
+#' @param seed Integer. For reproducibility purposes
+#'
+#' @return A list with the following elements:
+#' \itemize{
+#'  \item data - Numerical matrix with the data.
+#'  \item clusters - Cluster assignments
+#' }
+#'
+#' @export
+rs_data_clusters <- function(n_samples, dim, n_clusters, seed) .Call(wrap__rs_data_clusters, n_samples, dim, n_clusters, seed)
+
+#' Generates tree-like data with branches
+#'
+#' @description Generates synthetic data that has a tree-like structure to
+#' simulate evolution/trajectory of data.
+#'
+#' @param n_samples Integer. Number of data points to generate.
+#' @param dim Integer. Dimensionality of the data
+#' @param n_branches Integer. Number of branches to produce in the data.
+#' @param noise Numeric. How much noise to add.
+#' @param seed Integer. For reproducibility purposes
+#'
+#' @return A list with the following elements:
+#' \itemize{
+#'  \item data - Numerical matrix with the data.
+#'  \item clusters - Cluster assignments
+#' }
+#'
+#' @export
+rs_data_tree <- function(n_samples, dim, n_branches, noise, seed) .Call(wrap__rs_data_tree, n_samples, dim, n_branches, noise, seed)
 
 
 # nolint end

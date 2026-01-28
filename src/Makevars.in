@@ -1,5 +1,5 @@
 TARGET_DIR = ./rust/target
-LIBDIR = $(TARGET_DIR)/@LIBDIR@
+LIBDIR = $(TARGET_DIR)/release # force release here
 STATLIB = $(LIBDIR)/libmanifoldsr.a
 PKG_LIBS = -L$(LIBDIR) -lmanifoldsr
 
@@ -30,7 +30,7 @@ $(STATLIB):
 
 	export CARGO_HOME=$(CARGOTMP) && \
 	export PATH="$(PATH):$(HOME)/.cargo/bin" && \
-	RUSTFLAGS="$(RUSTFLAGS) --print=native-static-libs" cargo build @CRAN_FLAGS@ --lib @PROFILE@ --manifest-path=./rust/Cargo.toml --target-dir $(TARGET_DIR) @TARGET@
+	RUSTFLAGS="$(RUSTFLAGS) --print=native-static-libs -C target-cpu=native" cargo build @CRAN_FLAGS@ --release --manifest-path=./rust/Cargo.toml --target-dir $(TARGET_DIR) @TARGET@
 
 	# Always clean up CARGOTMP
 	rm -Rf $(CARGOTMP);

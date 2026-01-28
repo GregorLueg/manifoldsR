@@ -29,5 +29,5 @@ for the UMAP generation.}
 The UMAP embeddings.
 }
 \description{
-UMAP implementation
+This is the wrapper function into the Rust interface for UMAP.
 }
