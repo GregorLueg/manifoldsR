@@ -10,7 +10,9 @@ rextendr::document()
 
 # synthetic data ---------------------------------------------------------------
 
-n_samples <- 1000000L
+# generate different
+
+n_samples <- 100000L
 
 swissrole <- rs_data_swiss_role(n_samples = n_samples, noise = 0.1, seed = 42L)
 
@@ -84,12 +86,13 @@ umap_swissrole <- rs_umap(
   n_dim = 2,
   min_dist = 0.1,
   spread = 1,
-  k = 15L,
+  k = 5L,
   umap_params = list(
     knn_method = "hnsw",
     optimiser = "adam_parallel",
     init = "pca",
-    n_epochs = 500L
+    n_epochs = 500L,
+    randomised = FALSE
   ),
   seed = 42L,
   verbose = TRUE
@@ -118,7 +121,8 @@ umap_clustered <- rs_umap(
     knn_method = "hnsw",
     optimiser = "adam_parallel",
     init = "pca",
-    n_epochs = 500L
+    n_epochs = 500L,
+    randomised = TRUE
   ),
   seed = 42L,
   verbose = TRUE
@@ -165,32 +169,35 @@ ggplot(
 
 #### uwot ----------------------------------------------------------------------
 
-# internal implementation
-# with 500k cells -> 62.865 sec elapsed
+# uwot
+# with 100k cells (200 epochs) -> 34.71 sec elapsed
 
 tictoc::tic()
-uwot_cluster <- uwot::umap(X = cluster_data, n_epochs = 500L, verbose = TRUE)
+uwot_cluster <- uwot::umap(X = cluster_data, n_epochs = 200L, verbose = TRUE)
 tictoc::toc()
 
-# uwot implementation
-# n_epochs = 500L, n_samples = 100_000L -> 74.785 sec elapsed
-# internal version -> 91.892 sec elapsed
-# internal version (SGD) -> 63.277 sec elapsed
 
 tictoc::tic()
-uwot_tree <- uwot::umap2(X = cluster_data, verbose = TRUE)
+umap_clustered_sgd <- rs_umap(
+  embd = cluster_data,
+  n_dim = 2,
+  min_dist = 0.5,
+  spread = 1,
+  k = 15L,
+  umap_params = list(
+    knn_method = "hnsw",
+    optimiser = "sgd", # fair comparison against uwot
+    init = "pca",
+    n_epochs = 200L,
+    randomised = TRUE
+  ),
+  seed = 42L,
+  verbose = TRUE
+)
 tictoc::toc()
 
-# uwot implementation - umap2
-# with 100k cells (umap) -> 11.189 sec elapsed
-# internal version -> 8.663 sec elapsed
-
-uwot_tree_df <- as.data.frame(uwot_tree) %>%
-  `colnames<-`(c("UMAP1", "UMAP2")) %>%
-  dplyr::mutate(cluster = as.factor(cluster_membership))
-
-ggplot(data = uwot_tree_df, mapping = aes(x = UMAP1, y = UMAP2)) +
-  geom_point(mapping = aes(colour = cluster))
+# internal
+# with 100k cells (200 epochs) -> 25.495 sec elapsed
 
 ## tsne ------------------------------------------------------------------------
 

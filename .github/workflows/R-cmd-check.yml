@@ -14,7 +14,7 @@ jobs:
         config:
           - {os: macOS-latest,   r: 'release'}
           - {os: ubuntu-latest,   r: 'release'}
-          # - {os: windows-latest, r: 'release'} - Windows is impossible to make work
+          - {os: windows-latest, r: 'release'}
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_KEEP_PKG_SOURCE: yes
@@ -33,25 +33,6 @@ jobs:
           rm -rf ~/.cache/R
           rm -rf ~/.local/share/renv
           rm -rf ~/Library/Caches/org.R-project.R
-      
-      - name: Install FFTW (Windows)
-        if: runner.os == 'Windows'
-        shell: pwsh
-        run: |
-          C:\msys64\usr\bin\bash.exe -lc "pacman -S --noconfirm mingw-w64-x86_64-fftw"
-          echo "PKG_CONFIG_PATH=C:/msys64/mingw64/lib/pkgconfig" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-          echo "LIBRARY_PATH=C:/msys64/mingw64/lib" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-          echo "C:\msys64\mingw64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-      
-      - name: Install FFTW (macOS)
-        if: runner.os == 'macOS'
-        run: brew install fftw
-      
-      - name: Install FFTW (Linux)
-        if: runner.os == 'Linux'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libfftw3-dev
       
       - uses: r-lib/actions/setup-pandoc@v2
       
