@@ -297,7 +297,7 @@ pub fn umap_simple(
     let umap_params_internal = InternalUmapParams::from_r_list(umap_params, min_dist, spread);
 
     let init_range = if umap_params_internal.init == "pca" {
-        Some(3_f32)
+        Some(1e-4)
     } else {
         None
     };

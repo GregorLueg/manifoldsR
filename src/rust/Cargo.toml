@@ -13,7 +13,12 @@ name = 'manifoldsr'
 extendr-api = '0.8.1'
 faer = "0.23.2"
 faer-entity = "0.20.1"
-manifolds-rs = { git = "https://github.com/GregorLueg/manifolds-rs/", branch = "feat-optim-improv" }
+
+[target.'cfg(not(windows))'.dependencies]
+manifolds-rs = { version = "0.1.5", features = ["fft_tsne"] }
+
+[target.'cfg(windows)'.dependencies]
+manifolds-rs = { version = "0.1.5" }
 
 [profile.test]
 opt-level = 3
