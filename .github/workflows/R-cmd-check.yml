@@ -65,6 +65,12 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: ${{ runner.os == 'Windows' && 'stable-x86_64-pc-windows-gnu' || 'stable' }}
+
+      - name: Set FFTW environment (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          echo "FFTW_SYS_USE_SYSTEM_FFTW=1" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
       
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
