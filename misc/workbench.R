@@ -262,7 +262,7 @@ tsne_clustered <- rs_tsne(
   embd = cluster_data,
   n_dim = 2,
   perplexity = 50,
-  approx_type = "fft",
+  approx_type = "bh",
   tsne_params = list(
     knn_method = "hnsw",
     dist_metric = "euclidean",
