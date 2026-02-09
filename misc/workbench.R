@@ -1,5 +1,3 @@
-data(iris)
-
 library(magrittr)
 library(data.table)
 library(ggplot2)
@@ -10,7 +8,7 @@ rextendr::document()
 
 # synthetic data ---------------------------------------------------------------
 
-# generate different
+# generate different synthetic data sets
 
 n_samples <- 100000L
 
@@ -110,7 +108,8 @@ ggplot(
 
 ### clustered data -------------------------------------------------------------
 
-tictoc::tic()
+dim(cluster_data)
+
 umap_clustered <- rs_umap(
   embd = cluster_data,
   n_dim = 2,
@@ -120,14 +119,13 @@ umap_clustered <- rs_umap(
   umap_params = list(
     knn_method = "hnsw",
     optimiser = "adam_parallel",
-    init = "pca",
+    init = "spectral",
     n_epochs = 500L,
     randomised = TRUE
   ),
   seed = 42L,
   verbose = TRUE
 )
-tictoc::toc()
 
 umap_clustered_df <- as.data.frame(umap_clustered) %>%
   `colnames<-`(c("UMAP1", "UMAP2")) %>%
@@ -144,13 +142,13 @@ ggplot(
 umap_tree <- rs_umap(
   embd = tree_data,
   n_dim = 2,
-  min_dist = 0.5,
+  min_dist = 0.1,
   spread = 1,
   k = 15L,
   umap_params = list(
-    knn_method = "hnsw",
+    knn_method = "annoy",
     optimiser = "adam_parallel",
-    init = "random",
+    init = "spectral",
     n_epochs = 500L
   ),
   seed = 42L,
@@ -169,13 +167,14 @@ ggplot(
 
 #### uwot ----------------------------------------------------------------------
 
+##### umap ---------------------------------------------------------------------
+
 # uwot
 # with 100k cells (200 epochs) -> 34.71 sec elapsed
 
 tictoc::tic()
 uwot_cluster <- uwot::umap(X = cluster_data, n_epochs = 200L, verbose = TRUE)
 tictoc::toc()
-
 
 tictoc::tic()
 umap_clustered_sgd <- rs_umap(
@@ -196,8 +195,38 @@ umap_clustered_sgd <- rs_umap(
 )
 tictoc::toc()
 
+##### umap2 --------------------------------------------------------------------
+
+tictoc::tic()
+uwot_cluster_2 <- uwot::umap2(X = cluster_data, n_epochs = 500L, verbose = TRUE)
+tictoc::toc()
+
+# uwot
+# with 100k cells, 500 epochs -> 11.688 sec elapsed
+# with 500k cells, 500 epochs -> 69.035 sec elapsed
+
+tictoc::tic()
+umap_clustered_adam <- rs_umap(
+  embd = cluster_data,
+  n_dim = 2,
+  min_dist = 0.5,
+  spread = 1,
+  k = 15L,
+  umap_params = list(
+    knn_method = "hnsw",
+    optimiser = "adam_parallel",
+    init = "pca",
+    n_epochs = 500L,
+    randomised = TRUE
+  ),
+  seed = 42L,
+  verbose = TRUE
+)
+tictoc::toc()
+
 # internal
-# with 100k cells (200 epochs) -> 25.495 sec elapsed
+# with 100k cells, 500 epochs -> 8.696 sec elapsed
+# with 500k cells, 500 epochs -> 58.28 sec elapsed
 
 ## tsne ------------------------------------------------------------------------
 

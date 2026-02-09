@@ -184,7 +184,7 @@ pub fn tsne_simple(
         init_range: Some(1e-4),
     };
 
-    let res = tsne(data, &tsne_params, approx_type, seed, verbose);
+    let res = tsne(data, None, &tsne_params, approx_type, seed, verbose);
 
     let ncol = res.len();
     let nrow = res[0].len();

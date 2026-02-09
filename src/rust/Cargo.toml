@@ -15,11 +15,11 @@ faer = "0.23.2"
 faer-entity = "0.20.1"
 
 [target.'cfg(not(windows))'.dependencies]
-manifolds-rs = { version = "0.1.5", features = ["fft_tsne"] }
+manifolds-rs = { version = "0.1.6", features = ["fft_tsne"] }
 
-# Windows cannot have FFT-accelerated tSNE, because it's a shit OS
+# Windows cannot have FFT-accelerated tSNE
 [target.'cfg(windows)'.dependencies]
-manifolds-rs = { version = "0.1.5" }
+manifolds-rs = { version = "0.1.6" }
 
 [profile.test]
 opt-level = 3

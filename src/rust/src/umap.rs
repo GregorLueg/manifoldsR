@@ -315,7 +315,7 @@ pub fn umap_simple(
         Some(umap_params_internal.randomised),
     );
 
-    let res = umap(data, &umap_params, seed, verbose);
+    let res = umap(data, None, &umap_params, seed, verbose);
 
     let ncol = res.len();
     let nrow = res[0].len();
