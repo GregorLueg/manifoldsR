@@ -20,8 +20,7 @@
 #' }
 #' @param n_epochs Integer. Number of optimization epochs. Higher values may
 #' improve quality but take longer. Default is 500.
-#' @param randomised Logical. Whether to use randomized behavior. Optional,
-#' defaults to NULL (not included in params).
+#' @param randomised Logical. Whether to use randomized behavior. Default is FALSE.
 #'
 #' @return A named list containing the UMAP parameters ready to pass to
 #' `rs_umap`.
@@ -33,7 +32,8 @@
 #'   knn_method = "hnsw",
 #'   optimiser = "adam_parallel",
 #'   init = "spectral",
-#'   n_epochs = 500
+#'   n_epochs = 500L,
+#'   randomised = FALSE
 #' )
 #'
 #' # Use with rs_umap
@@ -42,9 +42,9 @@
 #'   n_dim = 2,
 #'   min_dist = 0.1,
 #'   spread = 1,
-#'   k = 15,
+#'   k = 15L,
 #'   umap_params = params,
-#'   seed = 42,
+#'   seed = 42L,
 #'   verbose = TRUE
 #' )
 #' }
@@ -118,7 +118,7 @@ params_umap <- function(
 #'   perplexity = 50,
 #'   approx_type = "bh",
 #'   tsne_params = params,  # Use the constructed params
-#'   seed = 42,
+#'   seed = 42L,
 #'   verbose = TRUE
 #' )
 #' }

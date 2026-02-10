@@ -9,13 +9,13 @@ params_tsne(knn_method = "hnsw", dist_metric = "euclidean", theta = 0.5)
 \arguments{
 \item{knn_method}{Character. K-nearest neighbors method to use. One of:
 \itemize{
-\item "hnsw" - Hierarchical Navigable Small World (fast, approximate)
+\item "hnsw" - Hierarchical Navigable Small World (fast, approximate, default)
 \item "annoy" - Approximate Nearest Neighbors Oh Yeah
 }}
 
 \item{dist_metric}{Character. Distance metric to use. One of:
 \itemize{
-\item "euclidean" - Euclidean distance (recommended for most cases)
+\item "euclidean" - Euclidean distance (recommended for most cases, default)
 \item "cosine" - Cosine distance
 \item "manhattan" - Manhattan distance
 }}
@@ -51,7 +51,7 @@ embedding <- rs_tsne(
   perplexity = 50,
   approx_type = "bh",
   tsne_params = params,  # Use the constructed params
-  seed = 42,
+  seed = 42L,
   verbose = TRUE
 )
 }

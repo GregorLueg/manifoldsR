@@ -9,33 +9,32 @@ params_umap(
   optimiser = "adam_parallel",
   init = "spectral",
   n_epochs = 500L,
-  randomised = NULL
+  randomised = FALSE
 )
 }
 \arguments{
 \item{knn_method}{Character. K-nearest neighbors method to use. One of:
 \itemize{
-\item "hnsw" - Hierarchical Navigable Small World (fast, approximate)
+\item "hnsw" - Hierarchical Navigable Small World (fast, approximate, default)
 \item "annoy" - Approximate Nearest Neighbors Oh Yeah
 }}
 
 \item{optimiser}{Character. Optimization method. One of:
 \itemize{
-\item "adam_parallel" - Adam optimizer with parallelization (recommended)
+\item "adam_parallel" - Adam optimizer with parallelization (default)
 \item "sgd" - Stochastic Gradient Descent
 }}
 
 \item{init}{Character. Initialization method. One of:
 \itemize{
-\item "spectral" - Spectral initialization (recommended for most cases)
+\item "spectral" - Spectral initialization (recommended for most cases, default)
 \item "pca" - PCA-based initialization
 }}
 
 \item{n_epochs}{Integer. Number of optimization epochs. Higher values may
 improve quality but take longer. Default is 500.}
 
-\item{randomised}{Logical. Whether to use randomized behavior. Optional,
-defaults to NULL (not included in params).}
+\item{randomised}{Logical. Whether to use randomized behavior. Default is FALSE.}
 }
 \value{
 A named list containing the UMAP parameters ready to pass to
@@ -52,7 +51,8 @@ params <- params_umap(
   knn_method = "hnsw",
   optimiser = "adam_parallel",
   init = "spectral",
-  n_epochs = 500
+  n_epochs = 500L,
+  randomised = FALSE
 )
 
 # Use with rs_umap
@@ -61,9 +61,9 @@ embedding <- rs_umap(
   n_dim = 2,
   min_dist = 0.1,
   spread = 1,
-  k = 15,
+  k = 15L,
   umap_params = params,
-  seed = 42,
+  seed = 42L,
   verbose = TRUE
 )
 }

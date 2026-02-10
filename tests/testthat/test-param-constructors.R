@@ -6,7 +6,10 @@ test_that("params_umap creates valid parameter list with defaults", {
     params <- params_umap()
 
     expect_type(params, "list")
-    expect_named(params, c("knn_method", "optimiser", "init", "n_epochs"))
+    expect_named(
+        params,
+        c("knn_method", "optimiser", "init", "n_epochs", "randomised")
+    )
     expect_equal(params$knn_method, "hnsw")
     expect_equal(params$optimiser, "adam_parallel")
     expect_equal(params$init, "spectral")
@@ -56,12 +59,6 @@ test_that("params_umap handles randomised parameter", {
         c("knn_method", "optimiser", "init", "n_epochs", "randomised")
     )
     expect_false(params_false$randomised)
-})
-
-test_that("params_umap omits randomised when NULL", {
-    params <- params_umap(randomised = NULL)
-    expect_named(params, c("knn_method", "optimiser", "init", "n_epochs"))
-    expect_false("randomised" %in% names(params))
 })
 
 # Parameter combination tests ------------------------------------------------
