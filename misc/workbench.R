@@ -307,3 +307,25 @@ ggplot(
   mapping = aes(x = tSNE1, y = tSNE2)
 ) +
   geom_point(mapping = aes(colour = branch))
+
+
+umap_clustered_adam <- rs_umap(
+  embd = cluster_data,
+  n_dim = 2,
+  min_dist = 0.5,
+  spread = 1,
+  k = 15L,
+  umap_params = params_umap(),
+  seed = 42L,
+  verbose = TRUE
+)
+
+tsne_clustered <- rs_tsne(
+  embd = cluster_data,
+  n_dim = 2,
+  perplexity = 50,
+  approx_type = "bh",
+  tsne_params = params_tsne(),
+  seed = 123L,
+  verbose = TRUE
+)
