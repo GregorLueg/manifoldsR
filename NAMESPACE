@@ -3,6 +3,7 @@
 export(rs_data_clusters)
 export(rs_data_swiss_role)
 export(rs_data_tree)
+export(rs_synthetic_data)
 export(rs_tsne)
 export(rs_umap)
 useDynLib(manifoldsR, .registration = TRUE)
