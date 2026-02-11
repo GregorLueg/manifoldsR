@@ -32,5 +32,4 @@ SystemRequirements: Cargo (Rust's package manager), rustc >= 1.65.0, xz
 Depends: 
     R (>= 4.2)
 Suggests: 
-    testthat (>= 3.0.0)
-Config/testthat/edition: 3
+    tinytest
