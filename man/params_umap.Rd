@@ -5,24 +5,35 @@
 \title{Construct UMAP parameters list}
 \usage{
 params_umap(
-  knn_method = "hnsw",
-  optimiser = "adam_parallel",
+  knn_method = "annoy",
+  optimiser = "sgd",
   init = "spectral",
-  n_epochs = 500L,
+  n_trees = 50L,
+  search_budget = NULL,
+  delta = 0.001,
+  diversify_prob = 0,
+  ef_budget = NULL,
+  m = 16L,
+  ef_construction = 200L,
+  ef_search = 100L,
+  n_epochs = NULL,
   randomised = FALSE
 )
 }
 \arguments{
 \item{knn_method}{Character. K-nearest neighbors method to use. One of:
 \itemize{
-\item "hnsw" - Hierarchical Navigable Small World (fast, approximate, default)
-\item "annoy" - Approximate Nearest Neighbors Oh Yeah
+\item "annoy" - Approximate Nearest Neighbors Oh Yeah (default)
+\item "hnsw" - Hierarchical Navigable Small World (fast, approximate)
+\item "NNDescent" - Exact nearest neighbors using NNDescent algorithm
 }}
 
 \item{optimiser}{Character. Optimization method. One of:
 \itemize{
-\item "adam_parallel" - Adam optimizer with parallelization (default)
-\item "sgd" - Stochastic Gradient Descent
+\item "sgd" - Stochastic Gradient Descent (default)
+\item "adam_parallel" - Adam optimiser with parallelization
+\item "adam" - Standard Adam optimiser without parallelization
+\item "random" - Generates Random noise
 }}
 
 \item{init}{Character. Initialization method. One of:
@@ -31,8 +42,11 @@ params_umap(
 \item "pca" - PCA-based initialization
 }}
 
-\item{n_epochs}{Integer. Number of optimization epochs. Higher values may
-improve quality but take longer. Default is 500.}
+\item{n_epochs}{Integer or NULL. Number of optimization epochs. Higher values may
+improve quality but take longer. If NULL (default), automatically determined:
+500 epochs for datasets <10,000 samples or when using "adam_parallel",
+200 epochs for datasets >=10,000 samples with "sgd" or "adam".
+User-provided values override automatic detection.}
 
 \item{randomised}{Logical. Whether to use randomized behavior. Default is FALSE.}
 }
@@ -46,13 +60,18 @@ Creates a validated named list of parameters to pass to the
 }
 \examples{
 \dontrun{
-# Standard parameters for fast, high-quality embedding
+# Standard parameters with automatic epoch detection
 params <- params_umap(
-  knn_method = "hnsw",
-  optimiser = "adam_parallel",
-  init = "spectral",
-  n_epochs = 500L,
-  randomised = FALSE
+  knn_method = "annoy",
+  optimiser = "sgd",
+  init = "spectral"
+)
+
+# Override automatic epoch detection
+params <- params_umap(
+  knn_method = "annoy",
+  optimiser = "sgd",
+  n_epochs = 1000L
 )
 
 # Use with rs_umap

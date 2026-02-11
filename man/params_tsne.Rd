@@ -11,6 +11,7 @@ params_tsne(knn_method = "hnsw", dist_metric = "euclidean", theta = 0.5)
 \itemize{
 \item "hnsw" - Hierarchical Navigable Small World (fast, approximate, default)
 \item "annoy" - Approximate Nearest Neighbors Oh Yeah
+\item "NNDescent" - Exact nearest neighbors using NNDescent algorithm
 }}
 
 \item{dist_metric}{Character. Distance metric to use. One of:
