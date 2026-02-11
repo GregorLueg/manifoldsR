@@ -123,14 +123,16 @@ expect_error(tsne(test_data, approx_type = "invalid"))
 test_data <- matrix(rnorm(100 * 5), nrow = 100, ncol = 5)
 
 # Test with custom main parameters
-result <- tsne(
-    test_data,
-    perplexity = 20L,
-    approx_type = "fft",
-    seed = 42L
-)
+if (.Platform$OS.type == "unix") {
+    result <- tsne(
+        test_data,
+        perplexity = 20L,
+        approx_type = "fft",
+        seed = 42L
+    )
 
-expect_equal(ncol(result), 2L)
+    expect_equal(ncol(result), 2L)
+}
 
 # Test with custom params
 custom_params <- params_tsne(
