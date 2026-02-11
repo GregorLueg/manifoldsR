@@ -65,6 +65,17 @@ params_umap <- function(
     knn_method = "annoy",
     optimiser = "sgd",
     init = "spectral",
+    # Annoy
+    n_trees = 50L,
+    search_budget = NULL,
+    # NNDescent
+    delta = 0.001,
+    diversify_prob = 0.0,
+    ef_budget = NULL,
+    # HNSW
+    m = 16L,
+    ef_construction = 200L,
+    ef_search = 100L,
     n_epochs = NULL,
     randomised = FALSE
 ) {
@@ -75,6 +86,22 @@ params_umap <- function(
         c("sgd", "adam_parallel", "adam", "random")
     )
     checkmate::assert_choice(init, c("spectral", "pca"))
+    checkmate::qassert(n_trees, "I1[1,)")
+
+    if (!is.null(search_budget)) {
+        checkmate::qassert(search_budget, "I1[1,)")
+        search_budget <- as.integer(search_budget)
+    }
+    checkmate::qassert(delta, "N1[0,)")
+    checkmate::qassert(diversify_prob, "N1[0,1]")
+    if (!is.null(ef_budget)) {
+        checkmate::qassert(ef_budget, "I1[1,)")
+        ef_budget <- as.integer(ef_budget)
+    }
+    checkmate::qassert(m, "I1[1,)")
+    checkmate::qassert(ef_construction, "I1[1,)")
+    checkmate::qassert(ef_search, "I1[1,)")
+
     if (!is.null(n_epochs)) {
         checkmate::qassert(n_epochs, "I1[1,)")
         n_epochs <- as.integer(n_epochs)
