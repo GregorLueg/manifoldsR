@@ -49,12 +49,12 @@ rs_synthetic_data <- function(
     type <- match.arg(type)
 
     # parameter checks
-    checkmate::qassert(n_samples, "X1(0,)")
-    checkmate::qassert(dim, "X1(1,)")
-    checkmate::qassert(n_clusters, "X1(1,)")
-    checkmate::qassert(n_branches, "X1(1,)")
-    checkmate::qassert(noise, "R1(0,)")
-    checkmate::qassert(seed, "X1(1,)")
+    checkmate::qassert(n_samples, "I1(0,)")
+    checkmate::qassert(dim, "I1(1,)")
+    checkmate::qassert(n_clusters, "I1(1,)")
+    checkmate::qassert(n_branches, "I1(1,)")
+    checkmate::qassert(noise, "N1(0,)")
+    checkmate::qassert(seed, "I1(1,)")
 
     result <- switch(
         type,

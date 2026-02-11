@@ -5,21 +5,27 @@
 #'
 #' @param knn_method Character. K-nearest neighbors method to use. One of:
 #' \itemize{
-#'  \item "hnsw" - Hierarchical Navigable Small World (fast, approximate, default)
-#'  \item "annoy" - Approximate Nearest Neighbors Oh Yeah
+#'  \item "annoy" - Approximate Nearest Neighbors Oh Yeah (default)
+#'  \item "hnsw" - Hierarchical Navigable Small World (fast, approximate)
+#'  \item "NNDescent" - Exact nearest neighbors using NNDescent algorithm
 #' }
 #' @param optimiser Character. Optimization method. One of:
 #' \itemize{
-#'  \item "adam_parallel" - Adam optimizer with parallelization (default)
-#'  \item "sgd" - Stochastic Gradient Descent
+#'  \item "sgd" - Stochastic Gradient Descent (default)
+#'  \item "adam_parallel" - Adam optimiser with parallelization
+#'  \item "adam" - Standard Adam optimiser without parallelization
+#'  \item "random" - Generates Random noise
 #' }
 #' @param init Character. Initialization method. One of:
 #' \itemize{
 #'  \item "spectral" - Spectral initialization (recommended for most cases, default)
 #'  \item "pca" - PCA-based initialization
 #' }
-#' @param n_epochs Integer. Number of optimization epochs. Higher values may
-#' improve quality but take longer. Default is 500.
+#' @param n_epochs Integer or NULL. Number of optimization epochs. Higher values may
+#' improve quality but take longer. If NULL (default), automatically determined:
+#' 500 epochs for datasets <10,000 samples or when using "adam_parallel",
+#' 200 epochs for datasets >=10,000 samples with "sgd" or "adam".
+#' User-provided values override automatic detection.
 #' @param randomised Logical. Whether to use randomized behavior. Default is FALSE.
 #'
 #' @return A named list containing the UMAP parameters ready to pass to
@@ -27,13 +33,18 @@
 #'
 #' @examples
 #' \dontrun{
-#' # Standard parameters for fast, high-quality embedding
+#' # Standard parameters with automatic epoch detection
 #' params <- params_umap(
-#'   knn_method = "hnsw",
-#'   optimiser = "adam_parallel",
-#'   init = "spectral",
-#'   n_epochs = 500L,
-#'   randomised = FALSE
+#'   knn_method = "annoy",
+#'   optimiser = "sgd",
+#'   init = "spectral"
+#' )
+#'
+#' # Override automatic epoch detection
+#' params <- params_umap(
+#'   knn_method = "annoy",
+#'   optimiser = "sgd",
+#'   n_epochs = 1000L
 #' )
 #'
 #' # Use with rs_umap
@@ -51,17 +62,23 @@
 #'
 #' @export
 params_umap <- function(
-    knn_method = "hnsw",
-    optimiser = "adam_parallel",
+    knn_method = "annoy",
+    optimiser = "sgd",
     init = "spectral",
-    n_epochs = 500L,
+    n_epochs = NULL,
     randomised = FALSE
 ) {
     # Validate parameters
-    checkmate::assert_choice(knn_method, c("hnsw", "annoy"))
-    checkmate::assert_choice(optimiser, c("adam_parallel", "sgd"))
+    checkmate::assert_choice(knn_method, c("hnsw", "annoy", "NNDescent"))
+    checkmate::assert_choice(
+        optimiser,
+        c("sgd", "adam_parallel", "adam", "random")
+    )
     checkmate::assert_choice(init, c("spectral", "pca"))
-    checkmate::assert_int(n_epochs, lower = 1)
+    if (!is.null(n_epochs)) {
+        checkmate::qassert(n_epochs, "I1[1,)")
+        n_epochs <- as.integer(n_epochs)
+    }
     checkmate::qassert(randomised, "B1")
 
     # Build parameter list
@@ -69,7 +86,7 @@ params_umap <- function(
         knn_method = knn_method,
         optimiser = optimiser,
         init = init,
-        n_epochs = as.integer(n_epochs),
+        n_epochs = n_epochs, # Can be NULL for automatic detection
         randomised = randomised
     )
 
@@ -85,6 +102,7 @@ params_umap <- function(
 #' \itemize{
 #'  \item "hnsw" - Hierarchical Navigable Small World (fast, approximate, default)
 #'  \item "annoy" - Approximate Nearest Neighbors Oh Yeah
+#'  \item "NNDescent" - Exact nearest neighbors using NNDescent algorithm
 #' }
 #' @param dist_metric Character. Distance metric to use. One of:
 #' \itemize{
@@ -130,10 +148,10 @@ params_tsne <- function(
     theta = 0.5
 ) {
     # Validate parameters
-    checkmate::assert_choice(knn_method, c("hnsw", "annoy"))
+    checkmate::assert_choice(knn_method, c("hnsw", "annoy", "NNDescent"))
     checkmate::assert_choice(dist_metric, c("euclidean", "cosine", "manhattan"))
 
-    checkmate::assert_number(theta, lower = 0, upper = 1)
+    checkmate::qassert(theta, "N1[0,1]") # Theta should be between 0 and 1
 
     # Build parameter list
     params <- list(

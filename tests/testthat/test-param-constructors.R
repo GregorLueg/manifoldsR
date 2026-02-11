@@ -10,10 +10,10 @@ test_that("params_umap creates valid parameter list with defaults", {
         params,
         c("knn_method", "optimiser", "init", "n_epochs", "randomised")
     )
-    expect_equal(params$knn_method, "hnsw")
-    expect_equal(params$optimiser, "adam_parallel")
+    expect_equal(params$knn_method, "annoy")
+    expect_equal(params$optimiser, "sgd")
     expect_equal(params$init, "spectral")
-    expect_equal(params$n_epochs, 500L)
+    expect_null(params$n_epochs)
 })
 
 test_that("params_umap accepts all valid knn_method values", {
@@ -41,7 +41,7 @@ test_that("params_umap accepts all valid init values", {
 })
 
 test_that("params_umap handles custom n_epochs", {
-    params <- params_umap(n_epochs = 1000)
+    params <- params_umap(n_epochs = 1000L)
     expect_equal(params$n_epochs, 1000L)
 })
 
@@ -68,7 +68,7 @@ test_that("params_umap works with all parameters specified", {
         knn_method = "annoy",
         optimiser = "sgd",
         init = "pca",
-        n_epochs = 200,
+        n_epochs = 200L,
         randomised = TRUE
     )
 
@@ -144,7 +144,7 @@ test_that("params_umap validates randomised parameter", {
 # Type coercion tests --------------------------------------------------------
 
 test_that("params_umap coerces n_epochs to integer", {
-    params <- params_umap(n_epochs = 250)
+    params <- params_umap(n_epochs = 250L)
     expect_type(params$n_epochs, "integer")
     expect_equal(params$n_epochs, 250L)
 })
@@ -156,7 +156,7 @@ test_that("params_umap output can be used in list context", {
         knn_method = "hnsw",
         optimiser = "adam_parallel",
         init = "spectral",
-        n_epochs = 500
+        n_epochs = 500L
     )
 
     # Should be able to access all elements
