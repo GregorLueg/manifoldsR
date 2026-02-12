@@ -1,12 +1,20 @@
 Package: manifoldsR
-Title: Package for 2D embeddings.
+Title: Package for 2D embeddings
 Version: 0.0.0.9
 Authors@R: 
-    person(
-        given = "Gregor", 
-        family = "Lueg", 
-        email = "gregorlueg@me.com", 
-        role = c("aut", "cre")
+    c(
+        person(
+            given = "Gregor", 
+            family = "Lueg", 
+            email = "gregorlueg@me.com", 
+            role = c("aut", "cre")
+    ),
+        person(
+            given = "Grant", 
+            family = "Neilson", 
+            email = "grant.neilson5@gmail.com",
+            role = c("aut")
+        )
     )
 Description: 
     Contains different methods to generate embeddings like UMAP, parametric
@@ -17,9 +25,11 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 biocViews:
 Imports: 
+    checkmate,
     rextendr
 Config/rextendr/version: 0.4.2
 SystemRequirements: Cargo (Rust's package manager), rustc >= 1.65.0, xz
 Depends: 
     R (>= 4.2)
-Suggests: tinytest
+Suggests: 
+    tinytest
