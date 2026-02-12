@@ -14,9 +14,31 @@ The core algorithms are implemented in Rust for speed while providing user-frien
 
 ## Installation
 
+### Prerequisites
+
+This package requires Rust to be installed on your system. If you don't have Rust installed:
+
+**macOS and Linux:**
+
+```bash
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+
+**Windows:**
+
+Download and run the installer from [rustup.rs](https://rustup.rs/)
+
+After installation, restart your terminal and verify Rust is installed:
+
+```bash
+rustc --version
+```
+
+### Install manifoldsR
+
 ```r
 # Install from source
-devtools::install()
+remotes::install_github("GregorLueg/manifoldsR")
 ```
 
 ## Synthetic Data Generation
@@ -352,4 +374,3 @@ Both `umap()` and `tsne()` perform comprehensive input validation to prevent err
 - ✓ Ensuring sufficient data for requested parameters
 
 Invalid inputs are caught early with informative error messages before passing to the Rust backend.
-
