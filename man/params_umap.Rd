@@ -28,21 +28,21 @@ params_umap(
 \item "NNDescent" - Exact nearest neighbors using NNDescent algorithm
 }}
 
-\item{optimiser}{Character. Optimization method. One of:
+\item{optimiser}{Character. Optimisation method. One of:
 \itemize{
 \item "sgd" - Stochastic Gradient Descent (default)
-\item "adam_parallel" - Adam optimiser with parallelization
-\item "adam" - Standard Adam optimiser without parallelization
+\item "adam_parallel" - Adam optimiser with parallelisation
+\item "adam" - Standard Adam optimiser without parallelisation
 \item "random" - Generates Random noise
 }}
 
-\item{init}{Character. Initialization method. One of:
+\item{init}{Character. Initialisation method. One of:
 \itemize{
-\item "spectral" - Spectral initialization (recommended for most cases, default)
-\item "pca" - PCA-based initialization
+\item "spectral" - Spectral initialisation (recommended for most cases, default)
+\item "pca" - PCA-based initialisation
 }}
 
-\item{n_epochs}{Integer or NULL. Number of optimization epochs. Higher values may
+\item{n_epochs}{Integer or NULL. Number of optimisation epochs. Higher values may
 improve quality but take longer. If NULL (default), automatically determined:
 500 epochs for datasets <10,000 samples or when using "adam_parallel",
 200 epochs for datasets >=10,000 samples with "sgd" or "adam".

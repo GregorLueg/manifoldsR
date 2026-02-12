@@ -9,19 +9,19 @@
 #'  \item "hnsw" - Hierarchical Navigable Small World (fast, approximate)
 #'  \item "NNDescent" - Exact nearest neighbors using NNDescent algorithm
 #' }
-#' @param optimiser Character. Optimization method. One of:
+#' @param optimiser Character. Optimisation method. One of:
 #' \itemize{
 #'  \item "sgd" - Stochastic Gradient Descent (default)
-#'  \item "adam_parallel" - Adam optimiser with parallelization
-#'  \item "adam" - Standard Adam optimiser without parallelization
+#'  \item "adam_parallel" - Adam optimiser with parallelisation
+#'  \item "adam" - Standard Adam optimiser without parallelisation
 #'  \item "random" - Generates Random noise
 #' }
-#' @param init Character. Initialization method. One of:
+#' @param init Character. Initialisation method. One of:
 #' \itemize{
-#'  \item "spectral" - Spectral initialization (recommended for most cases, default)
-#'  \item "pca" - PCA-based initialization
+#'  \item "spectral" - Spectral initialisation (recommended for most cases, default)
+#'  \item "pca" - PCA-based initialisation
 #' }
-#' @param n_epochs Integer or NULL. Number of optimization epochs. Higher values may
+#' @param n_epochs Integer or NULL. Number of optimisation epochs. Higher values may
 #' improve quality but take longer. If NULL (default), automatically determined:
 #' 500 epochs for datasets <10,000 samples or when using "adam_parallel",
 #' 200 epochs for datasets >=10,000 samples with "sgd" or "adam".

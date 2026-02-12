@@ -101,12 +101,16 @@ umap <- function(
         if (params$optimiser == "adam_parallel" || n_samples < 10000) {
             params$n_epochs <- 500L
             if (verbose) {
-                message("Using n_epochs = 500 (dataset <10k samples or adam_parallel optimizer)")
+                message(
+                    "Using n_epochs = 500 (dataset <10k samples or adam_parallel optimiser)"
+                )
             }
         } else {
             params$n_epochs <- 200L
             if (verbose) {
-                message("Using n_epochs = 200 (dataset >=10k samples with sgd/adam optimizer)")
+                message(
+                    "Using n_epochs = 200 (dataset >=10k samples with sgd/adam optimiser)"
+                )
             }
         }
     } else {
