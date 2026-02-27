@@ -3,7 +3,7 @@ use faer::{Mat, MatRef};
 use manifolds_rs::prelude::*;
 use manifolds_rs::*;
 
-use crate::umap::get_params_nn;
+use crate::utils::get_params_nn;
 
 ////////////
 // Params //
@@ -139,8 +139,8 @@ fn get_params_tsne_optim(r_list: List) -> TsneOptimParams<f32> {
 
 /// Wrapper function into the t-SNE implementation in `manifolds-rs`
 ///
-/// This function uses the Barnes-Hut t-SNE implementation from the
-/// `manifolds-rs` crate.
+/// This function wraps around the `manifolds-rs` function and exposes it to
+/// R via another function.
 ///
 /// ### Params
 ///
@@ -156,7 +156,6 @@ fn get_params_tsne_optim(r_list: List) -> TsneOptimParams<f32> {
 /// ### Returns
 ///
 /// t-SNE embeddings as matrix
-#[allow(clippy::too_many_arguments)]
 pub fn tsne_simple(
     data: MatRef<f32>,
     n_dim: usize,

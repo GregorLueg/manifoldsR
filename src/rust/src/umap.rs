@@ -3,6 +3,8 @@ use faer::{Mat, MatRef};
 use manifolds_rs::prelude::*;
 use manifolds_rs::*;
 
+use crate::utils::get_params_nn;
+
 ////////////
 // Params //
 ////////////
@@ -97,84 +99,6 @@ impl InternalUmapParams {
     }
 }
 
-/// Helper function to generate the UMAP NN parameters
-///
-/// ### Params
-///
-/// * `r_list` - The list that has the nearest neighbour graph generation
-///   parameters.
-///
-/// ### Returns
-///
-/// The `NearestNeighbourParams` with sensible defaults if not found in the
-/// list.
-pub fn get_params_nn(r_list: List) -> NearestNeighbourParams<f32> {
-    let nn_params = r_list.into_hashmap();
-
-    // distance
-    let dist_metric = std::string::String::from(
-        nn_params
-            .get("dist_metric")
-            .and_then(|v| v.as_str())
-            .unwrap_or("cosine"),
-    );
-
-    // annoy
-    let n_tree = nn_params
-        .get("n_tree")
-        .and_then(|v| v.as_integer())
-        .unwrap_or(50) as usize;
-
-    let search_budget = nn_params
-        .get("search_budget")
-        .and_then(|v| v.as_integer())
-        .map(|v| v as usize);
-
-    // hnsw
-    let m = nn_params
-        .get("m")
-        .and_then(|v| v.as_integer())
-        .unwrap_or(16) as usize;
-
-    let ef_construction = nn_params
-        .get("ef_construction")
-        .and_then(|v| v.as_integer())
-        .unwrap_or(100) as usize;
-
-    let ef_search = nn_params
-        .get("ef_search")
-        .and_then(|v| v.as_integer())
-        .unwrap_or(100) as usize;
-
-    // nn descent
-    let diversify_prob = nn_params
-        .get("diversify_prob")
-        .and_then(|v| v.as_real())
-        .unwrap_or(0.0) as f32;
-
-    let delta = nn_params
-        .get("delta")
-        .and_then(|v| v.as_real())
-        .unwrap_or(0.001) as f32;
-
-    let ef_budget = nn_params
-        .get("ef_budget")
-        .and_then(|v| v.as_integer())
-        .map(|v| v as usize);
-
-    NearestNeighbourParams {
-        dist_metric,
-        n_tree,
-        search_budget,
-        m,
-        ef_construction,
-        ef_budget,
-        ef_search,
-        diversify_prob,
-        delta,
-    }
-}
-
 /// Helper function to generate the UMAP graph construction parameters
 ///
 /// ### Params
@@ -188,7 +112,7 @@ pub fn get_params_umap_graph(r_list: List) -> UmapGraphParams<f32> {
     let graph_params = r_list.into_hashmap();
 
     let mix_weight = graph_params
-        .get("diversify_prob")
+        .get("mix_weight")
         .and_then(|v| v.as_real())
         .unwrap_or(1.0) as f32;
 
@@ -272,6 +196,7 @@ fn get_params_umap_optim(r_list: List, min_dist: f32, spread: f32) -> UmapOptimP
 /// ### Params
 ///
 /// * `data` - The data to use for the generation of the UMAP.
+/// * `pre_computed_knn` - Optional pre-computed kNN to be used.
 /// * `n_dim` - The number of dimension to use.
 /// * `k` - Number of neighbors to use
 /// * `min_dist` - Minimum distance parameter
@@ -284,8 +209,9 @@ fn get_params_umap_optim(r_list: List, min_dist: f32, spread: f32) -> UmapOptimP
 ///
 /// Returns the UMAP embeddings as matrix.
 #[allow(clippy::too_many_arguments)]
-pub fn umap_simple(
+pub fn umap_manifold(
     data: MatRef<f32>,
+    pre_computed_knn: PreComputedKnn<f32>,
     n_dim: usize,
     k: usize,
     min_dist: f32,
@@ -315,7 +241,7 @@ pub fn umap_simple(
         Some(umap_params_internal.randomised),
     );
 
-    let res = umap(data, None, &umap_params, seed, verbose);
+    let res = umap(data, pre_computed_knn, &umap_params, seed, verbose);
 
     let ncol = res.len();
     let nrow = res[0].len();

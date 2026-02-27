@@ -13,13 +13,15 @@ name = 'manifoldsr'
 extendr-api = '0.8.1'
 faer = "0.23.2"
 faer-entity = "0.20.1"
+bixverse-rs = "0.1.0"
 
 [target.'cfg(not(windows))'.dependencies]
-manifolds-rs = { version = "0.1.7", features = ["fft_tsne"] }
+manifolds-rs = { git = "https://github.com/GregorLueg/manifolds-rs", branch = "phate-restructure", features = [
+    "fft_tsne",
+] }
 
-# Windows cannot have FFT-accelerated tSNE
 [target.'cfg(windows)'.dependencies]
-manifolds-rs = { version = "0.1.7" }
+manifolds-rs = { git = "https://github.com/GregorLueg/manifolds-rs", branch = "phate-restructure" }
 
 [profile.test]
 opt-level = 3

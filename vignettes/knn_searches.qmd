@@ -1,0 +1,85 @@
+---
+title: "manifoldsR nearest neighbour searches"
+vignette: >
+  %\VignetteIndexEntry{manifoldsR nearest neighbour searches}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
+knitr:
+  opts_chunk:
+    collapse: true
+    comment: '#>'
+---
+
+# Nearest neighbour searches in manifoldsR
+
+kNN graphs are the core of different manifold learning methods. This vignette
+gives you an intro in the provided methods, the advantages and disadvantages
+of the different methods. The wrappers can be also used to avoid recomputing
+the kNN graph if you wish to test different parameters.
+
+```{r}
+#| label: setup
+library(manifoldsR)
+```
+
+```{r}
+#| label: parameters
+
+# number neighbours
+k <- 10L
+```
+
+## Synthetic data
+
+```{r}
+#| label: synthetic data
+
+cluster_data <- manifold_synthetic_data(
+  type = "cluster",
+  n_samples = 1000L
+)
+```
+
+## Exhaustive search
+
+This is simples search type... It uses an exhaustive search index under the
+hood with SIMD acceleration. On small data sets, this one might in times be
+even faster than the approximate searches we will discuss subsequently. 
+
+```{r}
+#| label: exhaustive search
+
+exhaustive <- generate_knn_graph(
+  data = cluster_data$data,
+  k = k,
+  ann_method = "exhaustive"
+)
+
+exhaustive
+```
+
+There is a set of getters for these classes, see below. An important note is 
+that the indices are 0-based (from Rust), so if you wish to use them in R, you
+need to be aware of this.
+
+```{r}
+#| label: NearestNeigbours getters - indices
+
+# flat representation of the indices
+indices_flat <- get_idx_flat(exhaustive)
+
+# as N x idx nearest neigbours matrix
+indices_mat <- get_idx_mat(exhaustive)
+```
+
+The distances can also be extracted:
+
+```{r}
+#| label: NearestNeigbours getters - distances
+
+# flat representation of the distances
+dist_flat <- get_dist_flat(exhaustive)
+
+# as N x idx nearest neigbours matrix
+dist_mat <- get_dist_mat(exhaustive)
+```

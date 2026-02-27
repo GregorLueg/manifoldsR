@@ -30,6 +30,27 @@ NULL
 #' @export
 rs_umap <- function(embd, n_dim, min_dist, spread, k, umap_params, seed, verbose) .Call(wrap__rs_umap, embd, n_dim, min_dist, spread, k, umap_params, seed, verbose)
 
+#' UMAP implementation
+#'
+#' @description This is the wrapper function into the Rust interface for UMAP.
+#'
+#' @param embd Numerical matrix. The data to use to generate the embeddings.
+#' Should be of dimensions samples x features.
+#' @param knn_data `NearestNeighbours` class from R.
+#' @param n_dim Integer. Number of UMAP dimensions to return.
+#' @param min_dist Numeric. Minimum distance to use.
+#' @param spread Numeric. Spread parameter to use.
+#' @param k Integer. Number of nearest neighbours to consider
+#' @param umap_params Named list. List that contains all of the key parameters
+#' for the UMAP generation.
+#' @param seed Integer. Seed for reproducibility.
+#' @param verbose Boolean. Controls verbosity of the function.
+#'
+#' @return The UMAP embeddings.
+#'
+#' @export
+rs_umap_from_knn <- function(embd, knn_data, n_dim, min_dist, spread, k, umap_params, seed, verbose) .Call(wrap__rs_umap_from_knn, embd, knn_data, n_dim, min_dist, spread, k, umap_params, seed, verbose)
+
 #' tSNE implementation
 #'
 #' @description This is the wrapper function into the Rust interface for tSNE.
@@ -52,6 +73,33 @@ rs_umap <- function(embd, n_dim, min_dist, spread, k, umap_params, seed, verbose
 #'
 #' @export
 rs_tsne <- function(embd, n_dim, perplexity, approx_type, tsne_params, seed, verbose) .Call(wrap__rs_tsne, embd, n_dim, perplexity, approx_type, tsne_params, seed, verbose)
+
+#' @export
+rs_phate <- function(embd, n_dim, k, phate_params, seed, verbose) .Call(wrap__rs_phate, embd, n_dim, k, phate_params, seed, verbose)
+
+#' Wrapper around some nearest neighbour searches integrated into manifold-rs
+#'
+#' ### Params
+#'
+#' @param data Numeric matrix. Shape of samples x n_dim for which to get the
+#' (approximate) nearest neighbours
+#' @param k Integer. Number of neighbours to return
+#' @param ann_method String. Which of the methods to use. One of
+#' `c("hsnw", "balltree", "annoy", "nndescent")`
+#' @param ann_params Named list. Contains the nearest neighbour parameters.
+#' @param seed Integer. Seed for reproducibility
+#' @param verbose Boolean. Controls verbosity of the function.
+#'
+#' ### Returns
+#'
+#' A list with the following elements
+#' \itemize{
+#'   \item indices - flat representation of the indices.
+#'   \item dist - flat representaitons of the distances.
+#'   \item k - number of neighbours.
+#'   \item n - number of samples.
+#' }
+rs_approx_nearest_neighbours <- function(data, k, ann_method, ann_params, seed, verbose) .Call(wrap__rs_approx_nearest_neighbours, data, k, ann_method, ann_params, seed, verbose)
 
 #' Generates the SwissRole data
 #'
@@ -91,19 +139,24 @@ rs_data_clusters <- function(n_samples, dim, n_clusters, seed) .Call(wrap__rs_da
 #' simulate evolution/trajectory of data.
 #'
 #' @param n_samples Integer. Number of data points to generate.
-#' @param dim Integer. Dimensionality of the data
-#' @param n_branches Integer. Number of branches to produce in the data.
+#' @param dim Integer. Dimensionality of the data.
+#' @param topology String. One of `c("bifurcation", "linear", "combination")`.
+#' @param cell_trajectories List or NULL. Named list with three equal-length
+#'   vectors: `parent` (integer, NA for root, zero-indexed), `split_at`
+#'   (numeric, fraction along parent where branch starts), and `length`
+#'   (numeric, length of the branch). If NULL, will use the topology specified
+#'   in topology.
 #' @param noise Numeric. How much noise to add.
-#' @param seed Integer. For reproducibility purposes
+#' @param seed Integer. For reproducibility purposes.
 #'
 #' @return A list with the following elements:
 #' \itemize{
-#'  \item data - Numerical matrix with the data.
-#'  \item clusters - Cluster assignments
+#'  \item data - Numerical matrix with the generated data.
+#'  \item branches - Branch assignments for each sample.
 #' }
 #'
 #' @export
-rs_data_tree <- function(n_samples, dim, n_branches, noise, seed) .Call(wrap__rs_data_tree, n_samples, dim, n_branches, noise, seed)
+rs_data_trajectory <- function(n_samples, dim, topology, cell_trajectories, noise, seed) .Call(wrap__rs_data_trajectory, n_samples, dim, topology, cell_trajectories, noise, seed)
 
 
 # nolint end

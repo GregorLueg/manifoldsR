@@ -1,0 +1,20 @@
+---
+title: "Using UMAP"
+vignette: >
+  %\VignetteIndexEntry{Using UMAP}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
+knitr:
+  opts_chunk:
+    collapse: true
+    comment: '#>'
+---
+
+# Running UMAP
+
+`manifoldsR` provides very rapid 
+
+```{r}
+#| label: setup
+library(manifoldsR)
+```
