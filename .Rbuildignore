@@ -7,3 +7,5 @@
 ^src/Makevars\.win$
 ^vignettes/\.quarto$
 ^vignettes/*_files$
+^doc$
+^Meta$

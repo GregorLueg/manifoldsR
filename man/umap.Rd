@@ -9,7 +9,7 @@ umap(
   knn = NULL,
   n_dim = 2L,
   k = 15L,
-  min_dist = 0.25,
+  min_dist = 0.5,
   spread = 1,
   nn_method = c("hnsw", "annoy", "nndescent", "balltree", "exhaustive"),
   nn_params = params_nn(),
@@ -35,7 +35,7 @@ preserved. Defaults to \code{15L}.}
 
 \item{min_dist}{Numeric. Minimum distance between points in the embedding.
 Controls how tightly points are packed. Smaller values result in more
-clustered embeddings. Must be >= 0. Defaults to \code{0.1}.}
+clustered embeddings. Must be >= 0. Defaults to \code{0.5}.}
 
 \item{spread}{Numeric. Effective scale of embedded points. Determines the
 scale at which embedded points will be spread out. Defaults to \code{1.0}.}

@@ -230,9 +230,9 @@ expect_equal(
 )
 
 expect_equal(
-  current = prep_composed$ann_type,
+  current = prep_composed$knn_method,
   target = "annoy",
-  info = "nn_method is set as ann_type in final params"
+  info = "nn_method is set as knn_method in final params"
 )
 
 expect_equal(

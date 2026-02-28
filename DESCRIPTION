@@ -37,6 +37,10 @@ Depends:
     R (>= 4.2)
 Suggests: 
     knitr,
+    ggplot2,
+    microbenchmark,
     quarto,
-    tinytest
+    tinytest,
+    uwot,
+    umap
 VignetteBuilder: quarto

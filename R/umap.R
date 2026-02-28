@@ -39,7 +39,7 @@
   final_params <- c(nn_params, umap_params)
   final_params[["min_dist"]] <- min_dist
   final_params[["spread"]] <- spread
-  final_params[["ann_type"]] <- nn_method
+  final_params[["knn_method"]] <- nn_method
 
   # determine n_epochs if not specified
   if (is.null(final_params$n_epochs)) {
@@ -93,7 +93,7 @@
 #' preserved. Defaults to `15L`.
 #' @param min_dist Numeric. Minimum distance between points in the embedding.
 #' Controls how tightly points are packed. Smaller values result in more
-#' clustered embeddings. Must be >= 0. Defaults to `0.1`.
+#' clustered embeddings. Must be >= 0. Defaults to `0.5`.
 #' @param spread Numeric. Effective scale of embedded points. Determines the
 #' scale at which embedded points will be spread out. Defaults to `1.0`.
 #' @param nn_method Character. Approximate nearest neighbour algorithm to use.
@@ -115,7 +115,7 @@ umap <- function(
   knn = NULL,
   n_dim = 2L,
   k = 15L,
-  min_dist = 0.25,
+  min_dist = 0.35,
   spread = 1.0,
   nn_method = c("hnsw", "annoy", "nndescent", "balltree", "exhaustive"),
   nn_params = params_nn(),

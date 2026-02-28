@@ -27,6 +27,9 @@ library(manifoldsR)
 
 # number neighbours
 k <- 10L
+
+# number samples
+n_samples <- 1000L
 ```
 
 ## Synthetic data
@@ -36,7 +39,7 @@ k <- 10L
 
 cluster_data <- manifold_synthetic_data(
   type = "cluster",
-  n_samples = 1000L
+  n_samples = n_samples
 )
 ```
 
@@ -83,3 +86,230 @@ dist_flat <- get_dist_flat(exhaustive)
 # as N x idx nearest neigbours matrix
 dist_mat <- get_dist_mat(exhaustive)
 ```
+
+## Approximate searches
+
+This package is designed to deal with large datasets and leverages under the
+hood the [`ann-search-rs` crate](https://github.com/GregorLueg/ann-search-rs)
+which provides various approximate nearest neighbour searches. The 4 methods
+exposed in this package are (+ the exhaustive version above):
+
+| Method | Features | Class | 
+|--------|----------|-------|
+| BallTree | Simple method, good for small data sets (≤ 100,000) | Tree-based | 
+| Annoy | Classic in single cell, scales well to data sets of up to 500,000 | Tree-based |
+| HNSW | Powerful on large datasets (≥ 500,000), slightly slower index build type, fast queries | Graph-based |
+| NNDescent | Another graph-based version, good all-rounder when certain sizes are reached (≥ 100,000) | Graph-based |
+
+### Speed
+
+Let's just have a look on how they perform on different sizes
+
+```{r}
+#| label: approximate nearest neighbour searches - benchmark 1000
+
+microbenchmark::microbenchmark(
+  exhaustive = {
+    generate_knn_graph(
+      data = cluster_data$data,
+      k = k,
+      ann_method = "exhaustive",
+      .verbose = FALSE
+    )
+  },
+  annoy = {
+    generate_knn_graph(
+      data = cluster_data$data,
+      k = k,
+      ann_method = "annoy",
+      .verbose = FALSE
+    )
+  },
+  hnsw = {
+    generate_knn_graph(
+      data = cluster_data$data,
+      k = k,
+      ann_method = "hnsw",
+      .verbose = FALSE
+    )
+  },
+  balltree = {
+    generate_knn_graph(
+      data = cluster_data$data,
+      k = k,
+      ann_method = "balltree",
+      .verbose = FALSE
+    )
+  },
+  nndescent = {
+    generate_knn_graph(
+      data = cluster_data$data,
+      k = k,
+      ann_method = "nndescent",
+      .verbose = FALSE
+    )
+  },
+  times = 1L # single comparison for speed
+)
+```
+
+On small datasets, the exhaustive search beats everything. We need to build
+the indices in the other methods, a cost that only makes sense when we have
+sufficient samples to do this. Otherwise, modern CPUs with SIMD can do the
+necessary `O(N^2)` in no time on smaller datasets. What about 50k cells?
+
+```{r}
+#| label: approximate nearest neighbour searches - benchmark 50k
+
+benchmark_data <- manifold_synthetic_data(
+  type = "cluster",
+  n_samples = 50000L
+)
+
+microbenchmark::microbenchmark(
+  exhaustive = {
+    generate_knn_graph(
+      data = benchmark_data$data,
+      k = k,
+      ann_method = "exhaustive",
+      .verbose = FALSE
+    )
+  },
+  annoy = {
+    generate_knn_graph(
+      data = benchmark_data$data,
+      k = k,
+      ann_method = "annoy",
+      .verbose = FALSE
+    )
+  },
+  hnsw = {
+    generate_knn_graph(
+      data = benchmark_data$data,
+      k = k,
+      ann_method = "hnsw",
+      .verbose = FALSE
+    )
+  },
+  balltree = {
+    generate_knn_graph(
+      data = benchmark_data$data,
+      k = k,
+      ann_method = "balltree",
+      .verbose = FALSE
+    )
+  },
+  nndescent = {
+    generate_knn_graph(
+      data = benchmark_data$data,
+      k = k,
+      ann_method = "nndescent",
+      .verbose = FALSE
+    )
+  },
+  times = 1L # single comparison for speed
+)
+```
+
+We start observing the first pattern, that the approximate nearest neighbour
+searches are faster than the exhaustive search. The delta becomes more 
+pronounced with more samples:
+
+```{r}
+#| label: approximate nearest neighbour searches - benchmark 100k
+
+benchmark_data <- manifold_synthetic_data(
+  type = "cluster",
+  n_samples = 100000L
+)
+
+# this will take some time...
+microbenchmark::microbenchmark(
+  exhaustive = {
+    generate_knn_graph(
+      data = benchmark_data$data,
+      k = k,
+      ann_method = "exhaustive",
+      .verbose = FALSE
+    )
+  },
+  annoy = {
+    generate_knn_graph(
+      data = benchmark_data$data,
+      k = k,
+      ann_method = "annoy",
+      .verbose = FALSE
+    )
+  },
+  hnsw = {
+    generate_knn_graph(
+      data = benchmark_data$data,
+      k = k,
+      ann_method = "hnsw",
+      .verbose = FALSE
+    )
+  },
+  balltree = {
+    generate_knn_graph(
+      data = benchmark_data$data,
+      k = k,
+      ann_method = "balltree",
+      .verbose = FALSE
+    )
+  },
+  nndescent = {
+    generate_knn_graph(
+      data = benchmark_data$data,
+      k = k,
+      ann_method = "nndescent",
+      .verbose = FALSE
+    )
+  },
+  times = 1L # single comparison for speed
+)
+```
+
+### Precision
+
+In the end, these are approximate methods. So, we need to understand how good
+they are at recovering the true neighbours. A typical metric is `Recall@k` 
+neighbours. Let's just have a look at the smaller data sets here:
+
+```{r}
+#| label: approximate nearest neighbour searches - recall
+
+samples <- 25000L
+
+benchmark_data <- manifold_synthetic_data(
+  type = "cluster",
+  n_samples = samples
+)
+
+exhaustive <- generate_knn_graph(
+  data = benchmark_data$data,
+  k = k,
+  ann_method = "exhaustive"
+)
+
+indices <- c("hnsw", "annoy", "nndescent", "balltree")
+
+for (idx in indices) {
+  idx_i <- generate_knn_graph(
+    data = benchmark_data$data,
+    k = k,
+    ann_method = idx,
+    .verbose = FALSE
+  )
+  
+  recall_i <- sum(get_idx_flat(exhaustive) == get_idx_flat(idx_i)) / 
+    (k * samples)
+
+  print(
+    sprintf("ANN method %s achieves a Recall of %.3f.", idx, recall_i)
+  )
+}
+```
+
+As you can see, all of these methods are able to (mostly) identify the right 
+neighbours. If you wish to understand more how these methods work, how they
+compare, etc., please check it out [here](https://github.com/GregorLueg/ann-search-rs)) 
