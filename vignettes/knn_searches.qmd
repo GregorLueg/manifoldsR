@@ -55,7 +55,7 @@ even faster than the approximate searches we will discuss subsequently.
 exhaustive <- generate_knn_graph(
   data = cluster_data$data,
   k = k,
-  ann_method = "exhaustive"
+  knn_method = "exhaustive"
 )
 
 exhaustive
@@ -94,12 +94,12 @@ hood the [`ann-search-rs` crate](https://github.com/GregorLueg/ann-search-rs)
 which provides various approximate nearest neighbour searches. The 4 methods
 exposed in this package are (+ the exhaustive version above):
 
-| Method | Features | Class | 
-|--------|----------|-------|
-| BallTree | Simple method, good for small data sets (≤ 100,000) | Tree-based | 
-| Annoy | Classic in single cell, scales well to data sets of up to 500,000 | Tree-based |
-| HNSW | Powerful on large datasets (≥ 500,000), slightly slower index build type, fast queries | Graph-based |
-| NNDescent | Another graph-based version, good all-rounder when certain sizes are reached (≥ 100,000) | Graph-based |
+| Method | Features | Class | Use case |
+|--------|----------|-------|----------|
+| BallTree | Simple method, good for small data sets (≤ 100,000) | Tree-based | Small data sets, small dimensionality
+| Annoy | Classic in single cell, scales well to data sets of up to 500,000 | Tree-based | Large data sets, small dimensionality
+| HNSW | Powerful on large datasets (≥ 500,000), slightly slower index build type, fast queries | Graph-based | Large data sets, small to large dimensionality
+| NNDescent | Another graph-based version, good all-rounder when certain sizes are reached (≥ 100,000) | Graph-based | Medium data sets, small to large dimensionality
 
 ### Speed
 
@@ -113,7 +113,7 @@ microbenchmark::microbenchmark(
     generate_knn_graph(
       data = cluster_data$data,
       k = k,
-      ann_method = "exhaustive",
+      knn_method = "exhaustive",
       .verbose = FALSE
     )
   },
@@ -121,7 +121,7 @@ microbenchmark::microbenchmark(
     generate_knn_graph(
       data = cluster_data$data,
       k = k,
-      ann_method = "annoy",
+      knn_method = "annoy",
       .verbose = FALSE
     )
   },
@@ -129,7 +129,7 @@ microbenchmark::microbenchmark(
     generate_knn_graph(
       data = cluster_data$data,
       k = k,
-      ann_method = "hnsw",
+      knn_method = "hnsw",
       .verbose = FALSE
     )
   },
@@ -137,7 +137,7 @@ microbenchmark::microbenchmark(
     generate_knn_graph(
       data = cluster_data$data,
       k = k,
-      ann_method = "balltree",
+      knn_method = "balltree",
       .verbose = FALSE
     )
   },
@@ -145,7 +145,7 @@ microbenchmark::microbenchmark(
     generate_knn_graph(
       data = cluster_data$data,
       k = k,
-      ann_method = "nndescent",
+      knn_method = "nndescent",
       .verbose = FALSE
     )
   },
@@ -171,7 +171,7 @@ microbenchmark::microbenchmark(
     generate_knn_graph(
       data = benchmark_data$data,
       k = k,
-      ann_method = "exhaustive",
+      knn_method = "exhaustive",
       .verbose = FALSE
     )
   },
@@ -179,7 +179,7 @@ microbenchmark::microbenchmark(
     generate_knn_graph(
       data = benchmark_data$data,
       k = k,
-      ann_method = "annoy",
+      knn_method = "annoy",
       .verbose = FALSE
     )
   },
@@ -187,7 +187,7 @@ microbenchmark::microbenchmark(
     generate_knn_graph(
       data = benchmark_data$data,
       k = k,
-      ann_method = "hnsw",
+      knn_method = "hnsw",
       .verbose = FALSE
     )
   },
@@ -195,7 +195,7 @@ microbenchmark::microbenchmark(
     generate_knn_graph(
       data = benchmark_data$data,
       k = k,
-      ann_method = "balltree",
+      knn_method = "balltree",
       .verbose = FALSE
     )
   },
@@ -203,7 +203,7 @@ microbenchmark::microbenchmark(
     generate_knn_graph(
       data = benchmark_data$data,
       k = k,
-      ann_method = "nndescent",
+      knn_method = "nndescent",
       .verbose = FALSE
     )
   },
@@ -229,7 +229,7 @@ microbenchmark::microbenchmark(
     generate_knn_graph(
       data = benchmark_data$data,
       k = k,
-      ann_method = "exhaustive",
+      knn_method = "exhaustive",
       .verbose = FALSE
     )
   },
@@ -237,7 +237,7 @@ microbenchmark::microbenchmark(
     generate_knn_graph(
       data = benchmark_data$data,
       k = k,
-      ann_method = "annoy",
+      knn_method = "annoy",
       .verbose = FALSE
     )
   },
@@ -245,7 +245,7 @@ microbenchmark::microbenchmark(
     generate_knn_graph(
       data = benchmark_data$data,
       k = k,
-      ann_method = "hnsw",
+      knn_method = "hnsw",
       .verbose = FALSE
     )
   },
@@ -253,7 +253,7 @@ microbenchmark::microbenchmark(
     generate_knn_graph(
       data = benchmark_data$data,
       k = k,
-      ann_method = "balltree",
+      knn_method = "balltree",
       .verbose = FALSE
     )
   },
@@ -261,7 +261,7 @@ microbenchmark::microbenchmark(
     generate_knn_graph(
       data = benchmark_data$data,
       k = k,
-      ann_method = "nndescent",
+      knn_method = "nndescent",
       .verbose = FALSE
     )
   },
@@ -288,7 +288,7 @@ benchmark_data <- manifold_synthetic_data(
 exhaustive <- generate_knn_graph(
   data = benchmark_data$data,
   k = k,
-  ann_method = "exhaustive"
+  knn_method = "exhaustive"
 )
 
 indices <- c("hnsw", "annoy", "nndescent", "balltree")
@@ -297,7 +297,7 @@ for (idx in indices) {
   idx_i <- generate_knn_graph(
     data = benchmark_data$data,
     k = k,
-    ann_method = idx,
+    knn_method = idx,
     .verbose = FALSE
   )
   

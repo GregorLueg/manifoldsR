@@ -11,7 +11,7 @@ umap(
   k = 15L,
   min_dist = 0.5,
   spread = 1,
-  nn_method = c("hnsw", "annoy", "nndescent", "balltree", "exhaustive"),
+  knn_method = c("hnsw", "annoy", "nndescent", "balltree", "exhaustive"),
   nn_params = params_nn(),
   umap_params = params_umap(),
   seed = 42L,
@@ -35,12 +35,13 @@ preserved. Defaults to \code{15L}.}
 
 \item{min_dist}{Numeric. Minimum distance between points in the embedding.
 Controls how tightly points are packed. Smaller values result in more
-clustered embeddings. Must be >= 0. Defaults to \code{0.5}.}
+clustered embeddings. Must be >= 0. Defaults to \code{0.5}. If you use SGD,
+consider reducing this!}
 
 \item{spread}{Numeric. Effective scale of embedded points. Determines the
 scale at which embedded points will be spread out. Defaults to \code{1.0}.}
 
-\item{nn_method}{Character. Approximate nearest neighbour algorithm to use.
+\item{knn_method}{Character. Approximate nearest neighbour algorithm to use.
 One of \code{"hnsw"}, \code{"annoy"}, \code{"nndescent"}, \code{"balltree"}, or
 \code{"exhaustive"}. Defaults to \code{"hnsw"}.}
 

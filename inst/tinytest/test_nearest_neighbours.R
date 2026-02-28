@@ -75,7 +75,7 @@ for (idx in indices) {
   idx_i <- generate_knn_graph(
     data = cluster_data,
     k = n_neighbours,
-    ann_method = idx,
+    knn_method = idx,
     .verbose = FALSE
   )
 

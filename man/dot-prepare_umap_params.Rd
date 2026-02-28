@@ -8,7 +8,7 @@
   n,
   min_dist,
   spread,
-  nn_method,
+  knn_method,
   nn_params,
   umap_params,
   .verbose = TRUE
@@ -21,7 +21,7 @@
 
 \item{spread}{Numeric. Effective scale of embedded points.}
 
-\item{nn_method}{String. Method to use to generate the kNN graph.}
+\item{knn_method}{String. Method to use to generate the kNN graph.}
 
 \item{nn_params}{Named list. The nearest neighbour search parameters.}
 

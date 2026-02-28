@@ -41,6 +41,6 @@ Suggests:
     microbenchmark,
     quarto,
     tinytest,
-    uwot,
-    umap
+    umap,
+    uwot
 VignetteBuilder: quarto

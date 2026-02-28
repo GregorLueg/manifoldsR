@@ -1,72 +1,90 @@
-#' t-SNE: t-Distributed Stochastic Neighbor Embedding
+# tsne -------------------------------------------------------------------------
+
+## param combination -----------------------------------------------------------
+
+#' Internal helper to prepare the t-SNE parameters
+#'
+#' @param knn_method String. Method to use to generate the kNN graph.
+#' @param nn_params Named list. The nearest neighbour search parameters.
+#' @param tsne_params Named list. The t-SNE-specific parameters.
+#' @param .verbose Boolean. Controls verbosity.
+#'
+#' @return Returns the list of final parameters.
+#'
+#' @export
+.prepare_tsne_params <- function(
+  knn_method,
+  nn_params,
+  tsne_params
+) {
+  checkmate::assertChoice(
+    knn_method,
+    c("hnsw", "annoy", "nndescent", "balltree", "exhaustive")
+  )
+  assertNnParams(nn_params)
+  assertTsneParams(tsne_params)
+
+  final_params <- c(nn_params, tsne_params)
+  final_params[["knn_method"]] <- knn_method
+
+  final_params
+}
+
+## main function ---------------------------------------------------------------
+
+#' Rust-based t-SNE
 #'
 #' @description Performs t-SNE dimensionality reduction on the input data.
 #' This function provides a user-friendly interface with input validation
 #' before calling the Rust implementation.
 #'
-#' @param data Numerical matrix or data frame. The data to embed.
-#' Should be of dimensions samples x features. Will be coerced to a matrix.
+#' @details The number of neighbours will be `3 * perplexity``, as this is a
+#' usual default in tSNE.
+#'
+#' @param data Numerical matrix or data frame. The data to embed of shape
+#' samples x features. Will be coerced to a matrix.
+#' @param knn Optional `NearestNeighbours` class. If provided, t-SNE will skip
+#' the k-nearest neighbour graph generation and use this one. Defaults to
+#' `NULL`.
 #' @param n_dim Integer. Number of dimensions in the embedding space.
-#' Currently only 2 is supported. Default is 2.
-#' @param perplexity Numeric. The perplexity parameter. Related to the number
-#' of nearest neighbors used in manifold learning. Typical values are between
-#' 5 and 50. Default is 30.
+#' Currently only `2L` is supported. Defaults to `2L`.
+#' @param perplexity Numeric. Perplexity parameter, related to the number of
+#' nearest neighbours used in manifold learning. Typical values are between
+#' 5 and 50. Defaults to `30.0`.
 #' @param approx_type Character. Approximation method for computing repulsive
-#' forces. One of:
-#' \itemize{
-#'  \item "bh" - Barnes-Hut approximation (recommended for most datasets)
-#'  \item "fft" - FFT-accelerated interpolation (faster for large datasets)
-#' }
-#' Default is "bh".
-#' @param params Named list. Advanced t-SNE parameters created by
-#' \code{\link{params_tsne}}. Default uses standard settings.
-#' @param seed Integer. Random seed for reproducibility. Default is NULL
-#' (random seed).
-#' @param verbose Logical. Whether to print progress messages. Default is FALSE.
+#' forces. One of `"bh"` for Barnes-Hut or `"fft"` for FFT-accelerated
+#' interpolation. Defaults to `"bh"`.
+#' @param knn_method Character. Approximate nearest neighbour algorithm to use.
+#' One of `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, or
+#' `"exhaustive"`. Defaults to `"hnsw"`.
+#' @param nn_params Named list. Nearest neighbour search parameters, see
+#' [params_nn()].
+#' @param tsne_params Named list. t-SNE algorithm parameters, see
+#' [params_tsne()].
+#' @param seed Integer. Random seed for reproducibility.
+#' @param .verbose Logical. Controls verbosity. Defaults to `TRUE`.
 #'
 #' @return A numerical matrix with dimensions samples x n_dim containing
 #' the t-SNE embedding.
 #'
-#' @examples
-#' \dontrun{
-#' # Basic usage with defaults
-#' embedding <- tsne(iris[, 1:4])
-#'
-#' # Customize main parameters
-#' embedding <- tsne(
-#'   data = iris[, 1:4],
-#'   perplexity = 50,
-#'   approx_type = "fft",
-#'   seed = 42
-#' )
-#'
-#' # Customize advanced parameters via params
-#' custom_params <- params_tsne(
-#'   knn_method = "annoy",
-#'   dist_metric = "cosine",
-#'   theta = 0.3
-#' )
-#' embedding <- tsne(
-#'   data = iris[, 1:4],
-#'   params = custom_params,
-#'   verbose = TRUE
-#' )
-#' }
-#'
 #' @export
 tsne <- function(
   data,
+  knn = NULL,
   n_dim = 2L,
-  perplexity = 30L,
-  approx_type = "bh",
-  params = params_tsne(),
-  seed = NULL,
-  verbose = FALSE
+  perplexity = 30.0,
+  approx_type = c("bh", "fft"),
+  knn_method = c("hnsw", "annoy", "nndescent", "balltree", "exhaustive"),
+  nn_params = params_nn(),
+  tsne_params = params_tsne(),
+  seed = 42L,
+  .verbose = TRUE
 ) {
-  # Input validation
   if (is.data.frame(data)) {
     data <- as.matrix(data)
   }
+  approx_type <- match.arg(approx_type)
+  knn_method <- match.arg(knn_method)
 
   checkmate::assert_matrix(
     data,
@@ -75,43 +93,78 @@ tsne <- function(
     min.rows = 2,
     min.cols = 1
   )
-  checkmate::qassert(n_dim, "I1[2,2]") # Only 2D supported
-  checkmate::qassert(
-    perplexity,
-    "I1[1,)"
+  checkmate::assert(
+    checkmate::testNull(knn),
+    checkmate::testClass(knn, "NearestNeighbours")
   )
-  checkmate::assert_choice(approx_type, c("bh", "fft"))
-  checkmate::assert_list(params, names = "unique")
-  checkmate::qassert(verbose, "B1")
+  checkmate::qassert(n_dim, "I1[2,2]")
+  checkmate::qassert(perplexity, "N1[1,)")
+  checkmate::assertChoice(
+    approx_type,
+    c("bh", "fft")
+  )
+  checkmate::assertChoice(
+    knn_method,
+    c("hnsw", "annoy", "nndescent", "balltree", "exhaustive")
+  )
+  assertNnParams(nn_params)
+  assertTsneParams(tsne_params)
+  checkmate::qassert(seed, "I1")
+  checkmate::qassert(.verbose, "B1")
 
-  # Handle seed
-  if (is.null(seed)) {
-    seed <- as.integer(sample.int(.Machine$integer.max, 1))
-  } else {
-    checkmate::assert_int(seed)
-    seed <- as.integer(seed)
+  # warning when on windows...
+  if (approx_type == "fft" && .Platform$OS.type != "unix") {
+    stop(
+      "The FFT approximation is not supported on non-Unix systems.",
+      call. = FALSE
+    )
   }
 
-  # Ensure integers are proper integer type
-  n_dim <- as.integer(n_dim)
-  perplexity <- as.integer(perplexity)
-
-  # Call Rust implementation
-  tryCatch(
-    {
-      result <- rs_tsne(
-        embd = data,
-        n_dim = n_dim,
-        perplexity = perplexity,
-        approx_type = approx_type,
-        tsne_params = params,
-        seed = seed,
-        verbose = verbose
-      )
-      return(result)
-    },
-    error = function(e) {
-      stop("t-SNE computation failed: ", e$message, call. = FALSE)
-    }
+  final_tsne_params <- .prepare_tsne_params(
+    knn_method = knn_method,
+    nn_params = nn_params,
+    tsne_params = tsne_params
   )
+
+  res <- if (!is.null(knn)) {
+    if (.verbose) {
+      message("Using provided kNN graph.")
+    }
+    tryCatch(
+      {
+        rs_tsne_from_knn(
+          embd = data,
+          knn_data = knn,
+          n_dim = as.integer(n_dim),
+          perplexity = perplexity,
+          approx_type = approx_type,
+          tsne_params = final_tsne_params,
+          seed = seed,
+          verbose = .verbose
+        )
+      },
+      error = function(e) {
+        stop("t-SNE computation failed: ", e$message, call. = FALSE)
+      }
+    )
+  } else {
+    tryCatch(
+      {
+        rs_tsne(
+          embd = data,
+          n_dim = as.integer(n_dim),
+          perplexity = perplexity,
+          approx_type = approx_type,
+          tsne_params = final_tsne_params,
+          seed = seed,
+          verbose = .verbose
+        )
+      },
+      error = function(e) {
+        stop("t-SNE computation failed: ", e$message, call. = FALSE)
+      }
+    )
+  }
+
+  res
 }

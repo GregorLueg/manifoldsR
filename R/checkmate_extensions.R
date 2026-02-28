@@ -248,3 +248,82 @@ checkUmapParams <- function(x) {
 #'
 #' @return Invisibly returns the checked object if the assertion is successful.
 assertUmapParams <- checkmate::makeAssertionFunction(checkUmapParams)
+
+## tsne ------------------------------------------------------------------------
+
+#' Check t-SNE parameters
+#'
+#' @description Checkmate extension for checking the t-SNE parameters.
+#'
+#' @param x The list to check.
+#'
+#' @return `TRUE` if the check was successful, otherwise an error message.
+checkTsneParams <- function(x) {
+  res <- checkmate::checkList(x)
+  if (!isTRUE(res)) {
+    return(res)
+  }
+  res <- checkmate::checkNames(
+    names(x),
+    must.include = c(
+      "lr",
+      "n_epochs",
+      "early_exag_iter",
+      "early_exag_factor",
+      "theta",
+      "n_interp_points",
+      "init",
+      "randomised"
+    )
+  )
+  if (!isTRUE(res)) {
+    return(res)
+  }
+  rules <- list(
+    "lr" = list(type = "fixed", rule = "N1"),
+    "n_epochs" = list(type = "fixed", rule = "I1[1,)"),
+    "early_exag_iter" = list(type = "fixed", rule = "I1[1,)"),
+    "early_exag_factor" = list(type = "fixed", rule = "N1"),
+    "theta" = list(type = "fixed", rule = "N1[0,1]"),
+    "n_interp_points" = list(type = "fixed", rule = "I1[1,)"),
+    "init" = list(type = "choice", choices = c("spectral", "pca", "random")),
+    "randomised" = list(type = "fixed", rule = "B1")
+  )
+  res <- purrr::imap_lgl(x, \(val, name) {
+    spec <- rules[[name]]
+    if (spec$type == "choice") {
+      checkmate::testChoice(val, spec$choices)
+    } else {
+      checkmate::qtest(val, spec$rule)
+    }
+  })
+  if (!isTRUE(all(res))) {
+    broken_elem <- names(res)[which(!res)][1]
+    return(sprintf(
+      paste(
+        "Element `%s` in t-SNE params does not conform.",
+        "lr/early_exag_factor/theta must be numeric,",
+        "n_epochs/early_exag_iter/n_interp_points must be positive integers,",
+        "theta must be between 0 and 1,",
+        "init must be one of 'spectral'/'pca'/'random',",
+        "and randomised must be logical."
+      ),
+      broken_elem
+    ))
+  }
+  return(TRUE)
+}
+
+#' Assert t-SNE parameters
+#'
+#' @description Checkmate extension for asserting the t-SNE parameters.
+#'
+#' @inheritParams checkTsneParams
+#'
+#' @param .var.name Name of the checked object to print in assertions. Defaults
+#' to the heuristic implemented in checkmate.
+#' @param add Collection to store assertion messages. See
+#' [checkmate::makeAssertCollection()].
+#'
+#' @return Invisibly returns the checked object if the assertion is successful.
+assertTsneParams <- checkmate::makeAssertionFunction(checkTsneParams)

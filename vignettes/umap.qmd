@@ -17,7 +17,8 @@ author:
 `manifoldsR` provides very rapid implementation of 
 [UMAP](https://arxiv.org/abs/1802.03426), based on the brilliant work in the
 [uwot](https://github.com/jlmelville/uwot) package. The aim of this version
-is to use a Rust-based version and accelerate the algorithm even further.
+is to use a Rust-based version, R purely as an interface, and accelerate the 
+algorithm even further.
 
 ```{r}
 #| label: setup
@@ -95,25 +96,24 @@ ggplot(
 
 PCA does an okay job here; however, several of the clusters are clearly mixed.
 The separation likely occurs with different combination of the PCs, but let's
-see what UMAP can do here on just two dimensions.
+see what UMAP can do here on just two dimensions. We will start using the
+traditional stochastic gradient descent approach like in the original work
+and look at other (faster) optimisers later.
 
 ```{r}
 #| label: clustered data - umap
 
-# we are going to use the SGD optimiser on this small data set.
-# the parallelised Adam optimiser ala uwot::umap2 will be shown later.
 umap_clusters <- umap(
   data = cluster_data$data,
-  nn_method = "exhaustive",
+  knn_method = "balltree", # fast for small data sets
+  min_dist = 0.3, # for sgd lower min dist is usually better
   umap_params = params_umap(optimiser = "sgd"),
-  min_dist = 0.5,
-  k = 10L
+  k = 15L
 )
 
 umap_clustered_df <- as.data.frame(umap_clusters) %>%
   `colnames<-`(c("UMAP1", "UMAP2")) %>%
   dplyr::mutate(cluster = as.factor(cluster_data$membership))
-
 
 ggplot(
   data = umap_clustered_df,
@@ -159,10 +159,10 @@ PCA clearly captures the Swissrole structure. How does UMAP perform here ... ?
 
 umap_swissrole <- umap(
   data = swissrole_data$data,
-  nn_method = "exhaustive",
+  knn_method = "exhaustive",
+  min_dist = 0.3,
   umap_params = params_umap(optimiser = "sgd"),
-  min_dist = 0.5,
-  k = 10L
+  k = 10L # reduced because smaller
 )
 
 umap_swissrole_df <- as.data.frame(umap_swissrole) %>%
@@ -186,7 +186,7 @@ ggplot(
 
 UMAP rips apart the swiss role structure. Due to the nature of the loss, it is
 not a great algorithm for data with a continuum-type manifold. This is also
-apparent in the trajectory type data:
+apparent in the trajectory type data, see below:
 
 ### Trajectory
 
@@ -220,10 +220,9 @@ We can appreciate the branching and the continuum in the data.
 
 umap_trajectory <- umap(
   data = trajectory_data$data,
-  nn_method = "exhaustive",
+  knn_method = "exhaustive",
   umap_params = params_umap(optimiser = "sgd"),
-  min_dist = 0.5,
-  k = 10L
+  min_dist = 0.3
 )
 
 umap_trajectory_df <- as.data.frame(umap_trajectory) %>%
@@ -237,13 +236,76 @@ ggplot(
   ],
   mapping = aes(x = UMAP1, y = UMAP2)
 ) +
-  geom_point(mapping = aes(colour = branch), alpha = 0.5, size = 0.25) +
+  geom_point(
+    mapping = aes(colour = branch), 
+    alpha = 0.5, 
+    size = 0.25
+  ) +
   theme_bw() +
   scale_colour_viridis_c(option = "mako")
 ```
 
 While the structure is kinda kept and one can see some type of trajectory, the
 clearness of the PCA is lost here.
+
+## Using pre-computed kNN parameters
+
+As you have a range of parameters you might wish to test (while keeping the
+number of neighbours constant), you can also provide the NearestNeighbour
+class to the algorithm, see below:
+
+```{r}
+#| label: umap - use pre-computed kNN
+
+precomputed_knn <- generate_knn_graph(
+  data = cluster_data$data,
+  k = 15L,
+  knn_method = "balltree",
+  .verbose = FALSE
+)
+
+umap_clusters_from_knn <- umap(
+  data = cluster_data$data,
+  knn = precomputed_knn,
+  umap_params = params_umap(optimiser = "sgd"),
+  k = 15L
+)
+
+umap_clustered_from_knn_df <- as.data.frame(umap_clusters_from_knn) %>%
+  `colnames<-`(c("UMAP1", "UMAP2")) %>%
+  dplyr::mutate(cluster = as.factor(cluster_data$membership))
+
+ggplot(
+  data = umap_clustered_from_knn_df,
+  mapping = aes(x = UMAP1, y = UMAP2)
+) +
+  geom_point(mapping = aes(colour = cluster), alpha = 0.5, size = 0.25) +
+  theme_bw()
+```
+
+Let's run quickly with different parameters
+
+```{r}
+#| label: umap - different parameters
+
+umap_clusters_from_knn <- umap(
+  data = cluster_data$data,
+  knn = precomputed_knn,
+  umap_params = params_umap(optimiser = "sgd"),
+  k = 15L
+)
+
+umap_clustered_from_knn_df <- as.data.frame(umap_clusters_from_knn) %>%
+  `colnames<-`(c("UMAP1", "UMAP2")) %>%
+  dplyr::mutate(cluster = as.factor(cluster_data$membership))
+
+ggplot(
+  data = umap_clustered_from_knn_df,
+  mapping = aes(x = UMAP1, y = UMAP2)
+) +
+  geom_point(mapping = aes(colour = cluster), alpha = 0.5, size = 0.25) +
+  theme_bw()
+```
 
 ## UMAP speed and optimisers
 
@@ -257,16 +319,13 @@ fast. Let's check out the other optimisers:
 
 umap_clusters <- umap(
   data = cluster_data$data,
-  nn_method = "exhaustive",
-  umap_params = params_umap(optimiser = "adam"),
-  min_dist = 0.35,
-  k = 10L
+  knn_method = "balltree",
+  umap_params = params_umap(optimiser = "adam")
 )
 
 umap_clustered_df <- as.data.frame(umap_clusters) %>%
   `colnames<-`(c("UMAP1", "UMAP2")) %>%
   dplyr::mutate(cluster = as.factor(cluster_data$membership))
-
 
 ggplot(
   data = umap_clustered_df,
@@ -284,9 +343,8 @@ But let's look at the fast version... Parallised Adam (the default):
 
 umap_clusters <- umap(
   data = cluster_data$data,
-  nn_method = "exhaustive",
-  min_dist = 0.35,
-  k = 10L
+  min_dist = 0.5, # also here, bigger min_dist
+  knn_method = "balltree"
 )
 
 umap_clustered_df <- as.data.frame(umap_clusters) %>%
@@ -298,7 +356,11 @@ ggplot(
   data = umap_clustered_df,
   mapping = aes(x = UMAP1, y = UMAP2)
 ) +
-  geom_point(mapping = aes(colour = cluster), alpha = 0.5, size = 0.25) +
+  geom_point(
+    mapping = aes(colour = cluster), 
+    alpha = 0.5, 
+    size = 0.25
+  ) +
   theme_bw()
 ```
 
@@ -333,10 +395,11 @@ microbenchmark::microbenchmark(
   uwot_v2 = {
     uwot::umap2(X = benchmark_data$data)
   },
+  # the manifolds version
   manifold = {
     umap(
       data = benchmark_data$data,
-      nn_method = "balltree", # small dataset, balltree works well...
+      knn_method = "balltree", 
       k = 15L,
       .verbose = FALSE
     ) 

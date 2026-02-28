@@ -22,7 +22,7 @@
 #' @param data Numeric matrix. The embedding or feature matrix to compute
 #' neighbours on. Rows are observations, columns are features.
 #' @param k Integer. The number of nearest neighbours to compute.
-#' @param ann_method Character. The algorithm to use for nearest neighbour
+#' @param knn_method Character. The algorithm to use for nearest neighbour
 #' search. One of `c("hnsw", "annoy", "nndescent", "balltree", "exhaustive")`.
 #' Defaults to `"hnsw"`.
 #' @param nn_params List. Output of [manifoldsR::params_nn()]. Controls
@@ -37,18 +37,18 @@
 generate_knn_graph <- function(
   data,
   k,
-  ann_method = c("hnsw", "annoy", "nndescent", "balltree", "exhaustive"),
+  knn_method = c("hnsw", "annoy", "nndescent", "balltree", "exhaustive"),
   nn_params = params_nn(),
   seed = 42L,
   .verbose = TRUE
 ) {
-  ann_method <- match.arg(ann_method)
+  knn_method <- match.arg(knn_method)
 
   # checks
   checkmate::assertMatrix(data, mode = "numeric")
   checkmate::qassert(k, "I1")
   checkmate::assertChoice(
-    ann_method,
+    knn_method,
     c("hnsw", "annoy", "nndescent", "balltree", "exhaustive")
   )
   assertNnParams(nn_params)
@@ -59,7 +59,7 @@ generate_knn_graph <- function(
   nn_data <- rs_approx_nearest_neighbours(
     data = data,
     k = k,
-    ann_method = ann_method,
+    ann_method = knn_method,
     ann_params = nn_params,
     seed = seed,
     verbose = .verbose

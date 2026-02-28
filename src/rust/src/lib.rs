@@ -23,6 +23,7 @@ extendr_module! {
     fn rs_umap;
     fn rs_umap_from_knn;
     fn rs_tsne;
+    fn rs_tsne_from_knn;
     fn rs_phate;
     fn rs_approx_nearest_neighbours;
     fn rs_data_swiss_role;
@@ -83,7 +84,8 @@ fn rs_umap(
 
 /// UMAP implementation
 ///
-/// @description This is the wrapper function into the Rust interface for UMAP.
+/// @description This is the wrapper function into the Rust interface for UMAP
+/// and can use a pre-computed kNN.
 ///
 /// @param embd Numerical matrix. The data to use to generate the embeddings.
 /// Should be of dimensions samples x features.
@@ -171,6 +173,60 @@ fn rs_tsne(
 
     let res = tsne_simple(
         embd.as_ref(),
+        None,
+        n_dim,
+        &approx_type,
+        perplexity as f32,
+        tsne_params,
+        seed,
+        verbose,
+    );
+
+    faer_to_r_matrix(res.as_ref())
+}
+
+/// tSNE implementation
+///
+/// @description This is the wrapper function into the Rust interface for tSNE.
+/// You have the option to use the Barnes-Hut implemetation or the
+/// FFT-accelerated version to approximate the repulsive forces. This one
+/// can use a pre-computed kNN.
+///
+/// @param embd Numerical matrix. The data to use to generate the embeddings.
+/// Should be of dimensions samples x features.
+/// @param knn_data `NearestNeighbours` class from R.
+/// @param n_dim Integer. Number of tSNE dimensions to return. Needs to be two,
+/// others are not supported.
+/// @param perplexity Numeric. The tSNE perplexity parameter.
+/// @param approx_type String. One of `c("fft", "bh")`. Which of the two
+/// approximations to use.
+/// @param tsne_params Named list. List that contains all of the key parameters
+/// for the tSNE generation.
+/// @param seed Integer. Seed for reproducibility.
+/// @param verbose Boolean. Controls verbosity of the function.
+///
+/// @return The tSNE embeddings.
+///
+/// @export
+#[extendr]
+#[allow(clippy::too_many_arguments)]
+fn rs_tsne_from_knn(
+    embd: RMatrix<f64>,
+    knn_data: List,
+    n_dim: usize,
+    perplexity: f64,
+    approx_type: String,
+    tsne_params: List,
+    seed: usize,
+    verbose: bool,
+) -> RMatrix<f64> {
+    let embd = r_matrix_to_faer_fp32(&embd);
+
+    let knn = nearest_neighbours_to_rust(knn_data);
+
+    let res = tsne_simple(
+        embd.as_ref(),
+        knn,
         n_dim,
         &approx_type,
         perplexity as f32,

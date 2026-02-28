@@ -134,3 +134,58 @@ params_umap <- function(
     randomised = randomised
   )
 }
+
+## tsne ------------------------------------------------------------------------
+
+#' Wrapper function to generate t-SNE parameters
+#'
+#' @param lr Numeric. Learning rate. Defaults to `200.0`.
+#' @param n_epochs Integer. Number of optimisation epochs. Defaults to `1000L`.
+#' @param early_exag_iter Integer. Number of early exaggeration iterations.
+#' Defaults to `250L`.
+#' @param early_exag_factor Numeric. Early exaggeration factor. Defaults to
+#' `12.0`.
+#' @param theta Numeric. Barnes-Hut approximation angle. Lower values increase
+#' accuracy at the cost of speed. Defaults to `0.5`.
+#' @param n_interp_points Integer. Number of interpolation points per grid cell
+#' for FFT acceleration. Defaults to `3L`.
+#' @param init Character. Embedding initialisation method. One of `"spectral"`,
+#' `"pca"`, or `"random"`. Defaults to `"pca"`.
+#' @param randomised Logical. Use randomised SVD for PCA initialisation.
+#' Defaults to `TRUE`.
+#'
+#' @returns A list with the t-SNE parameters.
+#'
+#' @export
+params_tsne <- function(
+  lr = 200.0,
+  n_epochs = 1000L,
+  early_exag_iter = 250L,
+  early_exag_factor = 12.0,
+  theta = 0.5,
+  n_interp_points = 3L,
+  init = "pca",
+  randomised = TRUE
+) {
+  # checks
+  checkmate::qassert(lr, "N1")
+  checkmate::qassert(n_epochs, "I1[1,)")
+  checkmate::qassert(early_exag_iter, "I1[1,)")
+  checkmate::qassert(early_exag_factor, "N1")
+  checkmate::qassert(theta, "N1[0,1]")
+  checkmate::qassert(n_interp_points, "I1[1,)")
+  checkmate::assertChoice(init, c("spectral", "pca", "random"))
+  checkmate::qassert(randomised, "B1")
+
+  # return
+  list(
+    lr = lr,
+    n_epochs = n_epochs,
+    early_exag_iter = early_exag_iter,
+    early_exag_factor = early_exag_factor,
+    theta = theta,
+    n_interp_points = n_interp_points,
+    init = init,
+    randomised = randomised
+  )
+}

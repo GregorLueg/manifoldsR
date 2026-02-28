@@ -32,7 +32,8 @@ rs_umap <- function(embd, n_dim, min_dist, spread, k, umap_params, seed, verbose
 
 #' UMAP implementation
 #'
-#' @description This is the wrapper function into the Rust interface for UMAP.
+#' @description This is the wrapper function into the Rust interface for UMAP
+#' and can use a pre-computed kNN.
 #'
 #' @param embd Numerical matrix. The data to use to generate the embeddings.
 #' Should be of dimensions samples x features.
@@ -73,6 +74,31 @@ rs_umap_from_knn <- function(embd, knn_data, n_dim, min_dist, spread, k, umap_pa
 #'
 #' @export
 rs_tsne <- function(embd, n_dim, perplexity, approx_type, tsne_params, seed, verbose) .Call(wrap__rs_tsne, embd, n_dim, perplexity, approx_type, tsne_params, seed, verbose)
+
+#' tSNE implementation
+#'
+#' @description This is the wrapper function into the Rust interface for tSNE.
+#' You have the option to use the Barnes-Hut implemetation or the
+#' FFT-accelerated version to approximate the repulsive forces. This one
+#' can use a pre-computed kNN.
+#'
+#' @param embd Numerical matrix. The data to use to generate the embeddings.
+#' Should be of dimensions samples x features.
+#' @param knn_data `NearestNeighbours` class from R.
+#' @param n_dim Integer. Number of tSNE dimensions to return. Needs to be two,
+#' others are not supported.
+#' @param perplexity Numeric. The tSNE perplexity parameter.
+#' @param approx_type String. One of `c("fft", "bh")`. Which of the two
+#' approximations to use.
+#' @param tsne_params Named list. List that contains all of the key parameters
+#' for the tSNE generation.
+#' @param seed Integer. Seed for reproducibility.
+#' @param verbose Boolean. Controls verbosity of the function.
+#'
+#' @return The tSNE embeddings.
+#'
+#' @export
+rs_tsne_from_knn <- function(embd, knn_data, n_dim, perplexity, approx_type, tsne_params, seed, verbose) .Call(wrap__rs_tsne_from_knn, embd, knn_data, n_dim, perplexity, approx_type, tsne_params, seed, verbose)
 
 #' @export
 rs_phate <- function(embd, n_dim, k, phate_params, seed, verbose) .Call(wrap__rs_phate, embd, n_dim, k, phate_params, seed, verbose)

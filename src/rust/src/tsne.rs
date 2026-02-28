@@ -156,8 +156,10 @@ fn get_params_tsne_optim(r_list: List) -> TsneOptimParams<f32> {
 /// ### Returns
 ///
 /// t-SNE embeddings as matrix
+#[allow(clippy::too_many_arguments)]
 pub fn tsne_simple(
     data: MatRef<f32>,
+    pre_computed_knn: PreComputedKnn<f32>,
     n_dim: usize,
     approx_type: &str,
     perplexity: f32,
@@ -183,7 +185,14 @@ pub fn tsne_simple(
         init_range: Some(1e-4),
     };
 
-    let res = tsne(data, None, &tsne_params, approx_type, seed, verbose);
+    let res = tsne(
+        data,
+        pre_computed_knn,
+        &tsne_params,
+        approx_type,
+        seed,
+        verbose,
+    );
 
     let ncol = res.len();
     let nrow = res[0].len();

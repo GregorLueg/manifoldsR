@@ -41,5 +41,6 @@ for the UMAP generation.}
 The UMAP embeddings.
 }
 \description{
-This is the wrapper function into the Rust interface for UMAP.
+This is the wrapper function into the Rust interface for UMAP
+and can use a pre-computed kNN.
 }

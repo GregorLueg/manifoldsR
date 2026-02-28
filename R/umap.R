@@ -7,7 +7,7 @@
 #' @param n Integer. Number of samples in the data set
 #' @param min_dist Numeric. Minimum distance between embedded points.
 #' @param spread Numeric. Effective scale of embedded points.
-#' @param nn_method String. Method to use to generate the kNN graph.
+#' @param knn_method String. Method to use to generate the kNN graph.
 #' @param nn_params Named list. The nearest neighbour search parameters.
 #' @param umap_params Named list. The UMAP-specific parameters.
 #' @param .verbose Boolean. Controls verbosity
@@ -19,7 +19,7 @@
   n,
   min_dist,
   spread,
-  nn_method,
+  knn_method,
   nn_params,
   umap_params,
   .verbose = TRUE
@@ -29,7 +29,7 @@
   checkmate::qassert(min_dist, "N1")
   checkmate::qassert(spread, "N1")
   checkmate::assertChoice(
-    nn_method,
+    knn_method,
     c("hnsw", "annoy", "nndescent", "balltree", "exhaustive")
   )
   assertNnParams(nn_params)
@@ -39,7 +39,7 @@
   final_params <- c(nn_params, umap_params)
   final_params[["min_dist"]] <- min_dist
   final_params[["spread"]] <- spread
-  final_params[["knn_method"]] <- nn_method
+  final_params[["knn_method"]] <- knn_method
 
   # determine n_epochs if not specified
   if (is.null(final_params$n_epochs)) {
@@ -93,10 +93,11 @@
 #' preserved. Defaults to `15L`.
 #' @param min_dist Numeric. Minimum distance between points in the embedding.
 #' Controls how tightly points are packed. Smaller values result in more
-#' clustered embeddings. Must be >= 0. Defaults to `0.5`.
+#' clustered embeddings. Must be >= 0. Defaults to `0.5`. If you use SGD,
+#' consider reducing this!
 #' @param spread Numeric. Effective scale of embedded points. Determines the
 #' scale at which embedded points will be spread out. Defaults to `1.0`.
-#' @param nn_method Character. Approximate nearest neighbour algorithm to use.
+#' @param knn_method Character. Approximate nearest neighbour algorithm to use.
 #' One of `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, or
 #' `"exhaustive"`. Defaults to `"hnsw"`.
 #' @param nn_params Named list. Nearest neighbour search parameters, see
@@ -115,19 +116,19 @@ umap <- function(
   knn = NULL,
   n_dim = 2L,
   k = 15L,
-  min_dist = 0.35,
+  min_dist = 0.5,
   spread = 1.0,
-  nn_method = c("hnsw", "annoy", "nndescent", "balltree", "exhaustive"),
+  knn_method = c("hnsw", "annoy", "nndescent", "balltree", "exhaustive"),
   nn_params = params_nn(),
   umap_params = params_umap(),
   seed = 42L,
   .verbose = TRUE
 ) {
-  # input validation
+  # transformation
   if (is.data.frame(data)) {
     data <- as.matrix(data)
   }
-  nn_method <- match.arg(nn_method)
+  knn_method <- match.arg(knn_method)
 
   checkmate::assert_matrix(
     data,
@@ -151,7 +152,7 @@ umap <- function(
     n = nrow(data),
     min_dist = min_dist,
     spread = spread,
-    nn_method = nn_method,
+    knn_method = knn_method,
     nn_params = nn_params,
     umap_params = umap_params,
     .verbose = .verbose
@@ -164,7 +165,7 @@ umap <- function(
     }
     tryCatch(
       {
-        result <- rs_umap_from_knn(
+        rs_umap_from_knn(
           embd = data,
           knn_data = knn,
           n_dim = n_dim,
@@ -175,7 +176,6 @@ umap <- function(
           seed = seed,
           verbose = .verbose
         )
-        return(result)
       },
       error = function(e) {
         stop("UMAP computation failed: ", e$message, call. = FALSE)
@@ -184,7 +184,7 @@ umap <- function(
   } else {
     tryCatch(
       {
-        result <- rs_umap(
+        rs_umap(
           embd = data,
           n_dim = n_dim,
           min_dist = min_dist,
@@ -194,7 +194,6 @@ umap <- function(
           seed = seed,
           verbose = .verbose
         )
-        return(result)
       },
       error = function(e) {
         stop("UMAP computation failed: ", e$message, call. = FALSE)

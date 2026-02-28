@@ -1,6 +1,10 @@
 # manifoldsR
 
-Fast manifold learning methods implemented in Rust with R bindings.
+![r_package](https://img.shields.io/badge/R_package-0.0.1.3-orange) 
+<!-- [![CI](https://github.com/GregorLueg/genewalkR/actions/workflows/R-cmd-check.yml/badge.svg)](https://github.com/GregorLueg/genewalkR/actions/workflows/R-cmd-check.yml) -->
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+**Fast(!)** manifold learning methods implemented in Rust with R bindings.
 
 ## Overview
 

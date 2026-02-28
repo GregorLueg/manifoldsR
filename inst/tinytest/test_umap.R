@@ -7,7 +7,7 @@ source("./utils_test.R")
 zeallot::`%<-%`(
   c(cluster_data, cluster_membership),
   rs_data_clusters(
-    n_samples = 100L,
+    n_samples = 1000L,
     dim = 32L,
     n_clusters = 3L,
     seed = 42L
@@ -21,7 +21,7 @@ cluster_data_df <- as.data.frame(cluster_data)
 exhaustive <- generate_knn_graph(
   data = cluster_data,
   k = 5L,
-  ann_method = "exhaustive"
+  knn_method = "exhaustive"
 )
 
 # tests ------------------------------------------------------------------------
@@ -78,7 +78,7 @@ umap_res_sgd <- umap(
   data = cluster_data,
   k = 5L,
   umap_params = params_umap(optimiser = "sgd"),
-  .verbose = FALSE
+  .verbose = TRUE
 )
 
 umap_res_tests_sgd <- check_cluster_separation(
