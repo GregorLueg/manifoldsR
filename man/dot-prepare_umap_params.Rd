@@ -35,3 +35,4 @@ Returns the list of final parameters.
 \description{
 Internal helper to prepare the UMAP parameters
 }
+\keyword{internal}

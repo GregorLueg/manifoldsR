@@ -144,6 +144,8 @@ get_dist_flat.NearestNeighbours <- function(x) {
 #' @returns The dimensions of the `NearestNeigbour` matrix.
 #'
 #' @export
+#'
+#' @keywords internal
 dim.NearestNeighbours <- function(x) {
   c(x$n, x$k)
 }
@@ -156,6 +158,8 @@ dim.NearestNeighbours <- function(x) {
 #' @returns Invisibly returns `x`.
 #'
 #' @export
+#'
+#' @keywords internal
 print.NearestNeighbours <- function(x, ...) {
   cat("NearestNeighbours\n")
   cat("  n_samples:   ", x$n, "\n")

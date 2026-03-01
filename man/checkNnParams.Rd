@@ -16,3 +16,4 @@ checkNnParams(x)
 Checkmate extension for checking the nearest neighbour
 parameters.
 }
+\keyword{internal}

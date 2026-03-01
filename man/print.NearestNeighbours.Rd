@@ -17,3 +17,4 @@ Invisibly returns \code{x}.
 \description{
 Print a NearestNeighbours object
 }
+\keyword{internal}

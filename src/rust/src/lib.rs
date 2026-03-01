@@ -29,6 +29,7 @@ extendr_module! {
     fn rs_data_swiss_role;
     fn rs_data_clusters;
     fn rs_data_trajectory;
+    fn rs_check_cluster_separation;
 }
 
 //////////
@@ -407,4 +408,45 @@ fn rs_approx_nearest_neighbours(
         k = k,
         n = data.nrows()
     ]
+}
+
+///////////
+// Utils //
+///////////
+
+/// Check cluster separation in an embedding
+///
+/// @param embd Numerical matrix. The embedding of shape samples x dims.
+/// @param cluster_membership Integer vector. Zero-indexed cluster labels.
+///
+/// @return A named list with `within_dists` and `between_dists`.
+///
+/// @export
+#[extendr]
+fn rs_check_cluster_separation(embd: RMatrix<f64>, cluster_membership: &[i32]) -> List {
+    let nrow = embd.nrows();
+    let ncol = embd.ncols();
+
+    let mut within_dists: Vec<f64> = Vec::new();
+    let mut between_dists: Vec<f64> = Vec::new();
+
+    for i in 0..nrow {
+        for j in (i + 1)..nrow {
+            let dist = (0..ncol)
+                .map(|c| {
+                    let d = embd[[i, c]] - embd[[j, c]];
+                    d * d
+                })
+                .sum::<f64>()
+                .sqrt();
+
+            if cluster_membership[i] == cluster_membership[j] {
+                within_dists.push(dist);
+            } else {
+                between_dists.push(dist);
+            }
+        }
+    }
+
+    list!(within_dists = within_dists, between_dists = between_dists)
 }

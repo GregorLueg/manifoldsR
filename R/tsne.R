@@ -12,6 +12,8 @@
 #' @return Returns the list of final parameters.
 #'
 #' @export
+#'
+#' @keywords internal
 .prepare_tsne_params <- function(
   knn_method,
   nn_params,

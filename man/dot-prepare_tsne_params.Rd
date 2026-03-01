@@ -21,3 +21,4 @@ Returns the list of final parameters.
 \description{
 Internal helper to prepare the t-SNE parameters
 }
+\keyword{internal}

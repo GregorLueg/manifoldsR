@@ -15,3 +15,4 @@ checkTsneParams(x)
 \description{
 Checkmate extension for checking the t-SNE parameters.
 }
+\keyword{internal}

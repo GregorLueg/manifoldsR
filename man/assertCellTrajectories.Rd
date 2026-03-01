@@ -31,3 +31,4 @@ Invisibly returns the checked object if the assertion is successful.
 Checkmate extension for asserting the cell trajectory
 parameters.
 }
+\keyword{internal}

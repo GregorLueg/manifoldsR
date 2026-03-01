@@ -184,5 +184,15 @@ rs_data_clusters <- function(n_samples, dim, n_clusters, seed) .Call(wrap__rs_da
 #' @export
 rs_data_trajectory <- function(n_samples, dim, topology, cell_trajectories, noise, seed) .Call(wrap__rs_data_trajectory, n_samples, dim, topology, cell_trajectories, noise, seed)
 
+#' Check cluster separation in an embedding
+#'
+#' @param embd Numerical matrix. The embedding of shape samples x dims.
+#' @param cluster_membership Integer vector. Zero-indexed cluster labels.
+#'
+#' @return A named list with `within_dists` and `between_dists`.
+#'
+#' @export
+rs_check_cluster_separation <- function(embd, cluster_membership) .Call(wrap__rs_check_cluster_separation, embd, cluster_membership)
+
 
 # nolint end

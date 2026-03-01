@@ -334,73 +334,42 @@ microbenchmark::microbenchmark(
 )
 ```
 
-The differences become even more pronounced on larger data sets...
+The impact here is massive already. Let's see what happens with BH and FFT?
 
 ```{r}
 #| label: benchmark - larger
-#| eval: !expr requireNamespace("microbenchmark", quietly = TRUE) && requireNamespace("Rtsne", quietly = TRUE)
+#| eval: !expr requireNamespace("microbenchmark", quietly = TRUE) && .Platform$OS.type == "unix"
 
 benchmark_data_large <- manifold_synthetic_data(
   type = "cluster",
-  n_samples = 25000L 
+  n_samples = 50000L 
 )
 
-if (.Platform$OS.type == "unix") {
-  # let's run FFT if possible...
-  microbenchmark::microbenchmark(
-    Rtsne = {
-      Rtsne::Rtsne(
-        X = benchmark_data_large$data,
-        dims = 2,
-        perplexity = 30,
-        verbose = FALSE
-      )
-    },
-    manifold_bh = {
-      tsne(
-        data = benchmark_data_large$data,
-        perplexity = 30,
-        approx_type = "bh",
-        seed = 42L,
-        .verbose = FALSE
-      )
-    },
-    manifold_fft = {
-      tsne(
-        data = benchmark_data_large$data,
-        perplexity = 30,
-        approx_type = "fft",
-        seed = 42L,
-        .verbose = FALSE
-      )
-    },
-    times = 1L
-  )
-} else {
-  microbenchmark::microbenchmark(
-    Rtsne = {
-      Rtsne::Rtsne(
-        X = benchmark_data_large$data,
-        dims = 2,
-        perplexity = 30,
-        verbose = FALSE
-      )
-    },
-    manifold_bh = {
-      tsne(
-        data = benchmark_data_large$data,
-        perplexity = 30,
-        approx_type = "bh",
-        seed = 42L,
-        .verbose = FALSE
-      )
-    },
-    times = 1L
-  )
-}
+microbenchmark::microbenchmark(
+  manifold_bh = {
+    tsne(
+      data = benchmark_data_large$data,
+      perplexity = 30,
+      approx_type = "bh",
+      seed = 42L,
+      .verbose = FALSE
+    )
+  },
+  manifold_fft = {
+    tsne(
+      data = benchmark_data_large$data,
+      perplexity = 30,
+      approx_type = "fft",
+      seed = 42L,
+      .verbose = FALSE
+    )
+  },
+  times = 1L
+)
 ```
 
 The speed advantage of the Rust implementation comes from a combination of
 optimised memory layout, aggressive inlining, and the fact that the entire
 pipeline — kNN construction, probability computation, and gradient descent —
-runs within the Rust kernel without round-tripping through R.
+runs within the Rust kernel without round-tripping through R. If you like
+tSNE, but thought it's too slow... we got you.

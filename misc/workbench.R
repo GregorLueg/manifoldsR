@@ -313,3 +313,26 @@ if (.Platform$OS.type == "unix") {
     times = 1L
   )
 }
+
+# let's run FFT if possible...
+microbenchmark::microbenchmark(
+  manifold_bh = {
+    tsne(
+      data = benchmark_data_large$data,
+      perplexity = 30,
+      approx_type = "bh",
+      seed = 42L,
+      .verbose = FALSE
+    )
+  },
+  manifold_fft = {
+    tsne(
+      data = benchmark_data_large$data,
+      perplexity = 30,
+      approx_type = "fft",
+      seed = 42L,
+      .verbose = FALSE
+    )
+  },
+  times = 1L
+)

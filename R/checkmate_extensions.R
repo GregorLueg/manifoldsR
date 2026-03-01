@@ -19,6 +19,8 @@
 #' All three vectors must be of equal length.
 #'
 #' @return `TRUE` if the check was successful, otherwise an error message.
+#'
+#' @keywords internal
 checkCellTrajectories <- function(x) {
   res <- checkmate::checkList(x)
   if (!isTRUE(res)) {
@@ -62,6 +64,8 @@ checkCellTrajectories <- function(x) {
 #' [checkmate::makeAssertCollection()].
 #'
 #' @return Invisibly returns the checked object if the assertion is successful.
+#'
+#' @keywords internal
 assertCellTrajectories <- checkmate::makeAssertionFunction(
   checkCellTrajectories
 )
@@ -76,6 +80,8 @@ assertCellTrajectories <- checkmate::makeAssertionFunction(
 #' @param x The list to check.
 #'
 #' @return `TRUE` if the check was successful, otherwise an error message.
+#'
+#' @keywords internal
 checkNnParams <- function(x) {
   res <- checkmate::checkList(x)
   if (!isTRUE(res)) {
@@ -153,6 +159,8 @@ checkNnParams <- function(x) {
 #' [checkmate::makeAssertCollection()].
 #'
 #' @return Invisibly returns the checked object if the assertion is successful.
+#'
+#' @keywords internal
 assertNnParams <- checkmate::makeAssertionFunction(checkNnParams)
 
 ## umap ------------------------------------------------------------------------
@@ -164,6 +172,8 @@ assertNnParams <- checkmate::makeAssertionFunction(checkNnParams)
 #' @param x The list to check.
 #'
 #' @return `TRUE` if the check was successful, otherwise an error message.
+#'
+#' @keywords internal
 checkUmapParams <- function(x) {
   res <- checkmate::checkList(x)
   if (!isTRUE(res)) {
@@ -247,6 +257,8 @@ checkUmapParams <- function(x) {
 #' [checkmate::makeAssertCollection()].
 #'
 #' @return Invisibly returns the checked object if the assertion is successful.
+#'
+#' @keywords internal
 assertUmapParams <- checkmate::makeAssertionFunction(checkUmapParams)
 
 ## tsne ------------------------------------------------------------------------
@@ -258,6 +270,8 @@ assertUmapParams <- checkmate::makeAssertionFunction(checkUmapParams)
 #' @param x The list to check.
 #'
 #' @return `TRUE` if the check was successful, otherwise an error message.
+#'
+#' @keywords internal
 checkTsneParams <- function(x) {
   res <- checkmate::checkList(x)
   if (!isTRUE(res)) {
@@ -326,4 +340,6 @@ checkTsneParams <- function(x) {
 #' [checkmate::makeAssertCollection()].
 #'
 #' @return Invisibly returns the checked object if the assertion is successful.
+#'
+#' @keywords internal
 assertTsneParams <- checkmate::makeAssertionFunction(checkTsneParams)

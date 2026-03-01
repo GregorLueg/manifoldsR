@@ -15,3 +15,4 @@ checkUmapParams(x)
 \description{
 Checkmate extension for checking the UMAP parameters.
 }
+\keyword{internal}

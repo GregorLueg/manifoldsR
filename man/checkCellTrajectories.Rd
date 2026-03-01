@@ -25,3 +25,4 @@ All three vectors must be of equal length.}
 Checkmate extension for checking the cell trajectory
 parameters.
 }
+\keyword{internal}

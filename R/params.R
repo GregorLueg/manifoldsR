@@ -24,6 +24,8 @@
 #' @returns A list with the nearest neighbour parameters.
 #'
 #' @export
+#'
+#'
 params_nn <- function(
   dist_metric = "cosine",
   n_tree = 50L,

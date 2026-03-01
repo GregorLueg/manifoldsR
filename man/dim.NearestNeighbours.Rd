@@ -15,3 +15,4 @@ The dimensions of the \code{NearestNeigbour} matrix.
 \description{
 Dimensions of a NearestNeighbours object
 }
+\keyword{internal}

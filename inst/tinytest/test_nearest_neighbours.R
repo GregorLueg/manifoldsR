@@ -22,7 +22,7 @@ zeallot::`%<-%`(
 exhaustive <- generate_knn_graph(
   data = cluster_data,
   k = n_neighbours,
-  ann_method = "exhaustive"
+  knn_method = "exhaustive"
 )
 
 expect_equal(

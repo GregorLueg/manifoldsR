@@ -44,3 +44,4 @@ Suggests:
     umap,
     uwot
 VignetteBuilder: quarto
+URL: https://gregorlueg.github.io/manifoldsR/

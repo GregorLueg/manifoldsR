@@ -2,12 +2,14 @@
 
 source("./utils_test.R")
 
+n_samples <- 100L
+
 ## synthetic data --------------------------------------------------------------
 
 zeallot::`%<-%`(
   c(cluster_data, cluster_membership),
   rs_data_clusters(
-    n_samples = 1000L,
+    n_samples = n_samples,
     dim = 32L,
     n_clusters = 3L,
     seed = 42L
@@ -33,7 +35,7 @@ exhaustive <- generate_knn_graph(
 umap_res <- umap(data = cluster_data, k = 5L, .verbose = FALSE)
 
 umap_res_tests <- check_cluster_separation(
-  umap_res = umap_res,
+  embd = umap_res,
   cluster_membership = cluster_membership
 )
 
@@ -42,7 +44,7 @@ expect_true(
     x = umap_res,
     mode = "numeric",
     ncols = 2L,
-    nrow = 100L
+    nrow = n_samples
   ),
   info = "umap result correctly returned"
 )
@@ -78,11 +80,11 @@ umap_res_sgd <- umap(
   data = cluster_data,
   k = 5L,
   umap_params = params_umap(optimiser = "sgd"),
-  .verbose = TRUE
+  .verbose = FALSE
 )
 
 umap_res_tests_sgd <- check_cluster_separation(
-  umap_res = umap_res_sgd,
+  embd = umap_res_sgd,
   cluster_membership = cluster_membership
 )
 
@@ -91,7 +93,7 @@ expect_true(
     x = umap_res_sgd,
     mode = "numeric",
     ncols = 2L,
-    nrow = 100L
+    nrow = n_samples
   ),
   info = "umap result correctly returned (sgd also working)"
 )
@@ -112,7 +114,7 @@ umap_res_adam <- umap(
 )
 
 umap_res_tests_adam <- check_cluster_separation(
-  umap_res = umap_res_adam,
+  embd = umap_res_adam,
   cluster_membership = cluster_membership
 )
 
@@ -121,7 +123,7 @@ expect_true(
     x = umap_res_adam,
     mode = "numeric",
     ncols = 2L,
-    nrow = 100L
+    nrow = n_samples
   ),
   info = "umap result correctly returned (adam also working)"
 )
@@ -140,7 +142,7 @@ prep_adam_parallel <- .prepare_umap_params(
   n = 5000L,
   min_dist = 0.1,
   spread = 1.0,
-  nn_method = "hnsw",
+  knn_method = "hnsw",
   nn_params = params_nn(),
   umap_params = params_umap(optimiser = "adam_parallel"),
   .verbose = FALSE
@@ -156,7 +158,7 @@ prep_sgd_small <- .prepare_umap_params(
   n = 5000L,
   min_dist = 0.1,
   spread = 1.0,
-  nn_method = "hnsw",
+  knn_method = "hnsw",
   nn_params = params_nn(),
   umap_params = params_umap(optimiser = "sgd"),
   .verbose = FALSE
@@ -172,7 +174,7 @@ prep_sgd_large <- .prepare_umap_params(
   n = 20000L,
   min_dist = 0.1,
   spread = 1.0,
-  nn_method = "hnsw",
+  knn_method = "hnsw",
   nn_params = params_nn(),
   umap_params = params_umap(optimiser = "sgd"),
   .verbose = FALSE
@@ -188,7 +190,7 @@ prep_user_epochs <- .prepare_umap_params(
   n = 20000L,
   min_dist = 0.1,
   spread = 1.0,
-  nn_method = "hnsw",
+  knn_method = "hnsw",
   nn_params = params_nn(),
   umap_params = params_umap(n_epochs = 750L),
   .verbose = FALSE
@@ -211,7 +213,7 @@ prep_composed <- .prepare_umap_params(
   n = 100L,
   min_dist = 0.2,
   spread = 1.5,
-  nn_method = "annoy",
+  knn_method = "annoy",
   nn_params = params_nn(dist_metric = "euclidean", m = 32L),
   umap_params = params_umap(lr = 0.5, init = "pca"),
   .verbose = FALSE

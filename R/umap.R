@@ -15,6 +15,8 @@
 #' @return Returns the list of final parameters.
 #'
 #' @export
+#'
+#' @keywords internal
 .prepare_umap_params <- function(
   n,
   min_dist,
