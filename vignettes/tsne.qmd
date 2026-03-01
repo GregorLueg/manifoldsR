@@ -99,9 +99,9 @@ handles the clustered synthetic data. But first, let's check PCA...
 
 pca_clusters <- prcomp(cluster_data$data)
 
-pca_clusters_df <- as.data.frame(pca_clusters$x[, 1:2]) %>%
+pca_clusters_df <- as.data.table(pca_clusters$x[, 1:2]) %>%
   `colnames<-`(c("PC1", "PC2")) %>%
-  dplyr::mutate(cluster = as.factor(cluster_data$membership))
+  .[, cluster := as.factor(cluster_data$membership)]
 
 ggplot(
   data = pca_clusters_df,
@@ -123,9 +123,9 @@ tsne_clusters <- tsne(
   seed = 42L
 )
 
-tsne_clustered_df <- as.data.frame(tsne_clusters) %>%
+tsne_clustered_df <- as.data.table(tsne_clusters) %>%
   `colnames<-`(c("tSNE1", "tSNE2")) %>%
-  dplyr::mutate(cluster = as.factor(cluster_data$membership))
+  .[, cluster := as.factor(cluster_data$membership)]
 
 ggplot(
   data = tsne_clustered_df,
@@ -151,9 +151,9 @@ structure more. Similar to last UMAP, let's start with PCA:
 
 pca_swiss_role <- prcomp(swissrole_data$data)
 
-pca_swiss_role_df <- as.data.frame(pca_swiss_role$x[, 1:2]) %>%
+pca_swiss_role_df <- as.data.table(pca_swiss_role$x[, 1:2]) %>%
   `colnames<-`(c("PC1", "PC2")) %>%
-  dplyr::mutate(z_axis = swissrole_data$data[, 3])
+  .[, z_axis := swissrole_data$data[, 3]]
 
 ggplot(
   data = pca_swiss_role_df,
@@ -181,9 +181,9 @@ tsne_swissrole <- tsne(
   seed = 42L
 )
 
-tsne_swissrole_df <- as.data.frame(tsne_swissrole) %>%
+tsne_swissrole_df <- as.data.table(tsne_swissrole) %>%
   `colnames<-`(c("tSNE1", "tSNE2")) %>%
-  dplyr::mutate(z_axis = swissrole_data$data[, 3])
+  .[, z_axis := swissrole_data$data[, 3]]
 
 ggplot(
   data = tsne_swissrole_df,
@@ -213,9 +213,9 @@ Lastly, let's look at trajectory type data...
 
 pca_trajectory <- prcomp(trajectory_data$data)
 
-pca_trajectory_df <- as.data.frame(pca_trajectory$x[, 1:2]) %>%
+pca_trajectory_df <- as.data.table(pca_trajectory$x[, 1:2]) %>%
   `colnames<-`(c("PC1", "PC2")) %>%
-  dplyr::mutate(branch = trajectory_data$membership)
+  .[, branch := trajectory_data$membership]
 
 # will mix the labels to visualise the continuum better
 ggplot(
@@ -241,9 +241,9 @@ tsne_trajectory <- tsne(
   seed = 42L
 )
 
-tsne_trajectory_df <- as.data.frame(tsne_trajectory) %>%
+tsne_trajectory_df <- as.data.table(tsne_trajectory) %>%
   `colnames<-`(c("tSNE1", "tSNE2")) %>%
-  dplyr::mutate(branch = trajectory_data$membership)
+  .[, branch := trajectory_data$membership]
 
 ggplot(
   data = tsne_trajectory_df[
@@ -289,9 +289,9 @@ tsne_from_knn <- tsne(
   seed = 42L
 )
 
-tsne_from_knn_df <- as.data.frame(tsne_from_knn) %>%
+tsne_from_knn_df <- as.data.table(tsne_from_knn) %>%
   `colnames<-`(c("tSNE1", "tSNE2")) %>%
-  dplyr::mutate(cluster = as.factor(cluster_data$membership))
+  .[, cluster := as.factor(cluster_data$membership)]
 
 ggplot(
   data = tsne_from_knn_df,
@@ -315,9 +315,9 @@ tsne_from_knn_highperplex <- tsne(
   seed = 42L
 )
 
-tsne_from_knn_highperplex_df <- as.data.frame(tsne_from_knn_highperplex) %>%
+tsne_from_knn_highperplex_df <- as.data.table(tsne_from_knn_highperplex) %>%
   `colnames<-`(c("tSNE1", "tSNE2")) %>%
-  dplyr::mutate(cluster = as.factor(cluster_data$membership))
+  .[, cluster := as.factor(cluster_data$membership)]
 
 ggplot(
   data = tsne_from_knn_highperplex_df,
@@ -349,9 +349,9 @@ tsne_fft <- tsne(
   seed = 42L
 )
 
-tsne_fft_df <- as.data.frame(tsne_fft) %>%
+tsne_fft_df <- as.data.table(tsne_fft) %>%
   `colnames<-`(c("tSNE1", "tSNE2")) %>%
-  dplyr::mutate(cluster = as.factor(cluster_data$membership))
+  .[, cluster := as.factor(cluster_data$membership)]
 
 ggplot(
   data = tsne_fft_df,

@@ -63,7 +63,7 @@ phate_tree <- rs_phate(
 )
 tictoc::toc()
 
-phate_tree_df <- as.data.frame(phate_tree) %>%
+phate_tree_df <- as.data.table(phate_tree) %>%
   `colnames<-`(c("PHATE1", "PHATE2")) %>%
   dplyr::mutate(branch = as.factor(branch_membership))
 
@@ -87,7 +87,7 @@ phate_cluster <- rs_phate(
   verbose = TRUE
 )
 
-phate_cluster_df <- as.data.frame(phate_cluster) %>%
+phate_cluster_df <- as.data.table(phate_cluster) %>%
   `colnames<-`(c("PHATE1", "PHATE2")) %>%
   dplyr::mutate(branch = as.factor(cluster_membership))
 
@@ -113,7 +113,7 @@ phate_cluster <- rs_phate(
   verbose = TRUE
 )
 
-swissrole_df <- as.data.frame(phate_cluster) %>%
+swissrole_df <- as.data.table(phate_cluster) %>%
   `colnames<-`(c("PHATE1", "PHATE2")) %>%
   dplyr::mutate(z = swissrole[, 3])
 

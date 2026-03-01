@@ -25,6 +25,7 @@ structure and trajectories in high-dimensional data.
 library(manifoldsR)
 library(magrittr)
 library(ggplot2)
+library(data.table)
 ```
 
 ## Intro
@@ -102,9 +103,9 @@ let's start with PCA:
 
 pca_clusters <- prcomp(cluster_data$data)
 
-pca_clusters_df <- as.data.frame(pca_clusters$x[, 1:2]) %>%
+pca_clusters_df <- as.data.table(pca_clusters$x[, 1:2]) %>%
   `colnames<-`(c("PC1", "PC2")) %>%
-  dplyr::mutate(cluster = as.factor(cluster_data$membership))
+  .[, cluster := as.factor(cluster_data$membership))]
 
 ggplot(
   data = pca_clusters_df,
@@ -126,9 +127,9 @@ phate_clusters <- phate(
   seed = 42L
 )
 
-phate_clusters_df <- as.data.frame(phate_clusters) %>%
+phate_clusters_df <- as.data.table(phate_clusters) %>%
   `colnames<-`(c("PHATE1", "PHATE2")) %>%
-  dplyr::mutate(cluster = as.factor(cluster_data$membership))
+  .[, cluster := as.factor(cluster_data$membership)]
 
 ggplot(
   data = phate_clusters_df,
@@ -158,9 +159,9 @@ phate_swissrole <- phate(
   seed = 42L
 )
 
-phate_swissrole_df <- as.data.frame(phate_swissrole) %>%
+phate_swissrole_df <- as.data.table(phate_swissrole) %>%
   `colnames<-`(c("PHATE1", "PHATE2")) %>%
-  dplyr::mutate(z_axis = swissrole_data$data[, 3])
+  .[, z_axis := swissrole_data$data[, 3]]
 
 ggplot(
   data = phate_swissrole_df,
@@ -195,9 +196,9 @@ phate_trajectory <- phate(
   seed = 42L
 )
 
-phate_trajectory_df <- as.data.frame(phate_trajectory) %>%
+phate_trajectory_df <- as.data.table(phate_trajectory) %>%
   `colnames<-`(c("PHATE1", "PHATE2")) %>%
-  dplyr::mutate(branch = trajectory_data$membership)
+  .[, branch := trajectory_data$membership]
 
 ggplot(
   data = phate_trajectory_df[
@@ -240,9 +241,9 @@ phate_from_knn <- phate(
   seed = 42L
 )
 
-phate_from_knn_df <- as.data.frame(phate_from_knn) %>%
+phate_from_knn_df <- as.data.table(phate_from_knn) %>%
   `colnames<-`(c("PHATE1", "PHATE2")) %>%
-  dplyr::mutate(branch = trajectory_data$membership)
+  .[, branch := trajectory_data$membership)]
 
 ggplot(
   data = phate_from_knn_df[
@@ -269,9 +270,9 @@ phate_from_knn_fixed_t <- phate(
   seed = 42L
 )
 
-phate_from_knn_fixed_t_df <- as.data.frame(phate_from_knn_fixed_t) %>%
+phate_from_knn_fixed_t_df <- as.data.table(phate_from_knn_fixed_t) %>%
   `colnames<-`(c("PHATE1", "PHATE2")) %>%
-  dplyr::mutate(branch = trajectory_data$membership)
+  .[, branch := trajectory_data$membership]
 
 ggplot(
   data = phate_from_knn_fixed_t_df[
@@ -334,9 +335,9 @@ phate_landmark <- phate(
   seed = 42L
 )
 
-phate_landmark_df <- as.data.frame(phate_landmark) %>%
+phate_landmark_df <- as.data.table(phate_landmark) %>%
   `colnames<-`(c("PHATE1", "PHATE2")) %>%
-  dplyr::mutate(branch = large_trajectory$membership)
+  .[, branch := large_trajectory$membership]
 
 ggplot(
   data = phate_landmark_df[
@@ -370,7 +371,7 @@ phate_landmark <- phate(
   seed = 42L
 )
 
-phate_landmark_df <- as.data.frame(phate_landmark) %>%
+phate_landmark_df <- as.data.table(phate_landmark) %>%
   `colnames<-`(c("PHATE1", "PHATE2")) %>%
   dplyr::mutate(branch = large_trajectory$membership)
 

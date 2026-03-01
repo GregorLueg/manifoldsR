@@ -12,8 +12,6 @@
 \item{nn_params}{Named list. The nearest neighbour search parameters.}
 
 \item{tsne_params}{Named list. The t-SNE-specific parameters.}
-
-\item{.verbose}{Boolean. Controls verbosity.}
 }
 \value{
 Returns the list of final parameters.

@@ -413,8 +413,6 @@ fn rs_data_trajectory(
 
 /// Wrapper around some nearest neighbour searches integrated into manifold-rs
 ///
-/// ### Params
-///
 /// @param data Numeric matrix. Shape of samples x n_dim for which to get the
 /// (approximate) nearest neighbours
 /// @param k Integer. Number of neighbours to return
@@ -424,15 +422,15 @@ fn rs_data_trajectory(
 /// @param seed Integer. Seed for reproducibility
 /// @param verbose Boolean. Controls verbosity of the function.
 ///
-/// ### Returns
-///
-/// A list with the following elements
+/// @returns A list with the following elements
 /// \itemize{
 ///   \item indices - flat representation of the indices.
 ///   \item dist - flat representaitons of the distances.
 ///   \item k - number of neighbours.
 ///   \item n - number of samples.
 /// }
+///
+/// @export
 #[extendr]
 fn rs_approx_nearest_neighbours(
     data: RMatrix<f64>,

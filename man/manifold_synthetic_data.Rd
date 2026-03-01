@@ -28,21 +28,21 @@ defined ones via topology.
 \item{n_samples}{Integer. Number of data points to generate.}
 
 \item{dim}{Integer. Dimensionality of the data (used for \code{"clusters"} and
-\code{"tree"}).}
+\code{"trajectory"}).}
 
 \item{n_clusters}{Integer. Number of clusters (used for "clusters" type).
-Default is \code{10L}.}
+Default is \code{15L}.}
 
 \item{cell_trajectories}{Optional list. Named list to use to provide your
 own topology for the \code{"trajectory"} version.}
 
+\item{topology}{String. One of \code{c("bifurcation", "linear", "combination")}.
+If cell trajectories is not \code{NULL}, this will be ignored.}
+
 \item{noise}{Numeric. Amount of noise to add (used for \code{"swiss_role"} and
-\code{"tree"}). must be any non 0 positive value. Default is \code{0.2}.}
+\code{"tree"}). must be any non 0 positive value. Default is \code{0.1}.}
 
 \item{seed}{Integer. Seed for reproducibility.}
-
-\item{topology.}{String. One of \code{c("bifurcation", "linear", "combination")}.
-If cell trajectories is not \code{NULL}, this will be ignored.}
 }
 \value{
 A list with the following elements:
@@ -74,8 +74,8 @@ clusters <- manifold_synthetic_data(
   n_clusters = 5L
 )
 
-# Generate tree-like data
-tree <- manifold_synthetic_data(
+# Generate trajectory-like data
+trajectory <- manifold_synthetic_data(
   "trajectory",
   n_samples = 1000L,
   dim = 10L,

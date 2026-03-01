@@ -82,9 +82,9 @@ We will first contrast this against standard PCA to have some bases...
 
 pca_clusters <- prcomp(cluster_data$data)
 
-pca_clusters_df <- as.data.frame(pca_clusters$x[, 1:2]) %>%
+pca_clusters_df <- as.data.table(pca_clusters$x[, 1:2]) %>%
   `colnames<-`(c("PC1", "PC2")) %>%
-  dplyr::mutate(cluster = as.factor(cluster_data$membership))
+  .[, cluster := as.factor(cluster_data$membership)]
 
 ggplot(
   data = pca_clusters_df,
@@ -111,9 +111,9 @@ umap_clusters <- umap(
   k = 15L
 )
 
-umap_clustered_df <- as.data.frame(umap_clusters) %>%
+umap_clustered_df <- as.data.table(umap_clusters) %>%
   `colnames<-`(c("UMAP1", "UMAP2")) %>%
-  dplyr::mutate(cluster = as.factor(cluster_data$membership))
+  .[, cluster := as.factor(cluster_data$membership)]
 
 ggplot(
   data = umap_clustered_df,
@@ -134,9 +134,9 @@ SwissRole example.
 
 pca_swiss_role <- prcomp(swissrole_data$data)
 
-pca_swiss_role_df <- as.data.frame(pca_swiss_role$x[, 1:2]) %>%
+pca_swiss_role_df <- as.data.table(pca_swiss_role$x[, 1:2]) %>%
   `colnames<-`(c("PC1", "PC2")) %>%
-  dplyr::mutate(z_axis = swissrole_data$data[, 3])
+  .[, z_axis := swissrole_data$data[, 3]]
 
 ggplot(
   data = pca_swiss_role_df,
@@ -165,9 +165,9 @@ umap_swissrole <- umap(
   k = 10L # reduced because smaller
 )
 
-umap_swissrole_df <- as.data.frame(umap_swissrole) %>%
+umap_swissrole_df <- as.data.table(umap_swissrole) %>%
   `colnames<-`(c("UMAP1", "UMAP2")) %>%
-  dplyr::mutate(z_axis = swissrole_data$data[, 3])
+  .[, z_axis := swissrole_data$data[, 3]]
 
 
 ggplot(
@@ -197,9 +197,9 @@ Let's start with PCA again
 
 pca_trajectory <- prcomp(trajectory_data$data)
 
-pca_trajectory_df <- as.data.frame(pca_trajectory$x[, 1:2]) %>%
+pca_trajectory_df <- as.data.table(pca_trajectory$x[, 1:2]) %>%
   `colnames<-`(c("PC1", "PC2")) %>%
-  dplyr::mutate(branch = trajectory_data$membership)
+  .[, branch := trajectory_data$membership]
 
 # will mix the labels to visualise the continuum better
 ggplot(
@@ -225,9 +225,9 @@ umap_trajectory <- umap(
   min_dist = 0.3
 )
 
-umap_trajectory_df <- as.data.frame(umap_trajectory) %>%
+umap_trajectory_df <- as.data.table(umap_trajectory) %>%
   `colnames<-`(c("UMAP1", "UMAP2")) %>%
-  dplyr::mutate(branch = trajectory_data$membership)
+  .[, branch := trajectory_data$membership]
 
 
 ggplot(
@@ -273,9 +273,9 @@ umap_clusters_from_knn <- umap(
   k = 15L
 )
 
-umap_clustered_from_knn_df <- as.data.frame(umap_clusters_from_knn) %>%
+umap_clustered_from_knn_df <- as.data.table(umap_clusters_from_knn) %>%
   `colnames<-`(c("UMAP1", "UMAP2")) %>%
-  dplyr::mutate(cluster = as.factor(cluster_data$membership))
+  .[, cluster := as.factor(cluster_data$membership)]
 
 ggplot(
   data = umap_clustered_from_knn_df,
@@ -297,9 +297,9 @@ umap_clusters_from_knn <- umap(
   k = 15L
 )
 
-umap_clustered_from_knn_df <- as.data.frame(umap_clusters_from_knn) %>%
+umap_clustered_from_knn_df <- as.data.table(umap_clusters_from_knn) %>%
   `colnames<-`(c("UMAP1", "UMAP2")) %>%
-  dplyr::mutate(cluster = as.factor(cluster_data$membership))
+  .[, cluster := as.factor(cluster_data$membership)]
 
 ggplot(
   data = umap_clustered_from_knn_df,
@@ -325,9 +325,9 @@ umap_clusters <- umap(
   umap_params = params_umap(optimiser = "adam")
 )
 
-umap_clustered_df <- as.data.frame(umap_clusters) %>%
+umap_clustered_df <- as.data.table(umap_clusters) %>%
   `colnames<-`(c("UMAP1", "UMAP2")) %>%
-  dplyr::mutate(cluster = as.factor(cluster_data$membership))
+  .[, cluster := as.factor(cluster_data$membership)]
 
 ggplot(
   data = umap_clustered_df,
@@ -348,9 +348,9 @@ umap_clusters <- umap(
   knn_method = "balltree"
 )
 
-umap_clustered_df <- as.data.frame(umap_clusters) %>%
+umap_clustered_df <- as.data.table(umap_clusters) %>%
   `colnames<-`(c("UMAP1", "UMAP2")) %>%
-  dplyr::mutate(cluster = as.factor(cluster_data$membership))
+  .[, cluster := as.factor(cluster_data$membership)]
 
 
 ggplot(

@@ -19,9 +19,9 @@ rs_approx_nearest_neighbours(data, k, ann_method, ann_params, seed, verbose)
 
 \item{seed}{Integer. Seed for reproducibility}
 
-\item{verbose}{Boolean. Controls verbosity of the function.
-\subsection{Returns}{
-
+\item{verbose}{Boolean. Controls verbosity of the function.}
+}
+\value{
 A list with the following elements
 \itemize{
 \item indices - flat representation of the indices.
@@ -29,9 +29,7 @@ A list with the following elements
 \item k - number of neighbours.
 \item n - number of samples.
 }
-}}
 }
 \description{
-\subsection{Params}{
-}
+Wrapper around some nearest neighbour searches integrated into manifold-rs
 }

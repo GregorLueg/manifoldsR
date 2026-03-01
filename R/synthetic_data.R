@@ -16,15 +16,15 @@
 #' }
 #' @param n_samples Integer. Number of data points to generate.
 #' @param dim Integer. Dimensionality of the data (used for `"clusters"` and
-#' `"tree"`).
+#' `"trajectory"`).
 #' @param n_clusters Integer. Number of clusters (used for "clusters" type).
-#' Default is `10L`.
+#' Default is `15L`.
 #' @param cell_trajectories Optional list. Named list to use to provide your
 #' own topology for the `"trajectory"` version.
-#' @param topology. String. One of `c("bifurcation", "linear", "combination")`.
+#' @param topology String. One of `c("bifurcation", "linear", "combination")`.
 #' If cell trajectories is not `NULL`, this will be ignored.
 #' @param noise Numeric. Amount of noise to add (used for `"swiss_role"` and
-#' `"tree"`). must be any non 0 positive value. Default is `0.2`.
+#' `"tree"`). must be any non 0 positive value. Default is `0.1`.
 #' @param seed Integer. Seed for reproducibility.
 #'
 #' @return A list with the following elements:
@@ -51,8 +51,8 @@
 #'   n_clusters = 5L
 #' )
 #'
-#' # Generate tree-like data
-#' tree <- manifold_synthetic_data(
+#' # Generate trajectory-like data
+#' trajectory <- manifold_synthetic_data(
 #'   "trajectory",
 #'   n_samples = 1000L,
 #'   dim = 10L,

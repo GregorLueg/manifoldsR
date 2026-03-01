@@ -7,7 +7,6 @@
 #' @param knn_method String. Method to use to generate the kNN graph.
 #' @param nn_params Named list. The nearest neighbour search parameters.
 #' @param tsne_params Named list. The t-SNE-specific parameters.
-#' @param .verbose Boolean. Controls verbosity.
 #'
 #' @return Returns the list of final parameters.
 #'
