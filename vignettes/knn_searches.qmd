@@ -1,7 +1,7 @@
 ---
-title: "manifoldsR nearest neighbour searches"
+title: "Nearest neighbour searches"
 vignette: >
-  %\VignetteIndexEntry{manifoldsR nearest neighbour searches}
+  %\VignetteIndexEntry{Nearest neighbour searches}
   %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
 knitr:
@@ -100,6 +100,11 @@ exposed in this package are (+ the exhaustive version above):
 | Annoy | Classic in single cell, scales well to data sets of up to 500,000 | Tree-based | Large data sets, small dimensionality
 | HNSW | Powerful on large datasets (≥ 500,000), slightly slower index build type, fast queries | Graph-based | Large data sets, small to large dimensionality
 | NNDescent | Another graph-based version, good all-rounder when certain sizes are reached (≥ 100,000) | Graph-based | Medium data sets, small to large dimensionality
+
+manifoldsR defaults to `HNSW`, but you can play around with the parameters & 
+methods. The package was written with massive scale in mind, but if you are 
+looking at smaller data sets (like in the vignettes), `BallTree` does the job 
+(fast).
 
 ### Speed
 
@@ -312,4 +317,4 @@ for (idx in indices) {
 
 As you can see, all of these methods are able to (mostly) identify the right 
 neighbours. If you wish to understand more how these methods work, how they
-compare, etc., please check it out [here](https://github.com/GregorLueg/ann-search-rs)) 
+compare, etc., please check it out [here](https://github.com/GregorLueg/ann-search-rs).
