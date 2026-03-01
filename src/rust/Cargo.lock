@@ -1056,7 +1056,7 @@ dependencies = [
 [[package]]
 name = "manifolds-rs"
 version = "0.1.8"
-source = "git+https://github.com/GregorLueg/manifolds-rs?branch=phate-restructure#cbbcf58df8c6f58fe9c9bf165dd6b6dc3e0c9a04"
+source = "git+https://github.com/GregorLueg/manifolds-rs?branch=phate-restructure#7a576b9e8f68a18e4292bbf652d5a126433d0adc"
 dependencies = [
  "ann-search-rs 0.2.4",
  "approx",

@@ -245,8 +245,10 @@ ggplot(
   scale_colour_viridis_c(option = "mako")
 ```
 
-While the structure is kinda kept and one can see some type of trajectory, the
-clearness of the PCA is lost here.
+Here we observe the clear problem of UMAP. Instead of identifying the continuum
+in the manifold, we end up with more distinct clusters and some bleeding in
+between the clusters. However, this does not represent at all the underlying
+data.
 
 ## Using pre-computed kNN parameters
 
@@ -343,7 +345,6 @@ But let's look at the fast version... Parallised Adam (the default):
 
 umap_clusters <- umap(
   data = cluster_data$data,
-  min_dist = 0.5, # also here, bigger min_dist
   knn_method = "balltree"
 )
 
@@ -371,12 +372,52 @@ how does this version compare against other versions, let's do a benchmark:
 
 ```{r}
 #| label: speed benchmark - small data set
-#| eval: !expr requireNamespace("microbenchmark", quietly = TRUE) && requireNamespace("umap", quietly = TRUE) && requireNamespace("uwot", quietly = TRUE)
+#| eval: !expr requireNamespace("microbenchmark", quietly = TRUE) && requireNamespace("umap", quietly = TRUE) && requireNamespace("uwot", quietly = TRUE) && requireNamespace("reticulate", quietly = TRUE)
+
+# set up the venv for the Python part/dependencies
+local({
+  env_name <- "r-manifolds"
+  
+  if (!reticulate::virtualenv_exists(env_name)) {
+    reticulate::virtualenv_create(env_name)
+    reticulate::virtualenv_install(
+      env_name, 
+      packages = c("phate", "umap-learn", "numpy", "scipy")
+    )
+  }
+  
+  # must come before any py_module_available() call
+  # otherwise reticulate initialises the wrong Python first
+  if (!reticulate::py_available()) {
+    reticulate::use_virtualenv(env_name, required = TRUE)
+  }
+  
+  missing_pkgs <- Filter(
+    Negate(reticulate::py_module_available),
+    c("phate", "umap")
+  )
+  if (length(missing_pkgs) > 0L) {
+    reticulate::virtualenv_install(
+      env_name,
+      packages = c("phate", "umap-learn", "numpy", "scipy")
+    )
+  }
+})
 
 benchmark_data <- manifold_synthetic_data(
   type = "cluster",
   n_samples = 5000L
 )
+
+umap_py <- reticulate::import("umap")
+
+# initialise numba properly via JIT for fair comparison
+# run a small dataset...
+test_reducer <- umap_py$UMAP(
+  n_neighbors = 15L, 
+  n_jobs = parallel::detectCores() - 1L
+)
+test <- test_reducer$fit_transform(benchmark_data$data[1:500, ])
 
 microbenchmark::microbenchmark(
   # umap version in pure R
@@ -385,6 +426,13 @@ microbenchmark::microbenchmark(
       d = benchmark_data$data,
       method = "naive"
     )
+  },
+  umap_reticulate = {
+    reducer <- umap_py$UMAP(
+      n_neighbors = 15L,
+      n_jobs = parallel::detectCores() - 1L
+    )
+    reducer$fit_transform(benchmark_data$data)
   },
   # uwot - umap, for example used in Seurat
   uwot = {
@@ -396,7 +444,7 @@ microbenchmark::microbenchmark(
     uwot::umap2(X = benchmark_data$data)
   },
   # the manifolds version
-  manifold = {
+  manifold_umap = {
     umap(
       data = benchmark_data$data,
       knn_method = "balltree", 
@@ -408,7 +456,11 @@ microbenchmark::microbenchmark(
 )
 ```
 
-Let's pit the two fast versions from uwot and this one against each other:
+We can appreciate that the standard R version is slow (as expected). If we
+leverage the Python version (with numba behind the scences) via the reticulate, 
+we can get some speed ups (we need to however first JIT compile the numba 
+parts). However, the uwot v2 version and the manifold are the fastest here. 
+Let's pit them together against each other in a larger data set.
 
 ```{r}
 #| label: speed benchmark - large data set
@@ -424,9 +476,10 @@ microbenchmark::microbenchmark(
   uwot_v2 = {
     uwot::umap2(X = benchmark_data_2$data)
   },
-  manifold = {
+  manifold_umap = {
     umap(
       data = benchmark_data_2$data,
+      knn_method = "balltree", 
       k = 15L,
       .verbose = FALSE
     ) 
@@ -436,7 +489,9 @@ microbenchmark::microbenchmark(
 ```
 
 Due to optimised memory layouts, aggressive in-lining, heavy parallelism,
-leveragig look-up tables (LUTs), this version is fast and is likely(?) the
+leveragig look-up tables (LUTs), this version is **fast** and is likely(?) the
 fastest UMAP available in R, while keeping memory usage minimal due to 
-leveraging Rust frmo the point that data is moved into the Rust kernel, until
-the embedding has been fitted.
+leveraging Rust from the point that data is moved into the Rust kernel, until
+the embedding has been fitted. No round tripping through R, just highly 
+optimised and compiled code throughout. The different nearest neighbour search 
+algorithms give additional flexibility. 

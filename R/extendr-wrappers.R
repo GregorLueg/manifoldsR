@@ -100,8 +100,50 @@ rs_tsne <- function(embd, n_dim, perplexity, approx_type, tsne_params, seed, ver
 #' @export
 rs_tsne_from_knn <- function(embd, knn_data, n_dim, perplexity, approx_type, tsne_params, seed, verbose) .Call(wrap__rs_tsne_from_knn, embd, knn_data, n_dim, perplexity, approx_type, tsne_params, seed, verbose)
 
+#' Run PHATE dimensionality reduction
+#'
+#' @description Wrapper function into the Rust interface for PHATE.
+#' Constructs a kNN graph, computes alpha decay affinities, powers the
+#' diffusion operator to time `t`, and embeds via MDS on the resulting
+#' diffusion potential distances.
+#'
+#' @param embd Numerical matrix. The data to embed of shape samples x
+#' features.
+#' @param n_dim Integer. Number of PHATE dimensions to return. Currently only
+#' `2L` is supported.
+#' @param k Integer. Number of nearest neighbours for graph construction.
+#' @param phate_params Named list. Contains all key parameters for PHATE,
+#' see [params_phate()] and [params_nn()].
+#' @param seed Integer. Seed for reproducibility.
+#' @param verbose Boolean. Controls verbosity of the function.
+#'
+#' @return The PHATE embedding as a matrix of shape samples x n_dim.
+#'
 #' @export
 rs_phate <- function(embd, n_dim, k, phate_params, seed, verbose) .Call(wrap__rs_phate, embd, n_dim, k, phate_params, seed, verbose)
+
+#' Run PHATE dimensionality reduction from a precomputed kNN graph
+#'
+#' @description Wrapper function into the Rust interface for PHATE using a
+#' precomputed kNN graph. Useful when iterating over diffusion parameters
+#' without repeating the neighbour search.
+#'
+#' @param embd Numerical matrix. The data to embed of shape samples x
+#' features.
+#' @param knn_data `NearestNeighbours` class from R.
+#' @param n_dim Integer. Number of PHATE dimensions to return. Currently only
+#' `2L` is supported.
+#' @param k Integer. Number of nearest neighbours used during graph
+#' construction. Must match the k used to generate `knn_data`.
+#' @param phate_params Named list. Contains all key parameters for PHATE,
+#' see [params_phate()] and [params_nn()].
+#' @param seed Integer. Seed for reproducibility.
+#' @param verbose Boolean. Controls verbosity of the function.
+#'
+#' @return The PHATE embedding as a matrix of shape samples x n_dim.
+#'
+#' @export
+rs_phate_from_knn <- function(embd, knn_data, n_dim, k, phate_params, seed, verbose) .Call(wrap__rs_phate_from_knn, embd, knn_data, n_dim, k, phate_params, seed, verbose)
 
 #' Wrapper around some nearest neighbour searches integrated into manifold-rs
 #'

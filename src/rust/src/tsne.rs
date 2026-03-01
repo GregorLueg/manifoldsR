@@ -145,6 +145,7 @@ fn get_params_tsne_optim(r_list: List) -> TsneOptimParams<f32> {
 /// ### Params
 ///
 /// * `data` - Input data matrix for t-SNE
+/// * `pre_computed_knn` - Optional pre-computed kNN to be used.
 /// * `n_dim` - Number of dimensions to reduce to (typically 2)
 /// * `approximation` - String. One of `"bh"` for the Barnes Hut approximation
 ///   or `"fft"` for the Fast Fourier Transformation-accelerated one.

@@ -25,6 +25,7 @@ extendr_module! {
     fn rs_tsne;
     fn rs_tsne_from_knn;
     fn rs_phate;
+    fn rs_phate_from_knn;
     fn rs_approx_nearest_neighbours;
     fn rs_data_swiss_role;
     fn rs_data_clusters;
@@ -243,6 +244,25 @@ fn rs_tsne_from_knn(
 // PHATE //
 ///////////
 
+/// Run PHATE dimensionality reduction
+///
+/// @description Wrapper function into the Rust interface for PHATE.
+/// Constructs a kNN graph, computes alpha decay affinities, powers the
+/// diffusion operator to time `t`, and embeds via MDS on the resulting
+/// diffusion potential distances.
+///
+/// @param embd Numerical matrix. The data to embed of shape samples x
+/// features.
+/// @param n_dim Integer. Number of PHATE dimensions to return. Currently only
+/// `2L` is supported.
+/// @param k Integer. Number of nearest neighbours for graph construction.
+/// @param phate_params Named list. Contains all key parameters for PHATE,
+/// see [params_phate()] and [params_nn()].
+/// @param seed Integer. Seed for reproducibility.
+/// @param verbose Boolean. Controls verbosity of the function.
+///
+/// @return The PHATE embedding as a matrix of shape samples x n_dim.
+///
 /// @export
 #[extendr]
 fn rs_phate(
@@ -254,9 +274,44 @@ fn rs_phate(
     verbose: bool,
 ) -> RMatrix<f64> {
     let embd = r_matrix_to_faer_fp32(&embd);
+    let res = phate_simple(embd.as_ref(), None, n_dim, k, phate_params, seed, verbose);
+    faer_to_r_matrix(res.as_ref())
+}
 
-    let res = phate_simple(embd.as_ref(), n_dim, k, phate_params, seed, verbose);
-
+/// Run PHATE dimensionality reduction from a precomputed kNN graph
+///
+/// @description Wrapper function into the Rust interface for PHATE using a
+/// precomputed kNN graph. Useful when iterating over diffusion parameters
+/// without repeating the neighbour search.
+///
+/// @param embd Numerical matrix. The data to embed of shape samples x
+/// features.
+/// @param knn_data `NearestNeighbours` class from R.
+/// @param n_dim Integer. Number of PHATE dimensions to return. Currently only
+/// `2L` is supported.
+/// @param k Integer. Number of nearest neighbours used during graph
+/// construction. Must match the k used to generate `knn_data`.
+/// @param phate_params Named list. Contains all key parameters for PHATE,
+/// see [params_phate()] and [params_nn()].
+/// @param seed Integer. Seed for reproducibility.
+/// @param verbose Boolean. Controls verbosity of the function.
+///
+/// @return The PHATE embedding as a matrix of shape samples x n_dim.
+///
+/// @export
+#[extendr]
+fn rs_phate_from_knn(
+    embd: RMatrix<f64>,
+    knn_data: List,
+    n_dim: usize,
+    k: usize,
+    phate_params: List,
+    seed: usize,
+    verbose: bool,
+) -> RMatrix<f64> {
+    let embd = r_matrix_to_faer_fp32(&embd);
+    let knn = nearest_neighbours_to_rust(knn_data);
+    let res = phate_simple(embd.as_ref(), knn, n_dim, k, phate_params, seed, verbose);
     faer_to_r_matrix(res.as_ref())
 }
 

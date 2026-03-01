@@ -343,3 +343,100 @@ checkTsneParams <- function(x) {
 #'
 #' @keywords internal
 assertTsneParams <- checkmate::makeAssertionFunction(checkTsneParams)
+
+## phate -----------------------------------------------------------------------
+
+#' Check PHATE parameters
+#'
+#' @description Checkmate extension for checking the PHATE parameters.
+#'
+#' @param x The list to check.
+#'
+#' @return `TRUE` if the check was successful, otherwise an error message.
+#'
+#' @keywords internal
+checkPhateParams <- function(x) {
+  res <- checkmate::checkList(x)
+  if (!isTRUE(res)) {
+    return(res)
+  }
+
+  res <- checkmate::checkNames(
+    names(x),
+    must.include = c(
+      "decay",
+      "bandwidth_scale",
+      "t_max",
+      "t_custom",
+      "gamma",
+      "n_landmarks",
+      "landmark_method",
+      "n_svd",
+      "mds_method",
+      "graph_symmetry"
+    )
+  )
+  if (!isTRUE(res)) {
+    return(res)
+  }
+
+  nullable_int <- function(v) is.null(v) || checkmate::qtest(v, "I1[1,)")
+  nullable_num <- function(v) is.null(v) || checkmate::qtest(v, "N1(0,)")
+
+  rules <- list(
+    "decay" = function(v) checkmate::qtest(v, "N1(0,)"),
+    "bandwidth_scale" = nullable_num,
+    "t_max" = function(v) checkmate::qtest(v, "I1[1,)"),
+    "t_custom" = nullable_int,
+    "gamma" = function(v) checkmate::qtest(v, "N1"),
+    "n_landmarks" = nullable_int,
+    "landmark_method" = function(v) {
+      checkmate::testChoice(v, c("spectral", "random", "density"))
+    },
+    "n_svd" = nullable_int,
+    "mds_method" = function(v) {
+      checkmate::testChoice(v, c("sgd_dense", "classic"))
+    },
+    "graph_symmetry" = function(v) {
+      checkmate::testChoice(v, c("additive", "multiplicative", "mnn", "none"))
+    }
+  )
+
+  res <- purrr::imap_lgl(x, \(val, name) rules[[name]](val))
+
+  if (!isTRUE(all(res))) {
+    broken_elem <- names(res)[which(!res)][1]
+    return(sprintf(
+      paste(
+        "Element `%s` in PHATE params does not conform.",
+        "decay must be a positive numeric,",
+        "bandwidth_scale must be a positive numeric or NULL,",
+        "t_max must be a positive integer,",
+        "t_custom/n_landmarks/n_svd must be positive integers or NULL,",
+        "gamma must be numeric,",
+        "landmark_method must be one of 'spectral'/'random'/'min_max',",
+        "mds_method must be one of 'sgd_dense'/'classic',",
+        "and graph_symmetry must be one of 'additive'/'multiplicative'/'mnn'/'none'."
+      ),
+      broken_elem
+    ))
+  }
+
+  return(TRUE)
+}
+
+#' Assert PHATE parameters
+#'
+#' @description Checkmate extension for asserting the PHATE parameters.
+#'
+#' @inheritParams checkPhateParams
+#'
+#' @param .var.name Name of the checked object to print in assertions. Defaults
+#' to the heuristic implemented in checkmate.
+#' @param add Collection to store assertion messages. See
+#' [checkmate::makeAssertCollection()].
+#'
+#' @return Invisibly returns the checked object if the assertion is successful.
+#'
+#' @keywords internal
+assertPhateParams <- checkmate::makeAssertionFunction(checkPhateParams)

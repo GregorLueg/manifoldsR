@@ -92,7 +92,26 @@ trajectory_data <- manifold_synthetic_data(
 ### Clustered data
 
 t-SNE is well known for producing crisp cluster separation. Let's see how it
-handles the clustered synthetic data.
+handles the clustered synthetic data. But first, let's check PCA...
+
+```{r}
+#| label: clustered data - pca
+
+pca_clusters <- prcomp(cluster_data$data)
+
+pca_clusters_df <- as.data.frame(pca_clusters$x[, 1:2]) %>%
+  `colnames<-`(c("PC1", "PC2")) %>%
+  dplyr::mutate(cluster = as.factor(cluster_data$membership))
+
+ggplot(
+  data = pca_clusters_df,
+  mapping = aes(x = PC1, y = PC2)
+) +
+  geom_point(mapping = aes(colour = cluster), size = 0.25, alpha = 0.5) +
+  theme_bw()
+```
+
+And now tSNE:
 
 ```{r}
 #| label: clustered data - tsne
@@ -124,7 +143,33 @@ faithful global geometry.
 ### Swissrole
 
 Let's look at the swiss role, where UMAP struggled due to its graph-based
-objective. We will need high perplexity values here...
+objective. We will need higher perplexity values here to emphasise the global
+structure more. Similar to last UMAP, let's start with PCA:
+
+```{r}
+#| label: swissrole data - pca
+
+pca_swiss_role <- prcomp(swissrole_data$data)
+
+pca_swiss_role_df <- as.data.frame(pca_swiss_role$x[, 1:2]) %>%
+  `colnames<-`(c("PC1", "PC2")) %>%
+  dplyr::mutate(z_axis = swissrole_data$data[, 3])
+
+ggplot(
+  data = pca_swiss_role_df,
+  mapping = aes(x = PC1, y = PC2)
+) +
+  geom_point(
+    mapping = aes(fill = z_axis), 
+    shape = 21, 
+    size = 2, 
+    alpha = 0.5
+  ) +
+  scale_fill_viridis_c() +
+  theme_bw()
+``` 
+
+And compare against tSNE:
 
 ```{r}
 #| label: swissrole data - tsne
@@ -157,9 +202,34 @@ ggplot(
 t-SNE handles the swiss role more gracefully than UMAP, preserving more of the
 continuous colour gradient along the roll. That said, it is still not perfect
 — this is still better approached with PCA or dedicated manifold unrolling
-methods.
+methods (check out PHATE here).
 
 ### Trajectory
+
+Lastly, let's look at trajectory type data...
+
+```{r}
+#| label: trajectory data - pca
+
+pca_trajectory <- prcomp(trajectory_data$data)
+
+pca_trajectory_df <- as.data.frame(pca_trajectory$x[, 1:2]) %>%
+  `colnames<-`(c("PC1", "PC2")) %>%
+  dplyr::mutate(branch = trajectory_data$membership)
+
+# will mix the labels to visualise the continuum better
+ggplot(
+  data = pca_trajectory_df[
+    sample(1:nrow(pca_trajectory_df), nrow(pca_trajectory_df)), 
+  ],
+  mapping = aes(x = PC1, y = PC2)
+) +
+  geom_point(mapping = aes(colour = branch), alpha = 0.5, size = 0.25) +
+  theme_bw() +
+  scale_colour_viridis_c(option = "mako")
+``` 
+
+And tSNE
 
 ```{r}
 #| label: trajectory data - tsne
@@ -350,6 +420,7 @@ microbenchmark::microbenchmark(
     tsne(
       data = benchmark_data_large$data,
       perplexity = 30,
+      knn_method = "balltree",
       approx_type = "bh",
       seed = 42L,
       .verbose = FALSE
@@ -359,6 +430,7 @@ microbenchmark::microbenchmark(
     tsne(
       data = benchmark_data_large$data,
       perplexity = 30,
+      knn_method = "balltree",
       approx_type = "fft",
       seed = 42L,
       .verbose = FALSE

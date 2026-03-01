@@ -39,7 +39,10 @@ Suggests:
     knitr,
     ggplot2,
     microbenchmark,
+    phateR,
     quarto,
+    reticulate,
+    Rtsne,
     tinytest,
     umap,
     uwot

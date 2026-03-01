@@ -5,7 +5,7 @@
 \title{Wrapper function to generate nearest neighbour parameters}
 \usage{
 params_nn(
-  dist_metric = "cosine",
+  dist_metric = c("euclidean", "cosine"),
   n_tree = 50L,
   search_budget = NULL,
   m = 16L,

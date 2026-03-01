@@ -27,7 +27,7 @@
 #'
 #'
 params_nn <- function(
-  dist_metric = "cosine",
+  dist_metric = c("euclidean", "cosine"),
   n_tree = 50L,
   search_budget = NULL,
   m = 16L,
@@ -38,6 +38,8 @@ params_nn <- function(
   ef_budget = NULL,
   bt_budget = 0.1
 ) {
+  dist_metric <- match.arg(dist_metric)
+
   # checks
   checkmate::assertChoice(dist_metric, c("cosine", "euclidean"))
   checkmate::qassert(n_tree, "I1")
@@ -189,5 +191,89 @@ params_tsne <- function(
     n_interp_points = n_interp_points,
     init = init,
     randomised = randomised
+  )
+}
+
+# phate ------------------------------------------------------------------------
+
+#' Wrapper function to generate PHATE parameters
+#'
+#' @param decay Numeric. Alpha decay parameter controlling the kernel
+#' bandwidth. Higher values create sharper transitions. Defaults to `40.0`.
+#' @param bandwidth_scale Numeric or `NULL`. Scaling factor applied to the
+#' kernel bandwidth. When `NULL`, the library selects a sensible default.
+#' Defaults to `NULL`.
+#' @param t_max Integer. Maximum diffusion time considered during automatic
+#' selection via Von Neumann entropy knee point detection. Defaults to `100L`.
+#' @param t_custom Integer or `NULL`. Fixed diffusion time. When set, overrides
+#' automatic time selection. Defaults to `NULL`.
+#' @param gamma Numeric. Informational distance parameter for the diffusion
+#' potential. Defaults to `1.0`.
+#' @param n_landmarks Integer or `NULL`. Number of landmarks for compressed
+#' diffusion. When `NULL`, the full N x N diffusion operator is used.
+#' Defaults to `2048L`.
+#' @param landmark_method Character. Method used to select landmarks. One of
+#' `"spectral"`, `"random"`, or `"density"`. Defaults to `"spectral"`.
+#' @param n_svd Integer or `NULL`. Number of SVD components used in landmark
+#' construction. When `NULL`, the library selects a sensible default. Defaults
+#' to `NULL`.
+#' @param mds_method Character. MDS algorithm used for the final embedding.
+#' One of `"sgd_dense"` or `"classic"`. Defaults to `"sgd_dense"`.
+#' @param graph_symmetry Character. Method used to symmetrise the affinity
+#' graph. One of `"additive"`, `"multiplicative"`, `"mnn"`, or `"none"`.
+#' Defaults to `"additive"`.
+#'
+#' @returns A list with the PHATE parameters.
+#'
+#' @export
+params_phate <- function(
+  decay = 40.0,
+  bandwidth_scale = NULL,
+  t_max = 100L,
+  t_custom = NULL,
+  gamma = 1.0,
+  n_landmarks = 2024L,
+  landmark_method = "spectral",
+  n_svd = NULL,
+  mds_method = "sgd_dense",
+  graph_symmetry = "additive"
+) {
+  checkmate::qassert(decay, "N1(0,)")
+  checkmate::assert(
+    checkmate::testNull(bandwidth_scale),
+    checkmate::qtest(bandwidth_scale, "N1(0,)")
+  )
+  checkmate::qassert(t_max, "I1[1,)")
+  checkmate::assert(
+    checkmate::testNull(t_custom),
+    checkmate::qtest(t_custom, "I1[1,)")
+  )
+  checkmate::qassert(gamma, "N1")
+  checkmate::assert(
+    checkmate::testNull(n_landmarks),
+    checkmate::qtest(n_landmarks, "I1[1,)")
+  )
+  checkmate::assertChoice(landmark_method, c("spectral", "random", "density"))
+  checkmate::assert(
+    checkmate::testNull(n_svd),
+    checkmate::qtest(n_svd, "I1[1,)")
+  )
+  checkmate::assertChoice(mds_method, c("sgd_dense", "classic"))
+  checkmate::assertChoice(
+    graph_symmetry,
+    c("additive", "multiplicative", "mnn", "none")
+  )
+
+  list(
+    decay = decay,
+    bandwidth_scale = bandwidth_scale,
+    t_max = as.integer(t_max),
+    t_custom = if (!is.null(t_custom)) as.integer(t_custom) else NULL,
+    gamma = gamma,
+    n_landmarks = if (!is.null(n_landmarks)) as.integer(n_landmarks) else NULL,
+    landmark_method = landmark_method,
+    n_svd = if (!is.null(n_svd)) as.integer(n_svd) else NULL,
+    mds_method = mds_method,
+    graph_symmetry = graph_symmetry
   )
 }

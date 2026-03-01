@@ -22,130 +22,6 @@ c(cluster_data, cluster_membership) %<-%
     seed = 42L
   )
 
-## tsne ------------------------------------------------------------------------
-
-### swiss role -----------------------------------------------------------------
-
-tsne_swissrole <- rs_tsne(
-  embd = swissrole,
-  n_dim = 2,
-  perplexity = 5,
-  approx_type = "bh",
-  tsne_params = list(
-    knn_method = "hnsw",
-    dist_metric = "euclidean",
-    init = "pca",
-    theta = 0.5
-  ),
-  seed = 123L,
-  verbose = TRUE
-)
-
-tsne_swissrole_df <- as.data.frame(tsne_swissrole) %>%
-  `colnames<-`(c("tSNE1", "tSNE2")) %>%
-  dplyr::mutate(z_axis = swissrole[, 3])
-
-ggplot(
-  data = tsne_swissrole_df,
-  mapping = aes(x = tSNE1, y = tSNE2)
-) +
-  geom_point(mapping = aes(colour = z_axis))
-
-### clustered data -------------------------------------------------------------
-
-tictoc::tic()
-tsne_clustered <- rs_tsne(
-  embd = cluster_data,
-  n_dim = 2,
-  perplexity = 30,
-  approx_type = "bh",
-  tsne_params = list(
-    knn_method = "annoy",
-    dist_metric = "euclidean",
-    theta = 0.5,
-    n_epochs = 1000L
-  ),
-  seed = 123L,
-  verbose = TRUE
-)
-tictoc::toc()
-
-tsne_clustered_df <- as.data.frame(tsne_clustered) %>%
-  `colnames<-`(c("tSNE1", "tSNE2")) %>%
-  dplyr::mutate(cluster = as.factor(cluster_membership))
-
-ggplot(
-  data = tsne_clustered_df,
-  mapping = aes(x = tSNE1, y = tSNE2)
-) +
-  geom_point(mapping = aes(colour = cluster), alpha = 0.5, size = 0.25)
-
-tictoc::tic()
-rtsne_res <- Rtsne::Rtsne(cluster_data, verbose = TRUE)
-tictoc::toc()
-
-
-rtsne_clustered_df <- as.data.frame(rtsne_res$Y) %>%
-  `colnames<-`(c("tSNE1", "tSNE2")) %>%
-  dplyr::mutate(cluster = as.factor(cluster_membership))
-
-ggplot(
-  data = rtsne_clustered_df,
-  mapping = aes(x = tSNE1, y = tSNE2)
-) +
-  geom_point(mapping = aes(colour = cluster), alpha = 0.5, size = 0.25)
-
-### tree data ------------------------------------------------------------------
-
-tsne_tree <- rs_tsne(
-  embd = tree_data,
-  n_dim = 2,
-  perplexity = 50,
-  approx_type = "bh",
-  tsne_params = list(
-    knn_method = "hnsw",
-    dist_metric = "euclidean",
-    theta = 0.5,
-    n_epochs = 1000L
-  ),
-  seed = 123L,
-  verbose = TRUE
-)
-
-tsne_tree_df <- as.data.frame(tsne_tree) %>%
-  `colnames<-`(c("tSNE1", "tSNE2")) %>%
-  dplyr::mutate(branch = as.factor(branch_membership))
-
-ggplot(
-  data = tsne_tree_df,
-  mapping = aes(x = tSNE1, y = tSNE2)
-) +
-  geom_point(mapping = aes(colour = branch), alpha = 0.5, size = 0.25)
-
-
-#### Testing out wrappers -----------------------------------------------------------------
-
-umap_clustered_adam <- umap(
-  data = cluster_data,
-  n_dim = 2L,
-  min_dist = 0.5,
-  spread = 1L,
-  k = 15L,
-  params = params_umap(knn_method = "NNDescent"),
-  seed = 42L,
-  verbose = TRUE
-)
-
-tsne_clustered <- tsne(
-  data = cluster_data,
-  n_dim = 2L,
-  perplexity = 50L,
-  approx_type = "bh",
-  params = params_tsne(knn_method = "NNDescent"),
-  seed = 123L,
-  verbose = TRUE
-)
-
 ## phate -----------------------------------------------------------------------
 
 rextendr::document()
@@ -336,3 +212,50 @@ microbenchmark::microbenchmark(
   },
   times = 1L
 )
+
+
+library(magick)
+
+img <- image_read("~/Downloads/manifoldsR_logo.png")
+
+info <- image_info(img)
+w <- info$width - 1
+h <- info$height - 1
+
+img <- image_fill(img, "transparent", point = "+1+1", fuzz = 10)
+img <- image_fill(img, "transparent", point = paste0("+", w, "+1"), fuzz = 10)
+img <- image_fill(img, "transparent", point = paste0("+1+", h), fuzz = 10)
+img <- image_fill(img, "transparent", point = paste0("+", w, "+", h), fuzz = 10)
+
+image_write(img, "manifoldsR_sticker.png")
+
+?phateR::phate
+
+benchmark_data <- manifold_synthetic_data(
+  type = "trajectory",
+  n_samples = 100000L
+)
+
+original <- phateR::phate(
+  data = benchmark_data$data,
+  knn = 15L,
+  npca = 100L,
+  n.jobs = -1,
+  verbose = TRUE
+)
+
+manifold <- phate(
+  data = benchmark_data$data,
+  k = 15L,
+  knn_method = "balltree",
+  phate_params = params_phate(
+    n_landmarks = 2048L,
+    landmark_method = "density"
+  ),
+  seed = 42L,
+  .verbose = TRUE
+)
+
+plot(manifold[, 1], manifold[, 2])
+
+plot(original$embedding[, 1], original$embedding[, 2])

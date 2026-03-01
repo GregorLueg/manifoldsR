@@ -1,20 +1,17 @@
 url: https://gregorlueg.github.io/manifoldsR/
-
 template:
   bootstrap: 5
-  bootswatch: darkly
+  bootswatch: solar
   bslib:
-    primary: "#00bc8c"
+    primary: "#268bd2"
     border-radius: 0.4rem
     btn-border-radius: 0.4rem
   includes:
     in_header: ""
   css: pkgdown/extra.css
-
 home:
   title: "manifoldsR"
   description: "Fast(!) manifold embedding learning methods powered by Rust"
-
 navbar:
   structure:
     left: [intro, reference, articles]
@@ -32,6 +29,7 @@ articles:
       - knn_searches
       - umap
       - tsne
+      - phate
 
 reference:
   - title: "Main functions"
@@ -39,6 +37,7 @@ reference:
     contents:
       - tsne
       - umap
+      - phate
   - title: "kNN helpers"
     desc: "Everything and anything around kNN graph generation"
     contents:
@@ -57,6 +56,7 @@ reference:
       - params_nn
       - params_umap
       - params_tsne
+      - params_phate
   - title: "Rust wrappers"
     desc: "Everything rusty - only use this if you know what you are doing..."
     contents:
@@ -64,6 +64,8 @@ reference:
       - rs_data_clusters
       - rs_data_swiss_role
       - rs_data_trajectory
+      - rs_phate
+      - rs_phate_from_knn
       - rs_tsne
       - rs_tsne_from_knn
       - rs_umap

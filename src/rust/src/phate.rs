@@ -9,15 +9,32 @@ use crate::utils::get_params_nn;
 // Params //
 ////////////
 
-/// InternalTsneParams
+/// InternalPhateParams
 ///
-/// Overall wrapper over various parameters needed for tSNE
+/// Overall wrapper over various parameters needed for PHATE.
 ///
-/// ### Params
+/// ### Fields
 ///
-/// * `knn_method` - Which of the approximate nearest neighbour searches to use.
-/// * `param_knn` - The nearest neighbour parameters that are forwarded to the
-///   approximate nearest neighbour methods.
+/// * `graph_symmetry` - Method to symmetrise the affinity graph. One of
+///   `"average"` or `"add"`. Defaults to `"average"`.
+/// * `decay` - Alpha decay parameter controlling the kernel bandwidth.
+/// * `bandwidth_scale` - Scaling factor for the bandwidth. `None` lets the
+///   library select a sensible default.
+/// * `t_max` - Maximum diffusion time considered during automatic selection
+///   via Von Neumann entropy knee point detection.
+/// * `t_custom` - Fixed diffusion time. When `Some`, overrides automatic
+///   time selection.
+/// * `gamma` - Informational distance parameter for the diffusion potential.
+/// * `n_landmarks` - Number of landmarks for compressed diffusion. `None`
+///   uses the full N × N diffusion operator.
+/// * `landmark_method` - Method used to select landmarks. One of
+///   `"spectral"`, `"random"`, or `"min_max"`.
+/// * `n_svd` - Number of SVD components. `None` lets the library select a
+///   sensible default.
+/// * `mds_method` - MDS algorithm. One of `"sgd_dense"` or `"classic"`.
+/// * `mds_iter` - Optional user-provided number of iterations
+/// * `knn_method` - Which approximate nearest neighbour method to use.
+/// * `param_knn` - Nearest neighbour parameters forwarded to the ANN methods.
 #[derive(Debug)]
 pub struct InternalPhateParams {
     // phate
@@ -31,12 +48,28 @@ pub struct InternalPhateParams {
     pub landmark_method: String,
     pub n_svd: Option<usize>,
     pub mds_method: String,
+    pub mds_iter: Option<usize>,
     // knn
     pub knn_method: String,
     pub param_knn: NearestNeighbourParams<f32>,
 }
 
 impl InternalPhateParams {
+    /// Construct `InternalPhateParams` from an R named list.
+    ///
+    /// Delegates to `get_params_nn` and `get_params_phate` for their
+    /// respective parameter subsets, then extracts `knn_method` directly
+    /// from the top-level list.
+    ///
+    /// ### Params
+    ///
+    /// * `r_list` - Named R list containing all PHATE and nearest neighbour
+    ///   parameters, as produced by `params_phate()` and `params_nn()` on
+    ///   the R side.
+    ///
+    /// ### Returns
+    ///
+    /// A fully populated `InternalPhateParams`.
     pub fn from_r_list(r_list: List) -> Self {
         let nn_params = get_params_nn(r_list.clone());
         let phate_params = get_params_phate(r_list.clone());
@@ -57,12 +90,28 @@ impl InternalPhateParams {
             landmark_method: phate_params.landmark_method,
             n_svd: phate_params.n_svd,
             mds_method: phate_params.mds_method,
+            mds_iter: phate_params.mds_iter,
             knn_method,
             param_knn: nn_params,
         }
     }
 }
 
+/// Extract PHATE-specific parameters from an R named list.
+///
+/// Parses each PHATE field from the list, falling back to sensible defaults
+/// when a key is absent. Does not extract nearest neighbour or `knn_method`
+/// parameters; those are handled separately in `from_r_list`.
+///
+/// ### Params
+///
+/// * `r_list` - Named R list containing the PHATE parameter keys.
+///
+/// ### Returns
+///
+/// An `InternalPhateParams` with PHATE fields populated and `knn_method` /
+/// `param_knn` set to their defaults. Callers should override those fields
+/// via `from_r_list`.
 fn get_params_phate(r_list: List) -> InternalPhateParams {
     let p = r_list.into_hashmap();
     let graph_symmetry = std::string::String::from(
@@ -111,6 +160,11 @@ fn get_params_phate(r_list: List) -> InternalPhateParams {
             .and_then(|v| v.as_str())
             .unwrap_or("sgd_dense"),
     );
+    let mds_iter = p
+        .get("mds_iter")
+        .and_then(|v| v.as_integer())
+        .map(|v| v as usize);
+
     InternalPhateParams {
         graph_symmetry,
         decay,
@@ -122,6 +176,7 @@ fn get_params_phate(r_list: List) -> InternalPhateParams {
         landmark_method,
         n_svd,
         mds_method,
+        mds_iter,
         knn_method: "hnsw".to_string(),
         param_knn: NearestNeighbourParams::default(),
     }
@@ -131,8 +186,29 @@ fn get_params_phate(r_list: List) -> InternalPhateParams {
 // PHATE //
 ///////////
 
+/// Run PHATE from an R parameter list without a precomputed kNN graph.
+///
+/// Parses the R parameter list into `PhateParams`, runs the full PHATE
+/// pipeline including kNN search, and returns the embedding as a
+/// column-major `Mat<f32>`.
+///
+/// ### Params
+///
+/// * `data` - Input data matrix of shape samples × features.
+/// * `pre_computed_knn` - Optional pre-computed kNN to be used.
+/// * `n_dim` - Number of output dimensions. Currently only `2` is supported.
+/// * `k` - Number of nearest neighbours for graph construction.
+/// * `phate_params` - Named R list of parameters, as produced by
+///   `params_phate()` and `params_nn()` on the R side.
+/// * `seed` - Random seed for reproducibility.
+/// * `verbose` - Print progress information.
+///
+/// ### Returns
+///
+/// Embedding matrix of shape samples × n_dim.
 pub fn phate_simple(
     data: MatRef<f32>,
+    pre_computed_knn: PreComputedKnn<f32>,
     n_dim: usize,
     k: usize,
     phate_params: List,
@@ -158,9 +234,10 @@ pub fn phate_simple(
         internal_params_phate.n_svd,
         internal_params_phate.t_custom,
         Some(internal_params_phate.mds_method),
+        internal_params_phate.mds_iter,
         Some(true),
     );
-    let res = phate(data, None, params_phate, seed, verbose);
+    let res = phate(data, pre_computed_knn, params_phate, seed, verbose);
     let ncol = res.len();
     let nrow = res[0].len();
     Mat::from_fn(nrow, ncol, |i, j| res[j][i])
