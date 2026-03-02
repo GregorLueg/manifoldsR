@@ -10,7 +10,7 @@ tsne(
   n_dim = 2L,
   perplexity = 30,
   approx_type = c("bh", "fft"),
-  knn_method = c("hnsw", "annoy", "nndescent", "balltree", "exhaustive"),
+  knn_method = c("balltree", "hnsw", "annoy", "nndescent", "exhaustive"),
   nn_params = params_nn(),
   tsne_params = params_tsne(),
   seed = 42L,
@@ -38,7 +38,7 @@ interpolation. Defaults to \code{"bh"}.}
 
 \item{knn_method}{Character. Approximate nearest neighbour algorithm to use.
 One of \code{"hnsw"}, \code{"annoy"}, \code{"nndescent"}, \code{"balltree"}, or
-\code{"exhaustive"}. Defaults to \code{"hnsw"}.}
+\code{"exhaustive"}. Defaults to \code{"balltree"}.}
 
 \item{nn_params}{Named list. Nearest neighbour search parameters, see
 \code{\link[=params_nn]{params_nn()}}.}

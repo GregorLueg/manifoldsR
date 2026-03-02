@@ -105,14 +105,15 @@ pca_clusters <- prcomp(cluster_data$data)
 
 pca_clusters_df <- as.data.table(pca_clusters$x[, 1:2]) %>%
   `colnames<-`(c("PC1", "PC2")) %>%
-  .[, cluster := as.factor(cluster_data$membership))]
+  .[, cluster := as.factor(cluster_data$membership)]
 
 ggplot(
   data = pca_clusters_df,
   mapping = aes(x = PC1, y = PC2)
 ) +
   geom_point(mapping = aes(colour = cluster), size = 0.25, alpha = 0.5) +
-  theme_bw()
+  theme_bw() +
+  ggtitle("PCA on clustered data")
 ```
 
 And now check PHATE:
@@ -123,7 +124,6 @@ And now check PHATE:
 phate_clusters <- phate(
   data = cluster_data$data,
   k = 15L,
-  knn_method = "balltree",
   seed = 42L
 )
 
@@ -136,7 +136,8 @@ ggplot(
   mapping = aes(x = PHATE1, y = PHATE2)
 ) +
   geom_point(mapping = aes(colour = cluster), size = 0.25, alpha = 0.5) +
-  theme_bw()
+  theme_bw() +
+  ggtitle("PHATE on clustered data")
 ```
 
 As expected, the clusters explode outward and are condensed into single points. 
@@ -174,7 +175,8 @@ ggplot(
     alpha = 0.5
   ) +
   scale_fill_viridis_c() +
-  theme_bw()
+  theme_bw() +
+  ggtitle("PCA on swissrole data")
 ```
 
 PHATE preserves the continuous colour gradient along the roll substantially
@@ -192,7 +194,6 @@ are the canonical use case.
 phate_trajectory <- phate(
   data = trajectory_data$data,
   k = 15L,
-  knn_method = "annoy",
   seed = 42L
 )
 
@@ -212,7 +213,8 @@ ggplot(
     size = 0.25
   ) +
   theme_bw() +
-  scale_colour_viridis_c(option = "mako")
+  scale_colour_viridis_c(option = "turbo") +
+  ggtitle("PHATE on trajectory data")
 ```
 
 PHATE recovers the branching structure cleanly. The continuous progression
@@ -243,7 +245,7 @@ phate_from_knn <- phate(
 
 phate_from_knn_df <- as.data.table(phate_from_knn) %>%
   `colnames<-`(c("PHATE1", "PHATE2")) %>%
-  .[, branch := trajectory_data$membership)]
+  .[, branch := trajectory_data$membership]
 
 ggplot(
   data = phate_from_knn_df[
@@ -253,7 +255,8 @@ ggplot(
 ) +
   geom_point(mapping = aes(colour = branch), alpha = 0.5, size = 0.25) +
   theme_bw() +
-  scale_colour_viridis_c(option = "mako")
+  scale_colour_viridis_c(option = "turbo")  +
+  ggtitle("PHATE from kNN graph (version 1)")
 ```
 
 With the kNN graph fixed, we can quickly vary PHATE-specific parameters. For
@@ -282,7 +285,8 @@ ggplot(
 ) +
   geom_point(mapping = aes(colour = branch), alpha = 0.5, size = 0.25) +
   theme_bw() +
-  scale_colour_viridis_c(option = "mako")
+  scale_colour_viridis_c(option = "turbo")  +
+  ggtitle("PHATE from kNN graph (version 2)")
 ```
 
 ## Landmark PHATE
@@ -327,7 +331,6 @@ large_trajectory <- manifold_synthetic_data(
 phate_landmark <- phate(
   data = large_trajectory$data,
   k = 15L,
-  knn_method = "balltree",
   phate_params = params_phate(
     n_landmarks = 1024L,
     landmark_method = "spectral"
@@ -347,7 +350,8 @@ ggplot(
 ) +
   geom_point(mapping = aes(colour = branch), alpha = 0.5, size = 0.25) +
   theme_bw() +
-  scale_colour_viridis_c(option = "mako")
+  scale_colour_viridis_c(option = "turbo") +
+  ggtitle("PHATE with 1024 landmarks (spectral)")
 ```
 
 We can even further accelerate this with the density or random-based version
@@ -383,7 +387,8 @@ ggplot(
 ) +
   geom_point(mapping = aes(colour = branch), alpha = 0.5, size = 0.25) +
   theme_bw() +
-  scale_colour_viridis_c(option = "mako")
+  scale_colour_viridis_c(option = "turbo") +
+  ggtitle("PHATE with 1024 landmarks (random)")
 ```
 
 We can observe some differences here, but the overall trajectory is correctly
@@ -445,7 +450,6 @@ microbenchmark::microbenchmark(
     phate(
       data = benchmark_data$data,
       k = 5L,
-      knn_method = "balltree",
       seed = 42L,
       .verbose = FALSE
     )
@@ -462,7 +466,7 @@ And on a larger data set with additionally the random landmark version
 
 benchmark_data_large <- manifold_synthetic_data(
   type = "trajectory",
-  n_samples = 50000L
+  n_samples = 100000L
 )
 
 microbenchmark::microbenchmark(
@@ -479,7 +483,7 @@ microbenchmark::microbenchmark(
     phate(
       data = benchmark_data_large$data,
       k = 5L,
-      knn_method = "balltree",
+      knn_method = "nndescent", # good allrounder for larger data sets
       seed = 42L,
       .verbose = FALSE
     )
@@ -488,7 +492,7 @@ microbenchmark::microbenchmark(
     phate(
       data = benchmark_data_large$data,
       k = 5L,
-      knn_method = "balltree",
+      knn_method = "nndescent", # good allrounder for larger data sets
       phate_params = params_phate(landmark_method = "random"),
       seed = 42L,
       .verbose = FALSE
@@ -501,4 +505,5 @@ microbenchmark::microbenchmark(
 As with t-SNE and UMAP, the speed advantage of the Rust implementation comes 
 from the entire pipeline — kNN construction, kernel computation, diffusion, and
 MDS — running within the Rust kernel without round-tripping through Python in
-this case.
+this case. Usually, the differences become more pronounced with larger data 
+sets. 

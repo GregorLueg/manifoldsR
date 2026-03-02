@@ -46,7 +46,7 @@
 #' Defaults to `5L`.
 #' @param knn_method Character. Approximate nearest neighbour algorithm to use.
 #' One of `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, or
-#' `"exhaustive"`. Defaults to `"hnsw"`.
+#' `"exhaustive"`. Defaults to `"balltree"`.
 #' @param nn_params Named list. Nearest neighbour search parameters, see
 #' [params_nn()].
 #' @param phate_params Named list. PHATE algorithm parameters, see
@@ -63,7 +63,7 @@ phate <- function(
   knn = NULL,
   n_dim = 2L,
   k = 5L,
-  knn_method = c("hnsw", "annoy", "nndescent", "balltree", "exhaustive"),
+  knn_method = c("balltree", "hnsw", "annoy", "nndescent", "exhaustive"),
   nn_params = params_nn(),
   phate_params = params_phate(),
   seed = 42L,

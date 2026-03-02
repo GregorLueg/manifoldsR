@@ -27,6 +27,7 @@ the brilliant work of
 library(manifoldsR)
 library(magrittr)
 library(ggplot2)
+library(data.table)
 ```
 
 ## Intro
@@ -108,7 +109,8 @@ ggplot(
   mapping = aes(x = PC1, y = PC2)
 ) +
   geom_point(mapping = aes(colour = cluster), size = 0.25, alpha = 0.5) +
-  theme_bw()
+  theme_bw() + 
+  ggtitle("PCA on cluster data")
 ```
 
 And now tSNE:
@@ -118,7 +120,6 @@ And now tSNE:
 
 tsne_clusters <- tsne(
   data = cluster_data$data,
-  knn_method = "balltree", 
   perplexity = 30,
   seed = 42L
 )
@@ -132,7 +133,8 @@ ggplot(
   mapping = aes(x = tSNE1, y = tSNE2)
 ) +
   geom_point(mapping = aes(colour = cluster), size = 0.25, alpha = 0.5) +
-  theme_bw()
+  theme_bw() + 
+  ggtitle("tSNE (BH) on cluster data")
 ```
 
 As expected, t-SNE separates the clusters cleanly. Worth noting: the
@@ -166,7 +168,8 @@ ggplot(
     alpha = 0.5
   ) +
   scale_fill_viridis_c() +
-  theme_bw()
+  theme_bw() + 
+  ggtitle("PCA on swissrole")
 ``` 
 
 And compare against tSNE:
@@ -196,7 +199,8 @@ ggplot(
     alpha = 0.5
   ) +
   scale_fill_viridis_c() +
-  theme_bw()
+  theme_bw() + 
+  ggtitle("tSNE (BH) on swissrole")
 ```
 
 t-SNE handles the swiss role more gracefully than UMAP, preserving more of the
@@ -226,7 +230,8 @@ ggplot(
 ) +
   geom_point(mapping = aes(colour = branch), alpha = 0.5, size = 0.25) +
   theme_bw() +
-  scale_colour_viridis_c(option = "mako")
+  scale_colour_viridis_c(option = "turbo") + 
+  ggtitle("PCA on trajectory")
 ``` 
 
 And tSNE
@@ -236,7 +241,6 @@ And tSNE
 
 tsne_trajectory <- tsne(
   data = trajectory_data$data,
-  knn_method = "balltree",
   perplexity = 45,
   seed = 42L
 )
@@ -257,7 +261,8 @@ ggplot(
     size = 0.25
   ) +
   theme_bw() +
-  scale_colour_viridis_c(option = "mako")
+  scale_colour_viridis_c(option = "turbo") + 
+  ggtitle("tSNE (BH) on trajectory")
 ```
 
 t-SNE does a better job of recovering the branching trajectory structure.
@@ -298,7 +303,8 @@ ggplot(
   mapping = aes(x = tSNE1, y = tSNE2)
 ) +
   geom_point(mapping = aes(colour = cluster), alpha = 0.5, size = 0.25) +
-  theme_bw()
+  theme_bw() +
+  ggtitle("tSNE on pre-computed kNN (version 1)")
 ```
 
 Now we can quickly re-run with different t-SNE parameters without repeating the
@@ -324,7 +330,8 @@ ggplot(
   mapping = aes(x = tSNE1, y = tSNE2)
 ) +
   geom_point(mapping = aes(colour = cluster), alpha = 0.5, size = 0.25) +
-  theme_bw()
+  theme_bw() +
+  ggtitle("tSNE on pre-computed kNN (version 2)")
 ```
 
 ## FFT-accelerated t-SNE
@@ -343,7 +350,6 @@ situations of ≥ 100,000 samples and more.
 
 tsne_fft <- tsne(
   data = cluster_data$data,
-  knn_method = "balltree",
   perplexity = 30,
   approx_type = "fft",
   seed = 42L
@@ -358,7 +364,8 @@ ggplot(
   mapping = aes(x = tSNE1, y = tSNE2)
 ) +
   geom_point(mapping = aes(colour = cluster), alpha = 0.5, size = 0.25) +
-  theme_bw()
+  theme_bw()  + 
+  ggtitle("tSNE (FFT) on cluster data")
 ```
 
 The embeddings are qualitatively similar to the BH version, with the FFT
@@ -394,7 +401,6 @@ microbenchmark::microbenchmark(
     tsne(
       data = benchmark_data$data,
       perplexity = 30,
-      knn_method = "balltree",
       approx_type = "bh",
       seed = 42L,
       .verbose = FALSE
@@ -420,7 +426,6 @@ microbenchmark::microbenchmark(
     tsne(
       data = benchmark_data_large$data,
       perplexity = 30,
-      knn_method = "balltree",
       approx_type = "bh",
       seed = 42L,
       .verbose = FALSE
@@ -430,7 +435,6 @@ microbenchmark::microbenchmark(
     tsne(
       data = benchmark_data_large$data,
       perplexity = 30,
-      knn_method = "balltree",
       approx_type = "fft",
       seed = 42L,
       .verbose = FALSE

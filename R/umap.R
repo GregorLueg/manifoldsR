@@ -101,7 +101,7 @@
 #' scale at which embedded points will be spread out. Defaults to `1.0`.
 #' @param knn_method Character. Approximate nearest neighbour algorithm to use.
 #' One of `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, or
-#' `"exhaustive"`. Defaults to `"hnsw"`.
+#' `"exhaustive"`. Defaults to `"balltree"`.
 #' @param nn_params Named list. Nearest neighbour search parameters, see
 #' [params_nn()].
 #' @param umap_params Named list. UMAP algorithm parameters, see
@@ -120,7 +120,7 @@ umap <- function(
   k = 15L,
   min_dist = 0.5,
   spread = 1.0,
-  knn_method = c("hnsw", "annoy", "nndescent", "balltree", "exhaustive"),
+  knn_method = c("balltree", "hnsw", "annoy", "nndescent", "exhaustive"),
   nn_params = params_nn(),
   umap_params = params_umap(),
   seed = 42L,

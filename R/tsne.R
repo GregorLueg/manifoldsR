@@ -57,7 +57,7 @@
 #' interpolation. Defaults to `"bh"`.
 #' @param knn_method Character. Approximate nearest neighbour algorithm to use.
 #' One of `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, or
-#' `"exhaustive"`. Defaults to `"hnsw"`.
+#' `"exhaustive"`. Defaults to `"balltree"`.
 #' @param nn_params Named list. Nearest neighbour search parameters, see
 #' [params_nn()].
 #' @param tsne_params Named list. t-SNE algorithm parameters, see
@@ -75,7 +75,7 @@ tsne <- function(
   n_dim = 2L,
   perplexity = 30.0,
   approx_type = c("bh", "fft"),
-  knn_method = c("hnsw", "annoy", "nndescent", "balltree", "exhaustive"),
+  knn_method = c("balltree", "hnsw", "annoy", "nndescent", "exhaustive"),
   nn_params = params_nn(),
   tsne_params = params_tsne(),
   seed = 42L,

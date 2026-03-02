@@ -25,6 +25,7 @@ algorithm even further.
 library(manifoldsR)
 library(magrittr)
 library(ggplot2)
+library(data.table)
 ```
 
 ## Intro
@@ -91,7 +92,8 @@ ggplot(
   mapping = aes(x = PC1, y = PC2)
 ) +
   geom_point(mapping = aes(colour = cluster), size = 0.25, alpha = 0.5) +
-  theme_bw()
+  theme_bw() +
+  ggtitle("PCA on clustered data")
 ```
 
 PCA does an okay job here; however, several of the clusters are clearly mixed.
@@ -105,7 +107,6 @@ and look at other (faster) optimisers later.
 
 umap_clusters <- umap(
   data = cluster_data$data,
-  knn_method = "balltree", # fast for small data sets
   min_dist = 0.3, # for sgd lower min dist is usually better
   umap_params = params_umap(optimiser = "sgd"),
   k = 15L
@@ -120,7 +121,8 @@ ggplot(
   mapping = aes(x = UMAP1, y = UMAP2)
 ) +
   geom_point(mapping = aes(colour = cluster), alpha = 0.5, size = 0.25) +
-  theme_bw()
+  theme_bw() +
+  ggtitle("UMAP (SGD) on clustered data")
 ```
 
 In this case, UMAP is clearly able to separate out the individual clusters (as
@@ -149,7 +151,8 @@ ggplot(
     alpha = 0.5
   ) +
   scale_fill_viridis_c() +
-  theme_bw()
+  theme_bw() +
+  ggtitle("PCA on swissrole")
 ``` 
 
 PCA clearly captures the Swissrole structure. How does UMAP perform here ... ?
@@ -181,7 +184,8 @@ ggplot(
     alpha = 0.5
   ) +
   scale_fill_viridis_c() +
-  theme_bw()
+  theme_bw() +
+  ggtitle("UMAP on swissrole (SGD)")
 ```
 
 UMAP rips apart the swiss role structure. Due to the nature of the loss, it is
@@ -210,7 +214,8 @@ ggplot(
 ) +
   geom_point(mapping = aes(colour = branch), alpha = 0.5, size = 0.25) +
   theme_bw() +
-  scale_colour_viridis_c(option = "mako")
+  scale_colour_viridis_c(option = "turbo") +
+  ggtitle("PCA on trajectory data")
 ``` 
 
 We can appreciate the branching and the continuum in the data.
@@ -242,7 +247,8 @@ ggplot(
     size = 0.25
   ) +
   theme_bw() +
-  scale_colour_viridis_c(option = "mako")
+  scale_colour_viridis_c(option = "turbo") +
+  ggtitle("UMAP (SGD) on trajectory data")
 ```
 
 Here we observe the clear problem of UMAP. Instead of identifying the continuum
@@ -282,7 +288,8 @@ ggplot(
   mapping = aes(x = UMAP1, y = UMAP2)
 ) +
   geom_point(mapping = aes(colour = cluster), alpha = 0.5, size = 0.25) +
-  theme_bw()
+  theme_bw() +
+  ggtitle("UMAP on pre-computed kNN")
 ```
 
 Let's run quickly with different parameters
@@ -293,6 +300,7 @@ Let's run quickly with different parameters
 umap_clusters_from_knn <- umap(
   data = cluster_data$data,
   knn = precomputed_knn,
+  min_dist = 1.0, # let's make the min_dist bigger
   umap_params = params_umap(optimiser = "sgd"),
   k = 15L
 )
@@ -321,7 +329,6 @@ fast. Let's check out the other optimisers:
 
 umap_clusters <- umap(
   data = cluster_data$data,
-  knn_method = "balltree",
   umap_params = params_umap(optimiser = "adam")
 )
 
@@ -344,8 +351,7 @@ But let's look at the fast version... Parallised Adam (the default):
 #| label: umap - parallel adam
 
 umap_clusters <- umap(
-  data = cluster_data$data,
-  knn_method = "balltree"
+  data = cluster_data$data
 )
 
 umap_clustered_df <- as.data.table(umap_clusters) %>%
@@ -447,7 +453,6 @@ microbenchmark::microbenchmark(
   manifold_umap = {
     umap(
       data = benchmark_data$data,
-      knn_method = "balltree", 
       k = 15L,
       .verbose = FALSE
     ) 
@@ -479,7 +484,6 @@ microbenchmark::microbenchmark(
   manifold_umap = {
     umap(
       data = benchmark_data_2$data,
-      knn_method = "balltree", 
       k = 15L,
       .verbose = FALSE
     ) 

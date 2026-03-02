@@ -6,236 +6,12 @@ library(zeallot)
 rextendr::clean()
 rextendr::document()
 
-# synthetic data ---------------------------------------------------------------
-
-# generate different synthetic data sets
-
-n_samples <- 10000L
-
-swissrole <- rs_data_swiss_role(n_samples = 10000, noise = 0.1, seed = 42L)
-
-c(cluster_data, cluster_membership) %<-%
-  rs_data_clusters(
-    n_samples = n_samples,
-    dim = 32L,
-    n_clusters = 15L,
-    seed = 42L
-  )
-
-## phate -----------------------------------------------------------------------
-
-rextendr::document()
-
-n_samples <- 50000L
-
-c(cluster_data, cluster_membership) %<-%
-  rs_data_clusters(
-    n_samples = n_samples,
-    dim = 32L,
-    n_clusters = 15L,
-    seed = 42L
-  )
-
-c(tree_data, branch_membership) %<-%
-  rs_data_trajectory(
-    n_samples = n_samples,
-    dim = 32L,
-    topology = "bifurcation",
-    cell_trajectories = NULL,
-    noise = 0.25,
-    seed = 42L
-  )
-
-### tree data ------------------------------------------------------------------
-
-tictoc::tic()
-phate_tree <- rs_phate(
-  embd = tree_data,
-  n_dim = 2L,
-  k = 15L,
-  phate_params = list(
-    mds_method = "classic",
-    landmark_method = "spectral",
-    n_landmarks = 1024L
-  ),
-  seed = 42L,
-  verbose = TRUE
-)
-tictoc::toc()
-
-phate_tree_df <- as.data.table(phate_tree) %>%
-  `colnames<-`(c("PHATE1", "PHATE2")) %>%
-  dplyr::mutate(branch = as.factor(branch_membership))
-
-ggplot(
-  data = phate_tree_df,
-  mapping = aes(x = PHATE1, y = PHATE2)
-) +
-  geom_point(mapping = aes(colour = branch), alpha = 0.5, size = 0.25)
-
-### cluster data ---------------------------------------------------------------
-
-phate_cluster <- rs_phate(
-  embd = cluster_data,
-  n_dim = 2L,
-  k = 5L,
-  phate_params = list(
-    mds_method = "dense",
-    n_landmarks = 500L
-  ),
-  seed = 42L,
-  verbose = TRUE
-)
-
-phate_cluster_df <- as.data.table(phate_cluster) %>%
-  `colnames<-`(c("PHATE1", "PHATE2")) %>%
-  dplyr::mutate(branch = as.factor(cluster_membership))
-
-
-ggplot(
-  data = phate_cluster_df,
-  mapping = aes(x = PHATE1, y = PHATE2)
-) +
-  geom_point(mapping = aes(colour = branch))
-
-
-swissrole <- rs_data_swiss_role(n_samples = 1000L, noise = 0.1, seed = 42L)
-
-phate_cluster <- rs_phate(
-  embd = swissrole,
-  n_dim = 2L,
-  k = 25L,
-  phate_params = list(
-    mds_method = "sgd",
-    n_landmarks = 1024L
-  ),
-  seed = 42L,
-  verbose = TRUE
-)
-
-swissrole_df <- as.data.table(phate_cluster) %>%
-  `colnames<-`(c("PHATE1", "PHATE2")) %>%
-  dplyr::mutate(z = swissrole[, 3])
-
-ggplot(
-  data = swissrole_df,
-  mapping = aes(x = PHATE1, y = PHATE2)
-) +
-  geom_point(mapping = aes(colour = z))
-
-
-knn <- generate_knn_graph(
-  data = cluster_data$data,
-  k = k,
-  ann_method = "nndescent",
-  .verbose = FALSE
-)
-
-
-benchmark_data_large <- manifold_synthetic_data(
-  type = "cluster",
-  n_samples = 50000L
-)
-
-if (.Platform$OS.type == "unix") {
-  microbenchmark::microbenchmark(
-    Rtsne = {
-      Rtsne::Rtsne(
-        X = benchmark_data_large$data,
-        dims = 2,
-        perplexity = 30,
-        verbose = FALSE
-      )
-    },
-    manifold_bh = {
-      tsne(
-        data = benchmark_data_large$data,
-        perplexity = 30,
-        approx_type = "bh",
-        seed = 42L,
-        .verbose = FALSE
-      )
-    },
-    manifold_fft = {
-      tsne(
-        data = benchmark_data_large$data,
-        perplexity = 30,
-        approx_type = "fft",
-        seed = 42L,
-        .verbose = FALSE
-      )
-    },
-    times = 1L
-  )
-} else {
-  microbenchmark::microbenchmark(
-    Rtsne = {
-      Rtsne::Rtsne(
-        X = benchmark_data_large$data,
-        dims = 2,
-        perplexity = 30,
-        verbose = FALSE
-      )
-    },
-    manifold_bh = {
-      tsne(
-        data = benchmark_data_large$data,
-        perplexity = 30,
-        approx_type = "bh",
-        seed = 42L,
-        .verbose = FALSE
-      )
-    },
-    times = 1L
-  )
-}
-
-# let's run FFT if possible...
-microbenchmark::microbenchmark(
-  manifold_bh = {
-    tsne(
-      data = benchmark_data_large$data,
-      perplexity = 30,
-      approx_type = "bh",
-      seed = 42L,
-      .verbose = FALSE
-    )
-  },
-  manifold_fft = {
-    tsne(
-      data = benchmark_data_large$data,
-      perplexity = 30,
-      approx_type = "fft",
-      seed = 42L,
-      .verbose = FALSE
-    )
-  },
-  times = 1L
-)
-
-
-library(magick)
-
-img <- image_read("~/Downloads/manifoldsR_logo.png")
-
-info <- image_info(img)
-w <- info$width - 1
-h <- info$height - 1
-
-img <- image_fill(img, "transparent", point = "+1+1", fuzz = 10)
-img <- image_fill(img, "transparent", point = paste0("+", w, "+1"), fuzz = 10)
-img <- image_fill(img, "transparent", point = paste0("+1+", h), fuzz = 10)
-img <- image_fill(img, "transparent", point = paste0("+", w, "+", h), fuzz = 10)
-
-image_write(img, "manifoldsR_sticker.png")
-
-?phateR::phate
-
 benchmark_data <- manifold_synthetic_data(
   type = "trajectory",
-  n_samples = 100000L
+  n_samples = 200000L
 )
 
+tictoc::tic()
 original <- phateR::phate(
   data = benchmark_data$data,
   knn = 15L,
@@ -243,18 +19,21 @@ original <- phateR::phate(
   n.jobs = -1,
   verbose = TRUE
 )
+tictoc::toc()
 
+tictoc::tic()
 manifold <- phate(
   data = benchmark_data$data,
   k = 15L,
-  knn_method = "balltree",
+  knn_method = "nndescent",
   phate_params = params_phate(
     n_landmarks = 2048L,
-    landmark_method = "density"
+    landmark_method = "spectral"
   ),
   seed = 42L,
   .verbose = TRUE
 )
+tictoc::toc()
 
 plot(manifold[, 1], manifold[, 2])
 

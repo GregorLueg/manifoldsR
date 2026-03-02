@@ -33,7 +33,7 @@ articles:
 
 reference:
   - title: "Main functions"
-    desc: "The core functions to generate the embeddings"
+    desc: "The core functions to generate the 2D embeddings"
     contents:
       - tsne
       - umap
@@ -71,14 +71,3 @@ reference:
       - rs_umap
       - rs_umap_from_knn
       - rs_check_cluster_separation
-  - title: "Internal"
-    desc: "Internal helper functions"
-    contents:
-      - checkCellTrajectories
-      - checkNnParams
-      - checkUmapParams
-      - checkTsneParams
-      - assertCellTrajectories
-      - assertNnParams
-      - assertUmapParams
-      - assertTsneParams
