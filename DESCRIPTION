@@ -1,11 +1,51 @@
 Package: manifoldsR
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
+Title: Package for 2D embeddings
+Version: 1.0.0
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+    c(
+        person(
+            given = "Gregor", 
+            family = "Lueg", 
+            email = "gregorlueg@me.com", 
+            role = c("aut", "cre")
+    ),
+        person(
+            given = "Grant", 
+            family = "Neilson", 
+            email = "grant.neilson5@gmail.com",
+            role = c("aut")
+        )
+    )
+Description: 
+    Contains different methods to generate embeddings like UMAP, tSNE and PHATE.
+    Additionally, has methods to generate nearest neighbour searches.
+License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
+biocViews:
+Imports: 
+    checkmate,
+    data.table,
+    ggplot2,
+    magrittr,
+    purrr,
+    rextendr,
+    zeallot
+Config/rextendr/version: 0.4.2
+SystemRequirements: Cargo (Rust's package manager), rustc >= 1.65.0, xz
+Depends: 
+    R (>= 4.2)
+Suggests: 
+    ggplot2,
+    knitr,
+    microbenchmark,
+    phateR,
+    quarto,
+    reticulate,
+    Rtsne,
+    tinytest,
+    umap,
+    uwot
+VignetteBuilder: quarto
+URL: https://gregorlueg.github.io/manifoldsR/
