@@ -1,0 +1,179 @@
+# manifoldsR
+
+![r_package](https://img.shields.io/badge/R_package-0.0.1.0-orange)[![License:
+MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![pkgdown](https://img.shields.io/badge/pkgdown-website-1b5e9f?logo=github)](https://gregorlueg.github.io/manifoldsR/)
+
+![manifoldsR logo](reference/figures/manifoldsR_logo.png)
+
+**Fast(!)** manifold learning methods implemented in Rust with R
+bindings… For the modern-day single-cell Wannebe Pollock.
+
+## Overview
+
+`manifoldsR` provides high-performance implementations of popular
+dimensionality reduction techniques:
+
+- **UMAP** (Uniform Manifold Approximation and Projection with various
+  optimisers which makes this fast.)
+- **t-SNE** (t-Distributed Stochastic Neighbor Embedding - Barnes-Hut
+  and FFT-accelerated Interpolation-based versions)
+- **PHATE** (Potential of Heat-diffusion for Affinity-based Trajectory
+  Embedding)
+
+The core algorithms are implemented purely in Rust without any kernel
+switching for speed while providing user-friendly R interfaces. The
+optimisations here make them in parts substantially faster than other
+libraries typically used in the R ecosystem to run these methods. The
+backbone here are the Rust crates that enable [approximate nearest
+neighbour searches](https://github.com/GregorLueg/ann-search-rs) and the
+underlying [manifold learning
+methods](https://github.com/GregorLueg/manifolds-rs). The underlying
+philosophy is to strip out most additional features and focus on the
+core mechanics and make them as fast as possible, avoid abstraction
+layers and indirection wherever possible and let llvm do its magic to
+generate fast code.
+
+## Installation
+
+### Prerequisites
+
+This package requires Rust to be installed on your system. If you don’t
+have Rust installed:
+
+**macOS and Linux:**
+
+``` bash
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+
+**Windows:**
+
+Download and run the installer from [rustup.rs](https://rustup.rs/)
+
+After installation, restart your terminal and verify Rust is installed:
+
+``` bash
+rustc --version
+```
+
+### Install manifoldsR
+
+``` r
+# Install from source
+remotes::install_github("GregorLueg/manifoldsR")
+```
+
+## How to use the package … ?
+
+## License
+
+Copyright (c) 2026 manifoldsR authors
+
+Permission is hereby granted, free of charge, to any person obtaining a
+copy of this software and associated documentation files (the
+“Software”), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be included
+in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS
+OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+# Package index
+
+## Main functions
+
+The core functions to generate the 2D embeddings
+
+- [`tsne()`](https://gregorlueg.github.io/manifoldsR/reference/tsne.md)
+  : Rust-based t-SNE
+- [`umap()`](https://gregorlueg.github.io/manifoldsR/reference/umap.md)
+  : Rust-based UMAP
+- [`phate()`](https://gregorlueg.github.io/manifoldsR/reference/phate.md)
+  : Rust-based PHATE
+
+## kNN helpers
+
+Everything and anything around kNN graph generation
+
+- [`generate_knn_graph()`](https://gregorlueg.github.io/manifoldsR/reference/generate_knn_graph.md)
+  : Generate a k-nearest neighbour graph.
+- [`generate_nearest_neigbours_class()`](https://gregorlueg.github.io/manifoldsR/reference/generate_nearest_neigbours_class.md)
+  : Generate a new NearestNeighbours
+- [`get_idx_mat()`](https://gregorlueg.github.io/manifoldsR/reference/get_idx_mat.md)
+  : Get the indices as a matrix
+- [`get_idx_flat()`](https://gregorlueg.github.io/manifoldsR/reference/get_idx_flat.md)
+  : Get the indices as a flat vector
+- [`get_dist_mat()`](https://gregorlueg.github.io/manifoldsR/reference/get_dist_mat.md)
+  : Get the indices as a matrix
+- [`get_dist_flat()`](https://gregorlueg.github.io/manifoldsR/reference/get_dist_flat.md)
+  : Get the distances as a flat vector
+
+## Synthetic data
+
+- [`manifold_synthetic_data()`](https://gregorlueg.github.io/manifoldsR/reference/manifold_synthetic_data.md)
+  : Generate synthetic data for manifold learning
+
+## Params
+
+Wrapper functions around core parameters
+
+- [`params_nn()`](https://gregorlueg.github.io/manifoldsR/reference/params_nn.md)
+  : Wrapper function to generate nearest neighbour parameters
+- [`params_umap()`](https://gregorlueg.github.io/manifoldsR/reference/params_umap.md)
+  : Wrapper function to generate UMAP parameters
+- [`params_tsne()`](https://gregorlueg.github.io/manifoldsR/reference/params_tsne.md)
+  : Wrapper function to generate t-SNE parameters
+- [`params_phate()`](https://gregorlueg.github.io/manifoldsR/reference/params_phate.md)
+  : Wrapper function to generate PHATE parameters
+
+## Rust wrappers
+
+Everything rusty - only use this if you know what you are doing…
+
+- [`rs_approx_nearest_neighbours()`](https://gregorlueg.github.io/manifoldsR/reference/rs_approx_nearest_neighbours.md)
+  : Wrapper around some nearest neighbour searches integrated into
+  manifold-rs
+- [`rs_data_clusters()`](https://gregorlueg.github.io/manifoldsR/reference/rs_data_clusters.md)
+  : Generates clustered data
+- [`rs_data_swiss_role()`](https://gregorlueg.github.io/manifoldsR/reference/rs_data_swiss_role.md)
+  : Generates the SwissRole data
+- [`rs_data_trajectory()`](https://gregorlueg.github.io/manifoldsR/reference/rs_data_trajectory.md)
+  : Generates tree-like data with branches
+- [`rs_phate()`](https://gregorlueg.github.io/manifoldsR/reference/rs_phate.md)
+  : Run PHATE dimensionality reduction
+- [`rs_phate_from_knn()`](https://gregorlueg.github.io/manifoldsR/reference/rs_phate_from_knn.md)
+  : Run PHATE dimensionality reduction from a precomputed kNN graph
+- [`rs_tsne()`](https://gregorlueg.github.io/manifoldsR/reference/rs_tsne.md)
+  : tSNE implementation
+- [`rs_tsne_from_knn()`](https://gregorlueg.github.io/manifoldsR/reference/rs_tsne_from_knn.md)
+  : tSNE implementation
+- [`rs_umap()`](https://gregorlueg.github.io/manifoldsR/reference/rs_umap.md)
+  : UMAP implementation
+- [`rs_umap_from_knn()`](https://gregorlueg.github.io/manifoldsR/reference/rs_umap_from_knn.md)
+  : UMAP implementation
+- [`rs_check_cluster_separation()`](https://gregorlueg.github.io/manifoldsR/reference/rs_check_cluster_separation.md)
+  : Check cluster separation in an embedding
+
+# Articles
+
+### Vignettes
+
+- [Nearest neighbour
+  searches](https://gregorlueg.github.io/manifoldsR/articles/knn_searches.md):
+- [Using
+  UMAP](https://gregorlueg.github.io/manifoldsR/articles/umap.md):
+- [Using
+  t-SNE](https://gregorlueg.github.io/manifoldsR/articles/tsne.md):
+- [Using
+  PHATE](https://gregorlueg.github.io/manifoldsR/articles/phate.md):
