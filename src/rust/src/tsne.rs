@@ -3,7 +3,7 @@ use faer::{Mat, MatRef};
 use manifolds_rs::prelude::*;
 use manifolds_rs::*;
 
-use crate::umap::get_params_nn;
+use crate::utils::get_params_nn;
 
 ////////////
 // Params //
@@ -139,12 +139,13 @@ fn get_params_tsne_optim(r_list: List) -> TsneOptimParams<f32> {
 
 /// Wrapper function into the t-SNE implementation in `manifolds-rs`
 ///
-/// This function uses the Barnes-Hut t-SNE implementation from the
-/// `manifolds-rs` crate.
+/// This function wraps around the `manifolds-rs` function and exposes it to
+/// R via another function.
 ///
 /// ### Params
 ///
 /// * `data` - Input data matrix for t-SNE
+/// * `pre_computed_knn` - Optional pre-computed kNN to be used.
 /// * `n_dim` - Number of dimensions to reduce to (typically 2)
 /// * `approximation` - String. One of `"bh"` for the Barnes Hut approximation
 ///   or `"fft"` for the Fast Fourier Transformation-accelerated one.
@@ -159,6 +160,7 @@ fn get_params_tsne_optim(r_list: List) -> TsneOptimParams<f32> {
 #[allow(clippy::too_many_arguments)]
 pub fn tsne_simple(
     data: MatRef<f32>,
+    pre_computed_knn: PreComputedKnn<f32>,
     n_dim: usize,
     approx_type: &str,
     perplexity: f32,
@@ -184,7 +186,14 @@ pub fn tsne_simple(
         init_range: Some(1e-4),
     };
 
-    let res = tsne(data, None, &tsne_params, approx_type, seed, verbose);
+    let res = tsne(
+        data,
+        pre_computed_knn,
+        &tsne_params,
+        approx_type,
+        seed,
+        verbose,
+    );
 
     let ncol = res.len();
     let nrow = res[0].len();

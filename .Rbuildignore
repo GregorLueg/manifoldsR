@@ -5,3 +5,11 @@
 ^src/rust/target$
 ^src/Makevars$
 ^src/Makevars\.win$
+^vignettes/\.quarto$
+^vignettes/*_files$
+^doc$
+^Meta$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^\.github$

@@ -1,6 +1,6 @@
 Package: manifoldsR
 Title: Package for 2D embeddings
-Version: 0.0.0.9
+Version: 0.0.1.0
 Authors@R: 
     c(
         person(
@@ -17,8 +17,8 @@ Authors@R:
         )
     )
 Description: 
-    Contains different methods to generate embeddings like UMAP, parametric
-    UMAP, etc.
+    Contains different methods to generate embeddings like UMAP, tSNE and PHATE.
+    Additionally, has methods to generate nearest neighbour searches.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -26,10 +26,25 @@ RoxygenNote: 7.3.3
 biocViews:
 Imports: 
     checkmate,
-    rextendr
+    ggplot2,
+    magrittr,
+    purrr,
+    rextendr,
+    zeallot
 Config/rextendr/version: 0.4.2
 SystemRequirements: Cargo (Rust's package manager), rustc >= 1.65.0, xz
 Depends: 
     R (>= 4.2)
 Suggests: 
-    tinytest
+    knitr,
+    ggplot2,
+    microbenchmark,
+    phateR,
+    quarto,
+    reticulate,
+    Rtsne,
+    tinytest,
+    umap,
+    uwot
+VignetteBuilder: quarto
+URL: https://gregorlueg.github.io/manifoldsR/
