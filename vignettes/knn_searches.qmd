@@ -101,10 +101,11 @@ exposed in this package are (+ the exhaustive version above):
 | HNSW | Powerful on large datasets (≥ 500,000), slightly slower index build type, fast queries | Graph-based | Large data sets, small to large dimensionality
 | NNDescent | Another graph-based version, good all-rounder when certain sizes are reached (≥ 100,000) | Graph-based | Medium data sets, small to large dimensionality
 
-manifoldsR defaults to `HNSW`, but you can play around with the parameters & 
+manifoldsR defaults to `Balltree`, but you can play around with the parameters & 
 methods. The package was written with massive scale in mind, but if you are 
 looking at smaller data sets (like in the vignettes), `BallTree` does the job 
-(fast).
+(fast). If you have high dimensional data and/or massive amounts of samples,
+some of the other methods will shine.
 
 ### Speed
 
@@ -316,5 +317,5 @@ for (idx in indices) {
 ```
 
 As you can see, all of these methods are able to (mostly) identify the right 
-neighbours. If you wish to understand more how these methods work, how they
-compare, etc., please check it out [here](https://github.com/GregorLueg/ann-search-rs).
+neighbours (in the right order). If you wish to understand more how these 
+methods work, how they compare, etc., please check this [out](https://github.com/GregorLueg/ann-search-rs).
