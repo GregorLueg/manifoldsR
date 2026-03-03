@@ -26,6 +26,7 @@ RoxygenNote: 7.3.3
 biocViews:
 Imports: 
     checkmate,
+    data.table,
     ggplot2,
     magrittr,
     purrr,
@@ -36,8 +37,8 @@ SystemRequirements: Cargo (Rust's package manager), rustc >= 1.65.0, xz
 Depends: 
     R (>= 4.2)
 Suggests: 
-    knitr,
     ggplot2,
+    knitr,
     microbenchmark,
     phateR,
     quarto,

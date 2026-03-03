@@ -10,7 +10,7 @@ crate-type = ['staticlib']
 name = 'manifoldsr'
 
 [dependencies]
-bixverse-rs = "0.1.1"
+bixverse-rs = "0.1.2"
 extendr-api = '0.8.1'
 faer = "0.23.2"
 faer-entity = "0.20.1"
