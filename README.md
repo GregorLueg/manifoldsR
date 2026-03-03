@@ -71,7 +71,7 @@ and associated vignettes.
 For now the package covers the most common embedding versions. Future 
 features are likely to include:
 
-- Density-preserving versions of UMAP and tSNE, see [Narayan, et al.](https://www.biorxiv.org/content/10.1101/2020.05.12.077776v1)
+- Density-preserving versions of UMAP and tSNE, see [Narayan, et al.](https://www.nature.com/articles/s41587-020-00801-7)
 - PacMap from [Wang et. al.](https://arxiv.org/abs/2012.04456), that should preserve global structure better.
 
 ## License
