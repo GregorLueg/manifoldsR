@@ -392,8 +392,6 @@ local({
     )
   }
   
-  # must come before any py_module_available() call
-  # otherwise reticulate initialises the wrong Python first
   if (!reticulate::py_available()) {
     reticulate::use_virtualenv(env_name, required = TRUE)
   }

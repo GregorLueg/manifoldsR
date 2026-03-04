@@ -13,9 +13,9 @@ knitr:
 # Nearest neighbour searches in manifoldsR
 
 kNN graphs are the core of different manifold learning methods. This vignette
-gives you an intro in the provided methods, the advantages and disadvantages
-of the different methods. The wrappers can be also used to avoid recomputing
-the kNN graph if you wish to test different parameters.
+gives you an intro in the provided methods, plus the advantages and 
+disadvantages of the different methods. The wrappers can be also used to avoid 
+recomputing the kNN graph if you wish to test different parameters.
 
 ```{r}
 #| label: setup
@@ -34,6 +34,8 @@ n_samples <- 1000L
 
 ## Synthetic data
 
+We will generate some synthetic data and test the different methods out.
+
 ```{r}
 #| label: synthetic data
 
@@ -45,9 +47,10 @@ cluster_data <- manifold_synthetic_data(
 
 ## Exhaustive search
 
-This is simples search type... It uses an exhaustive search index under the
-hood with SIMD acceleration. On small data sets, this one might in times be
-even faster than the approximate searches we will discuss subsequently. 
+This is simplest search type... It uses an exhaustive search index under the
+hood with SIMD acceleration over a flat structure for cache locality. 
+On small data sets, this one might in times be even faster than the approximate 
+searches we will discuss subsequently. 
 
 ```{r}
 #| label: exhaustive search
@@ -62,8 +65,8 @@ exhaustive
 ```
 
 There is a set of getters for these classes, see below. An important note is 
-that the indices are 0-based (from Rust), so if you wish to use them in R, you
-need to be aware of this.
+that the indices are *0-based (from Rust)*, so if you wish to use them in R, you
+need to be aware of this!
 
 ```{r}
 #| label: NearestNeigbours getters - indices
@@ -75,7 +78,7 @@ indices_flat <- get_idx_flat(exhaustive)
 indices_mat <- get_idx_mat(exhaustive)
 ```
 
-The distances can also be extracted:
+The distances can also be extracted easily:
 
 ```{r}
 #| label: NearestNeigbours getters - distances
@@ -317,5 +320,5 @@ for (idx in indices) {
 ```
 
 As you can see, all of these methods are able to (mostly) identify the right 
-neighbours (in the right order). If you wish to understand more how these 
+neighbours (in the right order!). If you wish to understand more how these 
 methods work, how they compare, etc., please check this [out](https://github.com/GregorLueg/ann-search-rs).
