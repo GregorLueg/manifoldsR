@@ -12,7 +12,7 @@ author:
   - name: Gregor Lueg
 ---
 
-# UMAP in manifoldR
+# UMAP in manifoldsR
 
 `manifoldsR` provides very rapid implementation of 
 [UMAP](https://arxiv.org/abs/1802.03426), based on the brilliant work in the

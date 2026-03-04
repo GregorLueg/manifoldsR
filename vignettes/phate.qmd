@@ -12,7 +12,7 @@ author:
   - name: Gregor Lueg
 ---
 
-# PHATE in manifoldR
+# PHATE in manifoldsR
 
 `manifoldsR` provides a fast Rust-based implementation of
 [PHATE](https://www.nature.com/articles/s41587-019-0336-3)

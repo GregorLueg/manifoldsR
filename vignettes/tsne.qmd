@@ -12,7 +12,7 @@ author:
   - name: Gregor Lueg
 ---
 
-# t-SNE in manifoldR
+# t-SNE in manifoldsR
 
 `manifoldsR` provides a fast Rust-based implementation of
 [t-SNE](https://www.jmlr.org/papers/v9/vandermaaten08a.html)
