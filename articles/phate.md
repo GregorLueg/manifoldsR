@@ -1,6 +1,6 @@
 # Using PHATE
 
-## PHATE in manifoldR
+## PHATE in manifoldsR
 
 `manifoldsR` provides a fast Rust-based implementation of
 [PHATE](https://www.nature.com/articles/s41587-019-0336-3) (Potential of
@@ -56,8 +56,8 @@ Compared to t-SNE and UMAP, PHATE has a distinct character:
 
 ### Running PHATE
 
-We use the same synthetic datasets as in the t-SNE vignette for direct
-comparison.
+We use the same synthetic datasets as in the UMAP and t-SNE vignette for
+direct comparison.
 
 ``` r
 cluster_data <- manifold_synthetic_data(
@@ -82,7 +82,7 @@ PHATE is not designed for discrete cluster structure. When applied to
 well-separated clusters, the diffusion operator will attempt to connect
 them — expanding and distorting each cluster in the process. This is the
 expected failure mode, and it is worth seeing what it looks like.
-Similar to the others, let’s start with PCA:
+Similar to the others, let’s start first with PCA:
 
 ``` r
 pca_clusters <- prcomp(cluster_data$data)
@@ -126,9 +126,9 @@ ggplot(
 
 ![](phate_files/figure-html/clustered%20data%20-%20phate-1.png)
 
-As expected, the clusters explode outward and are condensed into single
-points. PHATE is trying to lay out a manifold that does not exist in
-this data. If your data looks like this, use t-SNE or UMAP instead.
+As expected, the clusters explode outward and are condensed into nearly
+single points. PHATE is trying to lay out a manifold that does not exist
+in this data. If your data looks like this, use t-SNE or UMAP instead.
 
 #### Swiss role
 
@@ -405,8 +405,6 @@ local({
     )
   }
   
-  # must come before any py_module_available() call
-  # otherwise reticulate initialises the wrong Python first
   if (!reticulate::py_available()) {
     reticulate::use_virtualenv(env_name, required = TRUE)
   }
@@ -460,8 +458,8 @@ microbenchmark::microbenchmark(
 )
 #> Unit: seconds
 #>            expr       min        lq      mean    median        uq       max
-#>          phateR 12.499170 12.499170 12.499170 12.499170 12.499170 12.499170
-#>  manifold_phate  7.374686  7.374686  7.374686  7.374686  7.374686  7.374686
+#>          phateR 11.876596 11.876596 11.876596 11.876596 11.876596 11.876596
+#>  manifold_phate  7.360951  7.360951  7.360951  7.360951  7.360951  7.360951
 #>  neval
 #>      1
 #>      1
@@ -506,11 +504,12 @@ microbenchmark::microbenchmark(
   },
   times = 1L
 )
+#>     SGD-MDS may not have converged: stress changed by -3.0% in final iterations. Consider increasing n_iter or adjusting learning_rate.
 #> Unit: seconds
 #>                     expr      min       lq     mean   median       uq      max
-#>                   phateR 53.40144 53.40144 53.40144 53.40144 53.40144 53.40144
-#>  manifold_phate_spectral 25.66350 25.66350 25.66350 25.66350 25.66350 25.66350
-#>    manifold_phate_random 20.03080 20.03080 20.03080 20.03080 20.03080 20.03080
+#>                   phateR 56.38485 56.38485 56.38485 56.38485 56.38485 56.38485
+#>  manifold_phate_spectral 25.58084 25.58084 25.58084 25.58084 25.58084 25.58084
+#>    manifold_phate_random 22.04878 22.04878 22.04878 22.04878 22.04878 22.04878
 #>  neval
 #>      1
 #>      1

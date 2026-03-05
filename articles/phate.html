@@ -71,7 +71,7 @@
 
 
 
-    <section class="section level2"><h2 id="phate-in-manifoldr">PHATE in manifoldR<a class="anchor" aria-label="anchor" href="#phate-in-manifoldr"></a>
+    <section class="section level2"><h2 id="phate-in-manifoldsr">PHATE in manifoldsR<a class="anchor" aria-label="anchor" href="#phate-in-manifoldsr"></a>
 </h2>
 <p><code>manifoldsR</code> provides a fast Rust-based implementation of <a href="https://www.nature.com/articles/s41587-019-0336-3" class="external-link">PHATE</a> (Potential of Heat-diffusion for Affinity-based Trajectory Embedding), a dimensionality reduction method specifically designed for recovering continuous structure and trajectories in high-dimensional data.</p>
 <div class="cell">
@@ -97,7 +97,7 @@
 <strong>The diffusion time matters.</strong> Too little diffusion and noise dominates; too much and fine structure is washed out. Automatic selection via entropy knee detection works well in practice, but it is worth inspecting whether the chosen <code>t</code> is sensible for your data.</li>
 </ul></section><section class="level2"><h3 id="running-phate">Running PHATE<a class="anchor" aria-label="anchor" href="#running-phate"></a>
 </h3>
-<p>We use the same synthetic datasets as in the t-SNE vignette for direct comparison.</p>
+<p>We use the same synthetic datasets as in the UMAP and t-SNE vignette for direct comparison.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cluster_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/manifold_synthetic_data.html">manifold_synthetic_data</a></span><span class="op">(</span></span>
@@ -117,7 +117,7 @@
 </div>
 <section class="level3"><h4 id="clustered-data">Clustered data<a class="anchor" aria-label="anchor" href="#clustered-data"></a>
 </h4>
-<p>PHATE is not designed for discrete cluster structure. When applied to well-separated clusters, the diffusion operator will attempt to connect them — expanding and distorting each cluster in the process. This is the expected failure mode, and it is worth seeing what it looks like. Similar to the others, let’s start with PCA:</p>
+<p>PHATE is not designed for discrete cluster structure. When applied to well-separated clusters, the diffusion operator will attempt to connect them — expanding and distorting each cluster in the process. This is the expected failure mode, and it is worth seeing what it looks like. Similar to the others, let’s start first with PCA:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pca_clusters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/prcomp.html" class="external-link">prcomp</a></span><span class="op">(</span><span class="va">cluster_data</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
@@ -167,7 +167,7 @@
 </div>
 </div>
 </div>
-<p>As expected, the clusters explode outward and are condensed into single points. PHATE is trying to lay out a manifold that does not exist in this data. If your data looks like this, use t-SNE or UMAP instead.</p>
+<p>As expected, the clusters explode outward and are condensed into nearly single points. PHATE is trying to lay out a manifold that does not exist in this data. If your data looks like this, use t-SNE or UMAP instead.</p>
 </section><section class="level3"><h4 id="swiss-role">Swiss role<a class="anchor" aria-label="anchor" href="#swiss-role"></a>
 </h4>
 <p>The swiss role is a continuous manifold where PHATE should perform meaningfully better than t-SNE or UMAP. The diffusion process captures the smooth geometry of the roll rather than tearing it apart.</p>
@@ -424,8 +424,6 @@
 <span>    <span class="op">)</span></span>
 <span>  <span class="op">}</span></span>
 <span>  </span>
-<span>  <span class="co"># must come before any py_module_available() call</span></span>
-<span>  <span class="co"># otherwise reticulate initialises the wrong Python first</span></span>
 <span>  <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/py_available.html" class="external-link">py_available</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/use_python.html" class="external-link">use_virtualenv</a></span><span class="op">(</span><span class="va">env_name</span>, required <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span>  <span class="op">}</span></span>
@@ -479,8 +477,8 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;            expr       min        lq      mean    median        uq       max</span></span>
-<span><span class="co">#&gt;          phateR 12.499170 12.499170 12.499170 12.499170 12.499170 12.499170</span></span>
-<span><span class="co">#&gt;  manifold_phate  7.374686  7.374686  7.374686  7.374686  7.374686  7.374686</span></span>
+<span><span class="co">#&gt;          phateR 11.876596 11.876596 11.876596 11.876596 11.876596 11.876596</span></span>
+<span><span class="co">#&gt;  manifold_phate  7.360951  7.360951  7.360951  7.360951  7.360951  7.360951</span></span>
 <span><span class="co">#&gt;  neval</span></span>
 <span><span class="co">#&gt;      1</span></span>
 <span><span class="co">#&gt;      1</span></span></code></pre></div>
@@ -524,11 +522,12 @@
 <span>  <span class="op">}</span>,</span>
 <span>  times <span class="op">=</span> <span class="fl">1L</span></span>
 <span><span class="op">)</span></span>
+<span><span class="co">#&gt;     SGD-MDS may not have converged: stress changed by -3.0% in final iterations. Consider increasing n_iter or adjusting learning_rate.</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;                     expr      min       lq     mean   median       uq      max</span></span>
-<span><span class="co">#&gt;                   phateR 53.40144 53.40144 53.40144 53.40144 53.40144 53.40144</span></span>
-<span><span class="co">#&gt;  manifold_phate_spectral 25.66350 25.66350 25.66350 25.66350 25.66350 25.66350</span></span>
-<span><span class="co">#&gt;    manifold_phate_random 20.03080 20.03080 20.03080 20.03080 20.03080 20.03080</span></span>
+<span><span class="co">#&gt;                   phateR 56.38485 56.38485 56.38485 56.38485 56.38485 56.38485</span></span>
+<span><span class="co">#&gt;  manifold_phate_spectral 25.58084 25.58084 25.58084 25.58084 25.58084 25.58084</span></span>
+<span><span class="co">#&gt;    manifold_phate_random 22.04878 22.04878 22.04878 22.04878 22.04878 22.04878</span></span>
 <span><span class="co">#&gt;  neval</span></span>
 <span><span class="co">#&gt;      1</span></span>
 <span><span class="co">#&gt;      1</span></span>

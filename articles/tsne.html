@@ -71,7 +71,7 @@
 
 
 
-    <section class="section level2"><h2 id="t-sne-in-manifoldr">t-SNE in manifoldR<a class="anchor" aria-label="anchor" href="#t-sne-in-manifoldr"></a>
+    <section class="section level2"><h2 id="t-sne-in-manifoldsr">t-SNE in manifoldsR<a class="anchor" aria-label="anchor" href="#t-sne-in-manifoldsr"></a>
 </h2>
 <p><code>manifoldsR</code> provides a fast Rust-based implementation of <a href="https://www.jmlr.org/papers/v9/vandermaaten08a.html" class="external-link">t-SNE</a> (t-Distributed Stochastic Neighbour Embedding), a widely used method for non-linear dimensionality reduction and visualisation. There is additionally the FFT-accelerated Interpolation-based t-SNE version available, based on the brilliant work of <a href="https://www.nature.com/articles/s41592-018-0308-4" class="external-link">George, et al.</a>.</p>
 <div class="cell">
@@ -462,8 +462,8 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;          expr      min       lq     mean   median       uq      max neval</span></span>
-<span><span class="co">#&gt;   manifold_bh 62.91801 62.91801 62.91801 62.91801 62.91801 62.91801     1</span></span>
-<span><span class="co">#&gt;  manifold_fft 25.53238 25.53238 25.53238 25.53238 25.53238 25.53238     1</span></span></code></pre></div>
+<span><span class="co">#&gt;   manifold_bh 63.18588 63.18588 63.18588 63.18588 63.18588 63.18588     1</span></span>
+<span><span class="co">#&gt;  manifold_fft 25.69341 25.69341 25.69341 25.69341 25.69341 25.69341     1</span></span></code></pre></div>
 </div>
 <p>The speed advantage of the Rust implementation comes from a combination of optimised memory layout, aggressive inlining, and the fact that the entire pipeline — kNN construction, probability computation, and gradient descent — runs within the Rust kernel without round-tripping through R. If you like tSNE, but thought it’s too slow… we got you.</p>
 </section></section><script id="quarto-html-after-body" type="application/javascript">

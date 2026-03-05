@@ -1,6 +1,6 @@
 # Using UMAP
 
-## UMAP in manifoldR
+## UMAP in manifoldsR
 
 `manifoldsR` provides very rapid implementation of
 [UMAP](https://arxiv.org/abs/1802.03426), based on the brilliant work in
@@ -388,8 +388,6 @@ local({
     )
   }
   
-  # must come before any py_module_available() call
-  # otherwise reticulate initialises the wrong Python first
   if (!reticulate::py_available()) {
     reticulate::use_virtualenv(env_name, required = TRUE)
   }
@@ -457,17 +455,17 @@ microbenchmark::microbenchmark(
 )
 #> Unit: milliseconds
 #>             expr        min         lq       mean     median         uq
-#>             umap 20843.0105 20843.0105 20843.0105 20843.0105 20843.0105
-#>  umap_reticulate 19529.3134 19529.3134 19529.3134 19529.3134 19529.3134
-#>             uwot  4894.6820  4894.6820  4894.6820  4894.6820  4894.6820
-#>          uwot_v2  3151.1811  3151.1811  3151.1811  3151.1811  3151.1811
-#>    manifold_umap   582.7862   582.7862   582.7862   582.7862   582.7862
+#>             umap 21422.3823 21422.3823 21422.3823 21422.3823 21422.3823
+#>  umap_reticulate 19542.4854 19542.4854 19542.4854 19542.4854 19542.4854
+#>             uwot  5344.4732  5344.4732  5344.4732  5344.4732  5344.4732
+#>          uwot_v2  2746.7001  2746.7001  2746.7001  2746.7001  2746.7001
+#>    manifold_umap   576.8859   576.8859   576.8859   576.8859   576.8859
 #>         max neval
-#>  20843.0105     1
-#>  19529.3134     1
-#>   4894.6820     1
-#>   3151.1811     1
-#>    582.7862     1
+#>  21422.3823     1
+#>  19542.4854     1
+#>   5344.4732     1
+#>   2746.7001     1
+#>    576.8859     1
 ```
 
 We can appreciate that the standard R version is slow (as expected). If
@@ -499,8 +497,8 @@ microbenchmark::microbenchmark(
 )
 #> Unit: seconds
 #>           expr       min        lq      mean    median        uq       max
-#>        uwot_v2 24.047242 24.047242 24.047242 24.047242 24.047242 24.047242
-#>  manifold_umap  7.740157  7.740157  7.740157  7.740157  7.740157  7.740157
+#>        uwot_v2 23.996715 23.996715 23.996715 23.996715 23.996715 23.996715
+#>  manifold_umap  7.822772  7.822772  7.822772  7.822772  7.822772  7.822772
 #>  neval
 #>      1
 #>      1

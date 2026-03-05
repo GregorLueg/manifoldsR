@@ -3,9 +3,9 @@
 ## Nearest neighbour searches in manifoldsR
 
 kNN graphs are the core of different manifold learning methods. This
-vignette gives you an intro in the provided methods, the advantages and
-disadvantages of the different methods. The wrappers can be also used to
-avoid recomputing the kNN graph if you wish to test different
+vignette gives you an intro in the provided methods, plus the advantages
+and disadvantages of the different methods. The wrappers can be also
+used to avoid recomputing the kNN graph if you wish to test different
 parameters.
 
 ``` r
@@ -22,6 +22,8 @@ n_samples <- 1000L
 
 ### Synthetic data
 
+We will generate some synthetic data and test the different methods out.
+
 ``` r
 cluster_data <- manifold_synthetic_data(
   type = "cluster",
@@ -31,10 +33,10 @@ cluster_data <- manifold_synthetic_data(
 
 ### Exhaustive search
 
-This is simples search type… It uses an exhaustive search index under
-the hood with SIMD acceleration. On small data sets, this one might in
-times be even faster than the approximate searches we will discuss
-subsequently.
+This is simplest search type… It uses an exhaustive search index under
+the hood with SIMD acceleration over a flat structure for cache
+locality. On small data sets, this one might in times be even faster
+than the approximate searches we will discuss subsequently.
 
 ``` r
 exhaustive <- generate_knn_graph(
@@ -50,8 +52,8 @@ exhaustive
 ```
 
 There is a set of getters for these classes, see below. An important
-note is that the indices are 0-based (from Rust), so if you wish to use
-them in R, you need to be aware of this.
+note is that the indices are *0-based (from Rust)*, so if you wish to
+use them in R, you need to be aware of this!
 
 ``` r
 # flat representation of the indices
@@ -61,7 +63,7 @@ indices_flat <- get_idx_flat(exhaustive)
 indices_mat <- get_idx_mat(exhaustive)
 ```
 
-The distances can also be extracted:
+The distances can also be extracted easily:
 
 ``` r
 # flat representation of the distances
@@ -86,10 +88,12 @@ this package are (+ the exhaustive version above):
 | HNSW      | Powerful on large datasets (≥ 500,000), slightly slower index build type, fast queries   | Graph-based | Large data sets, small to large dimensionality  |
 | NNDescent | Another graph-based version, good all-rounder when certain sizes are reached (≥ 100,000) | Graph-based | Medium data sets, small to large dimensionality |
 
-manifoldsR defaults to `HNSW`, but you can play around with the
+manifoldsR defaults to `Balltree`, but you can play around with the
 parameters & methods. The package was written with massive scale in
 mind, but if you are looking at smaller data sets (like in the
-vignettes), `BallTree` does the job (fast).
+vignettes), `BallTree` does the job (fast). If you have high dimensional
+data and/or massive amounts of samples, some of the other methods will
+shine.
 
 #### Speed
 
@@ -141,11 +145,11 @@ microbenchmark::microbenchmark(
 )
 #> Unit: milliseconds
 #>        expr       min        lq      mean    median        uq       max neval
-#>  exhaustive  5.027665  5.027665  5.027665  5.027665  5.027665  5.027665     1
-#>       annoy 19.340309 19.340309 19.340309 19.340309 19.340309 19.340309     1
-#>        hnsw 34.565969 34.565969 34.565969 34.565969 34.565969 34.565969     1
-#>    balltree  3.632351  3.632351  3.632351  3.632351  3.632351  3.632351     1
-#>   nndescent 16.878695 16.878695 16.878695 16.878695 16.878695 16.878695     1
+#>  exhaustive  5.014478  5.014478  5.014478  5.014478  5.014478  5.014478     1
+#>       annoy 19.552379 19.552379 19.552379 19.552379 19.552379 19.552379     1
+#>        hnsw 35.367021 35.367021 35.367021 35.367021 35.367021 35.367021     1
+#>    balltree  3.887361  3.887361  3.887361  3.887361  3.887361  3.887361     1
+#>   nndescent 16.741300 16.741300 16.741300 16.741300 16.741300 16.741300     1
 ```
 
 On small datasets, the exhaustive search beats everything. We need to
@@ -205,11 +209,11 @@ microbenchmark::microbenchmark(
 )
 #> Unit: seconds
 #>        expr      min       lq     mean   median       uq      max neval
-#>  exhaustive 8.272245 8.272245 8.272245 8.272245 8.272245 8.272245     1
-#>       annoy 4.752647 4.752647 4.752647 4.752647 4.752647 4.752647     1
-#>        hnsw 3.950733 3.950733 3.950733 3.950733 3.950733 3.950733     1
-#>    balltree 1.410431 1.410431 1.410431 1.410431 1.410431 1.410431     1
-#>   nndescent 2.232046 2.232046 2.232046 2.232046 2.232046 2.232046     1
+#>  exhaustive 8.225819 8.225819 8.225819 8.225819 8.225819 8.225819     1
+#>       annoy 4.428217 4.428217 4.428217 4.428217 4.428217 4.428217     1
+#>        hnsw 4.041711 4.041711 4.041711 4.041711 4.041711 4.041711     1
+#>    balltree 1.496026 1.496026 1.496026 1.496026 1.496026 1.496026     1
+#>   nndescent 2.231353 2.231353 2.231353 2.231353 2.231353 2.231353     1
 ```
 
 We start observing the first pattern, that the approximate nearest
@@ -268,11 +272,11 @@ microbenchmark::microbenchmark(
 )
 #> Unit: seconds
 #>        expr       min        lq      mean    median        uq       max neval
-#>  exhaustive 32.657034 32.657034 32.657034 32.657034 32.657034 32.657034     1
-#>       annoy 13.731270 13.731270 13.731270 13.731270 13.731270 13.731270     1
-#>        hnsw  8.844401  8.844401  8.844401  8.844401  8.844401  8.844401     1
-#>    balltree  4.593687  4.593687  4.593687  4.593687  4.593687  4.593687     1
-#>   nndescent  5.766403  5.766403  5.766403  5.766403  5.766403  5.766403     1
+#>  exhaustive 32.976052 32.976052 32.976052 32.976052 32.976052 32.976052     1
+#>       annoy 13.069195 13.069195 13.069195 13.069195 13.069195 13.069195     1
+#>        hnsw  8.927117  8.927117  8.927117  8.927117  8.927117  8.927117     1
+#>    balltree  5.270100  5.270100  5.270100  5.270100  5.270100  5.270100     1
+#>   nndescent  5.770518  5.770518  5.770518  5.770518  5.770518  5.770518     1
 ```
 
 #### Precision
@@ -313,13 +317,13 @@ for (idx in indices) {
     sprintf("ANN method %s achieves a Recall of %.3f.", idx, recall_i)
   )
 }
-#> [1] "ANN method hnsw achieves a Recall of 0.986."
+#> [1] "ANN method hnsw achieves a Recall of 0.984."
 #> [1] "ANN method annoy achieves a Recall of 1.000."
 #> [1] "ANN method nndescent achieves a Recall of 0.992."
 #> [1] "ANN method balltree achieves a Recall of 0.980."
 ```
 
 As you can see, all of these methods are able to (mostly) identify the
-right neighbours. If you wish to understand more how these methods work,
-how they compare, etc., please check it out
-[here](https://github.com/GregorLueg/ann-search-rs).
+right neighbours (in the right order!). If you wish to understand more
+how these methods work, how they compare, etc., please check this
+[out](https://github.com/GregorLueg/ann-search-rs).

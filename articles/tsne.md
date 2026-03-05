@@ -1,6 +1,6 @@
 # Using t-SNE
 
-## t-SNE in manifoldR
+## t-SNE in manifoldsR
 
 `manifoldsR` provides a fast Rust-based implementation of
 [t-SNE](https://www.jmlr.org/papers/v9/vandermaaten08a.html)
@@ -432,8 +432,8 @@ microbenchmark::microbenchmark(
 )
 #> Unit: seconds
 #>          expr      min       lq     mean   median       uq      max neval
-#>   manifold_bh 62.91801 62.91801 62.91801 62.91801 62.91801 62.91801     1
-#>  manifold_fft 25.53238 25.53238 25.53238 25.53238 25.53238 25.53238     1
+#>   manifold_bh 63.18588 63.18588 63.18588 63.18588 63.18588 63.18588     1
+#>  manifold_fft 25.69341 25.69341 25.69341 25.69341 25.69341 25.69341     1
 ```
 
 The speed advantage of the Rust implementation comes from a combination

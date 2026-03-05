@@ -73,7 +73,7 @@
 
     <section class="section level2"><h2 id="nearest-neighbour-searches-in-manifoldsr">Nearest neighbour searches in manifoldsR<a class="anchor" aria-label="anchor" href="#nearest-neighbour-searches-in-manifoldsr"></a>
 </h2>
-<p>kNN graphs are the core of different manifold learning methods. This vignette gives you an intro in the provided methods, the advantages and disadvantages of the different methods. The wrappers can be also used to avoid recomputing the kNN graph if you wish to test different parameters.</p>
+<p>kNN graphs are the core of different manifold learning methods. This vignette gives you an intro in the provided methods, plus the advantages and disadvantages of the different methods. The wrappers can be also used to avoid recomputing the kNN graph if you wish to test different parameters.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://gregorlueg.github.io/manifoldsR/">manifoldsR</a></span><span class="op">)</span></span></code></pre></div>
@@ -88,6 +88,7 @@
 </div>
 <section class="level2"><h3 id="synthetic-data">Synthetic data<a class="anchor" aria-label="anchor" href="#synthetic-data"></a>
 </h3>
+<p>We will generate some synthetic data and test the different methods out.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cluster_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/manifold_synthetic_data.html">manifold_synthetic_data</a></span><span class="op">(</span></span>
@@ -97,7 +98,7 @@
 </div>
 </section><section class="level2"><h3 id="exhaustive-search">Exhaustive search<a class="anchor" aria-label="anchor" href="#exhaustive-search"></a>
 </h3>
-<p>This is simples search type… It uses an exhaustive search index under the hood with SIMD acceleration. On small data sets, this one might in times be even faster than the approximate searches we will discuss subsequently.</p>
+<p>This is simplest search type… It uses an exhaustive search index under the hood with SIMD acceleration over a flat structure for cache locality. On small data sets, this one might in times be even faster than the approximate searches we will discuss subsequently.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">exhaustive</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_knn_graph.html">generate_knn_graph</a></span><span class="op">(</span></span>
@@ -111,7 +112,7 @@
 <span><span class="co">#&gt;   n_samples:    1000 </span></span>
 <span><span class="co">#&gt;   k_neighbours: 10</span></span></code></pre></div>
 </div>
-<p>There is a set of getters for these classes, see below. An important note is that the indices are 0-based (from Rust), so if you wish to use them in R, you need to be aware of this.</p>
+<p>There is a set of getters for these classes, see below. An important note is that the indices are <em>0-based (from Rust)</em>, so if you wish to use them in R, you need to be aware of this!</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># flat representation of the indices</span></span>
@@ -120,7 +121,7 @@
 <span><span class="co"># as N x idx nearest neigbours matrix</span></span>
 <span><span class="va">indices_mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_idx_mat.html">get_idx_mat</a></span><span class="op">(</span><span class="va">exhaustive</span><span class="op">)</span></span></code></pre></div>
 </div>
-<p>The distances can also be extracted:</p>
+<p>The distances can also be extracted easily:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># flat representation of the distances</span></span>
@@ -172,7 +173,7 @@
 </tr>
 </tbody>
 </table>
-<p>manifoldsR defaults to <code>HNSW</code>, but you can play around with the parameters &amp; methods. The package was written with massive scale in mind, but if you are looking at smaller data sets (like in the vignettes), <code>BallTree</code> does the job (fast).</p>
+<p>manifoldsR defaults to <code>Balltree</code>, but you can play around with the parameters &amp; methods. The package was written with massive scale in mind, but if you are looking at smaller data sets (like in the vignettes), <code>BallTree</code> does the job (fast). If you have high dimensional data and/or massive amounts of samples, some of the other methods will shine.</p>
 <section class="level3"><h4 id="speed">Speed<a class="anchor" aria-label="anchor" href="#speed"></a>
 </h4>
 <p>Let’s just have a look on how they perform on different sizes</p>
@@ -223,11 +224,11 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: milliseconds</span></span>
 <span><span class="co">#&gt;        expr       min        lq      mean    median        uq       max neval</span></span>
-<span><span class="co">#&gt;  exhaustive  5.027665  5.027665  5.027665  5.027665  5.027665  5.027665     1</span></span>
-<span><span class="co">#&gt;       annoy 19.340309 19.340309 19.340309 19.340309 19.340309 19.340309     1</span></span>
-<span><span class="co">#&gt;        hnsw 34.565969 34.565969 34.565969 34.565969 34.565969 34.565969     1</span></span>
-<span><span class="co">#&gt;    balltree  3.632351  3.632351  3.632351  3.632351  3.632351  3.632351     1</span></span>
-<span><span class="co">#&gt;   nndescent 16.878695 16.878695 16.878695 16.878695 16.878695 16.878695     1</span></span></code></pre></div>
+<span><span class="co">#&gt;  exhaustive  5.014478  5.014478  5.014478  5.014478  5.014478  5.014478     1</span></span>
+<span><span class="co">#&gt;       annoy 19.552379 19.552379 19.552379 19.552379 19.552379 19.552379     1</span></span>
+<span><span class="co">#&gt;        hnsw 35.367021 35.367021 35.367021 35.367021 35.367021 35.367021     1</span></span>
+<span><span class="co">#&gt;    balltree  3.887361  3.887361  3.887361  3.887361  3.887361  3.887361     1</span></span>
+<span><span class="co">#&gt;   nndescent 16.741300 16.741300 16.741300 16.741300 16.741300 16.741300     1</span></span></code></pre></div>
 </div>
 <p>On small datasets, the exhaustive search beats everything. We need to build the indices in the other methods, a cost that only makes sense when we have sufficient samples to do this. Otherwise, modern CPUs with SIMD can do the necessary <code>O(N^2)</code> in no time on smaller datasets. What about 50k cells?</p>
 <div class="cell">
@@ -282,11 +283,11 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;        expr      min       lq     mean   median       uq      max neval</span></span>
-<span><span class="co">#&gt;  exhaustive 8.272245 8.272245 8.272245 8.272245 8.272245 8.272245     1</span></span>
-<span><span class="co">#&gt;       annoy 4.752647 4.752647 4.752647 4.752647 4.752647 4.752647     1</span></span>
-<span><span class="co">#&gt;        hnsw 3.950733 3.950733 3.950733 3.950733 3.950733 3.950733     1</span></span>
-<span><span class="co">#&gt;    balltree 1.410431 1.410431 1.410431 1.410431 1.410431 1.410431     1</span></span>
-<span><span class="co">#&gt;   nndescent 2.232046 2.232046 2.232046 2.232046 2.232046 2.232046     1</span></span></code></pre></div>
+<span><span class="co">#&gt;  exhaustive 8.225819 8.225819 8.225819 8.225819 8.225819 8.225819     1</span></span>
+<span><span class="co">#&gt;       annoy 4.428217 4.428217 4.428217 4.428217 4.428217 4.428217     1</span></span>
+<span><span class="co">#&gt;        hnsw 4.041711 4.041711 4.041711 4.041711 4.041711 4.041711     1</span></span>
+<span><span class="co">#&gt;    balltree 1.496026 1.496026 1.496026 1.496026 1.496026 1.496026     1</span></span>
+<span><span class="co">#&gt;   nndescent 2.231353 2.231353 2.231353 2.231353 2.231353 2.231353     1</span></span></code></pre></div>
 </div>
 <p>We start observing the first pattern, that the approximate nearest neighbour searches are faster than the exhaustive search. The delta becomes more pronounced with more samples:</p>
 <div class="cell">
@@ -342,11 +343,11 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;        expr       min        lq      mean    median        uq       max neval</span></span>
-<span><span class="co">#&gt;  exhaustive 32.657034 32.657034 32.657034 32.657034 32.657034 32.657034     1</span></span>
-<span><span class="co">#&gt;       annoy 13.731270 13.731270 13.731270 13.731270 13.731270 13.731270     1</span></span>
-<span><span class="co">#&gt;        hnsw  8.844401  8.844401  8.844401  8.844401  8.844401  8.844401     1</span></span>
-<span><span class="co">#&gt;    balltree  4.593687  4.593687  4.593687  4.593687  4.593687  4.593687     1</span></span>
-<span><span class="co">#&gt;   nndescent  5.766403  5.766403  5.766403  5.766403  5.766403  5.766403     1</span></span></code></pre></div>
+<span><span class="co">#&gt;  exhaustive 32.976052 32.976052 32.976052 32.976052 32.976052 32.976052     1</span></span>
+<span><span class="co">#&gt;       annoy 13.069195 13.069195 13.069195 13.069195 13.069195 13.069195     1</span></span>
+<span><span class="co">#&gt;        hnsw  8.927117  8.927117  8.927117  8.927117  8.927117  8.927117     1</span></span>
+<span><span class="co">#&gt;    balltree  5.270100  5.270100  5.270100  5.270100  5.270100  5.270100     1</span></span>
+<span><span class="co">#&gt;   nndescent  5.770518  5.770518  5.770518  5.770518  5.770518  5.770518     1</span></span></code></pre></div>
 </div>
 </section><section class="level3"><h4 id="precision">Precision<a class="anchor" aria-label="anchor" href="#precision"></a>
 </h4>
@@ -383,12 +384,12 @@
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"ANN method %s achieves a Recall of %.3f."</span>, <span class="va">idx</span>, <span class="va">recall_i</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span></span>
-<span><span class="co">#&gt; [1] "ANN method hnsw achieves a Recall of 0.986."</span></span>
+<span><span class="co">#&gt; [1] "ANN method hnsw achieves a Recall of 0.984."</span></span>
 <span><span class="co">#&gt; [1] "ANN method annoy achieves a Recall of 1.000."</span></span>
 <span><span class="co">#&gt; [1] "ANN method nndescent achieves a Recall of 0.992."</span></span>
 <span><span class="co">#&gt; [1] "ANN method balltree achieves a Recall of 0.980."</span></span></code></pre></div>
 </div>
-<p>As you can see, all of these methods are able to (mostly) identify the right neighbours. If you wish to understand more how these methods work, how they compare, etc., please check it out <a href="https://github.com/GregorLueg/ann-search-rs" class="external-link">here</a>.</p>
+<p>As you can see, all of these methods are able to (mostly) identify the right neighbours (in the right order!). If you wish to understand more how these methods work, how they compare, etc., please check this <a href="https://github.com/GregorLueg/ann-search-rs" class="external-link">out</a>.</p>
 </section></section></section><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);

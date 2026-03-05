@@ -71,7 +71,7 @@
 
 
 
-    <section class="section level2"><h2 id="umap-in-manifoldr">UMAP in manifoldR<a class="anchor" aria-label="anchor" href="#umap-in-manifoldr"></a>
+    <section class="section level2"><h2 id="umap-in-manifoldsr">UMAP in manifoldsR<a class="anchor" aria-label="anchor" href="#umap-in-manifoldsr"></a>
 </h2>
 <p><code>manifoldsR</code> provides very rapid implementation of <a href="https://arxiv.org/abs/1802.03426" class="external-link">UMAP</a>, based on the brilliant work in the <a href="https://github.com/jlmelville/uwot" class="external-link">uwot</a> package. The aim of this version is to use a Rust-based version, R purely as an interface, and accelerate the algorithm even further.</p>
 <div class="cell">
@@ -436,8 +436,6 @@
 <span>    <span class="op">)</span></span>
 <span>  <span class="op">}</span></span>
 <span>  </span>
-<span>  <span class="co"># must come before any py_module_available() call</span></span>
-<span>  <span class="co"># otherwise reticulate initialises the wrong Python first</span></span>
 <span>  <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/py_available.html" class="external-link">py_available</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/use_python.html" class="external-link">use_virtualenv</a></span><span class="op">(</span><span class="va">env_name</span>, required <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span>  <span class="op">}</span></span>
@@ -505,17 +503,17 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: milliseconds</span></span>
 <span><span class="co">#&gt;             expr        min         lq       mean     median         uq</span></span>
-<span><span class="co">#&gt;             umap 20843.0105 20843.0105 20843.0105 20843.0105 20843.0105</span></span>
-<span><span class="co">#&gt;  umap_reticulate 19529.3134 19529.3134 19529.3134 19529.3134 19529.3134</span></span>
-<span><span class="co">#&gt;             uwot  4894.6820  4894.6820  4894.6820  4894.6820  4894.6820</span></span>
-<span><span class="co">#&gt;          uwot_v2  3151.1811  3151.1811  3151.1811  3151.1811  3151.1811</span></span>
-<span><span class="co">#&gt;    manifold_umap   582.7862   582.7862   582.7862   582.7862   582.7862</span></span>
+<span><span class="co">#&gt;             umap 21422.3823 21422.3823 21422.3823 21422.3823 21422.3823</span></span>
+<span><span class="co">#&gt;  umap_reticulate 19542.4854 19542.4854 19542.4854 19542.4854 19542.4854</span></span>
+<span><span class="co">#&gt;             uwot  5344.4732  5344.4732  5344.4732  5344.4732  5344.4732</span></span>
+<span><span class="co">#&gt;          uwot_v2  2746.7001  2746.7001  2746.7001  2746.7001  2746.7001</span></span>
+<span><span class="co">#&gt;    manifold_umap   576.8859   576.8859   576.8859   576.8859   576.8859</span></span>
 <span><span class="co">#&gt;         max neval</span></span>
-<span><span class="co">#&gt;  20843.0105     1</span></span>
-<span><span class="co">#&gt;  19529.3134     1</span></span>
-<span><span class="co">#&gt;   4894.6820     1</span></span>
-<span><span class="co">#&gt;   3151.1811     1</span></span>
-<span><span class="co">#&gt;    582.7862     1</span></span></code></pre></div>
+<span><span class="co">#&gt;  21422.3823     1</span></span>
+<span><span class="co">#&gt;  19542.4854     1</span></span>
+<span><span class="co">#&gt;   5344.4732     1</span></span>
+<span><span class="co">#&gt;   2746.7001     1</span></span>
+<span><span class="co">#&gt;    576.8859     1</span></span></code></pre></div>
 </div>
 <p>We can appreciate that the standard R version is slow (as expected). If we leverage the Python version (with numba behind the scences) via the reticulate, we can get some speed ups (we need to however first JIT compile the numba parts). However, the uwot v2 version and the manifold are the fastest here. Let’s pit them together against each other in a larger data set.</p>
 <div class="cell">
@@ -541,8 +539,8 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;           expr       min        lq      mean    median        uq       max</span></span>
-<span><span class="co">#&gt;        uwot_v2 24.047242 24.047242 24.047242 24.047242 24.047242 24.047242</span></span>
-<span><span class="co">#&gt;  manifold_umap  7.740157  7.740157  7.740157  7.740157  7.740157  7.740157</span></span>
+<span><span class="co">#&gt;        uwot_v2 23.996715 23.996715 23.996715 23.996715 23.996715 23.996715</span></span>
+<span><span class="co">#&gt;  manifold_umap  7.822772  7.822772  7.822772  7.822772  7.822772  7.822772</span></span>
 <span><span class="co">#&gt;  neval</span></span>
 <span><span class="co">#&gt;      1</span></span>
 <span><span class="co">#&gt;      1</span></span></code></pre></div>
