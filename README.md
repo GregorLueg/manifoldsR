@@ -1,7 +1,7 @@
 # manifoldsR
 
 ![r_package](https://img.shields.io/badge/R_package-0.0.1.0-orange) 
-<!-- [![CI](https://github.com/GregorLueg/genewalkR/actions/workflows/R-cmd-check.yml/badge.svg)](https://github.com/GregorLueg/genewalkR/actions/workflows/R-cmd-check.yml) -->
+[![CI](https://github.com/GregorLueg/genewalkR/actions/workflows/R-cmd-check.yml/badge.svg)](https://github.com/GregorLueg/genewalkR/actions/workflows/R-cmd-check.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![pkgdown](https://img.shields.io/badge/pkgdown-website-1b5e9f?logo=github)](https://gregorlueg.github.io/manifoldsR/)
 
@@ -62,6 +62,17 @@ remotes::install_github("GregorLueg/manifoldsR")
 ```
 
 ## How to use the package ... ?
+
+Please check out the [website](https://gregorlueg.github.io/manifoldsR/index.html)
+and associated vignettes. 
+
+## Roadmap
+
+For now the package covers the most common embedding versions. Future 
+features are likely to include:
+
+- Density-preserving versions of UMAP and tSNE, see [Narayan, et al.](https://www.nature.com/articles/s41587-020-00801-7)
+- PacMap from [Wang et. al.](https://arxiv.org/abs/2012.04456), that should preserve global structure better.
 
 ## License
 

@@ -12,7 +12,7 @@ author:
   - name: Gregor Lueg
 ---
 
-# PHATE in manifoldR
+# PHATE in manifoldsR
 
 `manifoldsR` provides a fast Rust-based implementation of
 [PHATE](https://www.nature.com/articles/s41587-019-0336-3)
@@ -68,7 +68,7 @@ Compared to t-SNE and UMAP, PHATE has a distinct character:
 
 ## Running PHATE
 
-We use the same synthetic datasets as in the t-SNE vignette for direct
+We use the same synthetic datasets as in the UMAP and t-SNE vignette for direct
 comparison.
 
 ```{r}
@@ -96,7 +96,7 @@ PHATE is not designed for discrete cluster structure. When applied to
 well-separated clusters, the diffusion operator will attempt to connect them
 — expanding and distorting each cluster in the process. This is the expected
 failure mode, and it is worth seeing what it looks like. Similar to the others,
-let's start with PCA:
+let's start first with PCA:
 
 ```{r}
 #| label: clustered data - pca
@@ -140,9 +140,9 @@ ggplot(
   ggtitle("PHATE on clustered data")
 ```
 
-As expected, the clusters explode outward and are condensed into single points. 
-PHATE is trying to lay out a manifold that does not exist in this data. If your
-data looks like this, use t-SNE or UMAP instead.
+As expected, the clusters explode outward and are condensed into nearly single 
+points. PHATE is trying to lay out a manifold that does not exist in this data. 
+If your data looks like this, use t-SNE or UMAP instead.
 
 ### Swiss role
 
@@ -414,8 +414,6 @@ local({
     )
   }
   
-  # must come before any py_module_available() call
-  # otherwise reticulate initialises the wrong Python first
   if (!reticulate::py_available()) {
     reticulate::use_virtualenv(env_name, required = TRUE)
   }

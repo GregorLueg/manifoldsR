@@ -12,7 +12,7 @@ author:
   - name: Gregor Lueg
 ---
 
-# UMAP in manifoldR
+# UMAP in manifoldsR
 
 `manifoldsR` provides very rapid implementation of 
 [UMAP](https://arxiv.org/abs/1802.03426), based on the brilliant work in the
@@ -392,8 +392,6 @@ local({
     )
   }
   
-  # must come before any py_module_available() call
-  # otherwise reticulate initialises the wrong Python first
   if (!reticulate::py_available()) {
     reticulate::use_virtualenv(env_name, required = TRUE)
   }
