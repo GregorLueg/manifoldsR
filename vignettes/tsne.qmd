@@ -381,7 +381,7 @@ just too slow to be worth comparing here...
 
 ```{r}
 #| label: benchmark - small
-#| eval: !expr requireNamespace("microbenchmark", quietly = TRUE) && requireNamespace("Rtsne", quietly = TRUE) && requireNamespace("tsne", quietly = TRUE)
+#| eval: !expr requireNamespace("microbenchmark", quietly = TRUE) && requireNamespace("Rtsne", quietly = TRUE) 
 
 benchmark_data <- manifold_synthetic_data(
   type = "cluster",

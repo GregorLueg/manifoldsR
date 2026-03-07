@@ -19,7 +19,7 @@ navbar:
   components:
     github:
       icon: fab fa-github
-      href: https://gregorlueg.github.io/manifoldsR/
+      href: https://github.com/GregorLueg/manifoldsR
       aria-label: GitHub
 
 articles:
