@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -224,11 +224,11 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: milliseconds</span></span>
 <span><span class="co">#&gt;        expr       min        lq      mean    median        uq       max neval</span></span>
-<span><span class="co">#&gt;  exhaustive  5.031257  5.031257  5.031257  5.031257  5.031257  5.031257     1</span></span>
-<span><span class="co">#&gt;       annoy 17.968364 17.968364 17.968364 17.968364 17.968364 17.968364     1</span></span>
-<span><span class="co">#&gt;        hnsw 35.351995 35.351995 35.351995 35.351995 35.351995 35.351995     1</span></span>
-<span><span class="co">#&gt;    balltree  3.890278  3.890278  3.890278  3.890278  3.890278  3.890278     1</span></span>
-<span><span class="co">#&gt;   nndescent 16.421551 16.421551 16.421551 16.421551 16.421551 16.421551     1</span></span></code></pre></div>
+<span><span class="co">#&gt;  exhaustive  4.847738  4.847738  4.847738  4.847738  4.847738  4.847738     1</span></span>
+<span><span class="co">#&gt;       annoy 17.371247 17.371247 17.371247 17.371247 17.371247 17.371247     1</span></span>
+<span><span class="co">#&gt;        hnsw 35.922275 35.922275 35.922275 35.922275 35.922275 35.922275     1</span></span>
+<span><span class="co">#&gt;    balltree  3.586603  3.586603  3.586603  3.586603  3.586603  3.586603     1</span></span>
+<span><span class="co">#&gt;   nndescent 16.986848 16.986848 16.986848 16.986848 16.986848 16.986848     1</span></span></code></pre></div>
 </div>
 <p>On small datasets, the exhaustive search beats everything. We need to build the indices in the other methods, a cost that only makes sense when we have sufficient samples to do this. Otherwise, modern CPUs with SIMD can do the necessary <code>O(N^2)</code> in no time on smaller datasets. What about 50k cells?</p>
 <div class="cell">
@@ -283,11 +283,11 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;        expr      min       lq     mean   median       uq      max neval</span></span>
-<span><span class="co">#&gt;  exhaustive 8.018170 8.018170 8.018170 8.018170 8.018170 8.018170     1</span></span>
-<span><span class="co">#&gt;       annoy 4.574311 4.574311 4.574311 4.574311 4.574311 4.574311     1</span></span>
-<span><span class="co">#&gt;        hnsw 4.083972 4.083972 4.083972 4.083972 4.083972 4.083972     1</span></span>
-<span><span class="co">#&gt;    balltree 1.418573 1.418573 1.418573 1.418573 1.418573 1.418573     1</span></span>
-<span><span class="co">#&gt;   nndescent 2.377810 2.377810 2.377810 2.377810 2.377810 2.377810     1</span></span></code></pre></div>
+<span><span class="co">#&gt;  exhaustive 8.390668 8.390668 8.390668 8.390668 8.390668 8.390668     1</span></span>
+<span><span class="co">#&gt;       annoy 4.198860 4.198860 4.198860 4.198860 4.198860 4.198860     1</span></span>
+<span><span class="co">#&gt;        hnsw 4.018074 4.018074 4.018074 4.018074 4.018074 4.018074     1</span></span>
+<span><span class="co">#&gt;    balltree 1.454881 1.454881 1.454881 1.454881 1.454881 1.454881     1</span></span>
+<span><span class="co">#&gt;   nndescent 2.274216 2.274216 2.274216 2.274216 2.274216 2.274216     1</span></span></code></pre></div>
 </div>
 <p>We start observing the first pattern, that the approximate nearest neighbour searches are faster than the exhaustive search. The delta becomes more pronounced with more samples:</p>
 <div class="cell">
@@ -343,11 +343,11 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;        expr       min        lq      mean    median        uq       max neval</span></span>
-<span><span class="co">#&gt;  exhaustive 31.801685 31.801685 31.801685 31.801685 31.801685 31.801685     1</span></span>
-<span><span class="co">#&gt;       annoy 15.854630 15.854630 15.854630 15.854630 15.854630 15.854630     1</span></span>
-<span><span class="co">#&gt;        hnsw  8.963489  8.963489  8.963489  8.963489  8.963489  8.963489     1</span></span>
-<span><span class="co">#&gt;    balltree  4.595019  4.595019  4.595019  4.595019  4.595019  4.595019     1</span></span>
-<span><span class="co">#&gt;   nndescent  6.107439  6.107439  6.107439  6.107439  6.107439  6.107439     1</span></span></code></pre></div>
+<span><span class="co">#&gt;  exhaustive 32.355299 32.355299 32.355299 32.355299 32.355299 32.355299     1</span></span>
+<span><span class="co">#&gt;       annoy 12.737893 12.737893 12.737893 12.737893 12.737893 12.737893     1</span></span>
+<span><span class="co">#&gt;        hnsw  8.421055  8.421055  8.421055  8.421055  8.421055  8.421055     1</span></span>
+<span><span class="co">#&gt;    balltree  4.636256  4.636256  4.636256  4.636256  4.636256  4.636256     1</span></span>
+<span><span class="co">#&gt;   nndescent  5.494115  5.494115  5.494115  5.494115  5.494115  5.494115     1</span></span></code></pre></div>
 </div>
 </section><section class="level3"><h4 id="precision">Precision<a class="anchor" aria-label="anchor" href="#precision"></a>
 </h4>
@@ -384,7 +384,7 @@
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"ANN method %s achieves a Recall of %.3f."</span>, <span class="va">idx</span>, <span class="va">recall_i</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span></span>
-<span><span class="co">#&gt; [1] "ANN method hnsw achieves a Recall of 0.995."</span></span>
+<span><span class="co">#&gt; [1] "ANN method hnsw achieves a Recall of 0.994."</span></span>
 <span><span class="co">#&gt; [1] "ANN method annoy achieves a Recall of 1.000."</span></span>
 <span><span class="co">#&gt; [1] "ANN method nndescent achieves a Recall of 0.992."</span></span>
 <span><span class="co">#&gt; [1] "ANN method balltree achieves a Recall of 0.980."</span></span></code></pre></div>

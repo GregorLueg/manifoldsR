@@ -1,6 +1,6 @@
 # manifoldsR
 
-![r_package](https://img.shields.io/badge/R_package-0.0.1.0-orange)[![CI](https://github.com/GregorLueg/genewalkR/actions/workflows/R-cmd-check.yml/badge.svg)](https://github.com/GregorLueg/genewalkR/actions/workflows/R-cmd-check.yml)
+![r_package](https://img.shields.io/badge/R_package-0.1.0-orange)[![CI](https://github.com/GregorLueg/genewalkR/actions/workflows/R-cmd-check.yml/badge.svg)](https://github.com/GregorLueg/genewalkR/actions/workflows/R-cmd-check.yml)
 [![License:
 MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![pkgdown](https://img.shields.io/badge/pkgdown-website-1b5e9f?logo=github)](https://gregorlueg.github.io/manifoldsR/)
@@ -69,7 +69,8 @@ remotes::install_github("GregorLueg/manifoldsR")
 
 Please check out the
 [website](https://gregorlueg.github.io/manifoldsR/index.html) and
-associated vignettes.
+associated vignettes. Changelog can be found
+[here](https://github.com/GregorLueg/manifoldsR/blob/main/NEWS.md).
 
 ## Roadmap
 

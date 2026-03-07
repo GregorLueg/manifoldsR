@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -432,8 +432,8 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;         expr       min        lq      mean    median        uq       max neval</span></span>
-<span><span class="co">#&gt;        Rtsne 13.115905 13.115905 13.115905 13.115905 13.115905 13.115905     1</span></span>
-<span><span class="co">#&gt;  manifold_bh  4.387936  4.387936  4.387936  4.387936  4.387936  4.387936     1</span></span></code></pre></div>
+<span><span class="co">#&gt;        Rtsne 12.420229 12.420229 12.420229 12.420229 12.420229 12.420229     1</span></span>
+<span><span class="co">#&gt;  manifold_bh  4.380563  4.380563  4.380563  4.380563  4.380563  4.380563     1</span></span></code></pre></div>
 </div>
 <p>The impact here is massive already. Let’s see what happens with BH and FFT?</p>
 <div class="cell">
@@ -466,8 +466,8 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;          expr      min       lq     mean   median       uq      max neval</span></span>
-<span><span class="co">#&gt;   manifold_bh 65.47365 65.47365 65.47365 65.47365 65.47365 65.47365     1</span></span>
-<span><span class="co">#&gt;  manifold_fft 24.84846 24.84846 24.84846 24.84846 24.84846 24.84846     1</span></span></code></pre></div>
+<span><span class="co">#&gt;   manifold_bh 66.28111 66.28111 66.28111 66.28111 66.28111 66.28111     1</span></span>
+<span><span class="co">#&gt;  manifold_fft 24.82410 24.82410 24.82410 24.82410 24.82410 24.82410     1</span></span></code></pre></div>
 </div>
 <p>The speed advantage of the Rust implementation comes from a combination of optimised memory layout, aggressive inlining, and the fact that the entire pipeline — kNN construction, probability computation, and gradient descent — runs within the Rust kernel without round-tripping through R. If you like tSNE, but thought it’s too slow… we got you.</p>
 </section></section><script id="quarto-html-after-body" type="application/javascript">
