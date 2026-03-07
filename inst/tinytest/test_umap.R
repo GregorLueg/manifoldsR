@@ -72,6 +72,11 @@ umap_res_knn <- umap(
   .verbose = FALSE
 )
 
+umap_res_knn_tests <- check_cluster_separation(
+  embd = umap_res_knn,
+  cluster_membership = cluster_membership
+)
+
 expect_true(
   current = checkmate::testMatrix(
     x = umap_res_knn,
@@ -83,7 +88,8 @@ expect_true(
 )
 
 expect_true(
-  current = mean(umap_res_knn$within_dists) < mean(umap_res_knn$between_dists),
+  current = mean(umap_res_knn_tests$within_dists) <
+    mean(umap_res_knn_tests$between_dists),
   info = "umap correctly separates clusters from pre-computed kNN"
 )
 

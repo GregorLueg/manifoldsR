@@ -361,3 +361,112 @@ params_pacmap <- function(
     phase2_end = phase2_end
   )
 }
+
+## synthetic data --------------------------------------------------------------
+
+#' Parameters for swiss roll data generation
+#'
+#' @param noise Numeric. Amount of noise to add. Must be a positive non-zero
+#' value. Defaults to `0.1`.
+#'
+#' @return A list of parameters for use with [manifold_synthetic_data()].
+#'
+#' @export
+params_swiss_role <- function(noise = 0.1) {
+  # checks
+  checkmate::qassert(noise, "N1(0,)")
+  # return
+  list(noise = noise)
+}
+
+#' Parameters for clustered data generation
+#'
+#' @param n_clusters Integer. Number of clusters to generate. Defaults to
+#' `15L`.
+#'
+#' @return A list of parameters for use with [manifold_synthetic_data()].
+#'
+#' @export
+params_clusters <- function(n_clusters = 15L) {
+  # checks
+  checkmate::qassert(n_clusters, "I1(1,)")
+  # return
+  list(n_clusters = n_clusters)
+}
+
+#' Parameters for trajectory data generation
+#'
+#' @param topology Character. One of `c("bifurcation", "linear",
+#' "combination")`. Ignored if `cell_trajectories` is not `NULL`. Defaults to
+#' `"bifurcation"`.
+#' @param cell_trajectories Optional list. Named list with three equal-length
+#' vectors: `parent` (integer, `NA` for root, zero-indexed), `split_at`
+#' (numeric, fraction along parent where branch starts), and `length` (numeric,
+#' length of the branch). If `NULL`, `topology` is used instead. Defaults to
+#' `NULL`.
+#' @param noise Numeric. Amount of noise to add. Must be a positive non-zero
+#' value. Defaults to `0.1`.
+#'
+#' @return A list of parameters for use with [manifold_synthetic_data()].
+#'
+#' @export
+params_trajectory <- function(
+  topology = c("bifurcation", "linear", "combination"),
+  cell_trajectories = NULL,
+  noise = 0.1
+) {
+  topology <- match.arg(topology)
+
+  # checks
+  checkmate::assertChoice(topology, c("bifurcation", "linear", "combination"))
+  if (!is.null(cell_trajectories)) {
+    assertCellTrajectories(cell_trajectories)
+  }
+  checkmate::qassert(noise, "N1(0,)")
+
+  # return
+  list(
+    topology = topology,
+    cell_trajectories = cell_trajectories,
+    noise = noise
+  )
+}
+
+#' Parameters for hierarchical cluster data generation
+#'
+#' @param n_supergroups Integer. Number of top-level groups. Defaults to `3L`.
+#' @param n_subclusts Integer. Number of subclusters per supergroup. Defaults
+#' to `3L`.
+#' @param supergroup_spread Numeric. Spread of supergroup centres in the
+#' ambient space. Defaults to `15.0`.
+#' @param subcluster_spread Numeric. Spread of subcluster centres around their
+#' supergroup centre. Defaults to `2.0`.
+#' @param point_std Numeric. Within-subcluster Gaussian noise. Defaults to
+#' `0.4`.
+#'
+#' @return A list of parameters for use with [manifold_synthetic_data()].
+#'
+#' @export
+params_hierarchical <- function(
+  n_supergroups = 3L,
+  n_subclusts = 3L,
+  supergroup_spread = 15.0,
+  subcluster_spread = 2.0,
+  point_std = 0.4
+) {
+  # checks
+  checkmate::qassert(n_supergroups, "I1(1,)")
+  checkmate::qassert(n_subclusts, "I1(1,)")
+  checkmate::qassert(supergroup_spread, "N1(0,)")
+  checkmate::qassert(subcluster_spread, "N1(0,)")
+  checkmate::qassert(point_std, "N1(0,)")
+
+  # return
+  list(
+    n_supergroups = n_supergroups,
+    n_subclusts = n_subclusts,
+    supergroup_spread = supergroup_spread,
+    subcluster_spread = subcluster_spread,
+    point_std = point_std
+  )
+}

@@ -46,7 +46,7 @@ pacmap_res <- pacmap(
 )
 
 pacmap_res_tests <- check_cluster_separation(
-  embd = umap_res,
+  embd = pacmap_res,
   cluster_membership = cluster_membership
 )
 
@@ -66,7 +66,12 @@ expect_true(
   info = "pacmap correctly separates clusters"
 )
 
-pacmap_res_from_df <- pacmap(data = cluster_data_df, k = 5L, .verbose = FALSE)
+pacmap_res_from_df <- pacmap(
+  data = cluster_data_df,
+  k = 5L,
+  pacmap_params = pacmap_test_params,
+  .verbose = FALSE
+)
 
 expect_equal(
   current = pacmap_res,
@@ -79,8 +84,14 @@ expect_equal(
 pacmap_res_knn <- pacmap(
   data = cluster_data,
   knn = exhaustive,
+  pacmap_params = pacmap_test_params,
   k = 5L,
   .verbose = FALSE
+)
+
+pacmap_res_tests_knn <- check_cluster_separation(
+  embd = pacmap_res_knn,
+  cluster_membership = cluster_membership
 )
 
 expect_true(
@@ -94,8 +105,8 @@ expect_true(
 )
 
 expect_true(
-  current = mean(pacmap_res_knn$within_dists) <
-    mean(pacmap_res_knn$between_dists),
+  current = mean(pacmap_res_tests_knn$within_dists) <
+    mean(pacmap_res_tests_knn$between_dists),
   info = "pacmac correctly separates clusters  from knn"
 )
 
