@@ -34,33 +34,6 @@
 #'  swiss_role)
 #' }
 #'
-#' @examples
-#' \dontrun{
-#'
-#' # Generate Swiss role data
-#' swiss <- manifold_synthetic_data(
-#'   "swiss_role",
-#'   n_samples = 1000L
-#' )
-#'
-#' # Generate clustered data
-#' clusters <- manifold_synthetic_data(
-#'   "clusters",
-#'   n_samples = 1000L,
-#'   dim = 10L,
-#'   n_clusters = 5L
-#' )
-#'
-#' # Generate trajectory-like data
-#' trajectory <- manifold_synthetic_data(
-#'   "trajectory",
-#'   n_samples = 1000L,
-#'   dim = 10L,
-#'   cell_trajectories = NULL, # use a topology
-#'   topology = "bifurcation"
-#' )
-#' }
-#'
 #' @export
 manifold_synthetic_data <- function(
   type = c("swiss_role", "clusters", "trajectory"),

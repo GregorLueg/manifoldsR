@@ -1,3 +1,7 @@
+//! UMAP wrapper functions to R from manifolds-rs
+
+#![warn(missing_docs)]
+
 use extendr_api::List;
 use faer::{Mat, MatRef};
 use manifolds_rs::prelude::*;
@@ -13,32 +17,25 @@ use crate::utils::get_params_nn;
 ///
 /// Internal representation of various parameters needed for the UMAP
 /// implementation in `manifolds-rs`.
-///
-/// ### Fields
-///
-/// * `knn_method` - Which of the approximate nearest neighbour searches to use.
-/// * `param_knn` - The nearest neighbour parameters that are forwarded to the
-///   approximate nearest neighbour methods.
-/// * `umap_graph` - The UMAP graph generation parameters.
-/// * `init` - Which initialisation to use. One of `"spectral"`, `"pca"`, or
-///   `"random"`.
-/// * `randomised` - When setting initialisation to `"pca"` shall randomised
-///   SVD be used (can make it faster on large data sets).
-/// * `optimiser` - Which of the possible optimisers to use. One of `"sgd"`,
-///   `"adam"` or `"adam_parallel"`.
-/// * `param_optimiser` - The UMAP optimisation parameters.
 #[derive(Debug)]
 pub struct InternalUmapParams {
-    // knn
+    /// Which of the approximate nearest neighbour searches to use.
     pub knn_method: String,
+    /// The nearest neighbour parameters that are forwarded to the approximate
+    /// nearest neighbour methods.
     pub param_knn: NearestNeighbourParams<f32>,
-    // umap graph params
+    /// The UMAP graph generation parameters.
     pub umap_graph: UmapGraphParams<f32>,
-    // embedding initialisation
+    /// Which initialisation to use. One of `"spectral"`, `"pca"`, or
+    /// `"random"`.
     pub init: String,
+    /// When setting initialisation to `"pca"` shall randomised SVD be used (can
+    /// make it faster on large data sets).
     pub randomised: bool,
-    // optimisation of the embedding - normal UMAP
+    /// Which of the possible optimisers to use. One of `"sgd"`, `"adam"` or
+    /// `"adam_parallel"`.
     pub optimiser: String,
+    /// The UMAP optimisation parameters.
     pub param_optimiser: UmapOptimParams<f32>,
 }
 

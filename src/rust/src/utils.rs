@@ -1,3 +1,8 @@
+//! Utility functions like shared parsing of parameter lists, and branching
+//! trajectories.
+
+#![warn(missing_docs)]
+
 use extendr_api::*;
 
 use manifolds_rs::prelude::*;

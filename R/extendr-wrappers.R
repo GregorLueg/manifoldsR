@@ -145,6 +145,45 @@ rs_phate <- function(embd, n_dim, k, phate_params, seed, verbose) .Call(wrap__rs
 #' @export
 rs_phate_from_knn <- function(embd, knn_data, n_dim, k, phate_params, seed, verbose) .Call(wrap__rs_phate_from_knn, embd, knn_data, n_dim, k, phate_params, seed, verbose)
 
+#' PaCMAP implementation
+#'
+#' @description This is the wrapper function into the Rust interface for
+#' PaCMAP.
+#'
+#' @param embd Numerical matrix. The data to use to generate the embeddings.
+#' Should be of dimensions samples x features.
+#' @param n_dim Integer. Number of dimensions to return.
+#' @param k Integer. Number of nearest neighbours to consider.
+#' @param pacmap_params Named list. List that contains all of the key
+#' parameters for the PaCMAP generation.
+#' @param seed Integer. Seed for reproducibility.
+#' @param verbose Boolean. Controls verbosity of the function.
+#'
+#' @return The PaCMAP embeddings.
+#'
+#' @export
+rs_pacmap <- function(embd, n_dim, k, pacmap_params, seed, verbose) .Call(wrap__rs_pacmap, embd, n_dim, k, pacmap_params, seed, verbose)
+
+#' PaCMAP implementation with pre-computed kNN
+#'
+#' @description This is the wrapper function into the Rust interface for
+#' PaCMAP and can use a pre-computed kNN.
+#'
+#' @param embd Numerical matrix. The data to use to generate the embeddings.
+#' Should be of dimensions samples x features.
+#' @param knn_data `NearestNeighbours` class from R.
+#' @param n_dim Integer. Number of dimensions to return.
+#' @param k Integer. Number of nearest neighbours to consider.
+#' @param pacmap_params Named list. List that contains all of the key
+#' parameters for the PaCMAP generation.
+#' @param seed Integer. Seed for reproducibility.
+#' @param verbose Boolean. Controls verbosity of the function.
+#'
+#' @return The PaCMAP embeddings.
+#'
+#' @export
+rs_pacmap_from_knn <- function(embd, knn_data, n_dim, k, pacmap_params, seed, verbose) .Call(wrap__rs_pacmap_from_knn, embd, knn_data, n_dim, k, pacmap_params, seed, verbose)
+
 #' Wrapper around some nearest neighbour searches integrated into manifold-rs
 #'
 #' @param data Numeric matrix. Shape of samples x n_dim for which to get the
@@ -223,6 +262,38 @@ rs_data_clusters <- function(n_samples, dim, n_clusters, seed) .Call(wrap__rs_da
 #'
 #' @export
 rs_data_trajectory <- function(n_samples, dim, topology, cell_trajectories, noise, seed) .Call(wrap__rs_data_trajectory, n_samples, dim, topology, cell_trajectories, noise, seed)
+
+#' Generate hierarchical cluster data
+#'
+#' @description Generates synthetic data with a two-level cluster hierarchy:
+#' `n_supergroups` top-level groups each containing `n_subclusts` tight
+#' subclusters. Supergroup centres are spread far apart; subcluster centres sit
+#' tightly around their supergroup centre.
+#'
+#' Note that the actual number of samples returned may be slightly less than
+#' `n_samples` if it is not evenly divisible by `n_supergroups * n_subclusts`.
+#'
+#' @param n_samples Integer. Total number of points, distributed evenly across
+#' all subclusters.
+#' @param dim Integer. Dimensionality of the ambient space.
+#' @param n_supergroups Integer. Number of top-level groups. Defaults to `3`.
+#' @param n_subclusts Integer. Number of subclusters per supergroup. Defaults
+#' to `3`.
+#' @param supergroup_spread Numeric. Spread of supergroup centres. Defaults to
+#' `15.0`.
+#' @param subcluster_spread Numeric. Spread of subcluster centres around their
+#' supergroup centre. Defaults to `2.0`.
+#' @param point_std Numeric. Within-subcluster Gaussian noise. Defaults to
+#' `0.4`.
+#' @param seed Integer. Seed for reproducibility.
+#'
+#' @return A named list with three elements: `data`, a numeric matrix of shape
+#' samples x `dim`; `supergroup`, an integer vector of supergroup labels
+#' (`0..n_supergroups`) one per sample; and `subgroup`, an integer vector of
+#' subcluster labels (`0..n_supergroups * n_subclusts`) one per sample.
+#'
+#' @export
+rs_data_hierarchical <- function(n_samples, dim, n_supergroups, n_subclusts, supergroup_spread, subcluster_spread, point_std, seed) .Call(wrap__rs_data_hierarchical, n_samples, dim, n_supergroups, n_subclusts, supergroup_spread, subcluster_spread, point_std, seed)
 
 #' Check cluster separation in an embedding
 #'

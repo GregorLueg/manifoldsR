@@ -72,6 +72,21 @@ umap_res_knn <- umap(
   .verbose = FALSE
 )
 
+expect_true(
+  current = checkmate::testMatrix(
+    x = umap_res_knn,
+    mode = "numeric",
+    ncols = 2L,
+    nrow = n_samples
+  ),
+  info = "umap result correctly returned from pre-computed kNN"
+)
+
+expect_true(
+  current = mean(umap_res_knn$within_dists) < mean(umap_res_knn$between_dists),
+  info = "umap correctly separates clusters from pre-computed kNN"
+)
+
 ### different optimisers -------------------------------------------------------
 
 #### sgd -----------------------------------------------------------------------

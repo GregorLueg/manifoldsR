@@ -1,3 +1,7 @@
+//! Rust to R function implementations, exposing the manifolds-rs functionality
+//! to R.
+
+pub mod pacmap;
 pub mod phate;
 pub mod tsne;
 pub mod umap;
@@ -9,6 +13,7 @@ use extendr_api::prelude::*;
 use manifolds_rs::data::synthetic::BranchSpec;
 use manifolds_rs::prelude::*;
 
+use crate::pacmap::*;
 use crate::phate::*;
 use crate::tsne::*;
 use crate::umap::*;
@@ -20,16 +25,21 @@ use crate::utils::*;
 
 extendr_module! {
     mod manifoldsR;
+    // embeddings
     fn rs_umap;
     fn rs_umap_from_knn;
     fn rs_tsne;
     fn rs_tsne_from_knn;
     fn rs_phate;
     fn rs_phate_from_knn;
+    fn rs_pacmap;
+    fn rs_pacmap_from_knn;
+    // various helpers
     fn rs_approx_nearest_neighbours;
     fn rs_data_swiss_role;
     fn rs_data_clusters;
     fn rs_data_trajectory;
+    fn rs_data_hierarchical;
     fn rs_check_cluster_separation;
 }
 
@@ -315,6 +325,77 @@ fn rs_phate_from_knn(
     faer_to_r_matrix(res.as_ref())
 }
 
+////////////
+// PaCMAP //
+////////////
+
+/// PaCMAP implementation
+///
+/// @description This is the wrapper function into the Rust interface for
+/// PaCMAP.
+///
+/// @param embd Numerical matrix. The data to use to generate the embeddings.
+/// Should be of dimensions samples x features.
+/// @param n_dim Integer. Number of dimensions to return.
+/// @param k Integer. Number of nearest neighbours to consider.
+/// @param pacmap_params Named list. List that contains all of the key
+/// parameters for the PaCMAP generation.
+/// @param seed Integer. Seed for reproducibility.
+/// @param verbose Boolean. Controls verbosity of the function.
+///
+/// @return The PaCMAP embeddings.
+///
+/// @export
+#[extendr]
+#[allow(clippy::too_many_arguments)]
+fn rs_pacmap(
+    embd: RMatrix<f64>,
+    n_dim: usize,
+    k: usize,
+    pacmap_params: List,
+    seed: usize,
+    verbose: bool,
+) -> RMatrix<f64> {
+    let embd = r_matrix_to_faer_fp32(&embd);
+    let res = pacmap_manifold(embd.as_ref(), None, n_dim, k, pacmap_params, seed, verbose);
+    faer_to_r_matrix(res.as_ref())
+}
+
+/// PaCMAP implementation with pre-computed kNN
+///
+/// @description This is the wrapper function into the Rust interface for
+/// PaCMAP and can use a pre-computed kNN.
+///
+/// @param embd Numerical matrix. The data to use to generate the embeddings.
+/// Should be of dimensions samples x features.
+/// @param knn_data `NearestNeighbours` class from R.
+/// @param n_dim Integer. Number of dimensions to return.
+/// @param k Integer. Number of nearest neighbours to consider.
+/// @param pacmap_params Named list. List that contains all of the key
+/// parameters for the PaCMAP generation.
+/// @param seed Integer. Seed for reproducibility.
+/// @param verbose Boolean. Controls verbosity of the function.
+///
+/// @return The PaCMAP embeddings.
+///
+/// @export
+#[extendr]
+#[allow(clippy::too_many_arguments)]
+fn rs_pacmap_from_knn(
+    embd: RMatrix<f64>,
+    knn_data: List,
+    n_dim: usize,
+    k: usize,
+    pacmap_params: List,
+    seed: usize,
+    verbose: bool,
+) -> RMatrix<f64> {
+    let embd = r_matrix_to_faer_fp32(&embd);
+    let knn = nearest_neighbours_to_rust(knn_data);
+    let res = pacmap_manifold(embd.as_ref(), knn, n_dim, k, pacmap_params, seed, verbose);
+    faer_to_r_matrix(res.as_ref())
+}
+
 /////////////////////////
 // Synthetic data sets //
 /////////////////////////
@@ -405,6 +486,66 @@ fn rs_data_trajectory(
     let (res, branches) = generate_trajectory(n_samples, &branches, dim, noise, seed as u64);
 
     list!(data = faer_to_r_matrix(res.as_ref()), branches = branches)
+}
+
+/// Generate hierarchical cluster data
+///
+/// @description Generates synthetic data with a two-level cluster hierarchy:
+/// `n_supergroups` top-level groups each containing `n_subclusts` tight
+/// subclusters. Supergroup centres are spread far apart; subcluster centres sit
+/// tightly around their supergroup centre.
+///
+/// Note that the actual number of samples returned may be slightly less than
+/// `n_samples` if it is not evenly divisible by `n_supergroups * n_subclusts`.
+///
+/// @param n_samples Integer. Total number of points, distributed evenly across
+/// all subclusters.
+/// @param dim Integer. Dimensionality of the ambient space.
+/// @param n_supergroups Integer. Number of top-level groups. Defaults to `3`.
+/// @param n_subclusts Integer. Number of subclusters per supergroup. Defaults
+/// to `3`.
+/// @param supergroup_spread Numeric. Spread of supergroup centres. Defaults to
+/// `15.0`.
+/// @param subcluster_spread Numeric. Spread of subcluster centres around their
+/// supergroup centre. Defaults to `2.0`.
+/// @param point_std Numeric. Within-subcluster Gaussian noise. Defaults to
+/// `0.4`.
+/// @param seed Integer. Seed for reproducibility.
+///
+/// @return A named list with three elements: `data`, a numeric matrix of shape
+/// samples x `dim`; `supergroup`, an integer vector of supergroup labels
+/// (`0..n_supergroups`) one per sample; and `subgroup`, an integer vector of
+/// subcluster labels (`0..n_supergroups * n_subclusts`) one per sample.
+///
+/// @export
+#[allow(clippy::too_many_arguments)]
+#[extendr]
+fn rs_data_hierarchical(
+    n_samples: usize,
+    dim: usize,
+    n_supergroups: usize,
+    n_subclusts: usize,
+    supergroup_spread: f64,
+    subcluster_spread: f64,
+    point_std: f64,
+    seed: u64,
+) -> List {
+    let (res, supergroup, subgroup) = generate_hierarchical_clusters(
+        n_samples,
+        dim,
+        n_supergroups,
+        n_subclusts,
+        supergroup_spread,
+        subcluster_spread,
+        point_std,
+        seed,
+    );
+
+    list!(
+        data = faer_to_r_matrix(res.as_ref()),
+        supergroup = supergroup,
+        subgroup = subgroup
+    )
 }
 
 ////////////////////////

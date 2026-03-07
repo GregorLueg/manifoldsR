@@ -277,3 +277,87 @@ params_phate <- function(
     graph_symmetry = graph_symmetry
   )
 }
+
+## pacmap ----------------------------------------------------------------------
+
+#' Wrapper function to generate PaCMAP parameters
+#'
+#' @param n_mid_near Integer. Mid-near pairs per point. Defaults to `2L`.
+#' @param n_further Integer. Further (random) pairs per point. Defaults to
+#' `2L`.
+#' @param mn_candidate_start Integer. Start index into kNN list for mid-near
+#' candidate window. Defaults to `4L`.
+#' @param mn_candidate_end Integer. End index into kNN list for mid-near
+#' candidate window. Defaults to `50L`.
+#' @param init Character. Embedding initialisation. One of `"pca"` or
+#' `"random"`. Defaults to `"pca"`.
+#' @param optimiser Character. One of `"adam"` or `"adam_parallel"`. Defaults
+#' to `"adam_parallel"`.
+#' @param lr Numeric. Adam learning rate. Defaults to `0.01`.
+#' @param n_epochs Integer or `NULL`. Total optimisation epochs. Defaults to
+#' `NULL`, resolved downstream to `450`.
+#' @param beta1 Numeric. Adam first moment decay. Defaults to `0.9`.
+#' @param beta2 Numeric. Adam second moment decay. Defaults to `0.999`.
+#' @param eps Numeric. Adam numerical stability constant. Defaults to `1e-7`.
+#' @param phase1_end Integer or `NULL`. Epoch at which phase 1 ends. Defaults
+#' to `NULL`, resolved downstream to `100`.
+#' @param phase2_end Integer or `NULL`. Epoch at which phase 2 ends. Defaults
+#' to `NULL`, resolved downstream to `200`.
+#'
+#' @returns A list with the PaCMAP parameters.
+#'
+#' @export
+params_pacmap <- function(
+  n_mid_near = 2L,
+  n_further = 2L,
+  mn_candidate_start = 4L,
+  mn_candidate_end = 50L,
+  init = "pca",
+  optimiser = "adam_parallel",
+  lr = 0.01,
+  n_epochs = NULL,
+  beta1 = 0.9,
+  beta2 = 0.999,
+  eps = 1e-7,
+  phase1_end = NULL,
+  phase2_end = NULL
+) {
+  checkmate::qassert(n_mid_near, "I1")
+  checkmate::qassert(n_further, "I1")
+  checkmate::qassert(mn_candidate_start, "I1")
+  checkmate::qassert(mn_candidate_end, "I1")
+  checkmate::assertChoice(init, c("pca", "random"))
+  checkmate::assertChoice(optimiser, c("adam", "adam_parallel"))
+  checkmate::qassert(lr, "N1")
+  checkmate::assert(
+    checkmate::checkNull(n_epochs),
+    checkmate::checkInt(n_epochs, lower = 1L)
+  )
+  checkmate::qassert(beta1, "N1")
+  checkmate::qassert(beta2, "N1")
+  checkmate::qassert(eps, "N1")
+  checkmate::assert(
+    checkmate::checkNull(phase1_end),
+    checkmate::checkInt(phase1_end, lower = 1L)
+  )
+  checkmate::assert(
+    checkmate::checkNull(phase2_end),
+    checkmate::checkInt(phase2_end, lower = 1L)
+  )
+
+  list(
+    n_mid_near = n_mid_near,
+    n_further = n_further,
+    mn_candidate_start = mn_candidate_start,
+    mn_candidate_end = mn_candidate_end,
+    init = init,
+    optimiser = optimiser,
+    lr = lr,
+    n_epochs = n_epochs,
+    beta1 = beta1,
+    beta2 = beta2,
+    eps = eps,
+    phase1_end = phase1_end,
+    phase2_end = phase2_end
+  )
+}

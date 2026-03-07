@@ -16,12 +16,12 @@ faer = "0.23.2"
 faer-entity = "0.20.1"
 
 [target.'cfg(not(windows))'.dependencies]
-manifolds-rs = { version = "0.1.8", features = [
+manifolds-rs = { git = "https://github.com/GregorLueg/manifolds-rs.git", branch = "feat-pacmap", features = [
     "fft_tsne",
 ] }
 
 [target.'cfg(windows)'.dependencies]
-manifolds-rs = { version = "0.1.8" }
+manifolds-rs = { git = "https://github.com/GregorLueg/manifolds-rs.git", branch = "feat-pacmap" }
 
 [profile.test]
 opt-level = 3
