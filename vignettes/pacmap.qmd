@@ -73,7 +73,7 @@ We use the same synthetic datasets as in the other vignettes.
 
 cluster_data <- manifold_synthetic_data(
   type = "cluster",
-  n_samples = 10000L,
+  n_samples = 25000L,
   parameters = params_clusters(n_clusters = 15L)
 )
 
@@ -84,7 +84,7 @@ swissrole_data <- manifold_synthetic_data(
 
 trajectory_data <- manifold_synthetic_data(
   type = "trajectory",
-  n_samples = 10000L
+  n_samples = 25000L
 )
 ```
 
@@ -119,8 +119,9 @@ pacmap_clusters <- pacmap(
   data = cluster_data$data,
   pacmap_params = params_pacmap(
     mn_candidate_start = 4L,
-    mn_candidate_end = 15L,
-    optimiser = "adam_parallel"
+    mn_candidate_end = 25L,
+    n_further = 5L,
+    optimiser = "adam"
   ),
   k = 10L,
   seed = 42L
@@ -136,7 +137,8 @@ ggplot(
 ) +
   geom_point(mapping = aes(colour = cluster), size = 1, alpha = 0.5) +
   theme_bw() +
-  ggtitle("PaCMAP on clustered data")
+  ggtitle("PaCMAP on clustered data") +
+  scale_color_viridis_d(option = "turbo")
 ```
 
 The clusters are well-separated and their relative distances are more
@@ -157,6 +159,7 @@ pacmap_swissrole <- pacmap(
   pacmap_params = params_pacmap(
     mn_candidate_start = 4L,
     mn_candidate_end = 15L,
+    n_further = 5L,
     optimiser = "adam_parallel"
   ),
   seed = 42L
@@ -194,7 +197,8 @@ pacmap_trajectory <- pacmap(
   k = 10L,
   pacmap_params = params_pacmap(
     mn_candidate_start = 4L,
-    mn_candidate_end = 15L,
+    mn_candidate_end = 25L,
+    n_further = 5L,
     optimiser = "adam_parallel"
   ),
   seed = 42L
@@ -213,7 +217,7 @@ ggplot(
   geom_point(
     mapping = aes(colour = branch),
     alpha = 0.5,
-    size = 0.25
+    size = 1
   ) +
   theme_bw() +
   scale_colour_viridis_c(option = "turbo") +
@@ -226,21 +230,20 @@ The hierarchical cluster data is where the difference between PaCMAP and UMAP
 is most stark. UMAP tends to collapse supergroup distances arbitrarily —
 clusters from different supergroups can end up adjacent, and the global
 relational structure is lost. PaCMAP's mid-near phase anchors the supergroup
-distances before local structure is resolved.
+distances before local structure is resolved. Let's generate first the 
+hierarchical data.
+
 ```{r}
 #| label: hierarchical data
 
-hierarchical_data <- rs_data_hierarchical(
-  n_samples = 9000L,
-  dim = 50L,
-  n_supergroups = 3L,
-  n_subclusts = 3L,
-  supergroup_spread = 15.0,
-  subcluster_spread = 2.0,
-  point_std = 0.4,
-  seed = 42L
+hierarchical_data <- manifold_synthetic_data(
+  type = "hierarchical",
+  n_samples = 25000L
 )
 ```
+
+And now let's run PacMAP over that hierarchical data
+
 ```{r}
 #| label: hierarchical data - pacmap
 
@@ -249,7 +252,8 @@ pacmap_hierarchical <- pacmap(
   k = 10L,
   pacmap_params = params_pacmap(
     mn_candidate_start = 4L,
-    mn_candidate_end = 15L,
+    mn_candidate_end = 25L,
+    n_further = 5L,
     optimiser = "adam_parallel"
   ),
   seed = 42L
@@ -257,21 +261,25 @@ pacmap_hierarchical <- pacmap(
 
 pacmap_hierarchical_df <- as.data.table(pacmap_hierarchical) %>%
   `colnames<-`(c("PaCMAP1", "PaCMAP2")) %>%
-  .[, supergroup := as.factor(hierarchical_data$supergroup)] %>%
-  .[, subgroup := as.factor(hierarchical_data$subgroup)]
+  .[, supergroup := as.factor(hierarchical_data$membership$supergroup)] %>%
+  .[, subgroup := as.factor(hierarchical_data$membership$subgroup)]
 
 ggplot(
   data = pacmap_hierarchical_df,
   mapping = aes(x = PaCMAP1, y = PaCMAP2)
 ) +
   geom_point(
-    mapping = aes(colour = supergroup, shape = subgroup),
-    size = 0.5,
+    mapping = aes(colour = subgroup, shape = supergroup),
+    size = 1,
     alpha = 0.5
   ) +
   theme_bw() +
-  ggtitle("PaCMAP on hierarchical data")
+  ggtitle("PaCMAP on hierarchical data") +
+  scale_colour_viridis_d()
 ```
+
+And compare to UMAP
+
 ```{r}
 #| label: hierarchical data - umap
 
@@ -279,25 +287,26 @@ umap_hierarchical <- umap(
   data = hierarchical_data$data,
   k = 15L,
   seed = 42L,
-  .verbose = FALSE
+  .verbose = TRUE
 )
 
 umap_hierarchical_df <- as.data.table(umap_hierarchical) %>%
   `colnames<-`(c("UMAP1", "UMAP2")) %>%
-  .[, supergroup := as.factor(hierarchical_data$supergroup)] %>%
-  .[, subgroup := as.factor(hierarchical_data$subgroup)]
+  .[, supergroup := as.factor(hierarchical_data$membership$supergroup)] %>%
+  .[, subgroup := as.factor(hierarchical_data$membership$subgroup)]
 
 ggplot(
   data = umap_hierarchical_df,
   mapping = aes(x = UMAP1, y = UMAP2)
 ) +
   geom_point(
-    mapping = aes(colour = supergroup, shape = subgroup),
-    size = 0.5,
+    mapping = aes(colour = subgroup, shape = supergroup),
+    size = 1,
     alpha = 0.5
   ) +
   theme_bw() +
-  ggtitle("UMAP on hierarchical data")
+  ggtitle("UMAP on hierarchical data") +
+  scale_colour_viridis_d()
 ```
 
 In the PaCMAP embedding, the three supergroups occupy distinct regions of the
@@ -315,14 +324,14 @@ without repeating the kNN search, precompute the graph first.
 #| label: pacmap - pre-computed kNN
 
 precomputed_knn <- generate_knn_graph(
-  data = trajectory_data$data,
-  k = 10L,
+  data = cluster_data$data,
+  k = 50L, # we need to set this high for pacmap
   knn_method = "balltree",
   .verbose = FALSE
 )
 
 pacmap_from_knn <- pacmap(
-  data = trajectory_data$data,
+  data = cluster_data$data,
   knn = precomputed_knn,
   k = 10L,
   seed = 42L

@@ -91,7 +91,7 @@ ggplot(
   data = pca_clusters_df,
   mapping = aes(x = PC1, y = PC2)
 ) +
-  geom_point(mapping = aes(colour = cluster), size = 0.25, alpha = 0.5) +
+  geom_point(mapping = aes(colour = cluster), size = 0.75, alpha = 0.5) +
   theme_bw() +
   ggtitle("PCA on clustered data")
 ```
@@ -120,7 +120,11 @@ ggplot(
   data = umap_clustered_df,
   mapping = aes(x = UMAP1, y = UMAP2)
 ) +
-  geom_point(mapping = aes(colour = cluster), alpha = 0.5, size = 0.25) +
+  geom_point(
+    mapping = aes(colour = cluster), 
+    alpha = 0.5, 
+    size = 0.75
+  ) +
   theme_bw() +
   ggtitle("UMAP (SGD) on clustered data")
 ```
@@ -212,7 +216,11 @@ ggplot(
   ],
   mapping = aes(x = PC1, y = PC2)
 ) +
-  geom_point(mapping = aes(colour = branch), alpha = 0.5, size = 0.25) +
+  geom_point(
+    mapping = aes(colour = branch), 
+    alpha = 0.5, 
+    size = 0.75
+  ) +
   theme_bw() +
   scale_colour_viridis_c(option = "turbo") +
   ggtitle("PCA on trajectory data")
@@ -244,7 +252,7 @@ ggplot(
   geom_point(
     mapping = aes(colour = branch), 
     alpha = 0.5, 
-    size = 0.25
+    size = 0.75
   ) +
   theme_bw() +
   scale_colour_viridis_c(option = "turbo") +
@@ -287,7 +295,11 @@ ggplot(
   data = umap_clustered_from_knn_df,
   mapping = aes(x = UMAP1, y = UMAP2)
 ) +
-  geom_point(mapping = aes(colour = cluster), alpha = 0.5, size = 0.25) +
+  geom_point(
+    mapping = aes(colour = cluster), 
+    alpha = 0.5, 
+    size = 0.75
+  ) +
   theme_bw() +
   ggtitle("UMAP on pre-computed kNN")
 ```
@@ -313,7 +325,11 @@ ggplot(
   data = umap_clustered_from_knn_df,
   mapping = aes(x = UMAP1, y = UMAP2)
 ) +
-  geom_point(mapping = aes(colour = cluster), alpha = 0.5, size = 0.25) +
+  geom_point(
+    mapping = aes(colour = cluster), 
+    alpha = 0.5, 
+    size = 0.75
+  ) +
   theme_bw()
 ```
 
@@ -340,7 +356,11 @@ ggplot(
   data = umap_clustered_df,
   mapping = aes(x = UMAP1, y = UMAP2)
 ) +
-  geom_point(mapping = aes(colour = cluster), alpha = 0.5, size = 0.25) +
+  geom_point(
+    mapping = aes(colour = cluster), 
+    alpha = 0.5, 
+    size = 0.75
+  ) +
   theme_bw()
 ```
 
@@ -366,7 +386,7 @@ ggplot(
   geom_point(
     mapping = aes(colour = cluster), 
     alpha = 0.5, 
-    size = 0.25
+    size = 0.75
   ) +
   theme_bw()
 ```
