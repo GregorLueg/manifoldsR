@@ -16,12 +16,12 @@ faer = "0.23.2"
 faer-entity = "0.20.1"
 
 [target.'cfg(not(windows))'.dependencies]
-manifolds-rs = { version = "0.1.10", features = [
+manifolds-rs = { version = "0.1.11", features = [
     "fft_tsne",
 ] }
 
 [target.'cfg(windows)'.dependencies]
-manifolds-rs = { version = "0.1.10" }
+manifolds-rs = { version = "0.1.11" }
 
 [profile.test]
 opt-level = 3
