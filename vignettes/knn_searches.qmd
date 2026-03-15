@@ -105,6 +105,7 @@ exposed in this package are (+ the exhaustive version above):
 | Annoy | Classic in single cell, scales well to data sets of up to 500,000 | Tree-based | Large data sets, small dimensionality
 | HNSW | Powerful on large datasets (≥ 500,000), slightly slower index build type, fast queries | Graph-based | Large data sets, small to large dimensionality
 | NNDescent | Another graph-based version, good all-rounder when certain sizes are reached (≥ 100,000) | Graph-based | Medium data sets, small to large dimensionality
+| IVF | A fast cluster-based index powering libraries like FAISS. | Cluster-based | Medium data sets, small to large dimensionality. You can squeeze out aggressively speed with the n_probe parameter if need be.
 
 manifoldsR defaults to `Balltree`, but you can play around with the parameters & 
 methods. The package was written with massive scale in mind, but if you are 
@@ -157,6 +158,18 @@ microbenchmark::microbenchmark(
       data = cluster_data$data,
       k = k,
       knn_method = "nndescent",
+      .verbose = FALSE
+    )
+  },
+  ivf = {
+    generate_knn_graph(
+      data = cluster_data$data,
+      k = k,
+      knn_method = "ivf",
+      nn_params = params_nn(
+        n_list = 3L,
+        n_probes = 2L
+      ),
       .verbose = FALSE
     )
   },
@@ -218,6 +231,14 @@ microbenchmark::microbenchmark(
       .verbose = FALSE
     )
   },
+  ivf = {
+    generate_knn_graph(
+      data = benchmark_data$data,
+      k = k,
+      knn_method = "ivf",
+      .verbose = FALSE
+    )
+  },
   times = 1L # single comparison for speed
 )
 ```
@@ -276,6 +297,14 @@ microbenchmark::microbenchmark(
       .verbose = FALSE
     )
   },
+  ivf = {
+    generate_knn_graph(
+      data = benchmark_data$data,
+      k = k,
+      knn_method = "ivf",
+      .verbose = FALSE
+    )
+  },
   times = 1L # single comparison for speed
 )
 ```
@@ -302,7 +331,7 @@ exhaustive <- generate_knn_graph(
   knn_method = "exhaustive"
 )
 
-indices <- c("hnsw", "annoy", "nndescent", "balltree")
+indices <- c("hnsw", "annoy", "nndescent", "balltree", "ivf")
 
 for (idx in indices) {
   idx_i <- generate_knn_graph(
@@ -323,4 +352,5 @@ for (idx in indices) {
 
 As you can see, all of these methods are able to (mostly) identify the right 
 neighbours (in the right order!). If you wish to understand more how these 
-methods work, how they compare, etc., please check this [out](https://github.com/GregorLueg/ann-search-rs).
+methods work, how they compare, etc., please check this 
+[out](https://github.com/GregorLueg/ann-search-rs).

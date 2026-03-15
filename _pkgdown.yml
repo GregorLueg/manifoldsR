@@ -71,6 +71,7 @@ reference:
       - rs_data_clusters
       - rs_data_swiss_role
       - rs_data_trajectory
+      - rs_data_hierarchical
       - rs_phate
       - rs_phate_from_knn
       - rs_tsne

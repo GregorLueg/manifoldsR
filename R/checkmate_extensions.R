@@ -99,7 +99,9 @@ checkNnParams <- function(x) {
       "diversify_prob",
       "delta",
       "ef_budget",
-      "bt_budget"
+      "bt_budget",
+      "n_list",
+      "n_probes"
     )
   )
   if (!isTRUE(res)) {
@@ -115,7 +117,9 @@ checkNnParams <- function(x) {
     "diversify_prob" = list(type = "fixed", rule = "N1"),
     "delta" = list(type = "fixed", rule = "N1"),
     "ef_budget" = list(type = "nullable_int"),
-    "bt_budget" = list(type = "fixed", rule = "N1")
+    "bt_budget" = list(type = "fixed", rule = "N1"),
+    "n_list" = list(type = "nullable_int"),
+    "n_probes" = list(type = "nullable_int")
   )
   res <- purrr::imap_lgl(x, \(val, name) {
     spec <- rules[[name]]
@@ -136,7 +140,7 @@ checkNnParams <- function(x) {
           "dist_metric must be one of 'cosine' or 'euclidean',",
           "conform to the expected format. dist_metric must be a string,",
           "n_tree/m/ef_construction/ef_search must be integers,",
-          "search_budget/ef_budget must be integers or NULL,",
+          "search_budget/ef_budget/n_list/n_probes must be integers or NULL,",
           "and diversify_prob/delta/bt_budget must be numerics."
         ),
         broken_elem

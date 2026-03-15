@@ -108,10 +108,17 @@ ggplot(
   data = pca_clusters_df,
   mapping = aes(x = PC1, y = PC2)
 ) +
-  geom_point(mapping = aes(colour = cluster), size = 0.25, alpha = 0.5) +
+  geom_point(
+    mapping = aes(colour = cluster), 
+    size = 0.75, 
+    alpha = 0.5
+  ) +
   theme_bw() +
   ggtitle("PCA on clustered data")
 ```
+
+Let's check out how PaCMAP looks like ... ?
+
 ```{r}
 #| label: clustered data - pacmap
 
@@ -119,7 +126,7 @@ pacmap_clusters <- pacmap(
   data = cluster_data$data,
   pacmap_params = params_pacmap(
     mn_candidate_start = 4L,
-    mn_candidate_end = 25L,
+    mn_candidate_end = 25L, # the official paper default is 50L, but usally this looks better
     n_further = 5L,
     optimiser = "adam"
   ),
@@ -135,20 +142,25 @@ ggplot(
   data = pacmap_clusters_df,
   mapping = aes(x = PaCMAP1, y = PaCMAP2)
 ) +
-  geom_point(mapping = aes(colour = cluster), size = 1, alpha = 0.5) +
+  geom_point(
+    mapping = aes(colour = cluster), 
+    size = 0.75, 
+    alpha = 0.5
+  ) +
   theme_bw() +
   ggtitle("PaCMAP on clustered data") +
   scale_color_viridis_d(option = "turbo")
 ```
 
-The clusters are well-separated and their relative distances are more
-interpretable than in a typical UMAP embedding. Points within each cluster are
-tightly grouped without being over-compressed.
+The clusters are well-separated. Another interesting detail is that we have
+some points that are further away from the rest and the actual statistical
+noise of the data is being better captured here.
 
 ### Swiss role
 
 The swiss role tests continuous manifold preservation. PaCMAP should unroll it
 cleanly, with the colour gradient along the roll preserved in the embedding.
+
 ```{r}
 #| label: swissrole data - pacmap
 
@@ -184,11 +196,16 @@ ggplot(
   ggtitle("PaCMAP on swiss role data")
 ```
 
+Also, in this case, PaCMAP can actually identify the underlying Swissrole
+structure better than tSNE or UMAP (please refer to these vignettes to see
+the differences).
+
 ### Trajectory
 
 The trajectory data tests whether branching structure is preserved. PaCMAP's
 mid-near phase should keep the branches at sensible relative positions, though
 PHATE remains the stronger choice if trajectory recovery is the primary goal.
+
 ```{r}
 #| label: trajectory data - pacmap
 
@@ -344,28 +361,35 @@ extending phase 1 to give the global structure more time to settle:
 #| label: pacmap - pre-computed kNN, different params
 
 pacmap_long_phase1 <- pacmap(
-  data = trajectory_data$data,
+  data = cluster_data$data,
   knn = precomputed_knn,
   k = 10L,
-  pacmap_params = params_pacmap(phase1_end = 200L, phase2_end = 350L),
+  pacmap_params = params_pacmap(
+    mn_candidate_start = 4L,
+    mn_candidate_end = 25L,
+    n_further = 5L,
+    phase1_end = 250L, 
+    phase2_end = 400L
+  ),
   seed = 42L
 )
 
 pacmap_long_phase1_df <- as.data.table(pacmap_long_phase1) %>%
   `colnames<-`(c("PaCMAP1", "PaCMAP2")) %>%
-  .[, branch := trajectory_data$membership]
+  .[, membership := as.factor(cluster_data$membership)]
 
 ggplot(
-  data = pacmap_long_phase1_df[
-    sample(1:nrow(pacmap_long_phase1_df), nrow(pacmap_long_phase1_df)),
-  ],
+  data = pacmap_long_phase1_df,
   mapping = aes(x = PaCMAP1, y = PaCMAP2)
 ) +
-  geom_point(mapping = aes(colour = branch), alpha = 0.5, size = 0.25) +
+  geom_point(mapping = aes(colour = membership), alpha = 0.5, size = 0.75) +
   theme_bw() +
-  scale_colour_viridis_c(option = "turbo") +
+  scale_colour_viridis_d(option = "turbo") +
   ggtitle("PaCMAP with extended phase 1")
 ```
+
+We can appreciate that the points are now all squashed into single points. This
+is the overall macrostructure in the data.
 
 ## Benchmarks
 ```{r}
@@ -402,5 +426,4 @@ PaCMAP is generally slower than UMAP on the same data since it processes all
 pairs every epoch rather than sampling. The three-phase schedule with 450 epochs
 (vs UMAP's 200–500) compounds this. For most datasets up to ~50k samples this
 is not a concern in practice, but on very large data the difference becomes
-noticeable. If runtime is a constraint, reducing `n_epochs` or switching to
-`adam_parallel` will help.
+noticeable. 

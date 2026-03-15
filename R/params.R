@@ -20,6 +20,10 @@
 #' @param ef_budget Integer or `NULL`. Effort budget for NN descent. Defaults
 #' to `NULL`.
 #' @param bt_budget Float. Budget for ball tree search. Defaults to `0.1`.
+#' @param n_list Optional integer. Number of clusters to use for IVF. If `NULL`,
+#' will default to `sqrt(n)`.
+#' @param n_probes Optional integer. Number of clusters to probe for IVF. If
+#' `NULL`, will default to `sqrt(n_list)`.
 #'
 #' @returns A list with the nearest neighbour parameters.
 #'
@@ -36,7 +40,9 @@ params_nn <- function(
   diversify_prob = 0.0,
   delta = 0.001,
   ef_budget = NULL,
-  bt_budget = 0.1
+  bt_budget = 0.1,
+  n_list = NULL,
+  n_probes = NULL
 ) {
   dist_metric <- match.arg(dist_metric)
 
@@ -52,11 +58,10 @@ params_nn <- function(
   checkmate::qassert(ef_search, "I1")
   checkmate::qassert(diversify_prob, "N1")
   checkmate::qassert(delta, "N1")
-  checkmate::assert(
-    checkmate::checkNull(ef_budget),
-    checkmate::checkInt(ef_budget)
-  )
+  checkmate::qassert(ef_budget, c("I1", "0"))
   checkmate::qassert(bt_budget, "N1")
+  checkmate::qassert(n_list, c("I1", "0"))
+  checkmate::qassert(n_probes, c("I1", "0"))
 
   # results
   list(
@@ -69,7 +74,9 @@ params_nn <- function(
     diversify_prob = diversify_prob,
     delta = delta,
     ef_budget = ef_budget,
-    bt_budget = bt_budget
+    bt_budget = bt_budget,
+    n_list = n_list,
+    n_probes = n_probes
   )
 }
 
