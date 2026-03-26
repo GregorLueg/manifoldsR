@@ -73,6 +73,8 @@
 <strong>t-SNE</strong> (t-Distributed Stochastic Neighbor Embedding - Barnes-Hut and FFT-accelerated Interpolation-based versions)</li>
 <li>
 <strong>PHATE</strong> (Potential of Heat-diffusion for Affinity-based Trajectory Embedding)</li>
+<li>
+<strong>PaCMAP</strong> (Pairwise Controlled Manifold Approximatio)</li>
 </ul>
 <p>The core algorithms are implemented purely in Rust without any kernel switching for speed while providing user-friendly R interfaces. The optimisations here make them in parts substantially faster than other libraries typically used in the R ecosystem to run these methods. The backbone here are the Rust crates that enable <a href="https://github.com/GregorLueg/ann-search-rs" class="external-link">approximate nearest neighbour searches</a> and the underlying <a href="https://github.com/GregorLueg/manifolds-rs" class="external-link">manifold learning methods</a>. The underlying philosophy is to strip out most additional features and focus on the core mechanics and make them as fast as possible, avoid abstraction layers and indirection wherever possible and let llvm do its magic to generate fast code.</p>
 </div>
@@ -110,7 +112,8 @@
 <ul>
 <li>Density-preserving versions of UMAP and tSNE, see <a href="https://www.nature.com/articles/s41587-020-00801-7" class="external-link">Narayan, et al.</a>
 </li>
-<li>PacMap from <a href="https://arxiv.org/abs/2012.04456" class="external-link">Wang et. al.</a>, that should preserve global structure better.</li>
+<li>
+<del>PacMap from <a href="https://arxiv.org/abs/2012.04456" class="external-link">Wang et. al.</a>, that should preserve global structure better.</del> (Done with version 0.1.1)</li>
 </ul>
 </div>
 <div class="section level2">

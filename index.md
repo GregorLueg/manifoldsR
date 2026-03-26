@@ -21,6 +21,7 @@ dimensionality reduction techniques:
   and FFT-accelerated Interpolation-based versions)
 - **PHATE** (Potential of Heat-diffusion for Affinity-based Trajectory
   Embedding)
+- **PaCMAP** (Pairwise Controlled Manifold Approximatio)
 
 The core algorithms are implemented purely in Rust without any kernel
 switching for speed while providing user-friendly R interfaces. The
@@ -79,8 +80,8 @@ features are likely to include:
 
 - Density-preserving versions of UMAP and tSNE, see [Narayan, et
   al.](https://www.nature.com/articles/s41587-020-00801-7)
-- PacMap from [Wang et. al.](https://arxiv.org/abs/2012.04456), that
-  should preserve global structure better.
+- ~~PacMap from [Wang et. al.](https://arxiv.org/abs/2012.04456), that
+  should preserve global structure better.~~ (Done with version 0.1.1)
 
 ## License
 
