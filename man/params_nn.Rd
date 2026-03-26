@@ -14,7 +14,9 @@ params_nn(
   diversify_prob = 0,
   delta = 0.001,
   ef_budget = NULL,
-  bt_budget = 0.1
+  bt_budget = 0.1,
+  n_list = NULL,
+  n_probes = NULL
 )
 }
 \arguments{
@@ -43,6 +45,12 @@ Defaults to \code{0.0}.}
 to \code{NULL}.}
 
 \item{bt_budget}{Float. Budget for ball tree search. Defaults to \code{0.1}.}
+
+\item{n_list}{Optional integer. Number of clusters to use for IVF. If \code{NULL},
+will default to \code{sqrt(n)}.}
+
+\item{n_probes}{Optional integer. Number of clusters to probe for IVF. If
+\code{NULL}, will default to \code{sqrt(n_list)}.}
 }
 \value{
 A list with the nearest neighbour parameters.

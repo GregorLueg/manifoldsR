@@ -108,7 +108,7 @@ ggplot(
   data = pca_clusters_df,
   mapping = aes(x = PC1, y = PC2)
 ) +
-  geom_point(mapping = aes(colour = cluster), size = 0.25, alpha = 0.5) +
+  geom_point(mapping = aes(colour = cluster), size = 0.75, alpha = 0.5) +
   theme_bw() + 
   ggtitle("PCA on cluster data")
 ```
@@ -132,7 +132,7 @@ ggplot(
   data = tsne_clustered_df,
   mapping = aes(x = tSNE1, y = tSNE2)
 ) +
-  geom_point(mapping = aes(colour = cluster), size = 0.25, alpha = 0.5) +
+  geom_point(mapping = aes(colour = cluster), size = 0.75, alpha = 0.5) +
   theme_bw() + 
   ggtitle("tSNE (BH) on cluster data")
 ```
@@ -228,7 +228,7 @@ ggplot(
   ],
   mapping = aes(x = PC1, y = PC2)
 ) +
-  geom_point(mapping = aes(colour = branch), alpha = 0.5, size = 0.25) +
+  geom_point(mapping = aes(colour = branch), alpha = 0.5, size = 0.75) +
   theme_bw() +
   scale_colour_viridis_c(option = "turbo") + 
   ggtitle("PCA on trajectory")
@@ -258,7 +258,7 @@ ggplot(
   geom_point(
     mapping = aes(colour = branch),
     alpha = 0.5,
-    size = 0.25
+    size = 0.75
   ) +
   theme_bw() +
   scale_colour_viridis_c(option = "turbo") + 
@@ -302,7 +302,7 @@ ggplot(
   data = tsne_from_knn_df,
   mapping = aes(x = tSNE1, y = tSNE2)
 ) +
-  geom_point(mapping = aes(colour = cluster), alpha = 0.5, size = 0.25) +
+  geom_point(mapping = aes(colour = cluster), alpha = 0.5, size = 0.75) +
   theme_bw() +
   ggtitle("tSNE on pre-computed kNN (version 1)")
 ```
@@ -329,7 +329,7 @@ ggplot(
   data = tsne_from_knn_highperplex_df,
   mapping = aes(x = tSNE1, y = tSNE2)
 ) +
-  geom_point(mapping = aes(colour = cluster), alpha = 0.5, size = 0.25) +
+  geom_point(mapping = aes(colour = cluster), alpha = 0.5, size = 0.75) +
   theme_bw() +
   ggtitle("tSNE on pre-computed kNN (version 2)")
 ```
@@ -363,7 +363,7 @@ ggplot(
   data = tsne_fft_df,
   mapping = aes(x = tSNE1, y = tSNE2)
 ) +
-  geom_point(mapping = aes(colour = cluster), alpha = 0.5, size = 0.25) +
+  geom_point(mapping = aes(colour = cluster), alpha = 0.5, size = 0.75) +
   theme_bw()  + 
   ggtitle("tSNE (FFT) on cluster data")
 ```

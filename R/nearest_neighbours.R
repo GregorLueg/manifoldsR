@@ -16,6 +16,8 @@
 #'   algorithm, a good all-rounder that performs well on very large data sets.
 #'   \item `"balltree"` - Ball tree structure for exact search with a
 #'   configurable budget.
+#'   \item `"ivf"` - Inverted file index that leverages k-means clustering
+#'   and probing a few of the clusters.
 #'   \item `"exhaustive"` - Exact nearest neighbour search.
 #' }
 #'
@@ -23,8 +25,9 @@
 #' neighbours on. Rows are observations, columns are features.
 #' @param k Integer. The number of nearest neighbours to compute.
 #' @param knn_method Character. The algorithm to use for nearest neighbour
-#' search. One of `c("hnsw", "annoy", "nndescent", "balltree", "exhaustive")`.
-#' Defaults to `"hnsw"`.
+#' search. One of
+#' `c("hnsw", "annoy", "nndescent", "balltree", "ivf", "exhaustive")`. Defaults
+#' to `"hnsw"`.
 #' @param nn_params List. Output of [manifoldsR::params_nn()]. Controls
 #' algorithm-specific parameters.
 #' @param seed Integer. For reproducibility. Defaults to `42L`.
@@ -37,7 +40,7 @@
 generate_knn_graph <- function(
   data,
   k,
-  knn_method = c("hnsw", "annoy", "nndescent", "balltree", "exhaustive"),
+  knn_method = c("hnsw", "annoy", "nndescent", "balltree", "exhaustive", "ivf"),
   nn_params = params_nn(),
   seed = 42L,
   .verbose = TRUE
@@ -49,7 +52,7 @@ generate_knn_graph <- function(
   checkmate::qassert(k, "I1")
   checkmate::assertChoice(
     knn_method,
-    c("hnsw", "annoy", "nndescent", "balltree", "exhaustive")
+    c("hnsw", "annoy", "nndescent", "balltree", "exhaustive", "ivf")
   )
   assertNnParams(nn_params)
   checkmate::qassert(seed, "I1")

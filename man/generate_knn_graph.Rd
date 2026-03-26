@@ -7,7 +7,7 @@
 generate_knn_graph(
   data,
   k,
-  knn_method = c("hnsw", "annoy", "nndescent", "balltree", "exhaustive"),
+  knn_method = c("hnsw", "annoy", "nndescent", "balltree", "exhaustive", "ivf"),
   nn_params = params_nn(),
   seed = 42L,
   .verbose = TRUE
@@ -20,8 +20,9 @@ neighbours on. Rows are observations, columns are features.}
 \item{k}{Integer. The number of nearest neighbours to compute.}
 
 \item{knn_method}{Character. The algorithm to use for nearest neighbour
-search. One of \code{c("hnsw", "annoy", "nndescent", "balltree", "exhaustive")}.
-Defaults to \code{"hnsw"}.}
+search. One of
+\code{c("hnsw", "annoy", "nndescent", "balltree", "ivf", "exhaustive")}. Defaults
+to \code{"hnsw"}.}
 
 \item{nn_params}{List. Output of \code{\link[=params_nn]{params_nn()}}. Controls
 algorithm-specific parameters.}
@@ -48,6 +49,8 @@ to index but querying on large data sets can be slow.
 algorithm, a good all-rounder that performs well on very large data sets.
 \item \code{"balltree"} - Ball tree structure for exact search with a
 configurable budget.
+\item \code{"ivf"} - Inverted file index that leverages k-means clustering
+and probing a few of the clusters.
 \item \code{"exhaustive"} - Exact nearest neighbour search.
 }
 }

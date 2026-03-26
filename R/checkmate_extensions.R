@@ -99,7 +99,9 @@ checkNnParams <- function(x) {
       "diversify_prob",
       "delta",
       "ef_budget",
-      "bt_budget"
+      "bt_budget",
+      "n_list",
+      "n_probes"
     )
   )
   if (!isTRUE(res)) {
@@ -115,7 +117,9 @@ checkNnParams <- function(x) {
     "diversify_prob" = list(type = "fixed", rule = "N1"),
     "delta" = list(type = "fixed", rule = "N1"),
     "ef_budget" = list(type = "nullable_int"),
-    "bt_budget" = list(type = "fixed", rule = "N1")
+    "bt_budget" = list(type = "fixed", rule = "N1"),
+    "n_list" = list(type = "nullable_int"),
+    "n_probes" = list(type = "nullable_int")
   )
   res <- purrr::imap_lgl(x, \(val, name) {
     spec <- rules[[name]]
@@ -136,7 +140,7 @@ checkNnParams <- function(x) {
           "dist_metric must be one of 'cosine' or 'euclidean',",
           "conform to the expected format. dist_metric must be a string,",
           "n_tree/m/ef_construction/ef_search must be integers,",
-          "search_budget/ef_budget must be integers or NULL,",
+          "search_budget/ef_budget/n_list/n_probes must be integers or NULL,",
           "and diversify_prob/delta/bt_budget must be numerics."
         ),
         broken_elem
@@ -440,3 +444,103 @@ checkPhateParams <- function(x) {
 #'
 #' @keywords internal
 assertPhateParams <- checkmate::makeAssertionFunction(checkPhateParams)
+
+## pacmap ----------------------------------------------------------------------
+
+#' Check PaCMAP parameters
+#'
+#' @description Checkmate extension for checking the PaCMAP parameters.
+#'
+#' @param x The list to check.
+#'
+#' @return `TRUE` if the check was successful, otherwise an error message.
+#'
+#' @keywords internal
+checkPacmapParams <- function(x) {
+  res <- checkmate::checkList(x)
+  if (!isTRUE(res)) {
+    return(res)
+  }
+
+  res <- checkmate::checkNames(
+    names(x),
+    must.include = c(
+      "n_mid_near",
+      "n_further",
+      "mn_candidate_start",
+      "mn_candidate_end",
+      "init",
+      "optimiser",
+      "lr",
+      "n_epochs",
+      "beta1",
+      "beta2",
+      "eps",
+      "phase1_end",
+      "phase2_end"
+    )
+  )
+  if (!isTRUE(res)) {
+    return(res)
+  }
+
+  rules <- list(
+    "n_mid_near" = list(type = "fixed", rule = "I1"),
+    "n_further" = list(type = "fixed", rule = "I1"),
+    "mn_candidate_start" = list(type = "fixed", rule = "I1"),
+    "mn_candidate_end" = list(type = "fixed", rule = "I1"),
+    "init" = list(type = "choice", choices = c("pca", "random")),
+    "optimiser" = list(type = "choice", choices = c("adam", "adam_parallel")),
+    "lr" = list(type = "fixed", rule = "N1"),
+    "n_epochs" = list(type = "nullable_int"),
+    "beta1" = list(type = "fixed", rule = "N1"),
+    "beta2" = list(type = "fixed", rule = "N1"),
+    "eps" = list(type = "fixed", rule = "N1"),
+    "phase1_end" = list(type = "nullable_int"),
+    "phase2_end" = list(type = "nullable_int")
+  )
+
+  res <- purrr::imap_lgl(x, \(val, name) {
+    spec <- rules[[name]]
+    if (spec$type == "choice") {
+      checkmate::testChoice(val, spec$choices)
+    } else if (spec$type == "nullable_int") {
+      is.null(val) || checkmate::qtest(val, "I1")
+    } else {
+      checkmate::qtest(val, spec$rule)
+    }
+  })
+
+  if (!isTRUE(all(res))) {
+    broken_elem <- names(res)[which(!res)][1]
+    return(sprintf(
+      paste(
+        "Element `%s` in PaCMAP params does not conform.",
+        "n_mid_near/n_further/mn_candidate_start/mn_candidate_end must be",
+        "integers, lr/beta1/beta2/eps must be numeric,",
+        "n_epochs/phase1_end/phase2_end must be positive integers or NULL,",
+        "init must be one of 'pca'/'random',",
+        "and optimiser must be one of 'adam'/'adam_parallel'."
+      ),
+      broken_elem
+    ))
+  }
+
+  return(TRUE)
+}
+
+#' Assert PaCMAP parameters
+#'
+#' @description Checkmate extension for asserting the PaCMAP parameters.
+#'
+#' @inheritParams checkPacmapParams
+#'
+#' @param .var.name Name of the checked object to print in assertions. Defaults
+#' to the heuristic implemented in checkmate.
+#' @param add Collection to store assertion messages. See
+#' [checkmate::makeAssertCollection()].
+#'
+#' @return Invisibly returns the checked object if the assertion is successful.
+#'
+#' @keywords internal
+assertPacmapParams <- checkmate::makeAssertionFunction(checkPacmapParams)

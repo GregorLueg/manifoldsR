@@ -111,7 +111,7 @@ ggplot(
   data = pca_clusters_df,
   mapping = aes(x = PC1, y = PC2)
 ) +
-  geom_point(mapping = aes(colour = cluster), size = 0.25, alpha = 0.5) +
+  geom_point(mapping = aes(colour = cluster), size = 0.75, alpha = 0.5) +
   theme_bw() +
   ggtitle("PCA on clustered data")
 ```
@@ -135,7 +135,7 @@ ggplot(
   data = phate_clusters_df,
   mapping = aes(x = PHATE1, y = PHATE2)
 ) +
-  geom_point(mapping = aes(colour = cluster), size = 0.25, alpha = 0.5) +
+  geom_point(mapping = aes(colour = cluster), size = 0.75, alpha = 0.5) +
   theme_bw() +
   ggtitle("PHATE on clustered data")
 ```
@@ -210,7 +210,7 @@ ggplot(
   geom_point(
     mapping = aes(colour = branch),
     alpha = 0.5,
-    size = 0.25
+    size = 0.75
   ) +
   theme_bw() +
   scale_colour_viridis_c(option = "turbo") +
@@ -253,7 +253,7 @@ ggplot(
   ],
   mapping = aes(x = PHATE1, y = PHATE2)
 ) +
-  geom_point(mapping = aes(colour = branch), alpha = 0.5, size = 0.25) +
+  geom_point(mapping = aes(colour = branch), alpha = 0.5, size = 0.75) +
   theme_bw() +
   scale_colour_viridis_c(option = "turbo")  +
   ggtitle("PHATE from kNN graph (version 1)")
@@ -283,7 +283,7 @@ ggplot(
   ],
   mapping = aes(x = PHATE1, y = PHATE2)
 ) +
-  geom_point(mapping = aes(colour = branch), alpha = 0.5, size = 0.25) +
+  geom_point(mapping = aes(colour = branch), alpha = 0.5, size = 0.75) +
   theme_bw() +
   scale_colour_viridis_c(option = "turbo")  +
   ggtitle("PHATE from kNN graph (version 2)")
@@ -348,7 +348,7 @@ ggplot(
   ],
   mapping = aes(x = PHATE1, y = PHATE2)
 ) +
-  geom_point(mapping = aes(colour = branch), alpha = 0.5, size = 0.25) +
+  geom_point(mapping = aes(colour = branch), alpha = 0.5, size = 0.75) +
   theme_bw() +
   scale_colour_viridis_c(option = "turbo") +
   ggtitle("PHATE with 1024 landmarks (spectral)")
@@ -385,7 +385,7 @@ ggplot(
   ],
   mapping = aes(x = PHATE1, y = PHATE2)
 ) +
-  geom_point(mapping = aes(colour = branch), alpha = 0.5, size = 0.25) +
+  geom_point(mapping = aes(colour = branch), alpha = 0.5, size = 0.75) +
   theme_bw() +
   scale_colour_viridis_c(option = "turbo") +
   ggtitle("PHATE with 1024 landmarks (random)")

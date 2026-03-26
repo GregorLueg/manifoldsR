@@ -1,3 +1,8 @@
+//! Utility functions like shared parsing of parameter lists, and branching
+//! trajectories.
+
+#![warn(missing_docs)]
+
 use extendr_api::*;
 
 use manifolds_rs::prelude::*;
@@ -78,6 +83,17 @@ pub fn get_params_nn(r_list: List) -> NearestNeighbourParams<f32> {
         .and_then(|v| v.as_real())
         .unwrap_or(0.1) as f32;
 
+    // ivf
+    let n_list = nn_params
+        .get("n_list")
+        .and_then(|v| v.as_integer())
+        .map(|v| v as usize);
+
+    let n_probes = nn_params
+        .get("n_probe")
+        .and_then(|v| v.as_integer())
+        .map(|v| v as usize);
+
     NearestNeighbourParams {
         dist_metric,
         n_tree,
@@ -89,6 +105,8 @@ pub fn get_params_nn(r_list: List) -> NearestNeighbourParams<f32> {
         diversify_prob,
         delta,
         bt_budget,
+        n_list,
+        n_probes,
     }
 }
 

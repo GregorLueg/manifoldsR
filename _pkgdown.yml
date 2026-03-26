@@ -30,6 +30,7 @@ articles:
       - umap
       - tsne
       - phate
+      - pacmap
 
 reference:
   - title: "Main functions"
@@ -38,6 +39,7 @@ reference:
       - tsne
       - umap
       - phate
+      - pacmap
   - title: "kNN helpers"
     desc: "Everything and anything around kNN graph generation"
     contents:
@@ -57,6 +59,11 @@ reference:
       - params_umap
       - params_tsne
       - params_phate
+      - params_pacmap
+      - params_swiss_role
+      - params_clusters
+      - params_hierarchical
+      - params_trajectory
   - title: "Rust wrappers"
     desc: "Everything rusty - only use this if you know what you are doing..."
     contents:
@@ -64,10 +71,13 @@ reference:
       - rs_data_clusters
       - rs_data_swiss_role
       - rs_data_trajectory
+      - rs_data_hierarchical
       - rs_phate
       - rs_phate_from_knn
       - rs_tsne
       - rs_tsne_from_knn
       - rs_umap
       - rs_umap_from_knn
+      - rs_pacmap
+      - rs_pacmap_from_knn
       - rs_check_cluster_separation

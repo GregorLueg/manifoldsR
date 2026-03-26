@@ -32,8 +32,8 @@ clusters <- manifold_synthetic_data(
   type = "clusters",
   n_samples = n_samples,
   dim = 10L,
-  n_clusters = n_clusters,
-  seed = 42L
+  seed = 42L,
+  parameters = params_clusters(n_clusters = n_clusters)
 )
 
 expect_true(
@@ -68,8 +68,8 @@ for (topo in topologies) {
     type = "trajectory",
     n_samples = n_samples,
     dim = 10L,
-    topology = topo,
-    seed = 42L
+    seed = 42L,
+    parameters = params_trajectory(topology = topo)
   )
 
   expect_true(
@@ -106,8 +106,8 @@ traj_custom <- manifold_synthetic_data(
   type = "trajectory",
   n_samples = n_samples,
   dim = 10L,
-  cell_trajectories = custom_trajectories,
-  seed = 42L
+  seed = 42L,
+  parameters = params_trajectory(cell_trajectories = custom_trajectories)
 )
 
 expect_true(
@@ -125,7 +125,56 @@ expect_true(
   info = "custom cell_trajectories membership is integer vector of correct length"
 )
 
-### input validation -----------------------------------------------------------
+## hierarchical ----------------------------------------------------------------
+
+n_supergroups <- 3L
+n_subclusts <- 4L
+
+hier <- manifold_synthetic_data(
+  type = "hierarchical",
+  n_samples = n_samples,
+  dim = 10L,
+  seed = 42L,
+  parameters = params_hierarchical(
+    n_supergroups = n_supergroups,
+    n_subclusts = n_subclusts
+  )
+)
+
+expect_true(
+  current = checkmate::testMatrix(hier$data, mode = "numeric", ncol = 10L),
+  info = "hierarchical returns numeric matrix with correct number of columns"
+)
+
+expect_true(
+  current = checkmate::testInteger(hier$membership$supergroup),
+  info = "hierarchical supergroup membership is an integer vector"
+)
+
+expect_true(
+  current = checkmate::testInteger(hier$membership$subgroup),
+  info = "hierarchical subgroup membership is an integer vector"
+)
+
+expect_equal(
+  current = length(unique(hier$membership$supergroup)),
+  target = n_supergroups,
+  info = "hierarchical membership has correct number of unique supergroups"
+)
+
+expect_equal(
+  current = length(unique(hier$membership$subgroup)),
+  target = n_supergroups * n_subclusts,
+  info = "hierarchical membership has correct number of unique subgroups"
+)
+
+expect_equal(
+  current = length(hier$membership$supergroup),
+  target = length(hier$membership$subgroup),
+  info = "hierarchical supergroup and subgroup membership vectors are the same length"
+)
+
+## input validation ------------------------------------------------------------
 
 expect_error(
   current = manifold_synthetic_data(type = "swiss_role", n_samples = -1L),
@@ -143,9 +192,29 @@ expect_error(
 
 expect_error(
   current = manifold_synthetic_data(
+    type = "clusters",
+    n_samples = n_samples,
+    parameters = params_hierarchical()
+  ),
+  info = "wrong params type for chosen data type raises error"
+)
+
+expect_error(
+  current = manifold_synthetic_data(
     type = "trajectory",
     n_samples = n_samples,
-    cell_trajectories = list(parent = NA_integer_, split_at = 0.5)
+    parameters = list(topology = "bifurcation", noise = 0.1)
+  ),
+  info = "plain list missing required fields raises error"
+)
+
+expect_error(
+  current = manifold_synthetic_data(
+    type = "trajectory",
+    n_samples = n_samples,
+    parameters = params_trajectory(
+      cell_trajectories = list(parent = NA_integer_, split_at = 0.5)
+    )
   ),
   info = "malformed cell_trajectories missing 'length' raises error"
 )
@@ -154,10 +223,12 @@ expect_error(
   current = manifold_synthetic_data(
     type = "trajectory",
     n_samples = n_samples,
-    cell_trajectories = list(
-      parent = c(NA_integer_, 0L),
-      split_at = c(0.0),
-      length = c(1.0, 1.0)
+    parameters = params_trajectory(
+      cell_trajectories = list(
+        parent = c(NA_integer_, 0L),
+        split_at = c(0.0),
+        length = c(1.0, 1.0)
+      )
     )
   ),
   info = "cell_trajectories with unequal vector lengths raises error"

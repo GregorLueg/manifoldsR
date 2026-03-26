@@ -1,3 +1,7 @@
+//! PHATE wrapper functions to R from manifolds-rs
+
+#![warn(missing_docs)]
+
 use extendr_api::List;
 use faer::{Mat, MatRef};
 use manifolds_rs::prelude::*;
@@ -12,45 +16,39 @@ use crate::utils::get_params_nn;
 /// InternalPhateParams
 ///
 /// Overall wrapper over various parameters needed for PHATE.
-///
-/// ### Fields
-///
-/// * `graph_symmetry` - Method to symmetrise the affinity graph. One of
-///   `"average"` or `"add"`. Defaults to `"average"`.
-/// * `decay` - Alpha decay parameter controlling the kernel bandwidth.
-/// * `bandwidth_scale` - Scaling factor for the bandwidth. `None` lets the
-///   library select a sensible default.
-/// * `t_max` - Maximum diffusion time considered during automatic selection
-///   via Von Neumann entropy knee point detection.
-/// * `t_custom` - Fixed diffusion time. When `Some`, overrides automatic
-///   time selection.
-/// * `gamma` - Informational distance parameter for the diffusion potential.
-/// * `n_landmarks` - Number of landmarks for compressed diffusion. `None`
-///   uses the full N × N diffusion operator.
-/// * `landmark_method` - Method used to select landmarks. One of
-///   `"spectral"`, `"random"`, or `"min_max"`.
-/// * `n_svd` - Number of SVD components. `None` lets the library select a
-///   sensible default.
-/// * `mds_method` - MDS algorithm. One of `"sgd_dense"` or `"classic"`.
-/// * `mds_iter` - Optional user-provided number of iterations
-/// * `knn_method` - Which approximate nearest neighbour method to use.
-/// * `param_knn` - Nearest neighbour parameters forwarded to the ANN methods.
 #[derive(Debug)]
 pub struct InternalPhateParams {
-    // phate
+    /// Method to symmetrise the affinity graph. One of `"average"` or `"add"`.
+    /// Defaults to `"average"`.
     pub graph_symmetry: String,
+    /// Alpha decay parameter controlling the kernel bandwidth.
     pub decay: Option<f32>,
+    /// Scaling factor for the bandwidth. `None` lets the library select a
+    /// sensible default.
     pub bandwidth_scale: Option<f32>,
+    /// Maximum diffusion time considered during automatic selection via
+    /// Von Neumann entropy knee point detection.
     pub t_max: Option<usize>,
+    /// Fixed diffusion time. When `Some`, overrides automatic time selection.
     pub t_custom: Option<usize>,
+    /// Informational distance parameter for the diffusion potential.
     pub gamma: Option<f32>,
+    /// Number of landmarks for compressed diffusion. `None` uses the full N × N
+    /// diffusion operator.
     pub n_landmarks: Option<usize>,
+    /// Method used to select landmarks. One of `"spectral"`, `"random"`, or
+    /// `"min_max"`.
     pub landmark_method: String,
+    /// Number of SVD components. `None` lets the library select a sensible
+    /// default.
     pub n_svd: Option<usize>,
+    /// MDS algorithm. One of `"sgd_dense"` or `"classic"`.
     pub mds_method: String,
+    /// Optional user-provided number of iterations
     pub mds_iter: Option<usize>,
-    // knn
+    /// Which approximate nearest neighbour method to use.
     pub knn_method: String,
+    /// Nearest neighbour parameters forwarded to the ANN methods.
     pub param_knn: NearestNeighbourParams<f32>,
 }
 

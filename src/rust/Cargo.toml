@@ -1,7 +1,7 @@
 [package]
 name = 'manifoldsr'
 publish = false
-version = '0.1.0'
+version = '0.1.1'
 edition = '2021'
 rust-version = '1.85'
 
@@ -10,18 +10,18 @@ crate-type = ['staticlib']
 name = 'manifoldsr'
 
 [dependencies]
-bixverse-rs = "0.1.2"
+bixverse-rs = "0.1.6"
 extendr-api = '0.8.1'
 faer = "0.23.2"
 faer-entity = "0.20.1"
 
 [target.'cfg(not(windows))'.dependencies]
-manifolds-rs = { version = "0.1.8", features = [
+manifolds-rs = { version = "0.1.12", features = [
     "fft_tsne",
 ] }
 
 [target.'cfg(windows)'.dependencies]
-manifolds-rs = { version = "0.1.8" }
+manifolds-rs = { version = "0.1.12" }
 
 [profile.test]
 opt-level = 3

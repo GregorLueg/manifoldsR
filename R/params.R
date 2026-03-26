@@ -20,6 +20,10 @@
 #' @param ef_budget Integer or `NULL`. Effort budget for NN descent. Defaults
 #' to `NULL`.
 #' @param bt_budget Float. Budget for ball tree search. Defaults to `0.1`.
+#' @param n_list Optional integer. Number of clusters to use for IVF. If `NULL`,
+#' will default to `sqrt(n)`.
+#' @param n_probes Optional integer. Number of clusters to probe for IVF. If
+#' `NULL`, will default to `sqrt(n_list)`.
 #'
 #' @returns A list with the nearest neighbour parameters.
 #'
@@ -36,7 +40,9 @@ params_nn <- function(
   diversify_prob = 0.0,
   delta = 0.001,
   ef_budget = NULL,
-  bt_budget = 0.1
+  bt_budget = 0.1,
+  n_list = NULL,
+  n_probes = NULL
 ) {
   dist_metric <- match.arg(dist_metric)
 
@@ -52,11 +58,10 @@ params_nn <- function(
   checkmate::qassert(ef_search, "I1")
   checkmate::qassert(diversify_prob, "N1")
   checkmate::qassert(delta, "N1")
-  checkmate::assert(
-    checkmate::checkNull(ef_budget),
-    checkmate::checkInt(ef_budget)
-  )
+  checkmate::qassert(ef_budget, c("I1", "0"))
   checkmate::qassert(bt_budget, "N1")
+  checkmate::qassert(n_list, c("I1", "0"))
+  checkmate::qassert(n_probes, c("I1", "0"))
 
   # results
   list(
@@ -69,7 +74,9 @@ params_nn <- function(
     diversify_prob = diversify_prob,
     delta = delta,
     ef_budget = ef_budget,
-    bt_budget = bt_budget
+    bt_budget = bt_budget,
+    n_list = n_list,
+    n_probes = n_probes
   )
 }
 
@@ -275,5 +282,198 @@ params_phate <- function(
     n_svd = if (!is.null(n_svd)) as.integer(n_svd) else NULL,
     mds_method = mds_method,
     graph_symmetry = graph_symmetry
+  )
+}
+
+## pacmap ----------------------------------------------------------------------
+
+#' Wrapper function to generate PaCMAP parameters
+#'
+#' @param n_mid_near Integer. Mid-near pairs per point. Defaults to `2L`.
+#' @param n_further Integer. Further (random) pairs per point. Defaults to
+#' `2L`.
+#' @param mn_candidate_start Integer. Start index into kNN list for mid-near
+#' candidate window. Defaults to `4L`.
+#' @param mn_candidate_end Integer. End index into kNN list for mid-near
+#' candidate window. Defaults to `50L`.
+#' @param init Character. Embedding initialisation. One of `"pca"` or
+#' `"random"`. Defaults to `"pca"`.
+#' @param optimiser Character. One of `"adam"` or `"adam_parallel"`. Defaults
+#' to `"adam_parallel"`.
+#' @param lr Numeric. Adam learning rate. Defaults to `0.01`.
+#' @param n_epochs Integer or `NULL`. Total optimisation epochs. Defaults to
+#' `NULL`, resolved downstream to `450`.
+#' @param beta1 Numeric. Adam first moment decay. Defaults to `0.9`.
+#' @param beta2 Numeric. Adam second moment decay. Defaults to `0.999`.
+#' @param eps Numeric. Adam numerical stability constant. Defaults to `1e-7`.
+#' @param phase1_end Integer or `NULL`. Epoch at which phase 1 ends. Defaults
+#' to `NULL`, resolved downstream to `100`.
+#' @param phase2_end Integer or `NULL`. Epoch at which phase 2 ends. Defaults
+#' to `NULL`, resolved downstream to `200`.
+#'
+#' @returns A list with the PaCMAP parameters.
+#'
+#' @export
+params_pacmap <- function(
+  n_mid_near = 2L,
+  n_further = 2L,
+  mn_candidate_start = 4L,
+  mn_candidate_end = 50L,
+  init = "pca",
+  optimiser = "adam_parallel",
+  lr = 0.01,
+  n_epochs = NULL,
+  beta1 = 0.9,
+  beta2 = 0.999,
+  eps = 1e-7,
+  phase1_end = NULL,
+  phase2_end = NULL
+) {
+  checkmate::qassert(n_mid_near, "I1")
+  checkmate::qassert(n_further, "I1")
+  checkmate::qassert(mn_candidate_start, "I1")
+  checkmate::qassert(mn_candidate_end, "I1")
+  checkmate::assertChoice(init, c("pca", "random"))
+  checkmate::assertChoice(optimiser, c("adam", "adam_parallel"))
+  checkmate::qassert(lr, "N1")
+  checkmate::assert(
+    checkmate::checkNull(n_epochs),
+    checkmate::checkInt(n_epochs, lower = 1L)
+  )
+  checkmate::qassert(beta1, "N1")
+  checkmate::qassert(beta2, "N1")
+  checkmate::qassert(eps, "N1")
+  checkmate::assert(
+    checkmate::checkNull(phase1_end),
+    checkmate::checkInt(phase1_end, lower = 1L)
+  )
+  checkmate::assert(
+    checkmate::checkNull(phase2_end),
+    checkmate::checkInt(phase2_end, lower = 1L)
+  )
+
+  list(
+    n_mid_near = n_mid_near,
+    n_further = n_further,
+    mn_candidate_start = mn_candidate_start,
+    mn_candidate_end = mn_candidate_end,
+    init = init,
+    optimiser = optimiser,
+    lr = lr,
+    n_epochs = n_epochs,
+    beta1 = beta1,
+    beta2 = beta2,
+    eps = eps,
+    phase1_end = phase1_end,
+    phase2_end = phase2_end
+  )
+}
+
+## synthetic data --------------------------------------------------------------
+
+#' Parameters for swiss roll data generation
+#'
+#' @param noise Numeric. Amount of noise to add. Must be a positive non-zero
+#' value. Defaults to `0.1`.
+#'
+#' @return A list of parameters for use with [manifold_synthetic_data()].
+#'
+#' @export
+params_swiss_role <- function(noise = 0.1) {
+  # checks
+  checkmate::qassert(noise, "N1(0,)")
+  # return
+  list(noise = noise)
+}
+
+#' Parameters for clustered data generation
+#'
+#' @param n_clusters Integer. Number of clusters to generate. Defaults to
+#' `15L`.
+#'
+#' @return A list of parameters for use with [manifold_synthetic_data()].
+#'
+#' @export
+params_clusters <- function(n_clusters = 15L) {
+  # checks
+  checkmate::qassert(n_clusters, "I1(1,)")
+  # return
+  list(n_clusters = n_clusters)
+}
+
+#' Parameters for trajectory data generation
+#'
+#' @param topology Character. One of `c("bifurcation", "linear",
+#' "combination")`. Ignored if `cell_trajectories` is not `NULL`. Defaults to
+#' `"bifurcation"`.
+#' @param cell_trajectories Optional list. Named list with three equal-length
+#' vectors: `parent` (integer, `NA` for root, zero-indexed), `split_at`
+#' (numeric, fraction along parent where branch starts), and `length` (numeric,
+#' length of the branch). If `NULL`, `topology` is used instead. Defaults to
+#' `NULL`.
+#' @param noise Numeric. Amount of noise to add. Must be a positive non-zero
+#' value. Defaults to `0.1`.
+#'
+#' @return A list of parameters for use with [manifold_synthetic_data()].
+#'
+#' @export
+params_trajectory <- function(
+  topology = c("bifurcation", "linear", "combination"),
+  cell_trajectories = NULL,
+  noise = 0.1
+) {
+  topology <- match.arg(topology)
+
+  # checks
+  checkmate::assertChoice(topology, c("bifurcation", "linear", "combination"))
+  if (!is.null(cell_trajectories)) {
+    assertCellTrajectories(cell_trajectories)
+  }
+  checkmate::qassert(noise, "N1(0,)")
+
+  # return
+  list(
+    topology = topology,
+    cell_trajectories = cell_trajectories,
+    noise = noise
+  )
+}
+
+#' Parameters for hierarchical cluster data generation
+#'
+#' @param n_supergroups Integer. Number of top-level groups. Defaults to `3L`.
+#' @param n_subclusts Integer. Number of subclusters per supergroup. Defaults
+#' to `3L`.
+#' @param supergroup_spread Numeric. Spread of supergroup centres in the
+#' ambient space. Defaults to `15.0`.
+#' @param subcluster_spread Numeric. Spread of subcluster centres around their
+#' supergroup centre. Defaults to `2.0`.
+#' @param point_std Numeric. Within-subcluster Gaussian noise. Defaults to
+#' `0.4`.
+#'
+#' @return A list of parameters for use with [manifold_synthetic_data()].
+#'
+#' @export
+params_hierarchical <- function(
+  n_supergroups = 3L,
+  n_subclusts = 3L,
+  supergroup_spread = 15.0,
+  subcluster_spread = 2.0,
+  point_std = 0.4
+) {
+  # checks
+  checkmate::qassert(n_supergroups, "I1(1,)")
+  checkmate::qassert(n_subclusts, "I1(1,)")
+  checkmate::qassert(supergroup_spread, "N1(0,)")
+  checkmate::qassert(subcluster_spread, "N1(0,)")
+  checkmate::qassert(point_std, "N1(0,)")
+
+  # return
+  list(
+    n_supergroups = n_supergroups,
+    n_subclusts = n_subclusts,
+    supergroup_spread = supergroup_spread,
+    subcluster_spread = subcluster_spread,
+    point_std = point_std
   )
 }

@@ -5,83 +5,45 @@
 \title{Generate synthetic data for manifold learning}
 \usage{
 manifold_synthetic_data(
-  type = c("swiss_role", "clusters", "trajectory"),
+  type = c("swiss_role", "clusters", "trajectory", "hierarchical"),
   n_samples,
   dim = 32L,
-  n_clusters = 15L,
-  cell_trajectories = NULL,
-  topology = c("bifurcation", "linear", "combination"),
-  noise = 0.1,
-  seed = 42L
+  seed = 42L,
+  parameters = NULL
 )
 }
 \arguments{
 \item{type}{Character. Type of synthetic data to generate. One of:
 \itemize{
-\item \code{"swiss_role"} - Swiss role manifold
+\item \code{"swiss_role"} - Swiss roll manifold
 \item \code{"clusters"} - Clustered data
-\item \code{"trajectory"} - A trajectory-like data with branching. You can
-specify your own topology via \code{cell_trajectories} or use one of the pre-
-defined ones via topology.
+\item \code{"trajectory"} - Trajectory-like data with branching
+\item \code{"hierarchical"} - Two-level hierarchical cluster structure
 }}
 
 \item{n_samples}{Integer. Number of data points to generate.}
 
-\item{dim}{Integer. Dimensionality of the data (used for \code{"clusters"} and
-\code{"trajectory"}).}
+\item{dim}{Integer. Dimensionality of the ambient space. Used for all types
+except \code{"swiss_role"}. Defaults to \code{32L}.}
 
-\item{n_clusters}{Integer. Number of clusters (used for "clusters" type).
-Default is \code{15L}.}
+\item{seed}{Integer. Seed for reproducibility. Defaults to \code{42L}.}
 
-\item{cell_trajectories}{Optional list. Named list to use to provide your
-own topology for the \code{"trajectory"} version.}
-
-\item{topology}{String. One of \code{c("bifurcation", "linear", "combination")}.
-If cell trajectories is not \code{NULL}, this will be ignored.}
-
-\item{noise}{Numeric. Amount of noise to add (used for \code{"swiss_role"} and
-\code{"tree"}). must be any non 0 positive value. Default is \code{0.1}.}
-
-\item{seed}{Integer. Seed for reproducibility.}
+\item{parameters}{A named list of type-specific parameters, constructed via
+\code{\link[=params_swiss_role]{params_swiss_role()}}, \code{\link[=params_clusters]{params_clusters()}}, \code{\link[=params_trajectory]{params_trajectory()}}, or
+\code{\link[=params_hierarchical]{params_hierarchical()}}. If \code{NULL}, defaults for the chosen type are used.
+A plain list is accepted but must contain all required fields for the given
+type.}
 }
 \value{
 A list with the following elements:
 \itemize{
-\item data - Numerical matrix with the generated data
-\item membership - Vector of cluster/branch assignments (\code{NULL} for
-swiss_role)
+\item \code{data} - Numeric matrix of shape \verb{n_samples x dim}
+\item \code{membership} - Integer vector of cluster/branch assignments (\code{NULL}
+for \code{"swiss_role"})
 }
 }
 \description{
 A unified wrapper function for generating various types of
 synthetic data to test manifold learning techniques and demonstrate
 differences.
-}
-\examples{
-\dontrun{
-
-# Generate Swiss role data
-swiss <- manifold_synthetic_data(
-  "swiss_role",
-  n_samples = 1000L
-)
-
-# Generate clustered data
-clusters <- manifold_synthetic_data(
-  "clusters",
-  n_samples = 1000L,
-  dim = 10L,
-  n_clusters = 5L
-)
-
-# Generate trajectory-like data
-trajectory <- manifold_synthetic_data(
-  "trajectory",
-  n_samples = 1000L,
-  dim = 10L,
-  cell_trajectories = NULL, # use a topology
-  topology = "bifurcation"
-)
-}
-
 }
