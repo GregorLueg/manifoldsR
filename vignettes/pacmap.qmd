@@ -33,17 +33,18 @@ library(data.table)
 PaCMAP constructs its embedding through three types of point pairs, each
 targeting a different aspect of structure. **Near pairs** (k-nearest neighbours)
 preserve local neighbourhoods. **Mid-near pairs** are sampled from a window
-further out in the kNN list — beyond the immediate neighbours but not arbitrary
+further out in the kNN list - beyond the immediate neighbours but not arbitrary
 — and act as a medium-range attractive force that anchors global structure.
 **Further pairs** are random distant points that contribute a repulsive force
 preventing collapse.
 
-The key insight in PaCMAP is its **phased optimisation schedule**. In phase 1,
-the mid-near weight is dominant, pulling points into a globally coherent
-arrangement before local structure is resolved. In phase 2 the mid-near weight
-decays to zero while the near pair weight increases, allowing fine local
-structure to emerge without destroying the global layout established in phase 1.
-Phase 3 runs with near and further pairs only, refining the local structure.
+The key insight in PaCMAP is its **phased optimisation schedule**. In the first
+phase, the mid-near weight is dominant, pulling points into a globally coherent
+arrangement before local structure is resolved. In the second phase, the 
+mid-near weight decays to zero while the near pair weight increases, allowing 
+fine local structure to emerge without destroying the global layout established 
+in phase 1. The third and last phase runs with near and further pairs only, 
+refining the local structure.
 
 This stands in contrast to UMAP, which optimises a single objective from the
 start and consequently trades off local against global structure throughout. The
@@ -326,17 +327,18 @@ ggplot(
   scale_colour_viridis_d()
 ```
 
-In the PaCMAP embedding, the three supergroups occupy distinct regions of the
-embedding space at distances roughly proportional to their true separation.
-Within each supergroup the subclusters are cleanly resolved. In the UMAP
-embedding the supergroup distances are arbitrary — subclusters from different
-supergroups may be placed closer together than subclusters within the same
-supergroup.
+In the PaCMAP embedding, the three supergroups occupy clearly distinct regions 
+of the embedding space at distances roughly proportional to their true 
+separation. Within each supergroup the subclusters are cleanly resolved. In the 
+UMAP embedding the supergroup distances are arbitrary — subclusters from 
+different supergroups may be placed closer together than subclusters within the 
+same supergroup. The global structure is lost in UMAP compared to PacMAP.
 
 ## Using pre-computed kNN graphs
 
 As with the other methods, if you want to vary PaCMAP-specific parameters
 without repeating the kNN search, precompute the graph first.
+
 ```{r}
 #| label: pacmap - pre-computed kNN
 
@@ -357,6 +359,7 @@ pacmap_from_knn <- pacmap(
 
 With the kNN fixed, we can quickly vary the phase schedule. For example,
 extending phase 1 to give the global structure more time to settle:
+
 ```{r}
 #| label: pacmap - pre-computed kNN, different params
 
