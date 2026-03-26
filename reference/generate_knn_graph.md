@@ -18,6 +18,9 @@ accuracy trade-offs:
 - `"balltree"` - Ball tree structure for exact search with a
   configurable budget.
 
+- `"ivf"` - Inverted file index that leverages k-means clustering and
+  probing a few of the clusters.
+
 - `"exhaustive"` - Exact nearest neighbour search.
 
 ## Usage
@@ -26,7 +29,7 @@ accuracy trade-offs:
 generate_knn_graph(
   data,
   k,
-  knn_method = c("hnsw", "annoy", "nndescent", "balltree", "exhaustive"),
+  knn_method = c("hnsw", "annoy", "nndescent", "balltree", "exhaustive", "ivf"),
   nn_params = params_nn(),
   seed = 42L,
   .verbose = TRUE
@@ -47,8 +50,8 @@ generate_knn_graph(
 - knn_method:
 
   Character. The algorithm to use for nearest neighbour search. One of
-  `c("hnsw", "annoy", "nndescent", "balltree", "exhaustive")`. Defaults
-  to `"hnsw"`.
+  `c("hnsw", "annoy", "nndescent", "balltree", "ivf", "exhaustive")`.
+  Defaults to `"hnsw"`.
 
 - nn_params:
 

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -22,6 +22,7 @@
     <li><a class="dropdown-item" href="../articles/umap.html">Using UMAP</a></li>
     <li><a class="dropdown-item" href="../articles/tsne.html">Using t-SNE</a></li>
     <li><a class="dropdown-item" href="../articles/phate.html">Using PHATE</a></li>
+    <li><a class="dropdown-item" href="../articles/pacmap.html">Using PaCMAP</a></li>
   </ul></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
@@ -67,6 +68,13 @@
 
         </dt>
         <dd>Rust-based PHATE</dd>
+
+        <dt>
+
+          <code><a href="pacmap.html">pacmap()</a></code>
+
+        </dt>
+        <dd>Rust-based PaCMAP</dd>
       </dl></div><div class="section level2">
       <h2 id="knn-helpers">kNN helpers<a class="anchor" aria-label="anchor" href="#knn-helpers"></a></h2>
 
@@ -171,6 +179,41 @@
 
         </dt>
         <dd>Wrapper function to generate PHATE parameters</dd>
+
+        <dt>
+
+          <code><a href="params_pacmap.html">params_pacmap()</a></code>
+
+        </dt>
+        <dd>Wrapper function to generate PaCMAP parameters</dd>
+
+        <dt>
+
+          <code><a href="params_swiss_role.html">params_swiss_role()</a></code>
+
+        </dt>
+        <dd>Parameters for swiss roll data generation</dd>
+
+        <dt>
+
+          <code><a href="params_clusters.html">params_clusters()</a></code>
+
+        </dt>
+        <dd>Parameters for clustered data generation</dd>
+
+        <dt>
+
+          <code><a href="params_hierarchical.html">params_hierarchical()</a></code>
+
+        </dt>
+        <dd>Parameters for hierarchical cluster data generation</dd>
+
+        <dt>
+
+          <code><a href="params_trajectory.html">params_trajectory()</a></code>
+
+        </dt>
+        <dd>Parameters for trajectory data generation</dd>
       </dl></div><div class="section level2">
       <h2 id="rust-wrappers">Rust wrappers<a class="anchor" aria-label="anchor" href="#rust-wrappers"></a></h2>
 
@@ -208,6 +251,13 @@
 
         </dt>
         <dd>Generates tree-like data with branches</dd>
+
+        <dt>
+
+          <code><a href="rs_data_hierarchical.html">rs_data_hierarchical()</a></code>
+
+        </dt>
+        <dd>Generate hierarchical cluster data</dd>
 
         <dt>
 
@@ -250,6 +300,20 @@
 
         </dt>
         <dd>UMAP implementation</dd>
+
+        <dt>
+
+          <code><a href="rs_pacmap.html">rs_pacmap()</a></code>
+
+        </dt>
+        <dd>PaCMAP implementation</dd>
+
+        <dt>
+
+          <code><a href="rs_pacmap_from_knn.html">rs_pacmap_from_knn()</a></code>
+
+        </dt>
+        <dd>PaCMAP implementation with pre-computed kNN</dd>
 
         <dt>
 

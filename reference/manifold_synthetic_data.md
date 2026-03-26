@@ -7,14 +7,11 @@ data to test manifold learning techniques and demonstrate differences.
 
 ``` r
 manifold_synthetic_data(
-  type = c("swiss_role", "clusters", "trajectory"),
+  type = c("swiss_role", "clusters", "trajectory", "hierarchical"),
   n_samples,
   dim = 32L,
-  n_clusters = 15L,
-  cell_trajectories = NULL,
-  topology = c("bifurcation", "linear", "combination"),
-  noise = 0.1,
-  seed = 42L
+  seed = 42L,
+  parameters = NULL
 )
 ```
 
@@ -24,13 +21,13 @@ manifold_synthetic_data(
 
   Character. Type of synthetic data to generate. One of:
 
-  - `"swiss_role"` - Swiss role manifold
+  - `"swiss_role"` - Swiss roll manifold
 
   - `"clusters"` - Clustered data
 
-  - `"trajectory"` - A trajectory-like data with branching. You can
-    specify your own topology via `cell_trajectories` or use one of the
-    pre- defined ones via topology.
+  - `"trajectory"` - Trajectory-like data with branching
+
+  - `"hierarchical"` - Two-level hierarchical cluster structure
 
 - n_samples:
 
@@ -38,68 +35,29 @@ manifold_synthetic_data(
 
 - dim:
 
-  Integer. Dimensionality of the data (used for `"clusters"` and
-  `"trajectory"`).
-
-- n_clusters:
-
-  Integer. Number of clusters (used for "clusters" type). Default is
-  `15L`.
-
-- cell_trajectories:
-
-  Optional list. Named list to use to provide your own topology for the
-  `"trajectory"` version.
-
-- topology:
-
-  String. One of `c("bifurcation", "linear", "combination")`. If cell
-  trajectories is not `NULL`, this will be ignored.
-
-- noise:
-
-  Numeric. Amount of noise to add (used for `"swiss_role"` and
-  `"tree"`). must be any non 0 positive value. Default is `0.1`.
+  Integer. Dimensionality of the ambient space. Used for all types
+  except `"swiss_role"`. Defaults to `32L`.
 
 - seed:
 
-  Integer. Seed for reproducibility.
+  Integer. Seed for reproducibility. Defaults to `42L`.
+
+- parameters:
+
+  A named list of type-specific parameters, constructed via
+  [`params_swiss_role()`](https://gregorlueg.github.io/manifoldsR/reference/params_swiss_role.md),
+  [`params_clusters()`](https://gregorlueg.github.io/manifoldsR/reference/params_clusters.md),
+  [`params_trajectory()`](https://gregorlueg.github.io/manifoldsR/reference/params_trajectory.md),
+  or
+  [`params_hierarchical()`](https://gregorlueg.github.io/manifoldsR/reference/params_hierarchical.md).
+  If `NULL`, defaults for the chosen type are used. A plain list is
+  accepted but must contain all required fields for the given type.
 
 ## Value
 
 A list with the following elements:
 
-- data - Numerical matrix with the generated data
+- `data` - Numeric matrix of shape `n_samples x dim`
 
-- membership - Vector of cluster/branch assignments (`NULL` for
-  swiss_role)
-
-## Examples
-
-``` r
-if (FALSE) { # \dontrun{
-
-# Generate Swiss role data
-swiss <- manifold_synthetic_data(
-  "swiss_role",
-  n_samples = 1000L
-)
-
-# Generate clustered data
-clusters <- manifold_synthetic_data(
-  "clusters",
-  n_samples = 1000L,
-  dim = 10L,
-  n_clusters = 5L
-)
-
-# Generate trajectory-like data
-trajectory <- manifold_synthetic_data(
-  "trajectory",
-  n_samples = 1000L,
-  dim = 10L,
-  cell_trajectories = NULL, # use a topology
-  topology = "bifurcation"
-)
-} # }
-```
+- `membership` - Integer vector of cluster/branch assignments (`NULL`
+  for `"swiss_role"`)

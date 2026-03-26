@@ -96,7 +96,7 @@ ggplot(
   data = pca_clusters_df,
   mapping = aes(x = PC1, y = PC2)
 ) +
-  geom_point(mapping = aes(colour = cluster), size = 0.25, alpha = 0.5) +
+  geom_point(mapping = aes(colour = cluster), size = 0.75, alpha = 0.5) +
   theme_bw() + 
   ggtitle("PCA on cluster data")
 ```
@@ -120,7 +120,7 @@ ggplot(
   data = tsne_clustered_df,
   mapping = aes(x = tSNE1, y = tSNE2)
 ) +
-  geom_point(mapping = aes(colour = cluster), size = 0.25, alpha = 0.5) +
+  geom_point(mapping = aes(colour = cluster), size = 0.75, alpha = 0.5) +
   theme_bw() + 
   ggtitle("tSNE (BH) on cluster data")
 ```
@@ -217,7 +217,7 @@ ggplot(
   ],
   mapping = aes(x = PC1, y = PC2)
 ) +
-  geom_point(mapping = aes(colour = branch), alpha = 0.5, size = 0.25) +
+  geom_point(mapping = aes(colour = branch), alpha = 0.5, size = 0.75) +
   theme_bw() +
   scale_colour_viridis_c(option = "turbo") + 
   ggtitle("PCA on trajectory")
@@ -247,7 +247,7 @@ ggplot(
   geom_point(
     mapping = aes(colour = branch),
     alpha = 0.5,
-    size = 0.25
+    size = 0.75
   ) +
   theme_bw() +
   scale_colour_viridis_c(option = "turbo") + 
@@ -293,7 +293,7 @@ ggplot(
   data = tsne_from_knn_df,
   mapping = aes(x = tSNE1, y = tSNE2)
 ) +
-  geom_point(mapping = aes(colour = cluster), alpha = 0.5, size = 0.25) +
+  geom_point(mapping = aes(colour = cluster), alpha = 0.5, size = 0.75) +
   theme_bw() +
   ggtitle("tSNE on pre-computed kNN (version 1)")
 ```
@@ -321,7 +321,7 @@ ggplot(
   data = tsne_from_knn_highperplex_df,
   mapping = aes(x = tSNE1, y = tSNE2)
 ) +
-  geom_point(mapping = aes(colour = cluster), alpha = 0.5, size = 0.25) +
+  geom_point(mapping = aes(colour = cluster), alpha = 0.5, size = 0.75) +
   theme_bw() +
   ggtitle("tSNE on pre-computed kNN (version 2)")
 ```
@@ -354,7 +354,7 @@ ggplot(
   data = tsne_fft_df,
   mapping = aes(x = tSNE1, y = tSNE2)
 ) +
-  geom_point(mapping = aes(colour = cluster), alpha = 0.5, size = 0.25) +
+  geom_point(mapping = aes(colour = cluster), alpha = 0.5, size = 0.75) +
   theme_bw()  + 
   ggtitle("tSNE (FFT) on cluster data")
 ```
@@ -400,8 +400,8 @@ microbenchmark::microbenchmark(
 )
 #> Unit: seconds
 #>         expr       min        lq      mean    median        uq       max neval
-#>        Rtsne 12.420229 12.420229 12.420229 12.420229 12.420229 12.420229     1
-#>  manifold_bh  4.380563  4.380563  4.380563  4.380563  4.380563  4.380563     1
+#>        Rtsne 12.352162 12.352162 12.352162 12.352162 12.352162 12.352162     1
+#>  manifold_bh  4.340723  4.340723  4.340723  4.340723  4.340723  4.340723     1
 ```
 
 The impact here is massive already. Let’s see what happens with BH and
@@ -436,8 +436,8 @@ microbenchmark::microbenchmark(
 )
 #> Unit: seconds
 #>          expr      min       lq     mean   median       uq      max neval
-#>   manifold_bh 66.28111 66.28111 66.28111 66.28111 66.28111 66.28111     1
-#>  manifold_fft 24.82410 24.82410 24.82410 24.82410 24.82410 24.82410     1
+#>   manifold_bh 64.93651 64.93651 64.93651 64.93651 64.93651 64.93651     1
+#>  manifold_fft 24.75105 24.75105 24.75105 24.75105 24.75105 24.75105     1
 ```
 
 The speed advantage of the Rust implementation comes from a combination

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -22,6 +22,7 @@
     <li><a class="dropdown-item" href="../articles/umap.html">Using UMAP</a></li>
     <li><a class="dropdown-item" href="../articles/tsne.html">Using t-SNE</a></li>
     <li><a class="dropdown-item" href="../articles/phate.html">Using PHATE</a></li>
+    <li><a class="dropdown-item" href="../articles/pacmap.html">Using PaCMAP</a></li>
   </ul></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
@@ -55,7 +56,9 @@
 <span>  diversify_prob <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  delta <span class="op">=</span> <span class="fl">0.001</span>,</span>
 <span>  ef_budget <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  bt_budget <span class="op">=</span> <span class="fl">0.1</span></span>
+<span>  bt_budget <span class="op">=</span> <span class="fl">0.1</span>,</span>
+<span>  n_list <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  n_probes <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -107,6 +110,16 @@ to <code>NULL</code>.</p></dd>
 
 <dt id="arg-bt-budget">bt_budget<a class="anchor" aria-label="anchor" href="#arg-bt-budget"></a></dt>
 <dd><p>Float. Budget for ball tree search. Defaults to <code>0.1</code>.</p></dd>
+
+
+<dt id="arg-n-list">n_list<a class="anchor" aria-label="anchor" href="#arg-n-list"></a></dt>
+<dd><p>Optional integer. Number of clusters to use for IVF. If <code>NULL</code>,
+will default to <code>sqrt(n)</code>.</p></dd>
+
+
+<dt id="arg-n-probes">n_probes<a class="anchor" aria-label="anchor" href="#arg-n-probes"></a></dt>
+<dd><p>Optional integer. Number of clusters to probe for IVF. If
+<code>NULL</code>, will default to <code>sqrt(n_list)</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

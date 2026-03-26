@@ -95,7 +95,7 @@ ggplot(
   data = pca_clusters_df,
   mapping = aes(x = PC1, y = PC2)
 ) +
-  geom_point(mapping = aes(colour = cluster), size = 0.25, alpha = 0.5) +
+  geom_point(mapping = aes(colour = cluster), size = 0.75, alpha = 0.5) +
   theme_bw() +
   ggtitle("PCA on clustered data")
 ```
@@ -119,7 +119,7 @@ ggplot(
   data = phate_clusters_df,
   mapping = aes(x = PHATE1, y = PHATE2)
 ) +
-  geom_point(mapping = aes(colour = cluster), size = 0.25, alpha = 0.5) +
+  geom_point(mapping = aes(colour = cluster), size = 0.75, alpha = 0.5) +
   theme_bw() +
   ggtitle("PHATE on clustered data")
 ```
@@ -194,7 +194,7 @@ ggplot(
   geom_point(
     mapping = aes(colour = branch),
     alpha = 0.5,
-    size = 0.25
+    size = 0.75
   ) +
   theme_bw() +
   scale_colour_viridis_c(option = "turbo") +
@@ -239,7 +239,7 @@ ggplot(
   ],
   mapping = aes(x = PHATE1, y = PHATE2)
 ) +
-  geom_point(mapping = aes(colour = branch), alpha = 0.5, size = 0.25) +
+  geom_point(mapping = aes(colour = branch), alpha = 0.5, size = 0.75) +
   theme_bw() +
   scale_colour_viridis_c(option = "turbo")  +
   ggtitle("PHATE from kNN graph (version 1)")
@@ -271,7 +271,7 @@ ggplot(
   ],
   mapping = aes(x = PHATE1, y = PHATE2)
 ) +
-  geom_point(mapping = aes(colour = branch), alpha = 0.5, size = 0.25) +
+  geom_point(mapping = aes(colour = branch), alpha = 0.5, size = 0.75) +
   theme_bw() +
   scale_colour_viridis_c(option = "turbo")  +
   ggtitle("PHATE from kNN graph (version 2)")
@@ -338,7 +338,7 @@ ggplot(
   ],
   mapping = aes(x = PHATE1, y = PHATE2)
 ) +
-  geom_point(mapping = aes(colour = branch), alpha = 0.5, size = 0.25) +
+  geom_point(mapping = aes(colour = branch), alpha = 0.5, size = 0.75) +
   theme_bw() +
   scale_colour_viridis_c(option = "turbo") +
   ggtitle("PHATE with 1024 landmarks (spectral)")
@@ -376,7 +376,7 @@ ggplot(
   ],
   mapping = aes(x = PHATE1, y = PHATE2)
 ) +
-  geom_point(mapping = aes(colour = branch), alpha = 0.5, size = 0.25) +
+  geom_point(mapping = aes(colour = branch), alpha = 0.5, size = 0.75) +
   theme_bw() +
   scale_colour_viridis_c(option = "turbo") +
   ggtitle("PHATE with 1024 landmarks (random)")
@@ -456,11 +456,11 @@ microbenchmark::microbenchmark(
   },
   times = 1L
 )
-#>     SGD-MDS may not have converged: stress changed by 1.4% in final iterations. Consider increasing n_iter or adjusting learning_rate.
+#>     SGD-MDS may not have converged: stress changed by 1.3% in final iterations. Consider increasing n_iter or adjusting learning_rate.
 #> Unit: seconds
 #>            expr       min        lq      mean    median        uq       max
-#>          phateR 12.421478 12.421478 12.421478 12.421478 12.421478 12.421478
-#>  manifold_phate  7.373106  7.373106  7.373106  7.373106  7.373106  7.373106
+#>          phateR 12.600448 12.600448 12.600448 12.600448 12.600448 12.600448
+#>  manifold_phate  7.461419  7.461419  7.461419  7.461419  7.461419  7.461419
 #>  neval
 #>      1
 #>      1
@@ -505,12 +505,12 @@ microbenchmark::microbenchmark(
   },
   times = 1L
 )
-#>     SGD-MDS may not have converged: stress changed by -1.4% in final iterations. Consider increasing n_iter or adjusting learning_rate.
+#>     SGD-MDS may not have converged: stress changed by 1.7% in final iterations. Consider increasing n_iter or adjusting learning_rate.
 #> Unit: seconds
 #>                     expr      min       lq     mean   median       uq      max
-#>                   phateR 54.69400 54.69400 54.69400 54.69400 54.69400 54.69400
-#>  manifold_phate_spectral 25.11025 25.11025 25.11025 25.11025 25.11025 25.11025
-#>    manifold_phate_random 21.07434 21.07434 21.07434 21.07434 21.07434 21.07434
+#>                   phateR 55.16485 55.16485 55.16485 55.16485 55.16485 55.16485
+#>  manifold_phate_spectral 25.24008 25.24008 25.24008 25.24008 25.24008 25.24008
+#>    manifold_phate_random 19.08014 19.08014 19.08014 19.08014 19.08014 19.08014
 #>  neval
 #>      1
 #>      1

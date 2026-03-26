@@ -10,6 +10,8 @@ The core functions to generate the 2D embeddings
   : Rust-based UMAP
 - [`phate()`](https://gregorlueg.github.io/manifoldsR/reference/phate.md)
   : Rust-based PHATE
+- [`pacmap()`](https://gregorlueg.github.io/manifoldsR/reference/pacmap.md)
+  : Rust-based PaCMAP
 
 ## kNN helpers
 
@@ -45,6 +47,16 @@ Wrapper functions around core parameters
   : Wrapper function to generate t-SNE parameters
 - [`params_phate()`](https://gregorlueg.github.io/manifoldsR/reference/params_phate.md)
   : Wrapper function to generate PHATE parameters
+- [`params_pacmap()`](https://gregorlueg.github.io/manifoldsR/reference/params_pacmap.md)
+  : Wrapper function to generate PaCMAP parameters
+- [`params_swiss_role()`](https://gregorlueg.github.io/manifoldsR/reference/params_swiss_role.md)
+  : Parameters for swiss roll data generation
+- [`params_clusters()`](https://gregorlueg.github.io/manifoldsR/reference/params_clusters.md)
+  : Parameters for clustered data generation
+- [`params_hierarchical()`](https://gregorlueg.github.io/manifoldsR/reference/params_hierarchical.md)
+  : Parameters for hierarchical cluster data generation
+- [`params_trajectory()`](https://gregorlueg.github.io/manifoldsR/reference/params_trajectory.md)
+  : Parameters for trajectory data generation
 
 ## Rust wrappers
 
@@ -59,6 +71,8 @@ Everything rusty - only use this if you know what you are doing…
   : Generates the SwissRole data
 - [`rs_data_trajectory()`](https://gregorlueg.github.io/manifoldsR/reference/rs_data_trajectory.md)
   : Generates tree-like data with branches
+- [`rs_data_hierarchical()`](https://gregorlueg.github.io/manifoldsR/reference/rs_data_hierarchical.md)
+  : Generate hierarchical cluster data
 - [`rs_phate()`](https://gregorlueg.github.io/manifoldsR/reference/rs_phate.md)
   : Run PHATE dimensionality reduction
 - [`rs_phate_from_knn()`](https://gregorlueg.github.io/manifoldsR/reference/rs_phate_from_knn.md)
@@ -71,5 +85,9 @@ Everything rusty - only use this if you know what you are doing…
   : UMAP implementation
 - [`rs_umap_from_knn()`](https://gregorlueg.github.io/manifoldsR/reference/rs_umap_from_knn.md)
   : UMAP implementation
+- [`rs_pacmap()`](https://gregorlueg.github.io/manifoldsR/reference/rs_pacmap.md)
+  : PaCMAP implementation
+- [`rs_pacmap_from_knn()`](https://gregorlueg.github.io/manifoldsR/reference/rs_pacmap_from_knn.md)
+  : PaCMAP implementation with pre-computed kNN
 - [`rs_check_cluster_separation()`](https://gregorlueg.github.io/manifoldsR/reference/rs_check_cluster_separation.md)
   : Check cluster separation in an embedding

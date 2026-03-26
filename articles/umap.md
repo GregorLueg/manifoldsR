@@ -76,7 +76,7 @@ ggplot(
   data = pca_clusters_df,
   mapping = aes(x = PC1, y = PC2)
 ) +
-  geom_point(mapping = aes(colour = cluster), size = 0.25, alpha = 0.5) +
+  geom_point(mapping = aes(colour = cluster), size = 0.75, alpha = 0.5) +
   theme_bw() +
   ggtitle("PCA on clustered data")
 ```
@@ -106,7 +106,11 @@ ggplot(
   data = umap_clustered_df,
   mapping = aes(x = UMAP1, y = UMAP2)
 ) +
-  geom_point(mapping = aes(colour = cluster), alpha = 0.5, size = 0.25) +
+  geom_point(
+    mapping = aes(colour = cluster), 
+    alpha = 0.5, 
+    size = 0.75
+  ) +
   theme_bw() +
   ggtitle("UMAP (SGD) on clustered data")
 ```
@@ -200,7 +204,11 @@ ggplot(
   ],
   mapping = aes(x = PC1, y = PC2)
 ) +
-  geom_point(mapping = aes(colour = branch), alpha = 0.5, size = 0.25) +
+  geom_point(
+    mapping = aes(colour = branch), 
+    alpha = 0.5, 
+    size = 0.75
+  ) +
   theme_bw() +
   scale_colour_viridis_c(option = "turbo") +
   ggtitle("PCA on trajectory data")
@@ -233,7 +241,7 @@ ggplot(
   geom_point(
     mapping = aes(colour = branch), 
     alpha = 0.5, 
-    size = 0.25
+    size = 0.75
   ) +
   theme_bw() +
   scale_colour_viridis_c(option = "turbo") +
@@ -278,7 +286,11 @@ ggplot(
   data = umap_clustered_from_knn_df,
   mapping = aes(x = UMAP1, y = UMAP2)
 ) +
-  geom_point(mapping = aes(colour = cluster), alpha = 0.5, size = 0.25) +
+  geom_point(
+    mapping = aes(colour = cluster), 
+    alpha = 0.5, 
+    size = 0.75
+  ) +
   theme_bw() +
   ggtitle("UMAP on pre-computed kNN")
 ```
@@ -306,7 +318,11 @@ ggplot(
   data = umap_clustered_from_knn_df,
   mapping = aes(x = UMAP1, y = UMAP2)
 ) +
-  geom_point(mapping = aes(colour = cluster), alpha = 0.5, size = 0.25) +
+  geom_point(
+    mapping = aes(colour = cluster), 
+    alpha = 0.5, 
+    size = 0.75
+  ) +
   theme_bw()
 ```
 
@@ -334,7 +350,11 @@ ggplot(
   data = umap_clustered_df,
   mapping = aes(x = UMAP1, y = UMAP2)
 ) +
-  geom_point(mapping = aes(colour = cluster), alpha = 0.5, size = 0.25) +
+  geom_point(
+    mapping = aes(colour = cluster), 
+    alpha = 0.5, 
+    size = 0.75
+  ) +
   theme_bw()
 ```
 
@@ -362,7 +382,7 @@ ggplot(
   geom_point(
     mapping = aes(colour = cluster), 
     alpha = 0.5, 
-    size = 0.25
+    size = 0.75
   ) +
   theme_bw()
 ```
@@ -455,17 +475,17 @@ microbenchmark::microbenchmark(
 )
 #> Unit: milliseconds
 #>             expr        min         lq       mean     median         uq
-#>             umap 20839.1114 20839.1114 20839.1114 20839.1114 20839.1114
-#>  umap_reticulate 19629.6201 19629.6201 19629.6201 19629.6201 19629.6201
-#>             uwot  4862.3332  4862.3332  4862.3332  4862.3332  4862.3332
-#>          uwot_v2  3156.5036  3156.5036  3156.5036  3156.5036  3156.5036
-#>    manifold_umap   588.2794   588.2794   588.2794   588.2794   588.2794
+#>             umap 21036.6258 21036.6258 21036.6258 21036.6258 21036.6258
+#>  umap_reticulate 19240.7481 19240.7481 19240.7481 19240.7481 19240.7481
+#>             uwot  4904.6310  4904.6310  4904.6310  4904.6310  4904.6310
+#>          uwot_v2  3110.7621  3110.7621  3110.7621  3110.7621  3110.7621
+#>    manifold_umap   592.3897   592.3897   592.3897   592.3897   592.3897
 #>         max neval
-#>  20839.1114     1
-#>  19629.6201     1
-#>   4862.3332     1
-#>   3156.5036     1
-#>    588.2794     1
+#>  21036.6258     1
+#>  19240.7481     1
+#>   4904.6310     1
+#>   3110.7621     1
+#>    592.3897     1
 ```
 
 We can appreciate that the standard R version is slow (as expected). If
@@ -497,8 +517,8 @@ microbenchmark::microbenchmark(
 )
 #> Unit: seconds
 #>           expr       min        lq      mean    median        uq       max
-#>        uwot_v2 23.665031 23.665031 23.665031 23.665031 23.665031 23.665031
-#>  manifold_umap  7.596204  7.596204  7.596204  7.596204  7.596204  7.596204
+#>        uwot_v2 23.845269 23.845269 23.845269 23.845269 23.845269 23.845269
+#>  manifold_umap  7.768186  7.768186  7.768186  7.768186  7.768186  7.768186
 #>  neval
 #>      1
 #>      1

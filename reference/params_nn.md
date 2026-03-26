@@ -15,7 +15,9 @@ params_nn(
   diversify_prob = 0,
   delta = 0.001,
   ef_budget = NULL,
-  bt_budget = 0.1
+  bt_budget = 0.1,
+  n_list = NULL,
+  n_probes = NULL
 )
 ```
 
@@ -62,6 +64,16 @@ params_nn(
 - bt_budget:
 
   Float. Budget for ball tree search. Defaults to `0.1`.
+
+- n_list:
+
+  Optional integer. Number of clusters to use for IVF. If `NULL`, will
+  default to `sqrt(n)`.
+
+- n_probes:
+
+  Optional integer. Number of clusters to probe for IVF. If `NULL`, will
+  default to `sqrt(n_list)`.
 
 ## Value
 
