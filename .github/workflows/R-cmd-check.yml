@@ -4,6 +4,7 @@ on:
     branches: [ main, dev ]
   pull_request:
     branches: [ main, dev ]
+
 jobs:
   R-CMD-check:
     runs-on: ${{ matrix.config.os }}
@@ -13,64 +14,57 @@ jobs:
       matrix:
         config:
           - {os: macOS-latest,   r: 'release'}
-          - {os: ubuntu-latest,   r: 'release'}
+          - {os: ubuntu-latest,  r: 'release'}
           - {os: windows-latest, r: 'release'}
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_KEEP_PKG_SOURCE: yes
+
     steps:
       - uses: actions/checkout@v4
-      
-      - name: Delete old artifacts
-        uses: geekyeggo/delete-artifact@v5
-        with:
-          name: '*'
-          failOnError: false
-      
-      - name: Clear R package cache (Unix)
-        if: runner.os != 'Windows'
-        run: |
-          rm -rf ~/.cache/R
-          rm -rf ~/.local/share/renv
-          rm -rf ~/Library/Caches/org.R-project.R
-      
+
       - uses: r-lib/actions/setup-pandoc@v2
-      
+
       - uses: r-lib/actions/setup-r@v2
         with:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
-          use-public-rspm: false
-          extra-repositories: 'https://cloud.r-project.org'
-      
+          use-public-rspm: true
+
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: ${{ runner.os == 'Windows' && 'stable-x86_64-pc-windows-gnu' || 'stable' }}
+
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: ${{ runner.os }}-rust
 
       - name: Set FFTW environment (Windows)
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
           echo "FFTW_SYS_USE_SYSTEM_FFTW=1" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-      
+
+      - name: Install system dependencies (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libcurl4-openssl-dev libharfbuzz-dev libfribidi-dev
+
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           pak-version: devel
           upgrade: "TRUE"
+          cache-version: 1
           extra-packages: |
             any::rcmdcheck
             any::rmarkdown
             any::knitr
             any::rextendr
           needs: check
-      
-      - name: Install system dependencies (Linux)
-        if: runner.os == 'Linux'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libcurl4-openssl-dev libharfbuzz-dev libfribidi-dev
-      
+
       - uses: r-lib/actions/check-r-package@v2
         with:
           build_args: 'c("--no-manual","--no-build-vignettes")'
