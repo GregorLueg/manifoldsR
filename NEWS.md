@@ -1,3 +1,10 @@
+# 0.1.1
+
+## Features
+
+- PaCMAP implemented
+- Faster kNN searches for IVF and Annoy thanks to better `ann-search-rs`
+
 # 0.1.0
 
 ## Features
