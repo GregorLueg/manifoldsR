@@ -10,18 +10,18 @@ crate-type = ['staticlib']
 name = 'manifoldsr'
 
 [dependencies]
-bixverse-rs = "0.1.4"
+bixverse-rs = "0.1.6"
 extendr-api = '0.8.1'
 faer = "0.23.2"
 faer-entity = "0.20.1"
 
 [target.'cfg(not(windows))'.dependencies]
-manifolds-rs = { version = "0.1.11", features = [
+manifolds-rs = { version = "0.1.12", features = [
     "fft_tsne",
 ] }
 
 [target.'cfg(windows)'.dependencies]
-manifolds-rs = { version = "0.1.11" }
+manifolds-rs = { version = "0.1.12" }
 
 [profile.test]
 opt-level = 3
