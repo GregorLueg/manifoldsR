@@ -20,18 +20,19 @@ library(data.table)
 PaCMAP constructs its embedding through three types of point pairs, each
 targeting a different aspect of structure. **Near pairs** (k-nearest
 neighbours) preserve local neighbourhoods. **Mid-near pairs** are
-sampled from a window further out in the kNN list — beyond the immediate
+sampled from a window further out in the kNN list - beyond the immediate
 neighbours but not arbitrary — and act as a medium-range attractive
 force that anchors global structure. **Further pairs** are random
 distant points that contribute a repulsive force preventing collapse.
 
 The key insight in PaCMAP is its **phased optimisation schedule**. In
-phase 1, the mid-near weight is dominant, pulling points into a globally
-coherent arrangement before local structure is resolved. In phase 2 the
-mid-near weight decays to zero while the near pair weight increases,
-allowing fine local structure to emerge without destroying the global
-layout established in phase 1. Phase 3 runs with near and further pairs
-only, refining the local structure.
+the first phase, the mid-near weight is dominant, pulling points into a
+globally coherent arrangement before local structure is resolved. In the
+second phase, the mid-near weight decays to zero while the near pair
+weight increases, allowing fine local structure to emerge without
+destroying the global layout established in phase 1. The third and last
+phase runs with near and further pairs only, refining the local
+structure.
 
 This stands in contrast to UMAP, which optimises a single objective from
 the start and consequently trades off local against global structure
@@ -317,12 +318,13 @@ ggplot(
 
 ![](pacmap_files/figure-html/hierarchical%20data%20-%20umap-1.png)
 
-In the PaCMAP embedding, the three supergroups occupy distinct regions
-of the embedding space at distances roughly proportional to their true
-separation. Within each supergroup the subclusters are cleanly resolved.
-In the UMAP embedding the supergroup distances are arbitrary —
-subclusters from different supergroups may be placed closer together
-than subclusters within the same supergroup.
+In the PaCMAP embedding, the three supergroups occupy clearly distinct
+regions of the embedding space at distances roughly proportional to
+their true separation. Within each supergroup the subclusters are
+cleanly resolved. In the UMAP embedding the supergroup distances are
+arbitrary — subclusters from different supergroups may be placed closer
+together than subclusters within the same supergroup. The global
+structure is lost in UMAP compared to PacMAP.
 
 ### Using pre-computed kNN graphs
 
@@ -413,8 +415,8 @@ microbenchmark::microbenchmark(
 )
 #> Unit: seconds
 #>             expr      min       lq     mean   median       uq      max neval
-#>    manifold_umap 1.152348 1.161268 1.164250 1.170188 1.170201 1.170214     3
-#>  manifold_pacmap 2.541951 2.548659 2.554053 2.555367 2.560103 2.564840     3
+#>    manifold_umap 1.197144 1.203134 1.208478 1.209124 1.214145 1.219166     3
+#>  manifold_pacmap 2.897683 2.899717 2.903794 2.901752 2.906849 2.911946     3
 ```
 
 PaCMAP is generally slower than UMAP on the same data since it processes

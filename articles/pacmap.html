@@ -84,8 +84,8 @@
 </div>
 <section class="level2"><h3 id="intro">Intro<a class="anchor" aria-label="anchor" href="#intro"></a>
 </h3>
-<p>PaCMAP constructs its embedding through three types of point pairs, each targeting a different aspect of structure. <strong>Near pairs</strong> (k-nearest neighbours) preserve local neighbourhoods. <strong>Mid-near pairs</strong> are sampled from a window further out in the kNN list — beyond the immediate neighbours but not arbitrary — and act as a medium-range attractive force that anchors global structure. <strong>Further pairs</strong> are random distant points that contribute a repulsive force preventing collapse.</p>
-<p>The key insight in PaCMAP is its <strong>phased optimisation schedule</strong>. In phase 1, the mid-near weight is dominant, pulling points into a globally coherent arrangement before local structure is resolved. In phase 2 the mid-near weight decays to zero while the near pair weight increases, allowing fine local structure to emerge without destroying the global layout established in phase 1. Phase 3 runs with near and further pairs only, refining the local structure.</p>
+<p>PaCMAP constructs its embedding through three types of point pairs, each targeting a different aspect of structure. <strong>Near pairs</strong> (k-nearest neighbours) preserve local neighbourhoods. <strong>Mid-near pairs</strong> are sampled from a window further out in the kNN list - beyond the immediate neighbours but not arbitrary — and act as a medium-range attractive force that anchors global structure. <strong>Further pairs</strong> are random distant points that contribute a repulsive force preventing collapse.</p>
+<p>The key insight in PaCMAP is its <strong>phased optimisation schedule</strong>. In the first phase, the mid-near weight is dominant, pulling points into a globally coherent arrangement before local structure is resolved. In the second phase, the mid-near weight decays to zero while the near pair weight increases, allowing fine local structure to emerge without destroying the global layout established in phase 1. The third and last phase runs with near and further pairs only, refining the local structure.</p>
 <p>This stands in contrast to UMAP, which optimises a single objective from the start and consequently trades off local against global structure throughout. The practical effect is that PaCMAP tends to preserve inter-cluster distances more faithfully than UMAP, without sacrificing local separation.</p>
 <p>A few things to keep in mind:</p>
 <ul>
@@ -353,7 +353,7 @@
 </div>
 </div>
 </div>
-<p>In the PaCMAP embedding, the three supergroups occupy distinct regions of the embedding space at distances roughly proportional to their true separation. Within each supergroup the subclusters are cleanly resolved. In the UMAP embedding the supergroup distances are arbitrary — subclusters from different supergroups may be placed closer together than subclusters within the same supergroup.</p>
+<p>In the PaCMAP embedding, the three supergroups occupy clearly distinct regions of the embedding space at distances roughly proportional to their true separation. Within each supergroup the subclusters are cleanly resolved. In the UMAP embedding the supergroup distances are arbitrary — subclusters from different supergroups may be placed closer together than subclusters within the same supergroup. The global structure is lost in UMAP compared to PacMAP.</p>
 </section></section><section class="level2"><h3 id="using-pre-computed-knn-graphs">Using pre-computed kNN graphs<a class="anchor" aria-label="anchor" href="#using-pre-computed-knn-graphs"></a>
 </h3>
 <p>As with the other methods, if you want to vary PaCMAP-specific parameters without repeating the kNN search, precompute the graph first.</p>
@@ -442,8 +442,8 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;             expr      min       lq     mean   median       uq      max neval</span></span>
-<span><span class="co">#&gt;    manifold_umap 1.152348 1.161268 1.164250 1.170188 1.170201 1.170214     3</span></span>
-<span><span class="co">#&gt;  manifold_pacmap 2.541951 2.548659 2.554053 2.555367 2.560103 2.564840     3</span></span></code></pre></div>
+<span><span class="co">#&gt;    manifold_umap 1.197144 1.203134 1.208478 1.209124 1.214145 1.219166     3</span></span>
+<span><span class="co">#&gt;  manifold_pacmap 2.897683 2.899717 2.903794 2.901752 2.906849 2.911946     3</span></span></code></pre></div>
 </div>
 <p>PaCMAP is generally slower than UMAP on the same data since it processes all pairs every epoch rather than sampling. The three-phase schedule with 450 epochs (vs UMAP’s 200–500) compounds this. For most datasets up to ~50k samples this is not a concern in practice, but on very large data the difference becomes noticeable.</p>
 </section></section><script id="quarto-html-after-body" type="application/javascript">
