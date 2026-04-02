@@ -1,3 +1,9 @@
+# 0.1.2
+
+## Features
+
+- Version bump to latest `manifolds-rs` version
+
 # 0.1.1
 
 ## Features
