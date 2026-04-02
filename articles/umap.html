@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -523,18 +523,18 @@
 <span>  times <span class="op">=</span> <span class="fl">1L</span> <span class="co"># single comparison for speed</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: milliseconds</span></span>
-<span><span class="co">#&gt;             expr        min         lq       mean     median         uq</span></span>
-<span><span class="co">#&gt;             umap 22373.2027 22373.2027 22373.2027 22373.2027 22373.2027</span></span>
-<span><span class="co">#&gt;  umap_reticulate 18945.2817 18945.2817 18945.2817 18945.2817 18945.2817</span></span>
-<span><span class="co">#&gt;             uwot  5594.7640  5594.7640  5594.7640  5594.7640  5594.7640</span></span>
-<span><span class="co">#&gt;          uwot_v2  3500.2761  3500.2761  3500.2761  3500.2761  3500.2761</span></span>
-<span><span class="co">#&gt;    manifold_umap   633.7853   633.7853   633.7853   633.7853   633.7853</span></span>
-<span><span class="co">#&gt;         max neval</span></span>
-<span><span class="co">#&gt;  22373.2027     1</span></span>
-<span><span class="co">#&gt;  18945.2817     1</span></span>
-<span><span class="co">#&gt;   5594.7640     1</span></span>
-<span><span class="co">#&gt;   3500.2761     1</span></span>
-<span><span class="co">#&gt;    633.7853     1</span></span></code></pre></div>
+<span><span class="co">#&gt;             expr       min        lq      mean    median        uq       max</span></span>
+<span><span class="co">#&gt;             umap 22896.952 22896.952 22896.952 22896.952 22896.952 22896.952</span></span>
+<span><span class="co">#&gt;  umap_reticulate 19962.589 19962.589 19962.589 19962.589 19962.589 19962.589</span></span>
+<span><span class="co">#&gt;             uwot  5531.874  5531.874  5531.874  5531.874  5531.874  5531.874</span></span>
+<span><span class="co">#&gt;          uwot_v2  2999.188  2999.188  2999.188  2999.188  2999.188  2999.188</span></span>
+<span><span class="co">#&gt;    manifold_umap   588.321   588.321   588.321   588.321   588.321   588.321</span></span>
+<span><span class="co">#&gt;  neval</span></span>
+<span><span class="co">#&gt;      1</span></span>
+<span><span class="co">#&gt;      1</span></span>
+<span><span class="co">#&gt;      1</span></span>
+<span><span class="co">#&gt;      1</span></span>
+<span><span class="co">#&gt;      1</span></span></code></pre></div>
 </div>
 <p>We can appreciate that the standard R version is slow (as expected). If we leverage the Python version (with numba behind the scences) via the reticulate, we can get some speed ups (we need to however first JIT compile the numba parts). However, the uwot v2 version and the manifold are the fastest here. Let’s pit them together against each other in a larger data set.</p>
 <div class="cell">
@@ -560,8 +560,8 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;           expr       min        lq      mean    median        uq       max</span></span>
-<span><span class="co">#&gt;        uwot_v2 25.549574 25.549574 25.549574 25.549574 25.549574 25.549574</span></span>
-<span><span class="co">#&gt;  manifold_umap  7.811047  7.811047  7.811047  7.811047  7.811047  7.811047</span></span>
+<span><span class="co">#&gt;        uwot_v2 24.048062 24.048062 24.048062 24.048062 24.048062 24.048062</span></span>
+<span><span class="co">#&gt;  manifold_umap  7.800525  7.800525  7.800525  7.800525  7.800525  7.800525</span></span>
 <span><span class="co">#&gt;  neval</span></span>
 <span><span class="co">#&gt;      1</span></span>
 <span><span class="co">#&gt;      1</span></span></code></pre></div>
