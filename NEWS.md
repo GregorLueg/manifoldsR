@@ -1,3 +1,9 @@
+# 0.1.3
+
+## Features
+
+- Version bump to latest `ann-search-rs` version
+
 # 0.1.2
 
 ## Features
