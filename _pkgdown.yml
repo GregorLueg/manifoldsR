@@ -44,7 +44,7 @@ reference:
     desc: "Everything and anything around kNN graph generation"
     contents:
       - generate_knn_graph
-      - generate_nearest_neigbours_class
+      - new_nearest_neighbour
       - get_idx_mat
       - get_idx_flat
       - get_dist_mat

@@ -477,3 +477,104 @@ params_hierarchical <- function(
     point_std = point_std
   )
 }
+
+## evoc ------------------------------------------------------------------------
+
+#' Wrapper function to generate EVoC parameters
+#'
+#' @param noise_level Numeric. Noise level for the embedding gradient.
+#' `0.0` = aggressive, `1.0` = conservative. Defaults to `0.5`.
+#' @param n_epochs Integer. Number of embedding optimisation epochs. Defaults
+#' to `50L`.
+#' @param embedding_dim Integer or `NULL`. Embedding dimensionality. If `NULL`,
+#' defaults to `min(max(n_neighbours / 4, 4), 16)`. Defaults to `NULL`.
+#' @param neighbour_scale Numeric. Multiplier on effective neighbours for
+#' fuzzy graph construction. Defaults to `1.0`.
+#' @param symmetrise Logical. Whether to symmetrise the fuzzy graph. Defaults
+#' to `TRUE`.
+#' @param min_samples Integer. Minimum samples for core distance in MST
+#' density estimation. Defaults to `5L`.
+#' @param base_min_cluster_size Integer. Base minimum cluster size for the
+#' finest layer. Defaults to `5L`.
+#' @param approx_n_clusters Integer or `NULL`. If set, binary-searches for
+#' approximately this many clusters (single layer output). Defaults to `NULL`.
+#' @param min_similarity_threshold Numeric. Jaccard similarity threshold for
+#' filtering redundant layers. Defaults to `0.2`.
+#' @param max_layers Integer. Maximum number of cluster layers to return.
+#' Defaults to `10L`.
+#'
+#' @returns A list with the EVoC parameters.
+#'
+#' @export
+params_evoc <- function(
+  noise_level = 0.5,
+  n_epochs = 50L,
+  embedding_dim = NULL,
+  neighbour_scale = 1.0,
+  symmetrise = TRUE,
+  min_samples = 5L,
+  base_min_cluster_size = 5L,
+  approx_n_clusters = NULL,
+  min_similarity_threshold = 0.2,
+  max_layers = 10L
+) {
+  # checks
+  checkmate::qassert(noise_level, "N1[0,1]")
+  checkmate::qassert(n_epochs, "I1[1,)")
+  checkmate::assert(
+    checkmate::checkNull(embedding_dim),
+    checkmate::checkInt(embedding_dim, lower = 2L)
+  )
+  checkmate::qassert(neighbour_scale, "N1(0,)")
+  checkmate::qassert(symmetrise, "B1")
+  checkmate::qassert(min_samples, "I1[1,)")
+  checkmate::qassert(base_min_cluster_size, "I1[2,)")
+  checkmate::assert(
+    checkmate::checkNull(approx_n_clusters),
+    checkmate::checkInt(approx_n_clusters, lower = 2L)
+  )
+  checkmate::qassert(min_similarity_threshold, "N1[0,1]")
+  checkmate::qassert(max_layers, "I1[1,)")
+
+  list(
+    noise_level = noise_level,
+    n_epochs = n_epochs,
+    embedding_dim = embedding_dim,
+    neighbour_scale = neighbour_scale,
+    symmetrise = symmetrise,
+    min_samples = min_samples,
+    base_min_cluster_size = base_min_cluster_size,
+    approx_n_clusters = approx_n_clusters,
+    min_similarity_threshold = min_similarity_threshold,
+    max_layers = max_layers
+  )
+}
+
+## k-means ---------------------------------------------------------------------
+
+#' Wrapper function to generate k-means parameters
+#'
+#' @param metric Character. Distance metric to use. One of `"euclidean"` or
+#'   `"cosine"`. Defaults to `"euclidean"`.
+#' @param max_iters Integer. Maximum number of iterations. Defaults to `100L`.
+#' @param batch_size Integer. Mini-batch size. Only used when
+#'   `method = "minibatch"`. Defaults to `4096L`.
+#'
+#' @return A named list with the k-means parameters.
+#'
+#' @export
+params_kmeans <- function(
+  metric = c("euclidean", "cosine"),
+  max_iters = 100L,
+  batch_size = 4096L
+) {
+  metric <- match.arg(metric)
+  checkmate::qassert(max_iters, "I1[1,)")
+  checkmate::qassert(batch_size, "I1[1,)")
+
+  list(
+    metric = metric,
+    max_iters = max_iters,
+    batch_size = batch_size
+  )
+}

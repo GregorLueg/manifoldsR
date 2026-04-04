@@ -184,6 +184,94 @@ rs_pacmap <- function(embd, n_dim, k, pacmap_params, seed, verbose) .Call(wrap__
 #' @export
 rs_pacmap_from_knn <- function(embd, knn_data, n_dim, k, pacmap_params, seed, verbose) .Call(wrap__rs_pacmap_from_knn, embd, knn_data, n_dim, k, pacmap_params, seed, verbose)
 
+#' EVoC clustering
+#'
+#' @description Wrapper function into the Rust interface for EVoC clustering.
+#'
+#' @param embd Numerical matrix. The data to cluster. Should be of dimensions
+#' samples x features.
+#' @param n_neighbours Integer. Number of nearest neighbours for graph
+#' construction.
+#' @param evoc_params Named list. List that contains all of the key parameters
+#' for EVoC clustering.
+#' @param return_knn Boolean. Shall the kNN graph be returned.
+#' @param seed Integer. Seed for reproducibility.
+#' @param verbose Boolean. Controls verbosity of the function.
+#'
+#' @return A named list with:
+#' \itemize{
+#'   \item evoc_res - List with the EVoC results
+#'   \item knn - Optional list (can be NULL) with the kNN graph
+#' }
+#'
+#' @export
+rs_evoc <- function(embd, n_neighbours, evoc_params, return_knn, seed, verbose) .Call(wrap__rs_evoc, embd, n_neighbours, evoc_params, return_knn, seed, verbose)
+
+#' EVoC clustering from pre-computed kNN
+#'
+#' @description Wrapper function into the Rust interface for EVoC clustering
+#' using a pre-computed kNN graph.
+#'
+#' @param embd Numerical matrix. The data to cluster. Should be of dimensions
+#' samples x features.
+#' @param knn_data List. A NearestNeighbours object with `k`, `indices`, and
+#' `dist` elements.
+#' @param n_neighbours Integer. Number of nearest neighbours for graph
+#' construction.
+#' @param evoc_params Named list. List that contains all of the key parameters
+#' for EVoC clustering.
+#' @param seed Integer. Seed for reproducibility.
+#' @param verbose Boolean. Controls verbosity of the function.
+#'
+#' @return A named list with cluster layers, membership strengths, persistence
+#' scores, and the kNN graph.
+#'
+#' @export
+rs_evoc_from_knn <- function(embd, knn_data, n_neighbours, evoc_params, seed, verbose) .Call(wrap__rs_evoc_from_knn, embd, knn_data, n_neighbours, evoc_params, seed, verbose)
+
+#' Full k-means clustering
+#'
+#' @description Rust interface for k-means clustering using Lloyd's algorithm
+#' with SIMD or GEMM acceleration depending on dimensionality.
+#'
+#' @param data Numerical matrix. The data to cluster, of dimensions
+#' samples x features.
+#' @param k Integer. Number of clusters.
+#' @param kmeans_params Named list. Parameters produced by `params_kmeans()`.
+#' @param seed Integer. Seed for reproducibility.
+#' @param verbose Boolean. Controls verbosity.
+#'
+#' @return A named list with:
+#' \itemize{
+#'   \item centroids - Numeric matrix of shape k x features.
+#'   \item assignments - Integer vector of length samples (1-indexed).
+#' }
+#'
+#' @export
+rs_k_means <- function(data, k, kmeans_params, seed, verbose) .Call(wrap__rs_k_means, data, k, kmeans_params, seed, verbose)
+
+#' Mini-batch k-means clustering
+#'
+#' @description Rust interface for mini-batch k-means clustering
+#' (Sculley 2010). Uses random mini-batches with a decaying learning rate
+#' for faster convergence on large data sets.
+#'
+#' @param data Numerical matrix. The data to cluster, of dimensions
+#' samples x features.
+#' @param k Integer. Number of clusters.
+#' @param kmeans_params Named list. Parameters produced by `params_kmeans()`.
+#' @param seed Integer. Seed for reproducibility.
+#' @param verbose Boolean. Controls verbosity.
+#'
+#' @return A named list with:
+#' \itemize{
+#'   \item centroids - Numeric matrix of shape k x features.
+#'   \item assignments - Integer vector of length samples (1-indexed).
+#' }
+#'
+#' @export
+rs_k_means_mini_batch <- function(data, k, kmeans_params, seed, verbose) .Call(wrap__rs_k_means_mini_batch, data, k, kmeans_params, seed, verbose)
+
 #' Wrapper around some nearest neighbour searches integrated into manifold-rs
 #'
 #' @param data Numeric matrix. Shape of samples x n_dim for which to get the

@@ -544,3 +544,151 @@ checkPacmapParams <- function(x) {
 #'
 #' @keywords internal
 assertPacmapParams <- checkmate::makeAssertionFunction(checkPacmapParams)
+
+## evoc ------------------------------------------------------------------------
+
+#' Check EVoC parameters
+#'
+#' @description Checkmate extension for checking the EVoC parameters.
+#'
+#' @param x The list to check.
+#'
+#' @return `TRUE` if the check was successful, otherwise an error message.
+#'
+#' @keywords internal
+checkEvocParams <- function(x) {
+  res <- checkmate::checkList(x)
+  if (!isTRUE(res)) {
+    return(res)
+  }
+
+  res <- checkmate::checkNames(
+    names(x),
+    must.include = c(
+      "noise_level",
+      "n_epochs",
+      "embedding_dim",
+      "neighbour_scale",
+      "symmetrise",
+      "min_samples",
+      "base_min_cluster_size",
+      "approx_n_clusters",
+      "min_similarity_threshold",
+      "max_layers"
+    )
+  )
+  if (!isTRUE(res)) {
+    return(res)
+  }
+
+  rules <- list(
+    "noise_level" = list(type = "fixed", rule = "N1[0,1]"),
+    "n_epochs" = list(type = "fixed", rule = "I1[1,)"),
+    "embedding_dim" = list(type = "nullable_int"),
+    "neighbour_scale" = list(type = "fixed", rule = "N1(0,)"),
+    "symmetrise" = list(type = "fixed", rule = "B1"),
+    "min_samples" = list(type = "fixed", rule = "I1[1,)"),
+    "base_min_cluster_size" = list(type = "fixed", rule = "I1[2,)"),
+    "approx_n_clusters" = list(type = "nullable_int"),
+    "min_similarity_threshold" = list(type = "fixed", rule = "N1[0,1]"),
+    "max_layers" = list(type = "fixed", rule = "I1[1,)")
+  )
+
+  res <- purrr::imap_lgl(x, \(val, name) {
+    spec <- rules[[name]]
+    if (spec$type == "nullable_int") {
+      is.null(val) || checkmate::qtest(val, "I1[1,)")
+    } else {
+      checkmate::qtest(val, spec$rule)
+    }
+  })
+
+  if (!isTRUE(all(res))) {
+    broken_elem <- names(res)[which(!res)][1]
+    return(sprintf(
+      paste(
+        "Element `%s` in EVoC params does not conform.",
+        "noise_level/neighbour_scale/min_similarity_threshold must be numeric,",
+        "n_epochs/min_samples/base_min_cluster_size/max_layers must be",
+        "positive integers, embedding_dim/approx_n_clusters must be positive",
+        "integers or NULL, and symmetrise must be logical."
+      ),
+      broken_elem
+    ))
+  }
+
+  return(TRUE)
+}
+
+#' Assert EVoC parameters
+#'
+#' @description Checkmate extension for asserting the EVoC parameters.
+#'
+#' @inheritParams checkEvocParams
+#'
+#' @param .var.name Name of the checked object to print in assertions. Defaults
+#' to the heuristic implemented in checkmate.
+#' @param add Collection to store assertion messages. See
+#' [checkmate::makeAssertCollection()].
+#'
+#' @return Invisibly returns the checked object if the assertion is successful.
+#'
+#' @keywords internal
+assertEvocParams <- checkmate::makeAssertionFunction(checkEvocParams)
+
+## k-means ---------------------------------------------------------------------
+
+#' Check k-means parameters
+#'
+#' @description Checkmate extension for checking the k-means parameters.
+#'
+#' @param x The list to check.
+#'
+#' @return `TRUE` if the check was successful, otherwise an error message.
+#'
+#' @keywords internal
+checkKmeansParams <- function(x) {
+  res <- checkmate::checkList(x)
+  if (!isTRUE(res)) {
+    return(res)
+  }
+
+  res <- checkmate::checkNames(
+    names(x),
+    must.include = c("metric", "max_iters", "batch_size")
+  )
+  if (!isTRUE(res)) {
+    return(res)
+  }
+
+  if (
+    !checkmate::qtest(x$metric, "S1") ||
+      !x$metric %in% c("euclidean", "cosine")
+  ) {
+    return("Element `metric` must be one of 'euclidean' or 'cosine'.")
+  }
+  if (!checkmate::qtest(x$max_iters, "I1[1,)")) {
+    return("Element `max_iters` must be a positive integer.")
+  }
+  if (!checkmate::qtest(x$batch_size, "I1[1,)")) {
+    return("Element `batch_size` must be a positive integer.")
+  }
+
+  TRUE
+}
+
+#' Assert k-means parameters
+#'
+#' @description Checkmate extension for asserting the k-means parameters.
+#'
+#' @inheritParams checkKmeansParams
+#'
+#' @param .var.name Name of the checked object to print in assertions. Defaults
+#'   to the heuristic implemented in checkmate.
+#' @param add Collection to store assertion messages. See
+#'   [checkmate::makeAssertCollection()].
+#'
+#' @return Invisibly returns the checked object if the assertion is successful.
+#'
+#' @keywords internal
+assertKmeansParams <- checkmate::makeAssertionFunction(checkKmeansParams)
