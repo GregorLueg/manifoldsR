@@ -1,3 +1,16 @@
+# 0.2.0
+
+Scope of the package was a bit extended and now offers also some of the very
+fast clustering methods that power aspects of the approximate nearest neighbour
+searches (k-means) + EVõC clustering.
+
+## Features
+
+- [EVõC clustering](https://github.com/TutteInstitute/evoc) implemented from the 
+  brilliant Leland McInnes.
+- k-means clustering from `ann-search-rs` in a full version and as a mini-batch
+  version for memory constrained scenarios.
+
 # 0.1.3
 
 ## Features

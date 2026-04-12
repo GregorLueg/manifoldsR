@@ -358,9 +358,43 @@ get_centroids <- function(x) {
 }
 
 #' @rdname get_centroids
+#'
 #' @export
 get_centroids.KMeansCluster <- function(x) {
+  # checks
+  checkmate::assertClass(x, "KMeansCluster")
+
   x$centroids
+}
+
+### metrics --------------------------------------------------------------------
+
+#' Calculate the cluster inertia
+#'
+#' @param x `KMeansCluster` class.
+#' @param data Numerical matrix. The original data used to generate the k-means
+#' clusters. Shape of samples x features
+#'
+#' @returns The cluster inertia
+#'
+#' @export
+calc_inertia <- function(x, data) {
+  UseMethod("calc_inertia")
+}
+
+#' @rdname calc_inertia
+#'
+#' @export
+calc_inertia.KMeansCluster <- function(x, data) {
+  # checks
+  checkmate::assertClass(x, "KMeansCluster")
+  checkmate::assertMatrix(data, mode = "numeric")
+
+  rs_intertia(
+    data = data,
+    centroids = x$centroids,
+    cluster_membership = x$assignments
+  )
 }
 
 ### primitives -----------------------------------------------------------------

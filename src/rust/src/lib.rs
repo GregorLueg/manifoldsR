@@ -1,8 +1,11 @@
-//! Rust to R function implementations, exposing the manifolds-rs functionality
-//! to R.
+//! Rust to R function implementations, exposing the manifolds-rs,
+//! ann-search-rs and evoc-rs functionality to R.
+
+#![allow(clippy::needless_range_loop)]
 
 pub mod evoc;
 pub mod k_means;
+pub mod metrics;
 pub mod pacmap;
 pub mod phate;
 pub mod tsne;
@@ -19,6 +22,7 @@ use manifolds_rs::prelude::*;
 
 use crate::evoc::*;
 use crate::k_means::*;
+use crate::metrics::*;
 use crate::pacmap::*;
 use crate::phate::*;
 use crate::tsne::*;
@@ -45,13 +49,18 @@ extendr_module! {
     fn rs_evoc_from_knn;
     fn rs_k_means;
     fn rs_k_means_mini_batch;
-    // various helpers
+    // nn utils
     fn rs_approx_nearest_neighbours;
+    // synthetic data
     fn rs_data_swiss_role;
     fn rs_data_clusters;
     fn rs_data_trajectory;
     fn rs_data_hierarchical;
+    // metrics
     fn rs_check_cluster_separation;
+    fn rs_ari;
+    fn rs_silhouette_score;
+    fn rs_intertia;
 }
 
 //////////
@@ -615,47 +624,6 @@ fn rs_approx_nearest_neighbours(
     ]
 }
 
-///////////
-// Utils //
-///////////
-
-/// Check cluster separation in an embedding
-///
-/// @param embd Numerical matrix. The embedding of shape samples x dims.
-/// @param cluster_membership Integer vector. Zero-indexed cluster labels.
-///
-/// @return A named list with `within_dists` and `between_dists`.
-///
-/// @export
-#[extendr]
-fn rs_check_cluster_separation(embd: RMatrix<f64>, cluster_membership: &[i32]) -> List {
-    let nrow = embd.nrows();
-    let ncol = embd.ncols();
-
-    let mut within_dists: Vec<f64> = Vec::new();
-    let mut between_dists: Vec<f64> = Vec::new();
-
-    for i in 0..nrow {
-        for j in (i + 1)..nrow {
-            let dist = (0..ncol)
-                .map(|c| {
-                    let d = embd[[i, c]] - embd[[j, c]];
-                    d * d
-                })
-                .sum::<f64>()
-                .sqrt();
-
-            if cluster_membership[i] == cluster_membership[j] {
-                within_dists.push(dist);
-            } else {
-                between_dists.push(dist);
-            }
-        }
-    }
-
-    list!(within_dists = within_dists, between_dists = between_dists)
-}
-
 //////////
 // EVoC //
 //////////
@@ -871,6 +839,7 @@ fn rs_k_means_mini_batch(
         &metric,
         params.max_iters,
         params.batch_size,
+        params.drift_threshold,
         seed,
         verbose,
     );
@@ -879,4 +848,111 @@ fn rs_k_means_mini_batch(
     let centroids_r = flat_to_r_matrix_f64(&centroids, k, dim);
 
     list!(centroids = centroids_r, assignments = assignments_r)
+}
+
+/////////////
+// Metrics //
+/////////////
+
+/// Check cluster separation in an embedding
+///
+/// @param embd Numerical matrix. The embedding of shape samples x dims.
+/// @param cluster_membership Integer vector. Zero-indexed cluster labels.
+///
+/// @return A named list with `within_dists` and `between_dists`.
+///
+/// @export
+#[extendr]
+fn rs_check_cluster_separation(embd: RMatrix<f64>, cluster_membership: &[i32]) -> List {
+    let nrow = embd.nrows();
+    let ncol = embd.ncols();
+
+    let mut within_dists: Vec<f64> = Vec::new();
+    let mut between_dists: Vec<f64> = Vec::new();
+
+    for i in 0..nrow {
+        for j in (i + 1)..nrow {
+            let dist = (0..ncol)
+                .map(|c| {
+                    let d = embd[[i, c]] - embd[[j, c]];
+                    d * d
+                })
+                .sum::<f64>()
+                .sqrt();
+
+            if cluster_membership[i] == cluster_membership[j] {
+                within_dists.push(dist);
+            } else {
+                between_dists.push(dist);
+            }
+        }
+    }
+
+    list!(within_dists = within_dists, between_dists = between_dists)
+}
+
+/// Adjusted Rand index
+///
+/// @param cluster_membership_a Integers. Cluster memberships in group a.
+/// @param cluster_membership_b Integers. Cluster memberships in group b.
+///
+/// @returns Returns the adjusted Rand index between the two groups.
+///
+/// @export
+#[extendr]
+fn rs_ari(cluster_membership_a: &[i32], cluster_membership_b: &[i32]) -> f64 {
+    let cluster_membership_a = cluster_membership_a.r_int_convert();
+    let cluster_membership_b = cluster_membership_b.r_int_convert();
+
+    adjusted_rand_index(&cluster_membership_a, &cluster_membership_b)
+}
+
+/// Calculates the cluster silhouette scores
+///
+/// @description Uses the squared Euclidean distance under the hood for speed.
+///
+/// @param data Numeric matrix. The data in shape of sample x features.
+/// @param cluster_membership Integers. Cluster memberships as integers.
+///
+/// @returns A list with the following items
+/// \itemize{
+///  \item mean_silhouette - Mean silhouette scores per cluster.
+///  \item silhouette_scores - Silhouette scores per given data point.
+/// }
+///
+/// @export
+#[extendr]
+fn rs_silhouette_score(data: RMatrix<f64>, cluster_membership: &[i32]) -> List {
+    let data = r_matrix_to_faer(&data);
+    let (vectors_flat, n, dim) = matrix_to_flat(data.as_ref());
+    let cluster_membership = cluster_membership.r_int_convert();
+
+    let (mean_silhouette, silhouette_scores) =
+        silhouette_score(&vectors_flat, &cluster_membership, dim, n);
+
+    list!(
+        mean_silhouette = mean_silhouette,
+        silhouette_scores = silhouette_scores
+    )
+}
+
+/// Calculates the intertia for k-means clustering
+///
+/// @param data Numeric matrix. The data in shape of sample x features.
+/// @param centroids Numeric matrix. The centroid data in shape k x features.
+/// @param cluster_membership Integers. Cluster memberships as integers.
+///
+/// @returns The inertia score
+///
+/// @export
+#[extendr]
+fn rs_intertia(data: RMatrix<f64>, centroids: RMatrix<f64>, cluster_membership: &[i32]) -> f64 {
+    let data = r_matrix_to_faer(&data);
+    let centroids = r_matrix_to_faer(&centroids);
+    let cluster_membership = cluster_membership.r_int_convert();
+
+    let (vectors_flat, n, dim) = matrix_to_flat(data.as_ref());
+    let (centroids_flat, _, _) = matrix_to_flat(centroids.as_ref());
+
+    inertia(&vectors_flat, &centroids_flat, &cluster_membership, dim, n)
 }

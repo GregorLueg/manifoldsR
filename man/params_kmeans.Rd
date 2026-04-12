@@ -6,18 +6,22 @@
 \usage{
 params_kmeans(
   metric = c("euclidean", "cosine"),
-  max_iters = 100L,
-  batch_size = 4096L
+  max_iters = 1000L,
+  batch_size = 4096L,
+  drift_threshold = 1e-04
 )
 }
 \arguments{
 \item{metric}{Character. Distance metric to use. One of \code{"euclidean"} or
 \code{"cosine"}. Defaults to \code{"euclidean"}.}
 
-\item{max_iters}{Integer. Maximum number of iterations. Defaults to \code{100L}.}
+\item{max_iters}{Integer. Maximum number of iterations. Defaults to \code{1000L}.}
 
 \item{batch_size}{Integer. Mini-batch size. Only used when
 \code{method = "minibatch"}. Defaults to \code{4096L}.}
+
+\item{drift_threshold}{Float. Below which centroid drift the mini-batch
+k-means is considered converged. Defaults to \code{1e-4}.}
 }
 \value{
 A named list with the k-means parameters.

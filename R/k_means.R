@@ -3,24 +3,24 @@
 #' K-means clustering
 #'
 #' @description Performs k-means clustering on the input data. Supports both
-#'   full Lloyd's iterations (with SIMD/GEMM acceleration) and mini-batch
-#'   k-means (Sculley 2010) for large data sets.
+#' full Lloyd's iterations (with SIMD/GEMM acceleration) and mini-batch k-means
+#' for large data sets.
 #'
 #' @param data Numerical matrix or data frame. The data to cluster, of shape
-#'   samples x features. Will be coerced to a matrix.
+#' samples x features. Will be coerced to a matrix.
 #' @param k Integer. Number of clusters to create. Must be >= 2.
 #' @param method Character. Clustering method. One of `"full"` (Lloyd's
-#'   algorithm) or `"minibatch"` (mini-batch k-means). Defaults to `"full"`.
+#' algorithm) or `"minibatch"` (mini-batch k-means). Defaults to `"full"`.
 #' @param kmeans_params Named list. K-means parameters, see [params_kmeans()].
 #' @param seed Integer. Random seed for reproducibility. Defaults to `42L`.
 #' @param .verbose Logical. Controls verbosity. Defaults to `TRUE`.
 #'
 #' @return A named list with:
 #' \describe{
-#'   \item{centroids}{Numeric matrix of shape k x features containing the
-#'     final cluster centroids.}
-#'   \item{assignments}{Integer vector of length samples with cluster
-#'     assignments (1-indexed).}
+#'  \item{centroids}{Numeric matrix of shape k x features containing the
+#'  final cluster centroids.}
+#'  \item{assignments}{Integer vector of length samples with cluster
+#'  assignments (1-indexed).}
 #' }
 #'
 #' @export

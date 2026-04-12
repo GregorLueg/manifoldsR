@@ -27,6 +27,8 @@ pub struct InternalKmeansParams {
     pub max_iters: usize,
     /// Mini-batch size. Only used by the mini-batch path.
     pub batch_size: usize,
+    /// Drifting threshold
+    pub drift_threshold: f64,
 }
 
 impl InternalKmeansParams {
@@ -56,11 +58,16 @@ impl InternalKmeansParams {
             .get("batch_size")
             .and_then(|v| v.as_integer())
             .unwrap_or(4096) as usize;
+        let drift_threshold = params
+            .get("drift_threshold")
+            .and_then(|v| v.as_real())
+            .unwrap_or(1e-4);
 
         Self {
             metric,
             max_iters,
             batch_size,
+            drift_threshold,
         }
     }
 
@@ -164,6 +171,8 @@ where
 /// * `max_iters` - Maximum number of mini-batch iterations
 /// * `batch_size` - Number of vectors sampled per iteration. Clamped to
 ///   `n` if larger.
+/// * `drift_threshold` - Below which centroid drift the algorithm is seen as
+///   converged.
 /// * `seed` - Random seed for reproducibility
 /// * `verbose` - Print convergence diagnostics
 ///
@@ -181,6 +190,7 @@ pub fn train_centroids_minibatch<T>(
     metric: &Dist,
     max_iters: usize,
     batch_size: usize,
+    drift_threshold: f64,
     seed: usize,
     verbose: bool,
 ) -> (Vec<T>, Vec<usize>)
@@ -303,7 +313,7 @@ where
         compute_centroid_drift(&old_centroids, &centroids, dim, n_centroids, &mut deltas);
         let max_drift = deltas.iter().copied().fold(T::zero(), T::max);
 
-        if max_drift <= T::from_f64(1e-6).unwrap() {
+        if max_drift <= T::from_f64(drift_threshold).unwrap() {
             if verbose {
                 println!("    Converged at iteration {}", iter + 1);
             }

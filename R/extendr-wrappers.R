@@ -393,5 +393,42 @@ rs_data_hierarchical <- function(n_samples, dim, n_supergroups, n_subclusts, sup
 #' @export
 rs_check_cluster_separation <- function(embd, cluster_membership) .Call(wrap__rs_check_cluster_separation, embd, cluster_membership)
 
+#' Adjusted Rand index
+#'
+#' @param cluster_membership_a Integers. Cluster memberships in group a.
+#' @param cluster_membership_b Integers. Cluster memberships in group b.
+#'
+#' @returns Returns the adjusted Rand index between the two groups.
+#'
+#' @export
+rs_ari <- function(cluster_membership_a, cluster_membership_b) .Call(wrap__rs_ari, cluster_membership_a, cluster_membership_b)
+
+#' Calculates the cluster silhouette scores
+#'
+#' @description Uses the squared Euclidean distance under the hood for speed.
+#'
+#' @param data Numeric matrix. The data in shape of sample x features.
+#' @param cluster_membership Integers. Cluster memberships as integers.
+#'
+#' @returns A list with the following items
+#' \itemize{
+#'  \item mean_silhouette - Mean silhouette scores per cluster.
+#'  \item silhouette_scores - Silhouette scores per given data point.
+#' }
+#'
+#' @export
+rs_silhouette_score <- function(data, cluster_membership) .Call(wrap__rs_silhouette_score, data, cluster_membership)
+
+#' Calculates the intertia for k-means clustering
+#'
+#' @param data Numeric matrix. The data in shape of sample x features.
+#' @param centroids Numeric matrix. The centroid data in shape k x features.
+#' @param cluster_membership Integers. Cluster memberships as integers.
+#'
+#' @returns The inertia score
+#'
+#' @export
+rs_intertia <- function(data, centroids, cluster_membership) .Call(wrap__rs_intertia, data, centroids, cluster_membership)
+
 
 # nolint end

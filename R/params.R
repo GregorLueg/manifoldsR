@@ -555,26 +555,31 @@ params_evoc <- function(
 #' Wrapper function to generate k-means parameters
 #'
 #' @param metric Character. Distance metric to use. One of `"euclidean"` or
-#'   `"cosine"`. Defaults to `"euclidean"`.
-#' @param max_iters Integer. Maximum number of iterations. Defaults to `100L`.
+#' `"cosine"`. Defaults to `"euclidean"`.
+#' @param max_iters Integer. Maximum number of iterations. Defaults to `1000L`.
 #' @param batch_size Integer. Mini-batch size. Only used when
-#'   `method = "minibatch"`. Defaults to `4096L`.
+#' `method = "minibatch"`. Defaults to `4096L`.
+#' @param drift_threshold Float. Below which centroid drift the mini-batch
+#' k-means is considered converged. Defaults to `1e-4`.
 #'
 #' @return A named list with the k-means parameters.
 #'
 #' @export
 params_kmeans <- function(
   metric = c("euclidean", "cosine"),
-  max_iters = 100L,
-  batch_size = 4096L
+  max_iters = 1000L,
+  batch_size = 4096L,
+  drift_threshold = 1e-4
 ) {
   metric <- match.arg(metric)
   checkmate::qassert(max_iters, "I1[1,)")
   checkmate::qassert(batch_size, "I1[1,)")
+  checkmate::qassert(drift_threshold, "N1")
 
   list(
     metric = metric,
     max_iters = max_iters,
-    batch_size = batch_size
+    batch_size = batch_size,
+    drift_threshold = drift_threshold
   )
 }

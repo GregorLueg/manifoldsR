@@ -20,7 +20,7 @@
 ) {
   checkmate::assertChoice(
     knn_method,
-    c("hnsw", "annoy", "nndescent", "balltree", "exhaustive")
+    c("hnsw", "annoy", "nndescent", "balltree", "ivf", "exhaustive")
   )
   assertNnParams(nn_params)
   assertEvocParams(evoc_params)
@@ -46,7 +46,7 @@
 #' @param n_neighbours Integer. Number of nearest neighbours for graph
 #' construction. Defaults to `15L`.
 #' @param knn_method Character. Approximate nearest neighbour algorithm to use.
-#' One of `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, or
+#' One of `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, `"ivf"`, or
 #' `"exhaustive"`. Defaults to `"hnsw"`.
 #' @param nn_params Named list. Nearest neighbour search parameters, see
 #' [params_nn()].
@@ -65,7 +65,7 @@ evoc <- function(
   data,
   knn = NULL,
   n_neighbours = 15L,
-  knn_method = c("hnsw", "annoy", "nndescent", "balltree", "exhaustive"),
+  knn_method = c("hnsw", "annoy", "nndescent", "balltree", "ivf", "exhaustive"),
   nn_params = params_nn(),
   evoc_params = params_evoc(),
   return_knn = FALSE,

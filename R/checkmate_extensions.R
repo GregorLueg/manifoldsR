@@ -655,7 +655,7 @@ checkKmeansParams <- function(x) {
 
   res <- checkmate::checkNames(
     names(x),
-    must.include = c("metric", "max_iters", "batch_size")
+    must.include = c("metric", "max_iters", "batch_size", "drift_threshold")
   )
   if (!isTRUE(res)) {
     return(res)
@@ -672,6 +672,9 @@ checkKmeansParams <- function(x) {
   }
   if (!checkmate::qtest(x$batch_size, "I1[1,)")) {
     return("Element `batch_size` must be a positive integer.")
+  }
+  if (!checkmate::qtest(x$drift_threshold, "N1")) {
+    return("Element `drift_threshold` needs to be a numeric.")
   }
 
   TRUE
