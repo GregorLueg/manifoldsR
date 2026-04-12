@@ -8,7 +8,8 @@ params_kmeans(
   metric = c("euclidean", "cosine"),
   max_iters = 1000L,
   batch_size = 4096L,
-  drift_threshold = 1e-04
+  drift_threshold = 1e-04,
+  lr_alpha = 1
 )
 }
 \arguments{
@@ -21,7 +22,11 @@ params_kmeans(
 \code{method = "minibatch"}. Defaults to \code{4096L}.}
 
 \item{drift_threshold}{Float. Below which centroid drift the mini-batch
-k-means is considered converged. Defaults to \code{1e-4}.}
+k-means is considered converged. Defaults to \code{1e-4}. Only used when
+\code{method = "minibatch"}}
+
+\item{lr_alpha}{Float. Learning rate decay for the mini-batch k-means.
+Original paper uses \code{1.0}.}
 }
 \value{
 A named list with the k-means parameters.

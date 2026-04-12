@@ -840,6 +840,7 @@ fn rs_k_means_mini_batch(
         params.max_iters,
         params.batch_size,
         params.drift_threshold,
+        params.lr_alpha,
         seed,
         verbose,
     );

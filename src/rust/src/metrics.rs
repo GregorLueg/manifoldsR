@@ -93,7 +93,7 @@ where
     // determine k from assignments
     let k = assignments.iter().copied().max().map_or(0, |m| m + 1);
 
-    // Per-cluster: member count, vector sum, sum of squared norms
+    // per-cluster: member count, vector sum, sum of squared norms
     let mut cluster_sizes = vec![0usize; k];
     let mut cluster_sums = vec![T::zero(); k * dim];
     let mut cluster_sq_norm_sums = vec![T::zero(); k];
@@ -106,7 +106,7 @@ where
         cluster_sq_norm_sums[c] = cluster_sq_norm_sums[c] + T::dot_simd(vi, vi);
     }
 
-    // Per-point squared norms
+    // per-point squared norms
     let point_sq_norms: Vec<T> = (0..n)
         .into_par_iter()
         .map(|i| T::dot_simd(&data[i * dim..(i + 1) * dim], &data[i * dim..(i + 1) * dim]))

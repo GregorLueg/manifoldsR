@@ -30,7 +30,6 @@ calc_ari <- function(members_a, members_b) {
 #' If the membership has only one group, the function will return `NaN` for
 #' `mean_silhouette` and `silhouette_scores`.
 #'
-#'
 #' @param data Numerical matrix. Samples x features. The matrix that was used
 #' to generate the clustering.
 #' @param membership Integer vector. Membership/assignment of the clustering

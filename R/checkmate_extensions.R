@@ -655,26 +655,42 @@ checkKmeansParams <- function(x) {
 
   res <- checkmate::checkNames(
     names(x),
-    must.include = c("metric", "max_iters", "batch_size", "drift_threshold")
+    must.include = c(
+      "metric",
+      "max_iters",
+      "batch_size",
+      "drift_threshold",
+      "lr_alpha"
+    )
   )
   if (!isTRUE(res)) {
     return(res)
   }
 
-  if (
-    !checkmate::qtest(x$metric, "S1") ||
-      !x$metric %in% c("euclidean", "cosine")
-  ) {
-    return("Element `metric` must be one of 'euclidean' or 'cosine'.")
-  }
-  if (!checkmate::qtest(x$max_iters, "I1[1,)")) {
-    return("Element `max_iters` must be a positive integer.")
-  }
-  if (!checkmate::qtest(x$batch_size, "I1[1,)")) {
-    return("Element `batch_size` must be a positive integer.")
-  }
-  if (!checkmate::qtest(x$drift_threshold, "N1")) {
-    return("Element `drift_threshold` needs to be a numeric.")
+  checks <- list(
+    if (
+      !checkmate::qtest(x$metric, "S1") ||
+        !x$metric %in% c("euclidean", "cosine")
+    ) {
+      "Element `metric` must be one of 'euclidean' or 'cosine'."
+    },
+    if (!checkmate::qtest(x$max_iters, "I1[1,)")) {
+      "Element `max_iters` must be a positive integer."
+    },
+    if (!checkmate::qtest(x$batch_size, "I1[1,)")) {
+      "Element `batch_size` must be a positive integer."
+    },
+    if (!checkmate::qtest(x$drift_threshold, "N1")) {
+      "Element `drift_threshold` must be a numeric."
+    },
+    if (!checkmate::qtest(x$lr_alpha, "N1")) {
+      "Element `lr_alpha` must be a numeric."
+    }
+  )
+
+  failed <- Filter(Negate(is.null), checks)
+  if (length(failed) > 0L) {
+    return(failed[[1L]])
   }
 
   TRUE

@@ -39,6 +39,6 @@ assignments (1-indexed).}
 }
 \description{
 Performs k-means clustering on the input data. Supports both
-full Lloyd's iterations (with SIMD/GEMM acceleration) and mini-batch
-k-means (Sculley 2010) for large data sets.
+full Lloyd's iterations (with SIMD/GEMM acceleration) and mini-batch k-means
+for large data sets.
 }

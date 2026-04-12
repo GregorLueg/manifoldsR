@@ -11,7 +11,7 @@ calc_silhouette_score(data, membership)
 to generate the clustering.}
 
 \item{membership}{Integer vector. Membership/assignment of the clustering
-algorithm}
+algorithm.}
 }
 \value{
 A list with the following items:
@@ -23,5 +23,6 @@ points.
 }
 }
 \description{
-Calculates the Silhouette score of a given clustering
+If the membership has only one group, the function will return \code{NaN} for
+\code{mean_silhouette} and \code{silhouette_scores}.
 }

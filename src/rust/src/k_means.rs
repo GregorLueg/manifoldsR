@@ -7,7 +7,7 @@ use ann_search_rs::utils::k_means_utils::*;
 use extendr_api::List;
 use num_traits::Float;
 use rand::rngs::StdRng;
-use rand::seq::index::sample;
+use rand::seq::SliceRandom;
 use rand::SeedableRng;
 use rayon::prelude::*;
 
@@ -29,6 +29,9 @@ pub struct InternalKmeansParams {
     pub batch_size: usize,
     /// Drifting threshold
     pub drift_threshold: f64,
+    /// Learning rate exponent. `eta = m / count[c]^lr_alpha`.
+    /// 1.0 = original Sculley (rather aggressive decay).
+    pub lr_alpha: f64,
 }
 
 impl InternalKmeansParams {
@@ -62,12 +65,17 @@ impl InternalKmeansParams {
             .get("drift_threshold")
             .and_then(|v| v.as_real())
             .unwrap_or(1e-4);
+        let lr_alpha = params
+            .get("lr_alpha")
+            .and_then(|v| v.as_real())
+            .unwrap_or(1.0);
 
         Self {
             metric,
             max_iters,
             batch_size,
             drift_threshold,
+            lr_alpha,
         }
     }
 
@@ -173,6 +181,8 @@ where
 ///   `n` if larger.
 /// * `drift_threshold` - Below which centroid drift the algorithm is seen as
 ///   converged.
+/// * `lr_alpha` - Learning rate alpha decay. The original paper used `1.0`, but
+///   `0.75` yields better convergence.
 /// * `seed` - Random seed for reproducibility
 /// * `verbose` - Print convergence diagnostics
 ///
@@ -191,6 +201,7 @@ pub fn train_centroids_minibatch<T>(
     max_iters: usize,
     batch_size: usize,
     drift_threshold: f64,
+    lr_alpha: f64,
     seed: usize,
     verbose: bool,
 ) -> (Vec<T>, Vec<usize>)
@@ -199,7 +210,7 @@ where
 {
     let batch_size = batch_size.min(n);
 
-    // Precompute all norms once
+    // precompute all data norms once
     let data_norms: Vec<T> = match metric {
         Dist::Euclidean => (0..n)
             .into_par_iter()
@@ -214,7 +225,7 @@ where
             .collect(),
     };
 
-    // Initialise centroids (same logic as train_centroids)
+    // initialise centroids
     let mut centroids = if n_centroids > 200 {
         if verbose {
             println!("  Initialising centroids via fast random selection");
@@ -233,51 +244,48 @@ where
         kmeans_parallel_init(data, &init_norms, dim, n, n_centroids, metric, seed)
     };
 
-    let mut centroid_norms: Vec<T> = recompute_centroid_norms(&centroids, dim, n_centroids, metric);
+    let mut centroid_norms = recompute_centroid_norms(&centroids, dim, n_centroids, metric);
 
-    // Running per-centroid counts for the decaying learning rate
-    let mut counts = vec![0usize; n_centroids];
-
-    // Seed counts with one full assignment pass to avoid dead centroids
-    let init_assignments = assign_all_parallel(
-        data,
-        &data_norms,
-        dim,
-        n,
-        &centroids,
-        &centroid_norms,
-        n_centroids,
-        metric,
-    );
-    for &c in &init_assignments {
-        counts[c] += 1;
-    }
+    // seed counts cheaply -> no full assignment pass
+    let init_count = (batch_size / n_centroids).max(1);
+    let mut counts = vec![init_count; n_centroids];
 
     let mut old_centroids = vec![T::zero(); n_centroids * dim];
-    let mut deltas = vec![T::zero(); n_centroids];
-    let mut rng = StdRng::seed_from_u64(seed as u64);
 
-    // scratch buffers for the batch
+    // pre-shuffle for epoch-based iteration: avoids per-iteration RNG + gather
+    let mut rng = StdRng::seed_from_u64(seed as u64);
+    let mut shuffled_indices: Vec<usize> = (0..n).collect();
+    shuffled_indices.shuffle(&mut rng);
+    let mut epoch_offset = 0usize;
+
+    // scratch buffers
     let mut batch_data = Vec::with_capacity(batch_size * dim);
     let mut batch_norms = Vec::with_capacity(batch_size);
 
+    let num_threads = rayon::current_num_threads();
+    let alpha_t = T::from_f64(lr_alpha).unwrap();
+    let drift_t = T::from_f64(drift_threshold).unwrap();
+
     if verbose {
         println!(
-            "  Running mini-batch iterations (batch_size={})",
-            batch_size
+            "  Running mini-batch iterations (batch_size={}, lr_alpha={:.2})",
+            batch_size, lr_alpha
         );
     }
 
     for iter in 0..max_iters {
-        old_centroids.copy_from_slice(&centroids);
-
-        // sample batch indices (without replacement within batch)
-        let indices = sample(&mut rng, n, batch_size);
+        // epoch-based sampling: take next chunk, re-shuffle on wrap
+        if epoch_offset + batch_size > n {
+            shuffled_indices.shuffle(&mut rng);
+            epoch_offset = 0;
+        }
+        let batch_indices = &shuffled_indices[epoch_offset..epoch_offset + batch_size];
+        epoch_offset += batch_size;
 
         // gather batch
         batch_data.clear();
         batch_norms.clear();
-        for idx in indices.iter() {
+        for &idx in batch_indices {
             batch_data.extend_from_slice(&data[idx * dim..(idx + 1) * dim]);
             batch_norms.push(data_norms[idx]);
         }
@@ -294,26 +302,84 @@ where
             metric,
         );
 
-        // Incremental centroid update
-        for (i, &c) in batch_assignments.iter().enumerate() {
-            counts[c] += 1;
-            let eta = T::one() / T::from(counts[c]).unwrap();
+        // parallel fold-reduce -> per-cluster sums and counts
+        let chunk_size = (batch_size + num_threads - 1) / num_threads.max(1);
+        let (batch_sums, batch_counts) = batch_assignments
+            .par_chunks(chunk_size)
+            .enumerate()
+            .map(|(chunk_idx, assign_chunk)| {
+                let mut local_sums = vec![T::zero(); n_centroids * dim];
+                let mut local_counts = vec![0usize; n_centroids];
+                let start = chunk_idx * chunk_size;
+                let data_chunk = &batch_data[start * dim..(start + assign_chunk.len()) * dim];
+
+                for (i, &c) in assign_chunk.iter().enumerate() {
+                    local_counts[c] += 1;
+                    let vec = &data_chunk[i * dim..(i + 1) * dim];
+                    let offset = c * dim;
+                    T::add_assign_simd(&mut local_sums[offset..offset + dim], vec);
+                }
+                (local_sums, local_counts)
+            })
+            .reduce(
+                || {
+                    (
+                        vec![T::zero(); n_centroids * dim],
+                        vec![0usize; n_centroids],
+                    )
+                },
+                |(mut s1, mut c1), (s2, c2)| {
+                    T::add_assign_simd(&mut s1, &s2);
+                    for i in 0..c1.len() {
+                        c1[i] += c2[i];
+                    }
+                    (s1, c1)
+                },
+            );
+
+        // collect touched centroids
+        let touched: Vec<usize> = (0..n_centroids).filter(|&c| batch_counts[c] > 0).collect();
+
+        // save old centroids (only need them for drift, full copy is cheap)
+        old_centroids.copy_from_slice(&centroids);
+
+        // apply incremental updates to touched centroids only
+        for &c in &touched {
+            let m = batch_counts[c];
+            counts[c] += m;
+            let count_f = T::from(counts[c]).unwrap();
+            let eta = T::from(m).unwrap() / count_f.powf(alpha_t);
+            // clamp eta to [0, 1] powf with alpha < 1 can push it above 1
+            let eta = if eta > T::one() { T::one() } else { eta };
             let one_minus_eta = T::one() - eta;
+            let inv_m = T::one() / T::from(m).unwrap();
             let offset = c * dim;
-            let vec = &batch_data[i * dim..(i + 1) * dim];
             for d in 0..dim {
-                centroids[offset + d] = centroids[offset + d] * one_minus_eta + vec[d] * eta;
+                let batch_mean = batch_sums[offset + d] * inv_m;
+                centroids[offset + d] = centroids[offset + d] * one_minus_eta + batch_mean * eta;
             }
         }
 
-        // recompute centroid norms
-        centroid_norms = recompute_centroid_norms(&centroids, dim, n_centroids, metric);
+        // recompute norms only for touched centroids
+        for &c in &touched {
+            let cent = &centroids[c * dim..(c + 1) * dim];
+            centroid_norms[c] = match metric {
+                Dist::Euclidean => T::dot_simd(cent, cent),
+                Dist::Cosine => T::calculate_l2_norm(cent),
+            };
+        }
 
-        // convergence check
-        compute_centroid_drift(&old_centroids, &centroids, dim, n_centroids, &mut deltas);
-        let max_drift = deltas.iter().copied().fold(T::zero(), T::max);
+        // drift check only on touched centroids
+        let max_drift = touched
+            .iter()
+            .map(|&c| {
+                let old = &old_centroids[c * dim..(c + 1) * dim];
+                let new_c = &centroids[c * dim..(c + 1) * dim];
+                euclidean_distance_static(old, new_c)
+            })
+            .fold(T::zero(), T::max);
 
-        if max_drift <= T::from_f64(drift_threshold).unwrap() {
+        if max_drift <= drift_t {
             if verbose {
                 println!("    Converged at iteration {}", iter + 1);
             }
@@ -322,14 +388,16 @@ where
 
         if verbose && (iter + 1) % 50 == 0 {
             println!(
-                "    Iteration {}, max centroid drift: {:.6}",
+                "    Iteration {}, max centroid drift: {:.6}, touched: {}/{}",
                 iter + 1,
-                max_drift.to_f64().unwrap()
+                max_drift.to_f64().unwrap(),
+                touched.len(),
+                n_centroids,
             );
         }
     }
 
-    // final full assignment pass
+    // final full assignment
     let assignments = assign_all_parallel(
         data,
         &data_norms,
