@@ -40,7 +40,7 @@ SystemRequirements: Cargo (Rust's package manager), rustc >= 1.65.0, xz
 Depends: 
     R (>= 4.2)
 Suggests: 
-    ggplot2,
+    gridExtra,
     knitr,
     microbenchmark,
     phateR,
