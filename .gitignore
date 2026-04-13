@@ -12,3 +12,6 @@ src/rust/vendor
 src/Makevars
 src/Makevars.win
 docs
+
+# others
+scratch.R

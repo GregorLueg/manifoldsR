@@ -70,7 +70,7 @@ generate_knn_graph <- function(
 
   res <- with(
     nn_data,
-    generate_nearest_neigbours_class(
+    new_nearest_neighbour(
       indices = indices + 1L, # 1-index
       dist = dist,
       k = as.integer(k),

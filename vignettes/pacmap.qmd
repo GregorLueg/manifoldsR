@@ -110,8 +110,8 @@ ggplot(
   mapping = aes(x = PC1, y = PC2)
 ) +
   geom_point(
-    mapping = aes(colour = cluster), 
-    size = 0.75, 
+    mapping = aes(colour = cluster),
+    size = 0.75,
     alpha = 0.5
   ) +
   theme_bw() +
@@ -144,8 +144,8 @@ ggplot(
   mapping = aes(x = PaCMAP1, y = PaCMAP2)
 ) +
   geom_point(
-    mapping = aes(colour = cluster), 
-    size = 0.75, 
+    mapping = aes(colour = cluster),
+    size = 0.75,
     alpha = 0.5
   ) +
   theme_bw() +
@@ -371,7 +371,7 @@ pacmap_long_phase1 <- pacmap(
     mn_candidate_start = 4L,
     mn_candidate_end = 25L,
     n_further = 5L,
-    phase1_end = 250L, 
+    phase1_end = 250L,
     phase2_end = 400L
   ),
   seed = 42L

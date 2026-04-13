@@ -69,7 +69,7 @@ expect_true(
 
 ### approximate nearest neighbour searches behaving ----------------------------
 
-indices <- c("hnsw", "annoy", "nndescent", "balltree")
+indices <- c("hnsw", "annoy", "nndescent", "balltree", "ivf")
 
 for (idx in indices) {
   idx_i <- generate_knn_graph(

@@ -1,18 +1,28 @@
-//! Rust to R function implementations, exposing the manifolds-rs functionality
-//! to R.
+//! Rust to R function implementations, exposing the manifolds-rs,
+//! ann-search-rs and evoc-rs functionality to R.
 
+#![allow(clippy::needless_range_loop)]
+
+pub mod evoc;
+pub mod k_means;
+pub mod metrics;
 pub mod pacmap;
 pub mod phate;
 pub mod tsne;
 pub mod umap;
 pub mod utils;
 
+use ann_search_rs::utils::k_means_utils::*;
+use ann_search_rs::utils::matrix_to_flat;
 use bixverse_rs::prelude::*;
 use bixverse_rs::utils::vec_utils::flatten_vector;
 use extendr_api::prelude::*;
 use manifolds_rs::data::synthetic::BranchSpec;
 use manifolds_rs::prelude::*;
 
+use crate::evoc::*;
+use crate::k_means::*;
+use crate::metrics::*;
 use crate::pacmap::*;
 use crate::phate::*;
 use crate::tsne::*;
@@ -34,13 +44,23 @@ extendr_module! {
     fn rs_phate_from_knn;
     fn rs_pacmap;
     fn rs_pacmap_from_knn;
-    // various helpers
+    // clustering
+    fn rs_evoc;
+    fn rs_evoc_from_knn;
+    fn rs_k_means;
+    fn rs_k_means_mini_batch;
+    // nn utils
     fn rs_approx_nearest_neighbours;
+    // synthetic data
     fn rs_data_swiss_role;
     fn rs_data_clusters;
     fn rs_data_trajectory;
     fn rs_data_hierarchical;
+    // metrics
     fn rs_check_cluster_separation;
+    fn rs_ari;
+    fn rs_silhouette_score;
+    fn rs_intertia;
 }
 
 //////////
@@ -604,9 +624,236 @@ fn rs_approx_nearest_neighbours(
     ]
 }
 
-///////////
-// Utils //
-///////////
+//////////
+// EVoC //
+//////////
+
+/// EVoC clustering
+///
+/// @description Wrapper function into the Rust interface for EVoC clustering.
+///
+/// @param embd Numerical matrix. The data to cluster. Should be of dimensions
+/// samples x features.
+/// @param n_neighbours Integer. Number of nearest neighbours for graph
+/// construction.
+/// @param evoc_params Named list. List that contains all of the key parameters
+/// for EVoC clustering.
+/// @param return_knn Boolean. Shall the kNN graph be returned.
+/// @param seed Integer. Seed for reproducibility.
+/// @param verbose Boolean. Controls verbosity of the function.
+///
+/// @return A named list with:
+/// \itemize{
+///   \item evoc_res - List with the EVoC results
+///   \item knn - Optional list (can be NULL) with the kNN graph
+/// }
+///
+/// @export
+#[extendr]
+fn rs_evoc(
+    embd: RMatrix<f64>,
+    n_neighbours: usize,
+    evoc_params: List,
+    return_knn: bool,
+    seed: usize,
+    verbose: bool,
+) -> List {
+    let embd = r_matrix_to_faer_fp32(&embd);
+    let (res, indices, dist) = evoc_cluster(
+        embd.as_ref(),
+        None,
+        n_neighbours,
+        return_knn,
+        evoc_params,
+        seed,
+        verbose,
+    );
+
+    let knn = match (indices, dist) {
+        (Some(idx), Some(d)) => list!(
+            indices = idx.r_int_convert(),
+            dist = d.r_float_convert(),
+            k = n_neighbours,
+            n = embd.nrows()
+        )
+        .into_robj(),
+        _ => NULL.into_robj(),
+    };
+    list!(evoc_res = res, knn = knn)
+}
+
+/// EVoC clustering from pre-computed kNN
+///
+/// @description Wrapper function into the Rust interface for EVoC clustering
+/// using a pre-computed kNN graph.
+///
+/// @param embd Numerical matrix. The data to cluster. Should be of dimensions
+/// samples x features.
+/// @param knn_data List. A NearestNeighbours object with `k`, `indices`, and
+/// `dist` elements.
+/// @param n_neighbours Integer. Number of nearest neighbours for graph
+/// construction.
+/// @param evoc_params Named list. List that contains all of the key parameters
+/// for EVoC clustering.
+/// @param seed Integer. Seed for reproducibility.
+/// @param verbose Boolean. Controls verbosity of the function.
+///
+/// @return A named list with cluster layers, membership strengths, persistence
+/// scores, and the kNN graph.
+///
+/// @export
+#[extendr]
+fn rs_evoc_from_knn(
+    embd: RMatrix<f64>,
+    knn_data: List,
+    n_neighbours: usize,
+    evoc_params: List,
+    seed: usize,
+    verbose: bool,
+) -> List {
+    let embd = r_matrix_to_faer_fp32(&embd);
+    let pre_computed_knn = nearest_neighbours_to_rust(knn_data);
+    let (res, _, _) = evoc_cluster(
+        embd.as_ref(),
+        pre_computed_knn,
+        n_neighbours,
+        false,
+        evoc_params,
+        seed,
+        verbose,
+    );
+
+    res
+}
+
+/////////////
+// k-means //
+/////////////
+
+/// Full k-means clustering
+///
+/// @description Rust interface for k-means clustering using Lloyd's algorithm
+/// with SIMD or GEMM acceleration depending on dimensionality.
+///
+/// @param data Numerical matrix. The data to cluster, of dimensions
+/// samples x features.
+/// @param k Integer. Number of clusters.
+/// @param kmeans_params Named list. Parameters produced by `params_kmeans()`.
+/// @param seed Integer. Seed for reproducibility.
+/// @param verbose Boolean. Controls verbosity.
+///
+/// @return A named list with:
+/// \itemize{
+///   \item centroids - Numeric matrix of shape k x features.
+///   \item assignments - Integer vector of length samples (1-indexed).
+/// }
+///
+/// @export
+#[extendr]
+fn rs_k_means(
+    data: RMatrix<f64>,
+    k: usize,
+    kmeans_params: List,
+    seed: usize,
+    verbose: bool,
+) -> List {
+    let params = InternalKmeansParams::from_r_list(kmeans_params);
+    let metric = params.dist();
+
+    // transform data to fp32 and flatten
+    let data = r_matrix_to_faer_fp32(&data);
+    let (vectors_flat, n, dim) = matrix_to_flat(data.as_ref());
+
+    let centroids = train_centroids(
+        &vectors_flat,
+        dim,
+        n,
+        k,
+        &metric,
+        params.max_iters,
+        seed,
+        verbose,
+    );
+
+    // Final assignment pass
+    let data_norms = compute_data_norms(&vectors_flat, dim, n, &metric);
+    let centroid_norms = recompute_centroid_norms(&centroids, dim, k, &metric);
+    let assignments = assign_all_parallel(
+        &vectors_flat,
+        &data_norms,
+        dim,
+        n,
+        &centroids,
+        &centroid_norms,
+        k,
+        &metric,
+    );
+
+    // Convert to R (1-indexed assignments, centroids as k x dim matrix)
+    let assignments_r: Vec<i32> = assignments.r_int_convert();
+    let centroids_r = flat_to_r_matrix_f64(&centroids, k, dim);
+
+    list!(centroids = centroids_r, assignments = assignments_r)
+}
+
+/// Mini-batch k-means clustering
+///
+/// @description Rust interface for mini-batch k-means clustering
+/// (Sculley 2010). Uses random mini-batches with a decaying learning rate
+/// for faster convergence on large data sets.
+///
+/// @param data Numerical matrix. The data to cluster, of dimensions
+/// samples x features.
+/// @param k Integer. Number of clusters.
+/// @param kmeans_params Named list. Parameters produced by `params_kmeans()`.
+/// @param seed Integer. Seed for reproducibility.
+/// @param verbose Boolean. Controls verbosity.
+///
+/// @return A named list with:
+/// \itemize{
+///   \item centroids - Numeric matrix of shape k x features.
+///   \item assignments - Integer vector of length samples (1-indexed).
+/// }
+///
+/// @export
+#[extendr]
+fn rs_k_means_mini_batch(
+    data: RMatrix<f64>,
+    k: usize,
+    kmeans_params: List,
+    seed: usize,
+    verbose: bool,
+) -> List {
+    let params = InternalKmeansParams::from_r_list(kmeans_params);
+    let metric = params.dist();
+
+    // transform data to fp32 and flatten
+    let data = r_matrix_to_faer_fp32(&data);
+    let (vectors_flat, n, dim) = matrix_to_flat(data.as_ref());
+
+    let (centroids, assignments) = train_centroids_minibatch(
+        &vectors_flat,
+        dim,
+        n,
+        k,
+        &metric,
+        params.max_iters,
+        params.batch_size,
+        params.drift_threshold,
+        params.lr_alpha,
+        seed,
+        verbose,
+    );
+
+    let assignments_r: Vec<i32> = assignments.r_int_convert();
+    let centroids_r = flat_to_r_matrix_f64(&centroids, k, dim);
+
+    list!(centroids = centroids_r, assignments = assignments_r)
+}
+
+/////////////
+// Metrics //
+/////////////
 
 /// Check cluster separation in an embedding
 ///
@@ -643,4 +890,70 @@ fn rs_check_cluster_separation(embd: RMatrix<f64>, cluster_membership: &[i32]) -
     }
 
     list!(within_dists = within_dists, between_dists = between_dists)
+}
+
+/// Adjusted Rand index
+///
+/// @param cluster_membership_a Integers. Cluster memberships in group a.
+/// @param cluster_membership_b Integers. Cluster memberships in group b.
+///
+/// @returns Returns the adjusted Rand index between the two groups.
+///
+/// @export
+#[extendr]
+fn rs_ari(cluster_membership_a: &[i32], cluster_membership_b: &[i32]) -> f64 {
+    let cluster_membership_a = cluster_membership_a.r_int_convert();
+    let cluster_membership_b = cluster_membership_b.r_int_convert();
+
+    adjusted_rand_index(&cluster_membership_a, &cluster_membership_b)
+}
+
+/// Calculates the cluster silhouette scores
+///
+/// @description Uses the squared Euclidean distance under the hood for speed.
+///
+/// @param data Numeric matrix. The data in shape of sample x features.
+/// @param cluster_membership Integers. Cluster memberships as integers.
+///
+/// @returns A list with the following items
+/// \itemize{
+///  \item mean_silhouette - Mean silhouette scores per cluster.
+///  \item silhouette_scores - Silhouette scores per given data point.
+/// }
+///
+/// @export
+#[extendr]
+fn rs_silhouette_score(data: RMatrix<f64>, cluster_membership: &[i32]) -> List {
+    let data = r_matrix_to_faer(&data);
+    let (vectors_flat, n, dim) = matrix_to_flat(data.as_ref());
+    let cluster_membership = cluster_membership.r_int_convert();
+
+    let (mean_silhouette, silhouette_scores) =
+        silhouette_score(&vectors_flat, &cluster_membership, dim, n);
+
+    list!(
+        mean_silhouette = mean_silhouette,
+        silhouette_scores = silhouette_scores
+    )
+}
+
+/// Calculates the intertia for k-means clustering
+///
+/// @param data Numeric matrix. The data in shape of sample x features.
+/// @param centroids Numeric matrix. The centroid data in shape k x features.
+/// @param cluster_membership Integers. Cluster memberships as integers.
+///
+/// @returns The inertia score
+///
+/// @export
+#[extendr]
+fn rs_intertia(data: RMatrix<f64>, centroids: RMatrix<f64>, cluster_membership: &[i32]) -> f64 {
+    let data = r_matrix_to_faer(&data);
+    let centroids = r_matrix_to_faer(&centroids);
+    let cluster_membership = cluster_membership.r_int_convert();
+
+    let (vectors_flat, n, dim) = matrix_to_flat(data.as_ref());
+    let (centroids_flat, _, _) = matrix_to_flat(centroids.as_ref());
+
+    inertia(&vectors_flat, &centroids_flat, &cluster_membership, dim, n)
 }

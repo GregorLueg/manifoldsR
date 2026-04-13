@@ -90,7 +90,7 @@ pub fn get_params_nn(r_list: List) -> NearestNeighbourParams<f32> {
         .map(|v| v as usize);
 
     let n_probes = nn_params
-        .get("n_probe")
+        .get("n_probes")
         .and_then(|v| v.as_integer())
         .map(|v| v as usize);
 
@@ -193,4 +193,27 @@ pub fn parse_branch_specs(list: List) -> Result<Vec<BranchSpec>> {
             length,
         })
         .collect())
+}
+
+/////////////////////
+// Data transforms //
+/////////////////////
+
+/// Convert a flat `&[f32]` slice to an R matrix of `f64`
+///
+/// R matrices are column-major, so this transposes from the row-major
+/// flat layout (nrow * ncol elements) into the column-major order
+/// expected by `RMatrix`.
+///
+/// ### Params
+///
+/// * `flat` - Row-major f32 data of length `nrow * ncol`
+/// * `nrow` - Number of rows in the output matrix
+/// * `ncol` - Number of columns in the output matrix
+///
+/// ### Returns
+///
+/// An `RMatrix<f64>` of shape `nrow x ncol`
+pub fn flat_to_r_matrix_f64(flat: &[f32], nrow: usize, ncol: usize) -> RMatrix<f64> {
+    RMatrix::new_matrix(nrow, ncol, |r, c| flat[r * ncol + c] as f64)
 }

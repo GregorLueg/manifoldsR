@@ -105,7 +105,8 @@ exposed in this package are (+ the exhaustive version above):
 | Annoy | Classic in single cell, scales well to data sets of up to 500,000 | Tree-based | Large data sets, small dimensionality
 | HNSW | Powerful on large datasets (≥ 500,000), slightly slower index build type, fast queries | Graph-based | Large data sets, small to large dimensionality
 | NNDescent | Another graph-based version, good all-rounder when certain sizes are reached (≥ 100,000) | Graph-based | Medium data sets, small to large dimensionality
-| IVF | A fast cluster-based index powering libraries like FAISS. | Cluster-based | Medium data sets, small to large dimensionality. You can squeeze out aggressively speed with the n_probe parameter if need be.
+| IVF | A fast cluster-based index powering libraries like FAISS. | Cluster-based | Large data sets, any dimensionality. You can squeeze out aggressively speed with the n_probe parameter if need be. Be careful to set n_list pending your data structure. If you have few well defined
+data clusters, it is better to set it lower for this method.
 
 manifoldsR defaults to `Balltree`, but you can play around with the parameters & 
 methods. The package was written with massive scale in mind, but if you are 
@@ -167,8 +168,7 @@ microbenchmark::microbenchmark(
       k = k,
       knn_method = "ivf",
       nn_params = params_nn(
-        n_list = 3L,
-        n_probes = 2L
+        n_list = 25L
       ),
       .verbose = FALSE
     )
@@ -236,6 +236,9 @@ microbenchmark::microbenchmark(
       data = benchmark_data$data,
       k = k,
       knn_method = "ivf",
+      nn_params = params_nn(
+        n_list = 25L
+      ),
       .verbose = FALSE
     )
   },
@@ -302,6 +305,9 @@ microbenchmark::microbenchmark(
       data = benchmark_data$data,
       k = k,
       knn_method = "ivf",
+      nn_params = params_nn(
+        n_list = 25L
+      ),
       .verbose = FALSE
     )
   },
@@ -337,11 +343,12 @@ for (idx in indices) {
   idx_i <- generate_knn_graph(
     data = benchmark_data$data,
     k = k,
+    nn_params = params_nn(n_list = 25L),
     knn_method = idx,
     .verbose = FALSE
   )
-  
-  recall_i <- sum(get_idx_flat(exhaustive) == get_idx_flat(idx_i)) / 
+
+  recall_i <- sum(get_idx_flat(exhaustive) == get_idx_flat(idx_i)) /
     (k * samples)
 
   print(
