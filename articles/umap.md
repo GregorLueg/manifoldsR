@@ -107,8 +107,8 @@ ggplot(
   mapping = aes(x = UMAP1, y = UMAP2)
 ) +
   geom_point(
-    mapping = aes(colour = cluster), 
-    alpha = 0.5, 
+    mapping = aes(colour = cluster),
+    alpha = 0.5,
     size = 0.75
   ) +
   theme_bw() +
@@ -135,9 +135,9 @@ ggplot(
   mapping = aes(x = PC1, y = PC2)
 ) +
   geom_point(
-    mapping = aes(fill = z_axis), 
-    shape = 21, 
-    size = 2, 
+    mapping = aes(fill = z_axis),
+    shape = 21,
+    size = 2,
     alpha = 0.5
   ) +
   scale_fill_viridis_c() +
@@ -170,9 +170,9 @@ ggplot(
   mapping = aes(x = UMAP1, y = UMAP2)
 ) +
   geom_point(
-    mapping = aes(fill = z_axis), 
-    shape = 21, 
-    size = 2, 
+    mapping = aes(fill = z_axis),
+    shape = 21,
+    size = 2,
     alpha = 0.5
   ) +
   scale_fill_viridis_c() +
@@ -200,13 +200,13 @@ pca_trajectory_df <- as.data.table(pca_trajectory$x[, 1:2]) %>%
 # will mix the labels to visualise the continuum better
 ggplot(
   data = pca_trajectory_df[
-    sample(1:nrow(pca_trajectory_df), nrow(pca_trajectory_df)), 
+    sample(1:nrow(pca_trajectory_df), nrow(pca_trajectory_df)),
   ],
   mapping = aes(x = PC1, y = PC2)
 ) +
   geom_point(
-    mapping = aes(colour = branch), 
-    alpha = 0.5, 
+    mapping = aes(colour = branch),
+    alpha = 0.5,
     size = 0.75
   ) +
   theme_bw() +
@@ -234,13 +234,13 @@ umap_trajectory_df <- as.data.table(umap_trajectory) %>%
 
 ggplot(
   data = umap_trajectory_df[
-    sample(1:nrow(pca_trajectory_df), nrow(pca_trajectory_df)), 
+    sample(1:nrow(pca_trajectory_df), nrow(pca_trajectory_df)),
   ],
   mapping = aes(x = UMAP1, y = UMAP2)
 ) +
   geom_point(
-    mapping = aes(colour = branch), 
-    alpha = 0.5, 
+    mapping = aes(colour = branch),
+    alpha = 0.5,
     size = 0.75
   ) +
   theme_bw() +
@@ -287,8 +287,8 @@ ggplot(
   mapping = aes(x = UMAP1, y = UMAP2)
 ) +
   geom_point(
-    mapping = aes(colour = cluster), 
-    alpha = 0.5, 
+    mapping = aes(colour = cluster),
+    alpha = 0.5,
     size = 0.75
   ) +
   theme_bw() +
@@ -319,8 +319,8 @@ ggplot(
   mapping = aes(x = UMAP1, y = UMAP2)
 ) +
   geom_point(
-    mapping = aes(colour = cluster), 
-    alpha = 0.5, 
+    mapping = aes(colour = cluster),
+    alpha = 0.5,
     size = 0.75
   ) +
   theme_bw()
@@ -351,8 +351,8 @@ ggplot(
   mapping = aes(x = UMAP1, y = UMAP2)
 ) +
   geom_point(
-    mapping = aes(colour = cluster), 
-    alpha = 0.5, 
+    mapping = aes(colour = cluster),
+    alpha = 0.5,
     size = 0.75
   ) +
   theme_bw()
@@ -380,8 +380,8 @@ ggplot(
   mapping = aes(x = UMAP1, y = UMAP2)
 ) +
   geom_point(
-    mapping = aes(colour = cluster), 
-    alpha = 0.5, 
+    mapping = aes(colour = cluster),
+    alpha = 0.5,
     size = 0.75
   ) +
   theme_bw()
@@ -399,19 +399,19 @@ let’s do a benchmark:
 # set up the venv for the Python part/dependencies
 local({
   env_name <- "r-manifolds"
-  
+
   if (!reticulate::virtualenv_exists(env_name)) {
     reticulate::virtualenv_create(env_name)
     reticulate::virtualenv_install(
-      env_name, 
+      env_name,
       packages = c("phate", "umap-learn", "numpy", "scipy")
     )
   }
-  
+
   if (!reticulate::py_available()) {
     reticulate::use_virtualenv(env_name, required = TRUE)
   }
-  
+
   missing_pkgs <- Filter(
     Negate(reticulate::py_module_available),
     c("phate", "umap")
@@ -434,7 +434,7 @@ umap_py <- reticulate::import("umap")
 # initialise numba properly via JIT for fair comparison
 # run a small dataset...
 test_reducer <- umap_py$UMAP(
-  n_neighbors = 15L, 
+  n_neighbors = 15L,
   n_jobs = parallel::detectCores() - 1L
 )
 test <- test_reducer$fit_transform(benchmark_data$data[1:500, ])
@@ -469,23 +469,23 @@ microbenchmark::microbenchmark(
       data = benchmark_data$data,
       k = 15L,
       .verbose = FALSE
-    ) 
+    )
   },
   times = 1L # single comparison for speed
 )
 #> Unit: milliseconds
 #>             expr        min         lq       mean     median         uq
-#>             umap 22713.7277 22713.7277 22713.7277 22713.7277 22713.7277
-#>  umap_reticulate 20212.6817 20212.6817 20212.6817 20212.6817 20212.6817
-#>             uwot  5155.1088  5155.1088  5155.1088  5155.1088  5155.1088
-#>          uwot_v2  3402.9157  3402.9157  3402.9157  3402.9157  3402.9157
-#>    manifold_umap   592.9457   592.9457   592.9457   592.9457   592.9457
+#>             umap 21629.5068 21629.5068 21629.5068 21629.5068 21629.5068
+#>  umap_reticulate 19328.3886 19328.3886 19328.3886 19328.3886 19328.3886
+#>             uwot  4928.7826  4928.7826  4928.7826  4928.7826  4928.7826
+#>          uwot_v2  3174.2673  3174.2673  3174.2673  3174.2673  3174.2673
+#>    manifold_umap   581.6841   581.6841   581.6841   581.6841   581.6841
 #>         max neval
-#>  22713.7277     1
-#>  20212.6817     1
-#>   5155.1088     1
-#>   3402.9157     1
-#>    592.9457     1
+#>  21629.5068     1
+#>  19328.3886     1
+#>   4928.7826     1
+#>   3174.2673     1
+#>    581.6841     1
 ```
 
 We can appreciate that the standard R version is slow (as expected). If
@@ -511,17 +511,14 @@ microbenchmark::microbenchmark(
       data = benchmark_data_2$data,
       k = 15L,
       .verbose = FALSE
-    ) 
+    )
   },
   times = 1L # single comparison for speed
 )
 #> Unit: seconds
-#>           expr       min        lq      mean    median        uq       max
-#>        uwot_v2 24.638668 24.638668 24.638668 24.638668 24.638668 24.638668
-#>  manifold_umap  7.691907  7.691907  7.691907  7.691907  7.691907  7.691907
-#>  neval
-#>      1
-#>      1
+#>           expr      min       lq     mean   median       uq      max neval
+#>        uwot_v2 24.09219 24.09219 24.09219 24.09219 24.09219 24.09219     1
+#>  manifold_umap  7.53760  7.53760  7.53760  7.53760  7.53760  7.53760     1
 ```
 
 Due to optimised memory layouts, aggressive in-lining, heavy

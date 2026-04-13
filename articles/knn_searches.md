@@ -81,13 +81,15 @@ crate](https://github.com/GregorLueg/ann-search-rs) which provides
 various approximate nearest neighbour searches. The 4 methods exposed in
 this package are (+ the exhaustive version above):
 
-| Method    | Features                                                                                 | Class         | Use case                                                                                                                       |
-|-----------|------------------------------------------------------------------------------------------|---------------|--------------------------------------------------------------------------------------------------------------------------------|
-| BallTree  | Simple method, good for small data sets (≤ 100,000)                                      | Tree-based    | Small data sets, small dimensionality                                                                                          |
-| Annoy     | Classic in single cell, scales well to data sets of up to 500,000                        | Tree-based    | Large data sets, small dimensionality                                                                                          |
-| HNSW      | Powerful on large datasets (≥ 500,000), slightly slower index build type, fast queries   | Graph-based   | Large data sets, small to large dimensionality                                                                                 |
-| NNDescent | Another graph-based version, good all-rounder when certain sizes are reached (≥ 100,000) | Graph-based   | Medium data sets, small to large dimensionality                                                                                |
-| IVF       | A fast cluster-based index powering libraries like FAISS.                                | Cluster-based | Medium data sets, small to large dimensionality. You can squeeze out aggressively speed with the n_probe parameter if need be. |
+| Method    | Features                                                                                 | Class         | Use case                                                                                                                                                                                              |
+|-----------|------------------------------------------------------------------------------------------|---------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| BallTree  | Simple method, good for small data sets (≤ 100,000)                                      | Tree-based    | Small data sets, small dimensionality                                                                                                                                                                 |
+| Annoy     | Classic in single cell, scales well to data sets of up to 500,000                        | Tree-based    | Large data sets, small dimensionality                                                                                                                                                                 |
+| HNSW      | Powerful on large datasets (≥ 500,000), slightly slower index build type, fast queries   | Graph-based   | Large data sets, small to large dimensionality                                                                                                                                                        |
+| NNDescent | Another graph-based version, good all-rounder when certain sizes are reached (≥ 100,000) | Graph-based   | Medium data sets, small to large dimensionality                                                                                                                                                       |
+| IVF       | A fast cluster-based index powering libraries like FAISS.                                | Cluster-based | Large data sets, any dimensionality. You can squeeze out aggressively speed with the n_probe parameter if need be. Be careful to set n_list pending your data structure. If you have few well defined |
+
+data clusters, it is better to set it lower for this method.
 
 manifoldsR defaults to `Balltree`, but you can play around with the
 parameters & methods. The package was written with massive scale in
@@ -148,8 +150,7 @@ microbenchmark::microbenchmark(
       k = k,
       knn_method = "ivf",
       nn_params = params_nn(
-        n_list = 3L,
-        n_probes = 2L
+        n_list = 25L
       ),
       .verbose = FALSE
     )
@@ -158,12 +159,12 @@ microbenchmark::microbenchmark(
 )
 #> Unit: milliseconds
 #>        expr       min        lq      mean    median        uq       max neval
-#>  exhaustive  5.730735  5.730735  5.730735  5.730735  5.730735  5.730735     1
-#>       annoy 27.389318 27.389318 27.389318 27.389318 27.389318 27.389318     1
-#>        hnsw 20.299560 20.299560 20.299560 20.299560 20.299560 20.299560     1
-#>    balltree  3.772353  3.772353  3.772353  3.772353  3.772353  3.772353     1
-#>   nndescent 39.874879 39.874879 39.874879 39.874879 39.874879 39.874879     1
-#>         ivf 20.054961 20.054961 20.054961 20.054961 20.054961 20.054961     1
+#>  exhaustive  4.841980  4.841980  4.841980  4.841980  4.841980  4.841980     1
+#>       annoy 25.020553 25.020553 25.020553 25.020553 25.020553 25.020553     1
+#>        hnsw 19.484477 19.484477 19.484477 19.484477 19.484477 19.484477     1
+#>    balltree  3.248194  3.248194  3.248194  3.248194  3.248194  3.248194     1
+#>   nndescent 37.299394 37.299394 37.299394 37.299394 37.299394 37.299394     1
+#>         ivf  4.686750  4.686750  4.686750  4.686750  4.686750  4.686750     1
 ```
 
 On small datasets, the exhaustive search beats everything. We need to
@@ -224,6 +225,9 @@ microbenchmark::microbenchmark(
       data = benchmark_data$data,
       k = k,
       knn_method = "ivf",
+      nn_params = params_nn(
+        n_list = 25L
+      ),
       .verbose = FALSE
     )
   },
@@ -231,12 +235,12 @@ microbenchmark::microbenchmark(
 )
 #> Unit: seconds
 #>        expr      min       lq     mean   median       uq      max neval
-#>  exhaustive 8.028869 8.028869 8.028869 8.028869 8.028869 8.028869     1
-#>       annoy 3.257869 3.257869 3.257869 3.257869 3.257869 3.257869     1
-#>        hnsw 2.588278 2.588278 2.588278 2.588278 2.588278 2.588278     1
-#>    balltree 1.395323 1.395323 1.395323 1.395323 1.395323 1.395323     1
-#>   nndescent 3.105627 3.105627 3.105627 3.105627 3.105627 3.105627     1
-#>         ivf 2.723291 2.723291 2.723291 2.723291 2.723291 2.723291     1
+#>  exhaustive 8.566482 8.566482 8.566482 8.566482 8.566482 8.566482     1
+#>       annoy 3.182085 3.182085 3.182085 3.182085 3.182085 3.182085     1
+#>        hnsw 2.491551 2.491551 2.491551 2.491551 2.491551 2.491551     1
+#>    balltree 1.413711 1.413711 1.413711 1.413711 1.413711 1.413711     1
+#>   nndescent 2.887750 2.887750 2.887750 2.887750 2.887750 2.887750     1
+#>         ivf 2.343296 2.343296 2.343296 2.343296 2.343296 2.343296     1
 ```
 
 We start observing the first pattern, that the approximate nearest
@@ -296,6 +300,9 @@ microbenchmark::microbenchmark(
       data = benchmark_data$data,
       k = k,
       knn_method = "ivf",
+      nn_params = params_nn(
+        n_list = 25L
+      ),
       .verbose = FALSE
     )
   },
@@ -303,12 +310,12 @@ microbenchmark::microbenchmark(
 )
 #> Unit: seconds
 #>        expr       min        lq      mean    median        uq       max neval
-#>  exhaustive 32.607320 32.607320 32.607320 32.607320 32.607320 32.607320     1
-#>       annoy  9.526732  9.526732  9.526732  9.526732  9.526732  9.526732     1
-#>        hnsw  6.773531  6.773531  6.773531  6.773531  6.773531  6.773531     1
-#>    balltree  5.077768  5.077768  5.077768  5.077768  5.077768  5.077768     1
-#>   nndescent  7.106125  7.106125  7.106125  7.106125  7.106125  7.106125     1
-#>         ivf  6.727545  6.727545  6.727545  6.727545  6.727545  6.727545     1
+#>  exhaustive 32.039967 32.039967 32.039967 32.039967 32.039967 32.039967     1
+#>       annoy  8.476130  8.476130  8.476130  8.476130  8.476130  8.476130     1
+#>        hnsw  6.415914  6.415914  6.415914  6.415914  6.415914  6.415914     1
+#>    balltree  4.841775  4.841775  4.841775  4.841775  4.841775  4.841775     1
+#>   nndescent  6.553820  6.553820  6.553820  6.553820  6.553820  6.553820     1
+#>         ivf  9.153382  9.153382  9.153382  9.153382  9.153382  9.153382     1
 ```
 
 #### Precision
@@ -338,11 +345,12 @@ for (idx in indices) {
   idx_i <- generate_knn_graph(
     data = benchmark_data$data,
     k = k,
+    nn_params = params_nn(n_list = 25L),
     knn_method = idx,
     .verbose = FALSE
   )
-  
-  recall_i <- sum(get_idx_flat(exhaustive) == get_idx_flat(idx_i)) / 
+
+  recall_i <- sum(get_idx_flat(exhaustive) == get_idx_flat(idx_i)) /
     (k * samples)
 
   print(
@@ -353,7 +361,7 @@ for (idx in indices) {
 #> [1] "ANN method annoy achieves a Recall of 1.000."
 #> [1] "ANN method nndescent achieves a Recall of 1.000."
 #> [1] "ANN method balltree achieves a Recall of 0.980."
-#> [1] "ANN method ivf achieves a Recall of 0.998."
+#> [1] "ANN method ivf achieves a Recall of 1.000."
 ```
 
 As you can see, all of these methods are able to (mostly) identify the

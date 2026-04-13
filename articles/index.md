@@ -12,3 +12,5 @@
   PHATE](https://gregorlueg.github.io/manifoldsR/articles/phate.md):
 - [Using
   PaCMAP](https://gregorlueg.github.io/manifoldsR/articles/pacmap.md):
+- [Clustering methods in
+  manifoldsR](https://gregorlueg.github.io/manifoldsR/articles/clustering.md):

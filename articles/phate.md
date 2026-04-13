@@ -241,7 +241,7 @@ ggplot(
 ) +
   geom_point(mapping = aes(colour = branch), alpha = 0.5, size = 0.75) +
   theme_bw() +
-  scale_colour_viridis_c(option = "turbo")  +
+  scale_colour_viridis_c(option = "turbo") +
   ggtitle("PHATE from kNN graph (version 1)")
 ```
 
@@ -273,7 +273,7 @@ ggplot(
 ) +
   geom_point(mapping = aes(colour = branch), alpha = 0.5, size = 0.75) +
   theme_bw() +
-  scale_colour_viridis_c(option = "turbo")  +
+  scale_colour_viridis_c(option = "turbo") +
   ggtitle("PHATE from kNN graph (version 2)")
 ```
 
@@ -396,19 +396,19 @@ the trajectory data.
 ``` r
 local({
   env_name <- "r-manifolds"
-  
+
   if (!reticulate::virtualenv_exists(env_name)) {
     reticulate::virtualenv_create(env_name)
     reticulate::virtualenv_install(
-      env_name, 
+      env_name,
       packages = c("phate", "umap-learn", "numpy", "scipy")
     )
   }
-  
+
   if (!reticulate::py_available()) {
     reticulate::use_virtualenv(env_name, required = TRUE)
   }
-  
+
   missing_pkgs <- Filter(
     Negate(reticulate::py_module_available),
     c("phate", "umap")
@@ -456,10 +456,14 @@ microbenchmark::microbenchmark(
   },
   times = 1L
 )
+#>     SGD-MDS may not have converged: stress changed by -2.6% in final iterations. Consider increasing n_iter or adjusting learning_rate.
 #> Unit: seconds
-#>            expr      min       lq     mean   median       uq      max neval
-#>          phateR 11.87258 11.87258 11.87258 11.87258 11.87258 11.87258     1
-#>  manifold_phate  7.57880  7.57880  7.57880  7.57880  7.57880  7.57880     1
+#>            expr       min        lq      mean    median        uq       max
+#>          phateR 12.032594 12.032594 12.032594 12.032594 12.032594 12.032594
+#>  manifold_phate  7.568092  7.568092  7.568092  7.568092  7.568092  7.568092
+#>  neval
+#>      1
+#>      1
 ```
 
 And on a larger data set with additionally the random landmark version
@@ -503,9 +507,9 @@ microbenchmark::microbenchmark(
 )
 #> Unit: seconds
 #>                     expr      min       lq     mean   median       uq      max
-#>                   phateR 56.92996 56.92996 56.92996 56.92996 56.92996 56.92996
-#>  manifold_phate_spectral 20.22477 20.22477 20.22477 20.22477 20.22477 20.22477
-#>    manifold_phate_random 15.34787 15.34787 15.34787 15.34787 15.34787 15.34787
+#>                   phateR 56.40936 56.40936 56.40936 56.40936 56.40936 56.40936
+#>  manifold_phate_spectral 19.75505 19.75505 19.75505 19.75505 19.75505 19.75505
+#>    manifold_phate_random 14.90559 14.90559 14.90559 14.90559 14.90559 14.90559
 #>  neval
 #>      1
 #>      1

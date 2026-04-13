@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -41,6 +41,7 @@
     <li><a class="dropdown-item" href="articles/tsne.html">Using t-SNE</a></li>
     <li><a class="dropdown-item" href="articles/phate.html">Using PHATE</a></li>
     <li><a class="dropdown-item" href="articles/pacmap.html">Using PaCMAP</a></li>
+    <li><a class="dropdown-item" href="articles/clustering.html">Clustering methods in manifoldsR</a></li>
   </ul>
 </li>
       </ul>
@@ -59,12 +60,15 @@
   <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header"><h1 id="manifoldsr">manifoldsR<a class="anchor" aria-label="anchor" href="#manifoldsr"></a>
 </h1></div>
-<p><img src="https://img.shields.io/badge/R_package-0.1.3-orange" alt="r_package"><a href="https://github.com/GregorLueg/genewalkR/actions/workflows/R-cmd-check.yml" class="external-link"><img src="https://github.com/GregorLueg/genewalkR/actions/workflows/R-cmd-check.yml/badge.svg" alt="CI"></a> <a href="https://opensource.org/licenses/MIT" class="external-link"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a> <a href="https://gregorlueg.github.io/manifoldsR/"><img src="https://img.shields.io/badge/pkgdown-website-1b5e9f?logo=github" alt="pkgdown"></a></p>
+<p><img src="https://img.shields.io/badge/R_package-0.2.0-orange" alt="r_package"><a href="https://github.com/GregorLueg/genewalkR/actions/workflows/R-cmd-check.yml" class="external-link"><img src="https://github.com/GregorLueg/genewalkR/actions/workflows/R-cmd-check.yml/badge.svg" alt="CI"></a> <a href="https://opensource.org/licenses/MIT" class="external-link"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a> <a href="https://gregorlueg.github.io/manifoldsR/"><img src="https://img.shields.io/badge/pkgdown-website-1b5e9f?logo=github" alt="pkgdown"></a></p>
 <p><img src="reference/figures/manifoldsR_logo.png" width="128" height="128" alt="manifoldsR logo"></p>
-<p><strong>Fast(!)</strong> manifold learning methods implemented in Rust with R bindings… For the modern-day single-cell Wannebe Pollock.</p>
+<p><strong>Fast(!)</strong> manifold learning methods implemented in Rust with R bindings… For the modern-day single-cell Wannebe Pollock. Also, has some clustering methods now as part of the package.</p>
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
+<div class="section level3">
+<h3 id="id_2d-embedding-methods">2D embedding methods<a class="anchor" aria-label="anchor" href="#id_2d-embedding-methods"></a>
+</h3>
 <p><code>manifoldsR</code> provides high-performance implementations of popular dimensionality reduction techniques:</p>
 <ul>
 <li>
@@ -77,6 +81,18 @@
 <strong>PaCMAP</strong> (Pairwise Controlled Manifold Approximatio)</li>
 </ul>
 <p>The core algorithms are implemented purely in Rust without any kernel switching for speed while providing user-friendly R interfaces. The optimisations here make them in parts substantially faster than other libraries typically used in the R ecosystem to run these methods. The backbone here are the Rust crates that enable <a href="https://github.com/GregorLueg/ann-search-rs" class="external-link">approximate nearest neighbour searches</a> and the underlying <a href="https://github.com/GregorLueg/manifolds-rs" class="external-link">manifold learning methods</a>. The underlying philosophy is to strip out most additional features and focus on the core mechanics and make them as fast as possible, avoid abstraction layers and indirection wherever possible and let llvm do its magic to generate fast code.</p>
+</div>
+<div class="section level3">
+<h3 id="clustering-methods">Clustering methods<a class="anchor" aria-label="anchor" href="#clustering-methods"></a>
+</h3>
+<p>Additionally, you might want to cluster your data and then visualise it. For this use case, the package also provides the following clustering methods (and of course various metrics around clusters)</p>
+<ul>
+<li>
+<strong>k-means clustering</strong> (mini Batch version and full version with Hamerley’s algorithm)</li>
+<li>
+<strong>EVõC</strong> (Embedding Vector Oriented Clustering ported from <a href="https://github.com/TutteInstitute/evoc" class="external-link">Python</a> into Rust and exposed here - from Leland McInnes at the Tutte institute).</li>
+</ul>
+</div>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>

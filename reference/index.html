@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -23,6 +23,7 @@
     <li><a class="dropdown-item" href="../articles/tsne.html">Using t-SNE</a></li>
     <li><a class="dropdown-item" href="../articles/phate.html">Using PHATE</a></li>
     <li><a class="dropdown-item" href="../articles/pacmap.html">Using PaCMAP</a></li>
+    <li><a class="dropdown-item" href="../articles/clustering.html">Clustering methods in manifoldsR</a></li>
   </ul></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
@@ -39,7 +40,7 @@
     </div>
 
     <div class="section level2">
-      <h2 id="main-functions">Main functions<a class="anchor" aria-label="anchor" href="#main-functions"></a></h2>
+      <h2 id="-d-embedding-methods">2D embedding methods<a class="anchor" aria-label="anchor" href="#-d-embedding-methods"></a></h2>
 
       <div class="section-desc"><p>The core functions to generate the 2D embeddings</p></div>
 
@@ -94,7 +95,7 @@
 
         <dt>
 
-          <code><a href="generate_nearest_neigbours_class.html">generate_nearest_neigbours_class()</a></code>
+          <code><a href="new_nearest_neighbour.html">new_nearest_neighbour()</a></code> <code><a href="new_nearest_neighbour.html">generate_nearest_neigbours_class()</a></code>
 
         </dt>
         <dd>Generate a new NearestNeighbours</dd>
@@ -143,6 +144,85 @@
         </dt>
         <dd>Generate synthetic data for manifold learning</dd>
       </dl></div><div class="section level2">
+      <h2 id="clustering-algorithms">Clustering algorithms<a class="anchor" aria-label="anchor" href="#clustering-algorithms"></a></h2>
+
+      <div class="section-desc"><p>Various methods to do clustering in manifoldsR</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="best_membership.html">best_membership()</a></code>
+
+        </dt>
+        <dd>Get the cluster membership at the best persistence score</dd>
+
+        <dt>
+
+          <code><a href="calc_ari.html">calc_ari()</a></code>
+
+        </dt>
+        <dd>Adjusted Rand index calculation</dd>
+
+        <dt>
+
+          <code><a href="calc_inertia.html">calc_inertia()</a></code>
+
+        </dt>
+        <dd>Calculate the cluster inertia</dd>
+
+        <dt>
+
+          <code><a href="calc_silhouette_score.html">calc_silhouette_score()</a></code>
+
+        </dt>
+        <dd>Calculates the Silhouette score of a given clustering</dd>
+
+        <dt>
+
+          <code><a href="evoc.html">evoc()</a></code>
+
+        </dt>
+        <dd>Rust-based EVoC clustering</dd>
+
+        <dt>
+
+          <code><a href="get_centroids.html">get_centroids()</a></code>
+
+        </dt>
+        <dd>Get cluster centroids</dd>
+
+        <dt>
+
+          <code><a href="get_layer.html">get_layer()</a></code>
+
+        </dt>
+        <dd>Get a specific EVoC layer</dd>
+
+        <dt>
+
+          <code><a href="get_nearest_neighbours.html">get_nearest_neighbours()</a></code>
+
+        </dt>
+        <dd>Get the kNN graph from an Evoc object</dd>
+
+        <dt>
+
+          <code><a href="kmeans_cluster.html">kmeans_cluster()</a></code>
+
+        </dt>
+        <dd>K-means clustering</dd>
+
+        <dt>
+
+          <code><a href="membership.html">membership()</a></code>
+
+        </dt>
+        <dd>Get cluster assignments</dd>
+      </dl></div><div class="section level2">
       <h2 id="params">Params<a class="anchor" aria-label="anchor" href="#params"></a></h2>
 
       <div class="section-desc"><p>Wrapper functions around core parameters</p></div>
@@ -154,52 +234,17 @@
 
       <dl><dt>
 
-          <code><a href="params_nn.html">params_nn()</a></code>
-
-        </dt>
-        <dd>Wrapper function to generate nearest neighbour parameters</dd>
-
-        <dt>
-
-          <code><a href="params_umap.html">params_umap()</a></code>
-
-        </dt>
-        <dd>Wrapper function to generate UMAP parameters</dd>
-
-        <dt>
-
-          <code><a href="params_tsne.html">params_tsne()</a></code>
-
-        </dt>
-        <dd>Wrapper function to generate t-SNE parameters</dd>
-
-        <dt>
-
-          <code><a href="params_phate.html">params_phate()</a></code>
-
-        </dt>
-        <dd>Wrapper function to generate PHATE parameters</dd>
-
-        <dt>
-
-          <code><a href="params_pacmap.html">params_pacmap()</a></code>
-
-        </dt>
-        <dd>Wrapper function to generate PaCMAP parameters</dd>
-
-        <dt>
-
-          <code><a href="params_swiss_role.html">params_swiss_role()</a></code>
-
-        </dt>
-        <dd>Parameters for swiss roll data generation</dd>
-
-        <dt>
-
           <code><a href="params_clusters.html">params_clusters()</a></code>
 
         </dt>
         <dd>Parameters for clustered data generation</dd>
+
+        <dt>
+
+          <code><a href="params_evoc.html">params_evoc()</a></code>
+
+        </dt>
+        <dd>Wrapper function to generate EVoC parameters</dd>
 
         <dt>
 
@@ -210,10 +255,59 @@
 
         <dt>
 
+          <code><a href="params_kmeans.html">params_kmeans()</a></code>
+
+        </dt>
+        <dd>Wrapper function to generate k-means parameters</dd>
+
+        <dt>
+
+          <code><a href="params_nn.html">params_nn()</a></code>
+
+        </dt>
+        <dd>Wrapper function to generate nearest neighbour parameters</dd>
+
+        <dt>
+
+          <code><a href="params_pacmap.html">params_pacmap()</a></code>
+
+        </dt>
+        <dd>Wrapper function to generate PaCMAP parameters</dd>
+
+        <dt>
+
+          <code><a href="params_phate.html">params_phate()</a></code>
+
+        </dt>
+        <dd>Wrapper function to generate PHATE parameters</dd>
+
+        <dt>
+
+          <code><a href="params_umap.html">params_umap()</a></code>
+
+        </dt>
+        <dd>Wrapper function to generate UMAP parameters</dd>
+
+        <dt>
+
+          <code><a href="params_swiss_role.html">params_swiss_role()</a></code>
+
+        </dt>
+        <dd>Parameters for swiss roll data generation</dd>
+
+        <dt>
+
           <code><a href="params_trajectory.html">params_trajectory()</a></code>
 
         </dt>
         <dd>Parameters for trajectory data generation</dd>
+
+        <dt>
+
+          <code><a href="params_tsne.html">params_tsne()</a></code>
+
+        </dt>
+        <dd>Wrapper function to generate t-SNE parameters</dd>
       </dl></div><div class="section level2">
       <h2 id="rust-wrappers">Rust wrappers<a class="anchor" aria-label="anchor" href="#rust-wrappers"></a></h2>
 
@@ -230,6 +324,20 @@
 
         </dt>
         <dd>Wrapper around some nearest neighbour searches integrated into manifold-rs</dd>
+
+        <dt>
+
+          <code><a href="rs_ari.html">rs_ari()</a></code>
+
+        </dt>
+        <dd>Adjusted Rand index</dd>
+
+        <dt>
+
+          <code><a href="rs_check_cluster_separation.html">rs_check_cluster_separation()</a></code>
+
+        </dt>
+        <dd>Check cluster separation in an embedding</dd>
 
         <dt>
 
@@ -261,6 +369,55 @@
 
         <dt>
 
+          <code><a href="rs_evoc.html">rs_evoc()</a></code>
+
+        </dt>
+        <dd>EVoC clustering</dd>
+
+        <dt>
+
+          <code><a href="rs_evoc_from_knn.html">rs_evoc_from_knn()</a></code>
+
+        </dt>
+        <dd>EVoC clustering from pre-computed kNN</dd>
+
+        <dt>
+
+          <code><a href="rs_intertia.html">rs_intertia()</a></code>
+
+        </dt>
+        <dd>Calculates the intertia for k-means clustering</dd>
+
+        <dt>
+
+          <code><a href="rs_k_means.html">rs_k_means()</a></code>
+
+        </dt>
+        <dd>Full k-means clustering</dd>
+
+        <dt>
+
+          <code><a href="rs_k_means_mini_batch.html">rs_k_means_mini_batch()</a></code>
+
+        </dt>
+        <dd>Mini-batch k-means clustering</dd>
+
+        <dt>
+
+          <code><a href="rs_pacmap.html">rs_pacmap()</a></code>
+
+        </dt>
+        <dd>PaCMAP implementation</dd>
+
+        <dt>
+
+          <code><a href="rs_pacmap_from_knn.html">rs_pacmap_from_knn()</a></code>
+
+        </dt>
+        <dd>PaCMAP implementation with pre-computed kNN</dd>
+
+        <dt>
+
           <code><a href="rs_phate.html">rs_phate()</a></code>
 
         </dt>
@@ -272,6 +429,13 @@
 
         </dt>
         <dd>Run PHATE dimensionality reduction from a precomputed kNN graph</dd>
+
+        <dt>
+
+          <code><a href="rs_silhouette_score.html">rs_silhouette_score()</a></code>
+
+        </dt>
+        <dd>Calculates the cluster silhouette scores</dd>
 
         <dt>
 
@@ -300,27 +464,6 @@
 
         </dt>
         <dd>UMAP implementation</dd>
-
-        <dt>
-
-          <code><a href="rs_pacmap.html">rs_pacmap()</a></code>
-
-        </dt>
-        <dd>PaCMAP implementation</dd>
-
-        <dt>
-
-          <code><a href="rs_pacmap_from_knn.html">rs_pacmap_from_knn()</a></code>
-
-        </dt>
-        <dd>PaCMAP implementation with pre-computed kNN</dd>
-
-        <dt>
-
-          <code><a href="rs_check_cluster_separation.html">rs_check_cluster_separation()</a></code>
-
-        </dt>
-        <dd>Check cluster separation in an embedding</dd>
       </dl></div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

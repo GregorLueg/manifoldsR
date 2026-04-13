@@ -97,7 +97,7 @@ ggplot(
   mapping = aes(x = PC1, y = PC2)
 ) +
   geom_point(mapping = aes(colour = cluster), size = 0.75, alpha = 0.5) +
-  theme_bw() + 
+  theme_bw() +
   ggtitle("PCA on cluster data")
 ```
 
@@ -121,7 +121,7 @@ ggplot(
   mapping = aes(x = tSNE1, y = tSNE2)
 ) +
   geom_point(mapping = aes(colour = cluster), size = 0.75, alpha = 0.5) +
-  theme_bw() + 
+  theme_bw() +
   ggtitle("tSNE (BH) on cluster data")
 ```
 
@@ -151,13 +151,13 @@ ggplot(
   mapping = aes(x = PC1, y = PC2)
 ) +
   geom_point(
-    mapping = aes(fill = z_axis), 
-    shape = 21, 
-    size = 2, 
+    mapping = aes(fill = z_axis),
+    shape = 21,
+    size = 2,
     alpha = 0.5
   ) +
   scale_fill_viridis_c() +
-  theme_bw() + 
+  theme_bw() +
   ggtitle("PCA on swissrole")
 ```
 
@@ -188,7 +188,7 @@ ggplot(
     alpha = 0.5
   ) +
   scale_fill_viridis_c() +
-  theme_bw() + 
+  theme_bw() +
   ggtitle("tSNE (BH) on swissrole")
 ```
 
@@ -213,13 +213,13 @@ pca_trajectory_df <- as.data.table(pca_trajectory$x[, 1:2]) %>%
 # will mix the labels to visualise the continuum better
 ggplot(
   data = pca_trajectory_df[
-    sample(1:nrow(pca_trajectory_df), nrow(pca_trajectory_df)), 
+    sample(1:nrow(pca_trajectory_df), nrow(pca_trajectory_df)),
   ],
   mapping = aes(x = PC1, y = PC2)
 ) +
   geom_point(mapping = aes(colour = branch), alpha = 0.5, size = 0.75) +
   theme_bw() +
-  scale_colour_viridis_c(option = "turbo") + 
+  scale_colour_viridis_c(option = "turbo") +
   ggtitle("PCA on trajectory")
 ```
 
@@ -250,7 +250,7 @@ ggplot(
     size = 0.75
   ) +
   theme_bw() +
-  scale_colour_viridis_c(option = "turbo") + 
+  scale_colour_viridis_c(option = "turbo") +
   ggtitle("tSNE (BH) on trajectory")
 ```
 
@@ -355,7 +355,7 @@ ggplot(
   mapping = aes(x = tSNE1, y = tSNE2)
 ) +
   geom_point(mapping = aes(colour = cluster), alpha = 0.5, size = 0.75) +
-  theme_bw()  + 
+  theme_bw() +
   ggtitle("tSNE (FFT) on cluster data")
 ```
 
@@ -400,8 +400,8 @@ microbenchmark::microbenchmark(
 )
 #> Unit: seconds
 #>         expr       min        lq      mean    median        uq       max neval
-#>        Rtsne 12.771690 12.771690 12.771690 12.771690 12.771690 12.771690     1
-#>  manifold_bh  4.377601  4.377601  4.377601  4.377601  4.377601  4.377601     1
+#>        Rtsne 12.792922 12.792922 12.792922 12.792922 12.792922 12.792922     1
+#>  manifold_bh  4.361363  4.361363  4.361363  4.361363  4.361363  4.361363     1
 ```
 
 The impact here is massive already. Let’s see what happens with BH and
@@ -410,7 +410,7 @@ FFT?
 ``` r
 benchmark_data_large <- manifold_synthetic_data(
   type = "cluster",
-  n_samples = 50000L 
+  n_samples = 50000L
 )
 
 microbenchmark::microbenchmark(
@@ -436,8 +436,8 @@ microbenchmark::microbenchmark(
 )
 #> Unit: seconds
 #>          expr      min       lq     mean   median       uq      max neval
-#>   manifold_bh 64.40977 64.40977 64.40977 64.40977 64.40977 64.40977     1
-#>  manifold_fft 24.62291 24.62291 24.62291 24.62291 24.62291 24.62291     1
+#>   manifold_bh 65.79923 65.79923 65.79923 65.79923 65.79923 65.79923     1
+#>  manifold_fft 25.18668 25.18668 25.18668 25.18668 25.18668 25.18668     1
 ```
 
 The speed advantage of the Rust implementation comes from a combination

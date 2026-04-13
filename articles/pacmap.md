@@ -98,8 +98,8 @@ ggplot(
   mapping = aes(x = PC1, y = PC2)
 ) +
   geom_point(
-    mapping = aes(colour = cluster), 
-    size = 0.75, 
+    mapping = aes(colour = cluster),
+    size = 0.75,
     alpha = 0.5
   ) +
   theme_bw() +
@@ -132,8 +132,8 @@ ggplot(
   mapping = aes(x = PaCMAP1, y = PaCMAP2)
 ) +
   geom_point(
-    mapping = aes(colour = cluster), 
-    size = 0.75, 
+    mapping = aes(colour = cluster),
+    size = 0.75,
     alpha = 0.5
   ) +
   theme_bw() +
@@ -360,7 +360,7 @@ pacmap_long_phase1 <- pacmap(
     mn_candidate_start = 4L,
     mn_candidate_end = 25L,
     n_further = 5L,
-    phase1_end = 250L, 
+    phase1_end = 250L,
     phase2_end = 400L
   ),
   seed = 42L
@@ -415,8 +415,8 @@ microbenchmark::microbenchmark(
 )
 #> Unit: seconds
 #>             expr      min       lq     mean   median       uq      max neval
-#>    manifold_umap 1.187964 1.189910 1.191409 1.191857 1.193132 1.194407     3
-#>  manifold_pacmap 2.691747 2.706378 2.726373 2.721009 2.743686 2.766363     3
+#>    manifold_umap 1.152034 1.164500 1.170546 1.176966 1.179802 1.182639     3
+#>  manifold_pacmap 2.672542 2.674573 2.686572 2.676604 2.693587 2.710570     3
 ```
 
 PaCMAP is generally slower than UMAP on the same data since it processes
