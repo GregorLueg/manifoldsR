@@ -1,6 +1,6 @@
 # manifoldsR
 
-![r_package](https://img.shields.io/badge/R_package-0.1.3-orange) 
+![r_package](https://img.shields.io/badge/R_package-0.2.0-orange) 
 [![CI](https://github.com/GregorLueg/genewalkR/actions/workflows/R-cmd-check.yml/badge.svg)](https://github.com/GregorLueg/genewalkR/actions/workflows/R-cmd-check.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![pkgdown](https://img.shields.io/badge/pkgdown-website-1b5e9f?logo=github)](https://gregorlueg.github.io/manifoldsR/)
@@ -8,9 +8,12 @@
 <img src="man/figures/manifoldsR_logo.png" width="128" height="128" alt="manifoldsR logo">
 
 **Fast(!)** manifold learning methods implemented in Rust with R bindings... For
-the modern-day single-cell Wannebe Pollock.
+the modern-day single-cell Wannebe Pollock. Also, has some clustering methods
+now as part of the package.
 
 ## Overview
+
+### 2D embedding methods
 
 `manifoldsR` provides high-performance implementations of popular dimensionality 
 reduction techniques:
@@ -32,6 +35,18 @@ The underlying philosophy is to strip out most additional features and focus
 on the core mechanics and make them as fast as possible, avoid abstraction 
 layers and indirection wherever possible and let llvm do its magic to generate
 fast code.
+
+### Clustering methods
+
+Additionally, you might want to cluster your data and then visualise it. For 
+this use case, the package also provides the following clustering methods (and
+of course various metrics around clusters)
+
+- **k-means clustering** (mini Batch version and full version with Hamerley's 
+  algorithm)
+- **EVõC** (Embedding Vector Oriented Clustering ported from 
+  [Python](https://github.com/TutteInstitute/evoc) into Rust and exposed here - 
+  from Leland McInnes at the Tutte institute).
 
 ## Installation
 

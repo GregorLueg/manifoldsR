@@ -121,8 +121,8 @@ ggplot(
   mapping = aes(x = UMAP1, y = UMAP2)
 ) +
   geom_point(
-    mapping = aes(colour = cluster), 
-    alpha = 0.5, 
+    mapping = aes(colour = cluster),
+    alpha = 0.5,
     size = 0.75
   ) +
   theme_bw() +
@@ -149,9 +149,9 @@ ggplot(
   mapping = aes(x = PC1, y = PC2)
 ) +
   geom_point(
-    mapping = aes(fill = z_axis), 
-    shape = 21, 
-    size = 2, 
+    mapping = aes(fill = z_axis),
+    shape = 21,
+    size = 2,
     alpha = 0.5
   ) +
   scale_fill_viridis_c() +
@@ -182,9 +182,9 @@ ggplot(
   mapping = aes(x = UMAP1, y = UMAP2)
 ) +
   geom_point(
-    mapping = aes(fill = z_axis), 
-    shape = 21, 
-    size = 2, 
+    mapping = aes(fill = z_axis),
+    shape = 21,
+    size = 2,
     alpha = 0.5
   ) +
   scale_fill_viridis_c() +
@@ -212,13 +212,13 @@ pca_trajectory_df <- as.data.table(pca_trajectory$x[, 1:2]) %>%
 # will mix the labels to visualise the continuum better
 ggplot(
   data = pca_trajectory_df[
-    sample(1:nrow(pca_trajectory_df), nrow(pca_trajectory_df)), 
+    sample(1:nrow(pca_trajectory_df), nrow(pca_trajectory_df)),
   ],
   mapping = aes(x = PC1, y = PC2)
 ) +
   geom_point(
-    mapping = aes(colour = branch), 
-    alpha = 0.5, 
+    mapping = aes(colour = branch),
+    alpha = 0.5,
     size = 0.75
   ) +
   theme_bw() +
@@ -245,13 +245,13 @@ umap_trajectory_df <- as.data.table(umap_trajectory) %>%
 
 ggplot(
   data = umap_trajectory_df[
-    sample(1:nrow(pca_trajectory_df), nrow(pca_trajectory_df)), 
+    sample(1:nrow(pca_trajectory_df), nrow(pca_trajectory_df)),
   ],
   mapping = aes(x = UMAP1, y = UMAP2)
 ) +
   geom_point(
-    mapping = aes(colour = branch), 
-    alpha = 0.5, 
+    mapping = aes(colour = branch),
+    alpha = 0.5,
     size = 0.75
   ) +
   theme_bw() +
@@ -296,8 +296,8 @@ ggplot(
   mapping = aes(x = UMAP1, y = UMAP2)
 ) +
   geom_point(
-    mapping = aes(colour = cluster), 
-    alpha = 0.5, 
+    mapping = aes(colour = cluster),
+    alpha = 0.5,
     size = 0.75
   ) +
   theme_bw() +
@@ -326,8 +326,8 @@ ggplot(
   mapping = aes(x = UMAP1, y = UMAP2)
 ) +
   geom_point(
-    mapping = aes(colour = cluster), 
-    alpha = 0.5, 
+    mapping = aes(colour = cluster),
+    alpha = 0.5,
     size = 0.75
   ) +
   theme_bw()
@@ -357,8 +357,8 @@ ggplot(
   mapping = aes(x = UMAP1, y = UMAP2)
 ) +
   geom_point(
-    mapping = aes(colour = cluster), 
-    alpha = 0.5, 
+    mapping = aes(colour = cluster),
+    alpha = 0.5,
     size = 0.75
   ) +
   theme_bw()
@@ -384,8 +384,8 @@ ggplot(
   mapping = aes(x = UMAP1, y = UMAP2)
 ) +
   geom_point(
-    mapping = aes(colour = cluster), 
-    alpha = 0.5, 
+    mapping = aes(colour = cluster),
+    alpha = 0.5,
     size = 0.75
   ) +
   theme_bw()
@@ -403,19 +403,19 @@ how does this version compare against other versions, let's do a benchmark:
 # set up the venv for the Python part/dependencies
 local({
   env_name <- "r-manifolds"
-  
+
   if (!reticulate::virtualenv_exists(env_name)) {
     reticulate::virtualenv_create(env_name)
     reticulate::virtualenv_install(
-      env_name, 
+      env_name,
       packages = c("phate", "umap-learn", "numpy", "scipy")
     )
   }
-  
+
   if (!reticulate::py_available()) {
     reticulate::use_virtualenv(env_name, required = TRUE)
   }
-  
+
   missing_pkgs <- Filter(
     Negate(reticulate::py_module_available),
     c("phate", "umap")
@@ -438,7 +438,7 @@ umap_py <- reticulate::import("umap")
 # initialise numba properly via JIT for fair comparison
 # run a small dataset...
 test_reducer <- umap_py$UMAP(
-  n_neighbors = 15L, 
+  n_neighbors = 15L,
   n_jobs = parallel::detectCores() - 1L
 )
 test <- test_reducer$fit_transform(benchmark_data$data[1:500, ])
@@ -473,7 +473,7 @@ microbenchmark::microbenchmark(
       data = benchmark_data$data,
       k = 15L,
       .verbose = FALSE
-    ) 
+    )
   },
   times = 1L # single comparison for speed
 )
@@ -504,7 +504,7 @@ microbenchmark::microbenchmark(
       data = benchmark_data_2$data,
       k = 15L,
       .verbose = FALSE
-    ) 
+    )
   },
   times = 1L # single comparison for speed
 )

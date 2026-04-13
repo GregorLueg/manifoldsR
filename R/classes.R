@@ -283,6 +283,8 @@ get_nearest_neighbours.Evoc <- function(x) {
 #' @returns Invisibly returns `x`.
 #'
 #' @export
+#'
+#' @keywords internal
 print.Evoc <- function(x, ...) {
   n_layers <- length(x$cluster_layers)
   best <- which.max(x$persistence_scores)
@@ -407,6 +409,8 @@ calc_inertia.KMeansCluster <- function(x, data) {
 #' @returns Invisibly returns `x`.
 #'
 #' @export
+#'
+#' @keywords internal
 print.KMeansCluster <- function(x, ...) {
   n <- length(x$assignments)
   sizes <- tabulate(x$assignments, nbins = x$k)

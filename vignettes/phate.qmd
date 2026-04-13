@@ -255,7 +255,7 @@ ggplot(
 ) +
   geom_point(mapping = aes(colour = branch), alpha = 0.5, size = 0.75) +
   theme_bw() +
-  scale_colour_viridis_c(option = "turbo")  +
+  scale_colour_viridis_c(option = "turbo") +
   ggtitle("PHATE from kNN graph (version 1)")
 ```
 
@@ -285,7 +285,7 @@ ggplot(
 ) +
   geom_point(mapping = aes(colour = branch), alpha = 0.5, size = 0.75) +
   theme_bw() +
-  scale_colour_viridis_c(option = "turbo")  +
+  scale_colour_viridis_c(option = "turbo") +
   ggtitle("PHATE from kNN graph (version 2)")
 ```
 
@@ -405,19 +405,19 @@ itself a wrapper around the Python `phate` library) on the trajectory data.
 
 local({
   env_name <- "r-manifolds"
-  
+
   if (!reticulate::virtualenv_exists(env_name)) {
     reticulate::virtualenv_create(env_name)
     reticulate::virtualenv_install(
-      env_name, 
+      env_name,
       packages = c("phate", "umap-learn", "numpy", "scipy")
     )
   }
-  
+
   if (!reticulate::py_available()) {
     reticulate::use_virtualenv(env_name, required = TRUE)
   }
-  
+
   missing_pkgs <- Filter(
     Negate(reticulate::py_module_available),
     c("phate", "umap")

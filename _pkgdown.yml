@@ -31,9 +31,10 @@ articles:
       - tsne
       - phate
       - pacmap
+      - clustering
 
 reference:
-  - title: "Main functions"
+  - title: "2D embedding methods"
     desc: "The core functions to generate the 2D embeddings"
     contents:
       - tsne
@@ -52,32 +53,54 @@ reference:
   - title: "Synthetic data"
     contents:
       - manifold_synthetic_data
+  - title: "Clustering algorithms"
+    desc: "Various methods to do clustering in manifoldsR"
+    contents:
+      - best_membership
+      - calc_ari
+      - calc_inertia
+      - calc_silhouette_score
+      - evoc
+      - get_centroids
+      - get_layer
+      - get_nearest_neighbours
+      - kmeans_cluster
+      - membership
   - title: "Params"
     desc: "Wrapper functions around core parameters"
     contents:
-      - params_nn
-      - params_umap
-      - params_tsne
-      - params_phate
-      - params_pacmap
-      - params_swiss_role
       - params_clusters
+      - params_evoc
       - params_hierarchical
+      - params_kmeans
+      - params_nn
+      - params_pacmap
+      - params_phate
+      - params_umap
+      - params_swiss_role
       - params_trajectory
+      - params_tsne
   - title: "Rust wrappers"
     desc: "Everything rusty - only use this if you know what you are doing..."
     contents:
       - rs_approx_nearest_neighbours
+      - rs_ari
+      - rs_check_cluster_separation
       - rs_data_clusters
       - rs_data_swiss_role
       - rs_data_trajectory
       - rs_data_hierarchical
+      - rs_evoc
+      - rs_evoc_from_knn
+      - rs_intertia
+      - rs_k_means
+      - rs_k_means_mini_batch
+      - rs_pacmap
+      - rs_pacmap_from_knn
       - rs_phate
       - rs_phate_from_knn
+      - rs_silhouette_score
       - rs_tsne
       - rs_tsne_from_knn
       - rs_umap
       - rs_umap_from_knn
-      - rs_pacmap
-      - rs_pacmap_from_knn
-      - rs_check_cluster_separation

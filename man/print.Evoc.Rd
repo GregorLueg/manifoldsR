@@ -17,3 +17,4 @@ Invisibly returns \code{x}.
 \description{
 Print an Evoc object
 }
+\keyword{internal}

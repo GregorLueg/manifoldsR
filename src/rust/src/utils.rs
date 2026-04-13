@@ -90,7 +90,7 @@ pub fn get_params_nn(r_list: List) -> NearestNeighbourParams<f32> {
         .map(|v| v as usize);
 
     let n_probes = nn_params
-        .get("n_probe")
+        .get("n_probes")
         .and_then(|v| v.as_integer())
         .map(|v| v as usize);
 

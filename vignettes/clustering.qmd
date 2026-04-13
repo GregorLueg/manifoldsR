@@ -1,7 +1,7 @@
 ---
-title: "Clustering"
+title: "Clustering methods in manifoldsR"
 vignette: >
-  %\VignetteIndexEntry{Clustering}
+  %\VignetteIndexEntry{Clustering methods in manifoldsR}
   %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
 knitr:
@@ -17,9 +17,10 @@ author:
 `manifoldsR` provides two clustering approaches (for now): **k-means** (full 
 Lloyd's and mini-batch) and **EVoC** (Embedding Vector Oriented Clustering). 
 Both are implemented in Rust with SIMD acceleration, heavy parallelism and the
-cache-friendly memory layouts for speed. The  package also ships cluster 
-evaluation metrics (ARI, silhouette score, inertia)  so you can assess the 
-results without having to load in another package (of course also made fast).
+cache-friendly memory layouts for speed. The package also ships cluster 
+evaluation metrics (ARI, silhouette score and inertia) so you can assess the 
+results without having to load in another package (of course also made fast in
+Rust -- you know the drill).
 
 ```{r}
 #| label: setup
@@ -162,9 +163,14 @@ ggplot(base_df, aes(x = UMAP1, y = UMAP2)) +
 
 cat("ARI:", calc_ari(cluster_data$membership, membership(km_correct)), "\n")
 cat("Inertia:", calc_inertia(km_correct, data = cluster_data$data), "\n")
-cat("Silhouette:", calc_silhouette_score(
-  cluster_data$data, membership(km_correct)
-)$mean_silhouette, "\n")
+cat(
+  "Silhouette:",
+  calc_silhouette_score(
+    cluster_data$data,
+    membership(km_correct)
+  )$mean_silhouette,
+  "\n"
+)
 ```
 
 ### Over-specifying k: full vs mini-batch
@@ -233,16 +239,26 @@ very few points. The result more closely mirrors the true structure.
 cat("Full k-means:\n")
 cat("  ARI:", calc_ari(cluster_data$membership, membership(km_full)), "\n")
 cat("  Effective clusters:", length(unique(membership(km_full))), "\n")
-cat("  Silhouette:", calc_silhouette_score(
-  cluster_data$data, membership(km_full)
-)$mean_silhouette, "\n")
+cat(
+  "  Silhouette:",
+  calc_silhouette_score(
+    cluster_data$data,
+    membership(km_full)
+  )$mean_silhouette,
+  "\n"
+)
 
 cat("\nMini-batch k-means:\n")
 cat("  ARI:", calc_ari(cluster_data$membership, membership(km_mini)), "\n")
 cat("  Effective clusters:", length(unique(membership(km_mini))), "\n")
-cat("  Silhouette:", calc_silhouette_score(
-  cluster_data$data, membership(km_mini)
-)$mean_silhouette, "\n")
+cat(
+  "  Silhouette:",
+  calc_silhouette_score(
+    cluster_data$data,
+    membership(km_mini)
+  )$mean_silhouette,
+  "\n"
+)
 ```
 
 ### Elbow plot with inertia
@@ -269,15 +285,20 @@ elbow_results <- lapply(k_values, function(k) {
     inertia = calc_inertia(res, data = cluster_data$data),
     ari = calc_ari(cluster_data$membership, membership(res))
   )
-}) %>% rbindlist()
+}) %>%
+  rbindlist()
 
 ggplot(elbow_results, aes(x = k)) +
   geom_line(aes(y = inertia)) +
   geom_point(aes(y = inertia)) +
   geom_vline(xintercept = n_true, linetype = "dashed", colour = "red") +
   annotate(
-    "text", x = n_true + 1, y = max(elbow_results$inertia) * 0.9,
-    label = sprintf("true k = %d", n_true), hjust = 0, colour = "red"
+    "text",
+    x = n_true + 1,
+    y = max(elbow_results$inertia) * 0.9,
+    label = sprintf("true k = %d", n_true),
+    hjust = 0,
+    colour = "red"
   ) +
   theme_bw() +
   labs(x = "k", y = "Inertia (WCSS)") +
@@ -325,7 +346,11 @@ evoc_best <- best_membership(evoc_res)
 
 cat("Selected layer:", evoc_best$layer, "\n")
 cat("Persistence score:", round(evoc_best$persistence, 4), "\n")
-cat("Clusters found:", length(unique(evoc_best$labels[evoc_best$labels != -1L])), "\n")
+cat(
+  "Clusters found:",
+  length(unique(evoc_best$labels[evoc_best$labels != -1L])),
+  "\n"
+)
 cat("Noise points:", sum(evoc_best$labels == -1L), "\n")
 ```
 
@@ -340,16 +365,24 @@ ggplot(base_df, aes(x = UMAP1, y = UMAP2)) +
   ggtitle("EVoC (best persistence layer)")
 ```
 
+We can appreciate that EVoC identified (nearly) perfectly the ground truth...
+
 ```{r}
 #| label: evoc - metrics
 
 # exclude noise points for ARI
 non_noise <- evoc_best$labels != -1L
-cat("ARI (excl. noise):", calc_ari(
-  cluster_data$membership[non_noise],
-  evoc_best$labels[non_noise]
-), "\n")
+cat(
+  "ARI (excl. noise):",
+  calc_ari(
+    cluster_data$membership[non_noise],
+    evoc_best$labels[non_noise]
+  ),
+  "\n"
+)
 ```
+
+This is also apparent in the ARI score of ≥0.99.
 
 ### Multiple layers
 
@@ -365,9 +398,13 @@ n_layers <- length(evoc_res$persistence_scores)
 persistence_df <- data.table(
   layer = seq_len(n_layers),
   persistence = evoc_res$persistence_scores,
-  n_clusters = vapply(evoc_res$cluster_layers, function(l) {
-    length(unique(l[l != -1L]))
-  }, integer(1))
+  n_clusters = vapply(
+    evoc_res$cluster_layers,
+    function(l) {
+      length(unique(l[l != -1L]))
+    },
+    integer(1)
+  )
 )
 
 ggplot(persistence_df, aes(x = layer, y = persistence)) +
@@ -397,33 +434,42 @@ evoc_approx <- evoc(
 )
 
 evoc_approx_best <- best_membership(evoc_approx)
-cat("Clusters found:", length(unique(
-  evoc_approx_best$labels[evoc_approx_best$labels != -1L]
-)), "\n")
+cat(
+  "Clusters found:",
+  length(unique(
+    evoc_approx_best$labels[evoc_approx_best$labels != -1L]
+  )),
+  "\n"
+)
 ```
 
 ## Comparison
 
+Let's just compare at the end the methods
+
 ```{r}
 #| label: comparison
-#| fig-height: 4
-#| fig-width: 14
+#| fig-height: 6
+#| fig-width: 18
 
 base_df[, evoc_approx_label := as.factor(evoc_approx_best$labels)]
 
 p_true <- ggplot(base_df, aes(x = UMAP1, y = UMAP2)) +
   geom_point(aes(colour = true_cluster), size = 0.4, alpha = 0.5) +
-  theme_bw() + theme(legend.position = "none") +
+  theme_bw() +
+  theme(legend.position = "none") +
   ggtitle("Ground truth")
 
 p_km <- ggplot(base_df, aes(x = UMAP1, y = UMAP2)) +
   geom_point(aes(colour = km_assignment), size = 0.4, alpha = 0.5) +
-  theme_bw() + theme(legend.position = "none") +
+  theme_bw() +
+  theme(legend.position = "none") +
   ggtitle(sprintf("K-means (k=%d)", n_true))
 
 p_evoc <- ggplot(base_df, aes(x = UMAP1, y = UMAP2)) +
   geom_point(aes(colour = evoc_label), size = 0.4, alpha = 0.5) +
-  theme_bw() + theme(legend.position = "none") +
+  theme_bw() +
+  theme(legend.position = "none") +
   ggtitle("EVoC (auto)")
 
 gridExtra::grid.arrange(p_true, p_km, p_evoc, ncol = 3)
@@ -432,7 +478,8 @@ gridExtra::grid.arrange(p_true, p_km, p_evoc, ncol = 3)
 K-means requires specifying `k` and produces exactly that many clusters with no
 notion of noise. EVoC discovers the number of clusters automatically, handles
 noise and outliers, and provides multiple granularity layers. For well-separated
-clusters where you know `k`, both methods perform well. EVoC shines when the
+clusters where you know `k`, both methods perform well (mini batch k-means can
+be superior pending the underlying data structure). EVoC shines when the
 number of clusters is unknown or the data contains noise, i.e., situations where
 k-means requires manual tuning and repeated runs with different `k` values.
 
