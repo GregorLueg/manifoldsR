@@ -22,7 +22,14 @@
 ) {
   checkmate::assertChoice(
     knn_method,
-    c("hnsw", "annoy", "nndescent", "balltree", "exhaustive")
+    c(
+      "kmknn",
+      "balltree",
+      "hnsw",
+      "annoy",
+      "nndescent",
+      "exhaustive"
+    )
   )
   assertNnParams(nn_params)
   assertPacmapParams(pacmap_params)
@@ -62,9 +69,9 @@
 #' @param k Integer. Number of nearest neighbours to consider. Defaults to
 #' `10L`. Note that the kNN search will use `mn_candidate_end` neighbours
 #' internally; k only controls the near pairs used in optimisation.
-#' @param knn_method Character. Approximate nearest neighbour algorithm to use.
-#' One of `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, or
-#' `"exhaustive"`. Defaults to `"balltree"`.
+#' @param knn_method Character. (Approximate) Nearest neighbour method to use.
+#' One of `"kmknn"`, `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, or
+#' `"exhaustive"`. Defaults to `"kmknn"`.
 #' @param nn_params Named list. Nearest neighbour search parameters, see
 #' [params_nn()].
 #' @param pacmap_params Named list. PaCMAP algorithm parameters, see
@@ -81,7 +88,14 @@ pacmap <- function(
   knn = NULL,
   n_dim = 2L,
   k = 10L,
-  knn_method = c("balltree", "hnsw", "annoy", "nndescent", "exhaustive"),
+  knn_method = c(
+    "kmknn",
+    "balltree",
+    "hnsw",
+    "annoy",
+    "nndescent",
+    "exhaustive"
+  ),
   nn_params = params_nn(),
   pacmap_params = params_pacmap(),
   seed = 42L,

@@ -10,7 +10,7 @@ tsne(
   n_dim = 2L,
   perplexity = 30,
   approx_type = c("bh", "fft"),
-  knn_method = c("balltree", "hnsw", "annoy", "nndescent", "exhaustive"),
+  knn_method = c("kmknn", "balltree", "hnsw", "annoy", "nndescent", "exhaustive"),
   nn_params = params_nn(),
   tsne_params = params_tsne(),
   seed = 42L,
@@ -36,9 +36,9 @@ nearest neighbours used in manifold learning. Typical values are between
 forces. One of \code{"bh"} for Barnes-Hut or \code{"fft"} for FFT-accelerated
 interpolation. Defaults to \code{"bh"}.}
 
-\item{knn_method}{Character. Approximate nearest neighbour algorithm to use.
-One of \code{"hnsw"}, \code{"annoy"}, \code{"nndescent"}, \code{"balltree"}, or
-\code{"exhaustive"}. Defaults to \code{"balltree"}.}
+\item{knn_method}{Character. (Approximate) Nearest neighbour method to use.
+One of \code{"kmknn"}, \code{"hnsw"}, \code{"annoy"}, \code{"nndescent"}, \code{"balltree"}, or
+\code{"exhaustive"}. Defaults to \code{"kmknn"}.}
 
 \item{nn_params}{Named list. Nearest neighbour search parameters, see
 \code{\link[=params_nn]{params_nn()}}.}

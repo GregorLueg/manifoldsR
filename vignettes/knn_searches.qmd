@@ -26,7 +26,6 @@ library(manifoldsR)
 
 ```{r}
 #| label: parameters
-
 # number neighbours
 k <- 10L
 
@@ -40,7 +39,6 @@ We will generate some synthetic data and test the different methods out.
 
 ```{r}
 #| label: synthetic data
-
 cluster_data <- manifold_synthetic_data(
   type = "cluster",
   n_samples = n_samples
@@ -56,7 +54,6 @@ searches we will discuss subsequently.
 
 ```{r}
 #| label: exhaustive search
-
 exhaustive <- generate_knn_graph(
   data = cluster_data$data,
   k = k,
@@ -72,7 +69,6 @@ need to be aware of this!
 
 ```{r}
 #| label: NearestNeigbours getters - indices
-
 # flat representation of the indices
 indices_flat <- get_idx_flat(exhaustive)
 
@@ -84,12 +80,33 @@ The distances can also be extracted easily:
 
 ```{r}
 #| label: NearestNeigbours getters - distances
-
 # flat representation of the distances
 dist_flat <- get_dist_flat(exhaustive)
 
 # as N x idx nearest neigbours matrix
 dist_mat <- get_dist_mat(exhaustive)
+```
+
+An alternative, exact version is the 
+[KmKnn (k-means for k-nearest neighbour)](https://ieeexplore.ieee.org/document/6033373). 
+It leverages k-means and triangle inequality to reduce the number of searches - 
+a (very) fast, exact index that works well on low-dimensional data that has
+strong structure.
+
+```{r}
+#| label: kmknn
+kmknn <- generate_knn_graph(
+  data = cluster_data$data,
+  k = k,
+  knn_method = "kmknn"
+)
+
+kmknn
+```
+
+```{r}
+#| label: kmknn vs exhaustive
+all(get_idx_flat(kmknn) == get_idx_flat(exhaustive))
 ```
 
 ## Approximate searches
@@ -103,16 +120,15 @@ exposed in this package are (+ the exhaustive version above):
 |--------|----------|-------|----------|
 | BallTree | Simple method, good for small data sets (≤ 100,000) | Tree-based | Small data sets, small dimensionality
 | Annoy | Classic in single cell, scales well to data sets of up to 500,000 | Tree-based | Large data sets, small dimensionality
-| HNSW | Powerful on large datasets (≥ 500,000), slightly slower index build type, fast queries | Graph-based | Large data sets, small to large dimensionality
+| HNSW | Powerful on large datasets (≥ 500,000), slightly slower index build type, fast queries. The implementation here uses a benign race condition during index building. | Graph-based | Large data sets, small to large dimensionality
 | NNDescent | Another graph-based version, good all-rounder when certain sizes are reached (≥ 100,000) | Graph-based | Medium data sets, small to large dimensionality
-| IVF | A fast cluster-based index powering libraries like FAISS. | Cluster-based | Large data sets, any dimensionality. You can squeeze out aggressively speed with the n_probe parameter if need be. Be careful to set n_list pending your data structure. If you have few well defined
-data clusters, it is better to set it lower for this method.
+| IVF | A fast cluster-based index powering libraries like FAISS. | Cluster-based | Large data sets, any dimensionality. You can squeeze out aggressively speed with the n_probe parameter if need be. Be careful to set n_list pending your data structure. If you have few well defined data clusters, it is better to set it lower for this method.
 
-manifoldsR defaults to `Balltree`, but you can play around with the parameters & 
+manifoldsR defaults to `kMkNN`, but you can play around with the parameters & 
 methods. The package was written with massive scale in mind, but if you are 
-looking at smaller data sets (like in the vignettes), `BallTree` does the job 
-(fast). If you have high dimensional data and/or massive amounts of samples,
-some of the other methods will shine.
+looking at smaller data sets with clear structure and low dimensionality (like 
+in this vignettes), `kMkNN` does the job (fast). If you have high dimensional 
+data and/or massive amounts of samples, some of the other methods will shine.
 
 ### Speed
 
@@ -120,13 +136,20 @@ Let's just have a look on how they perform on different sizes
 
 ```{r}
 #| label: approximate nearest neighbour searches - benchmark 1000
-
 microbenchmark::microbenchmark(
   exhaustive = {
     generate_knn_graph(
       data = cluster_data$data,
       k = k,
       knn_method = "exhaustive",
+      .verbose = FALSE
+    )
+  },
+  kmknn = {
+    generate_knn_graph(
+      data = cluster_data$data,
+      k = k,
+      knn_method = "kmknn",
       .verbose = FALSE
     )
   },
@@ -184,7 +207,6 @@ necessary `O(N^2)` in no time on smaller datasets. What about 50k cells?
 
 ```{r}
 #| label: approximate nearest neighbour searches - benchmark 50k
-
 benchmark_data <- manifold_synthetic_data(
   type = "cluster",
   n_samples = 50000L
@@ -196,6 +218,14 @@ microbenchmark::microbenchmark(
       data = benchmark_data$data,
       k = k,
       knn_method = "exhaustive",
+      .verbose = FALSE
+    )
+  },
+  kmknn = {
+    generate_knn_graph(
+      data = benchmark_data$data,
+      k = k,
+      knn_method = "kmknn",
       .verbose = FALSE
     )
   },
@@ -252,7 +282,6 @@ pronounced with more samples:
 
 ```{r}
 #| label: approximate nearest neighbour searches - benchmark 100k
-
 benchmark_data <- manifold_synthetic_data(
   type = "cluster",
   n_samples = 100000L
@@ -265,6 +294,14 @@ microbenchmark::microbenchmark(
       data = benchmark_data$data,
       k = k,
       knn_method = "exhaustive",
+      .verbose = FALSE
+    )
+  },
+  kmknn = {
+    generate_knn_graph(
+      data = benchmark_data$data,
+      k = k,
+      knn_method = "kmknn",
       .verbose = FALSE
     )
   },
@@ -323,7 +360,6 @@ neighbours. Let's just have a look at the smaller data sets here:
 
 ```{r}
 #| label: approximate nearest neighbour searches - recall
-
 samples <- 25000L
 
 benchmark_data <- manifold_synthetic_data(
@@ -337,7 +373,7 @@ exhaustive <- generate_knn_graph(
   knn_method = "exhaustive"
 )
 
-indices <- c("hnsw", "annoy", "nndescent", "balltree", "ivf")
+indices <- c("hnsw", "annoy", "nndescent", "balltree", "ivf", "kmknn")
 
 for (idx in indices) {
   idx_i <- generate_knn_graph(

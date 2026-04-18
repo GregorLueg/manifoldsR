@@ -26,8 +26,8 @@
 #' @param k Integer. The number of nearest neighbours to compute.
 #' @param knn_method Character. The algorithm to use for nearest neighbour
 #' search. One of
-#' `c("hnsw", "annoy", "nndescent", "balltree", "ivf", "exhaustive")`. Defaults
-#' to `"hnsw"`.
+#' `c("kmknn", "hnsw", "annoy", "nndescent", "balltree", "ivf", "exhaustive")`.
+#' Defaults to `"kmknn"`.
 #' @param nn_params List. Output of [manifoldsR::params_nn()]. Controls
 #' algorithm-specific parameters.
 #' @param seed Integer. For reproducibility. Defaults to `42L`.
@@ -40,7 +40,15 @@
 generate_knn_graph <- function(
   data,
   k,
-  knn_method = c("hnsw", "annoy", "nndescent", "balltree", "exhaustive", "ivf"),
+  knn_method = c(
+    "kmknn",
+    "hnsw",
+    "annoy",
+    "nndescent",
+    "balltree",
+    "ivf",
+    "exhaustive"
+  ),
   nn_params = params_nn(),
   seed = 42L,
   .verbose = TRUE
@@ -52,7 +60,15 @@ generate_knn_graph <- function(
   checkmate::qassert(k, "I1")
   checkmate::assertChoice(
     knn_method,
-    c("hnsw", "annoy", "nndescent", "balltree", "exhaustive", "ivf")
+    c(
+      "kmknn",
+      "hnsw",
+      "annoy",
+      "nndescent",
+      "balltree",
+      "ivf",
+      "exhaustive"
+    )
   )
   assertNnParams(nn_params)
   checkmate::qassert(seed, "I1")

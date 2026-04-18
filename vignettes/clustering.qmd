@@ -85,7 +85,6 @@ This lets us evaluate clustering quality against known ground truth.
 
 ```{r}
 #| label: synthetic data
-
 cluster_data <- manifold_synthetic_data(
   type = "clusters",
   n_samples = 10000L,
@@ -103,7 +102,6 @@ and reuse it to colour by different cluster assignments.
 
 ```{r}
 #| label: umap embedding
-
 umap_embd <- umap(
   data = cluster_data$data,
   k = 15L,
@@ -119,7 +117,6 @@ Let's plot the UMAP with the original cluster assignment
 
 ```{r}
 #| label: umap - true clusters
-
 ggplot(base_df, aes(x = UMAP1, y = UMAP2)) +
   geom_point(aes(colour = true_cluster), size = 0.5, alpha = 0.5) +
   theme_bw() +
@@ -135,7 +132,6 @@ k-means to find exactly that.
 
 ```{r}
 #| label: kmeans - correct k
-
 km_correct <- kmeans_cluster(
   data = cluster_data$data,
   k = n_true,
@@ -149,7 +145,6 @@ km_correct
 
 ```{r}
 #| label: kmeans - correct k plot
-
 base_df[, km_assignment := as.factor(membership(km_correct))]
 
 ggplot(base_df, aes(x = UMAP1, y = UMAP2)) +
@@ -160,7 +155,6 @@ ggplot(base_df, aes(x = UMAP1, y = UMAP2)) +
 
 ```{r}
 #| label: kmeans - correct k metrics
-
 cat("ARI:", calc_ari(cluster_data$membership, membership(km_correct)), "\n")
 cat("Inertia:", calc_inertia(km_correct, data = cluster_data$data), "\n")
 cat(
@@ -181,7 +175,6 @@ k-means variants behave quite differently.
 
 ```{r}
 #| label: kmeans - over-specified
-
 k_over <- 25L
 
 km_full <- kmeans_cluster(
@@ -207,7 +200,6 @@ km_mini <- kmeans_cluster(
 #| label: kmeans - over-specified plot
 #| fig-height: 4
 #| fig-width: 10
-
 base_df[, `:=`(
   km_full_over = as.factor(membership(km_full)),
   km_mini_over = as.factor(membership(km_mini))
@@ -235,7 +227,6 @@ very few points. The result more closely mirrors the true structure.
 
 ```{r}
 #| label: kmeans - over-specified metrics
-
 cat("Full k-means:\n")
 cat("  ARI:", calc_ari(cluster_data$membership, membership(km_full)), "\n")
 cat("  Effective clusters:", length(unique(membership(km_full))), "\n")
@@ -269,7 +260,6 @@ meaningful improvement, suggests a reasonable `k`.
 
 ```{r}
 #| label: kmeans - elbow plot
-
 k_values <- seq(2L, 30L, by = 2L)
 
 elbow_results <- lapply(k_values, function(k) {
@@ -307,7 +297,6 @@ ggplot(elbow_results, aes(x = k)) +
 
 ```{r}
 #| label: kmeans - ari by k
-
 ggplot(elbow_results, aes(x = k, y = ari)) +
   geom_line() +
   geom_point() +
@@ -327,11 +316,9 @@ automatically and returns multiple layers of granularity.
 
 ```{r}
 #| label: evoc - basic
-
 evoc_res <- evoc(
   data = cluster_data$data,
   n_neighbours = 15L,
-  knn_method = "hnsw",
   seed = 42L,
   .verbose = TRUE
 )
@@ -341,7 +328,6 @@ evoc_res
 
 ```{r}
 #| label: evoc - best layer
-
 evoc_best <- best_membership(evoc_res)
 
 cat("Selected layer:", evoc_best$layer, "\n")
@@ -356,7 +342,6 @@ cat("Noise points:", sum(evoc_best$labels == -1L), "\n")
 
 ```{r}
 #| label: evoc - best layer plot
-
 base_df[, evoc_label := as.factor(evoc_best$labels)]
 
 ggplot(base_df, aes(x = UMAP1, y = UMAP2)) +
@@ -369,7 +354,6 @@ We can appreciate that EVoC identified (nearly) perfectly the ground truth...
 
 ```{r}
 #| label: evoc - metrics
-
 # exclude noise points for ARI
 non_noise <- evoc_best$labels != -1L
 cat(
@@ -392,7 +376,6 @@ structures.
 
 ```{r}
 #| label: evoc - persistence
-
 n_layers <- length(evoc_res$persistence_scores)
 
 persistence_df <- data.table(
@@ -424,7 +407,6 @@ layer.
 
 ```{r}
 #| label: evoc - approx k
-
 evoc_approx <- evoc(
   data = cluster_data$data,
   n_neighbours = 15L,
@@ -451,7 +433,6 @@ Let's just compare at the end the methods
 #| label: comparison
 #| fig-height: 6
 #| fig-width: 18
-
 base_df[, evoc_approx_label := as.factor(evoc_approx_best$labels)]
 
 p_true <- ggplot(base_df, aes(x = UMAP1, y = UMAP2)) +

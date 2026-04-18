@@ -7,7 +7,7 @@
 generate_knn_graph(
   data,
   k,
-  knn_method = c("hnsw", "annoy", "nndescent", "balltree", "exhaustive", "ivf"),
+  knn_method = c("kmknn", "hnsw", "annoy", "nndescent", "balltree", "ivf", "exhaustive"),
   nn_params = params_nn(),
   seed = 42L,
   .verbose = TRUE
@@ -21,8 +21,8 @@ neighbours on. Rows are observations, columns are features.}
 
 \item{knn_method}{Character. The algorithm to use for nearest neighbour
 search. One of
-\code{c("hnsw", "annoy", "nndescent", "balltree", "ivf", "exhaustive")}. Defaults
-to \code{"hnsw"}.}
+\code{c("kmknn", "hnsw", "annoy", "nndescent", "balltree", "ivf", "exhaustive")}.
+Defaults to \code{"kmknn"}.}
 
 \item{nn_params}{List. Output of \code{\link[=params_nn]{params_nn()}}. Controls
 algorithm-specific parameters.}

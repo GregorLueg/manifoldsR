@@ -8,7 +8,7 @@ evoc(
   data,
   knn = NULL,
   n_neighbours = 15L,
-  knn_method = c("hnsw", "annoy", "nndescent", "balltree", "ivf", "exhaustive"),
+  knn_method = c("kmknn", "hnsw", "annoy", "nndescent", "balltree", "ivf", "exhaustive"),
   nn_params = params_nn(),
   evoc_params = params_evoc(),
   return_knn = FALSE,
@@ -26,9 +26,9 @@ the kNN graph generation and use this one. Defaults to \code{NULL}.}
 \item{n_neighbours}{Integer. Number of nearest neighbours for graph
 construction. Defaults to \code{15L}.}
 
-\item{knn_method}{Character. Approximate nearest neighbour algorithm to use.
-One of \code{"hnsw"}, \code{"annoy"}, \code{"nndescent"}, \code{"balltree"}, \code{"ivf"}, or
-\code{"exhaustive"}. Defaults to \code{"hnsw"}.}
+\item{knn_method}{Character. (Approximate) Nearest neighbour method to use.
+One of \code{"kmknn"}, \code{"hnsw"}, \code{"annoy"}, \code{"nndescent"}, \code{"balltree"}, or
+\code{"exhaustive"}. Defaults to \code{"kmknn"}.}
 
 \item{nn_params}{Named list. Nearest neighbour search parameters, see
 \code{\link[=params_nn]{params_nn()}}.}

@@ -73,7 +73,6 @@ comparison.
 
 ```{r}
 #| label: synthetic data
-
 cluster_data <- manifold_synthetic_data(
   type = "cluster",
   n_samples = 25000L
@@ -97,7 +96,6 @@ handles the clustered synthetic data. But first, let's check PCA...
 
 ```{r}
 #| label: clustered data - pca
-
 pca_clusters <- prcomp(cluster_data$data)
 
 pca_clusters_df <- as.data.table(pca_clusters$x[, 1:2]) %>%
@@ -117,7 +115,6 @@ And now tSNE:
 
 ```{r}
 #| label: clustered data - tsne
-
 tsne_clusters <- tsne(
   data = cluster_data$data,
   perplexity = 30,
@@ -150,7 +147,6 @@ structure more. Similar to last UMAP, let's start with PCA:
 
 ```{r}
 #| label: swissrole data - pca
-
 pca_swiss_role <- prcomp(swissrole_data$data)
 
 pca_swiss_role_df <- as.data.table(pca_swiss_role$x[, 1:2]) %>%
@@ -176,7 +172,6 @@ And compare against tSNE:
 
 ```{r}
 #| label: swissrole data - tsne
-
 tsne_swissrole <- tsne(
   data = swissrole_data$data,
   knn_method = "exhaustive",
@@ -214,7 +209,6 @@ Lastly, let's look at trajectory type data...
 
 ```{r}
 #| label: trajectory data - pca
-
 pca_trajectory <- prcomp(trajectory_data$data)
 
 pca_trajectory_df <- as.data.table(pca_trajectory$x[, 1:2]) %>%
@@ -238,7 +232,6 @@ And tSNE
 
 ```{r}
 #| label: trajectory data - tsne
-
 tsne_trajectory <- tsne(
   data = trajectory_data$data,
   perplexity = 45,
@@ -279,11 +272,9 @@ the kNN graph and pass it in directly.
 
 ```{r}
 #| label: tsne - pre-computed kNN
-
 precomputed_knn <- generate_knn_graph(
   data = cluster_data$data,
   k = 30L, # we will use 30 neighbours here...
-  knn_method = "balltree",
   .verbose = FALSE
 )
 
@@ -312,7 +303,6 @@ kNN search:
 
 ```{r}
 #| label: tsne - pre-computed kNN, different params
-
 tsne_from_knn_highperplex <- tsne(
   data = cluster_data$data,
   knn = precomputed_knn,
@@ -347,7 +337,6 @@ situations of ≥ 100,000 samples and more.
 ```{r}
 #| label: tsne - fft
 #| eval: !expr .Platform$OS.type == "unix"
-
 tsne_fft <- tsne(
   data = cluster_data$data,
   perplexity = 30,
@@ -382,7 +371,6 @@ just too slow to be worth comparing here...
 ```{r}
 #| label: benchmark - small
 #| eval: !expr requireNamespace("microbenchmark", quietly = TRUE) && requireNamespace("Rtsne", quietly = TRUE)
-
 benchmark_data <- manifold_synthetic_data(
   type = "cluster",
   n_samples = 5000L
@@ -415,7 +403,6 @@ The impact here is massive already. Let's see what happens with BH and FFT?
 ```{r}
 #| label: benchmark - larger
 #| eval: !expr requireNamespace("microbenchmark", quietly = TRUE) && .Platform$OS.type == "unix"
-
 benchmark_data_large <- manifold_synthetic_data(
   type = "cluster",
   n_samples = 50000L

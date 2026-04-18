@@ -73,7 +73,6 @@ comparison.
 
 ```{r}
 #| label: synthetic data
-
 cluster_data <- manifold_synthetic_data(
   type = "cluster",
   n_samples = 10000L
@@ -100,7 +99,6 @@ let's start first with PCA:
 
 ```{r}
 #| label: clustered data - pca
-
 pca_clusters <- prcomp(cluster_data$data)
 
 pca_clusters_df <- as.data.table(pca_clusters$x[, 1:2]) %>%
@@ -120,7 +118,6 @@ And now check PHATE:
 
 ```{r}
 #| label: clustered data - phate
-
 phate_clusters <- phate(
   data = cluster_data$data,
   k = 15L,
@@ -152,7 +149,6 @@ of the roll rather than tearing it apart.
 
 ```{r}
 #| label: swissrole data - phate
-
 phate_swissrole <- phate(
   data = swissrole_data$data,
   k = 15L,
@@ -190,7 +186,6 @@ are the canonical use case.
 
 ```{r}
 #| label: trajectory data - phate
-
 phate_trajectory <- phate(
   data = trajectory_data$data,
   k = 15L,
@@ -228,11 +223,9 @@ repeating the kNN search, you can precompute the graph and pass it directly.
 
 ```{r}
 #| label: phate - pre-computed kNN
-
 precomputed_knn <- generate_knn_graph(
   data = trajectory_data$data,
   k = 15L,
-  knn_method = "balltree",
   .verbose = FALSE
 )
 
@@ -264,7 +257,6 @@ example, trying a fixed diffusion time rather than automatic selection:
 
 ```{r}
 #| label: phate - pre-computed kNN, different params
-
 phate_from_knn_fixed_t <- phate(
   data = trajectory_data$data,
   knn = precomputed_knn,
@@ -322,7 +314,6 @@ the potential distances over `N x N`, instead of `N x L`, etc.
 
 ```{r}
 #| label: phate - landmarks
-
 large_trajectory <- manifold_synthetic_data(
   type = "trajectory",
   n_samples = 50000L
@@ -358,7 +349,6 @@ We can even further accelerate this with the density or random-based version
 
 ```{r}
 #| label: phate - landmarks, using random
-
 large_trajectory <- manifold_synthetic_data(
   type = "trajectory",
   n_samples = 50000L
@@ -367,7 +357,6 @@ large_trajectory <- manifold_synthetic_data(
 phate_landmark <- phate(
   data = large_trajectory$data,
   k = 15L,
-  knn_method = "balltree",
   phate_params = params_phate(
     n_landmarks = 1024L,
     landmark_method = "random"
@@ -402,7 +391,6 @@ itself a wrapper around the Python `phate` library) on the trajectory data.
 ```{r}
 #| label: benchmark
 #| eval: !expr requireNamespace("microbenchmark", quietly = TRUE) && requireNamespace("phateR", quietly = TRUE) && requireNamespace("reticulate", quietly = TRUE)
-
 local({
   env_name <- "r-manifolds"
 
@@ -461,7 +449,6 @@ And on a larger data set with additionally the random landmark version
 ```{r}
 #| label: benchmark - landmarks
 #| eval: !expr requireNamespace("microbenchmark", quietly = TRUE)
-
 benchmark_data_large <- manifold_synthetic_data(
   type = "trajectory",
   n_samples = 100000L
