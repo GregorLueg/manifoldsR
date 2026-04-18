@@ -11,7 +11,7 @@ evoc(
   data,
   knn = NULL,
   n_neighbours = 15L,
-  knn_method = c("hnsw", "annoy", "nndescent", "balltree", "ivf", "exhaustive"),
+  knn_method = c("kmknn", "hnsw", "annoy", "nndescent", "balltree", "ivf", "exhaustive"),
   nn_params = params_nn(),
   evoc_params = params_evoc(),
   return_knn = FALSE,
@@ -39,9 +39,9 @@ evoc(
 
 - knn_method:
 
-  Character. Approximate nearest neighbour algorithm to use. One of
-  `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, `"ivf"`, or
-  `"exhaustive"`. Defaults to `"hnsw"`.
+  Character. (Approximate) Nearest neighbour method to use. One of
+  `"kmknn"`, `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, or
+  `"exhaustive"`. Defaults to `"kmknn"`.
 
 - nn_params:
 

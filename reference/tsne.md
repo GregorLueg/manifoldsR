@@ -13,7 +13,7 @@ tsne(
   n_dim = 2L,
   perplexity = 30,
   approx_type = c("bh", "fft"),
-  knn_method = c("balltree", "hnsw", "annoy", "nndescent", "exhaustive"),
+  knn_method = c("kmknn", "balltree", "hnsw", "annoy", "nndescent", "exhaustive"),
   nn_params = params_nn(),
   tsne_params = params_tsne(),
   seed = 42L,
@@ -53,9 +53,9 @@ tsne(
 
 - knn_method:
 
-  Character. Approximate nearest neighbour algorithm to use. One of
-  `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, or `"exhaustive"`.
-  Defaults to `"balltree"`.
+  Character. (Approximate) Nearest neighbour method to use. One of
+  `"kmknn"`, `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, or
+  `"exhaustive"`. Defaults to `"kmknn"`.
 
 - nn_params:
 

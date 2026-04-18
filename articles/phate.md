@@ -217,7 +217,6 @@ it directly.
 precomputed_knn <- generate_knn_graph(
   data = trajectory_data$data,
   k = 15L,
-  knn_method = "balltree",
   .verbose = FALSE
 )
 
@@ -358,7 +357,6 @@ large_trajectory <- manifold_synthetic_data(
 phate_landmark <- phate(
   data = large_trajectory$data,
   k = 15L,
-  knn_method = "balltree",
   phate_params = params_phate(
     n_landmarks = 1024L,
     landmark_method = "random"
@@ -456,14 +454,10 @@ microbenchmark::microbenchmark(
   },
   times = 1L
 )
-#>     SGD-MDS may not have converged: stress changed by -2.6% in final iterations. Consider increasing n_iter or adjusting learning_rate.
 #> Unit: seconds
-#>            expr       min        lq      mean    median        uq       max
-#>          phateR 12.032594 12.032594 12.032594 12.032594 12.032594 12.032594
-#>  manifold_phate  7.568092  7.568092  7.568092  7.568092  7.568092  7.568092
-#>  neval
-#>      1
-#>      1
+#>            expr      min       lq     mean   median       uq      max neval
+#>          phateR 12.61916 12.61916 12.61916 12.61916 12.61916 12.61916     1
+#>  manifold_phate 10.28477 10.28477 10.28477 10.28477 10.28477 10.28477     1
 ```
 
 And on a larger data set with additionally the random landmark version
@@ -507,9 +501,9 @@ microbenchmark::microbenchmark(
 )
 #> Unit: seconds
 #>                     expr      min       lq     mean   median       uq      max
-#>                   phateR 56.40936 56.40936 56.40936 56.40936 56.40936 56.40936
-#>  manifold_phate_spectral 19.75505 19.75505 19.75505 19.75505 19.75505 19.75505
-#>    manifold_phate_random 14.90559 14.90559 14.90559 14.90559 14.90559 14.90559
+#>                   phateR 55.47032 55.47032 55.47032 55.47032 55.47032 55.47032
+#>  manifold_phate_spectral 25.44042 25.44042 25.44042 25.44042 25.44042 25.44042
+#>    manifold_phate_random 19.38427 19.38427 19.38427 19.38427 19.38427 19.38427
 #>  neval
 #>      1
 #>      1

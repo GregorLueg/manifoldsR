@@ -12,7 +12,7 @@ pacmap(
   knn = NULL,
   n_dim = 2L,
   k = 10L,
-  knn_method = c("balltree", "hnsw", "annoy", "nndescent", "exhaustive"),
+  knn_method = c("kmknn", "balltree", "hnsw", "annoy", "nndescent", "exhaustive"),
   nn_params = params_nn(),
   pacmap_params = params_pacmap(),
   seed = 42L,
@@ -46,9 +46,9 @@ pacmap(
 
 - knn_method:
 
-  Character. Approximate nearest neighbour algorithm to use. One of
-  `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, or `"exhaustive"`.
-  Defaults to `"balltree"`.
+  Character. (Approximate) Nearest neighbour method to use. One of
+  `"kmknn"`, `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, or
+  `"exhaustive"`. Defaults to `"kmknn"`.
 
 - nn_params:
 

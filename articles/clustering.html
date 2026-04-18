@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -351,16 +351,15 @@
 <code class="sourceCode R"><span><span class="va">evoc_res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/evoc.html">evoc</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">cluster_data</span><span class="op">$</span><span class="va">data</span>,</span>
 <span>  n_neighbours <span class="op">=</span> <span class="fl">15L</span>,</span>
-<span>  knn_method <span class="op">=</span> <span class="st">"hnsw"</span>,</span>
 <span>  seed <span class="op">=</span> <span class="fl">42L</span>,</span>
 <span>  .verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">evoc_res</span></span>
 <span><span class="co">#&gt; Evoc</span></span>
-<span><span class="co">#&gt;   layers:               2 </span></span>
-<span><span class="co">#&gt;   best layer:           2 </span></span>
-<span><span class="co">#&gt;   best persistence:     2566.602 </span></span>
+<span><span class="co">#&gt;   layers:               3 </span></span>
+<span><span class="co">#&gt;   best layer:           3 </span></span>
+<span><span class="co">#&gt;   best persistence:     2588.148 </span></span>
 <span><span class="co">#&gt;   knn:                  not stored</span></span></code></pre></div>
 </div>
 <div class="cell">
@@ -368,9 +367,9 @@
 <code class="sourceCode R"><span><span class="va">evoc_best</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/best_membership.html">best_membership</a></span><span class="op">(</span><span class="va">evoc_res</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Selected layer:"</span>, <span class="va">evoc_best</span><span class="op">$</span><span class="va">layer</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Selected layer: 2</span></span>
+<span><span class="co">#&gt; Selected layer: 3</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Persistence score:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">evoc_best</span><span class="op">$</span><span class="va">persistence</span>, <span class="fl">4</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Persistence score: 2566.602</span></span>
+<span><span class="co">#&gt; Persistence score: 2588.148</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span></span>
 <span>  <span class="st">"Clusters found:"</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">evoc_best</span><span class="op">$</span><span class="va">labels</span><span class="op">[</span><span class="va">evoc_best</span><span class="op">$</span><span class="va">labels</span> <span class="op">!=</span> <span class="op">-</span><span class="fl">1L</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>,</span>
@@ -408,7 +407,7 @@
 <span>  <span class="op">)</span>,</span>
 <span>  <span class="st">"\n"</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; ARI (excl. noise): 0.9973885</span></span></code></pre></div>
+<span><span class="co">#&gt; ARI (excl. noise): 1</span></span></code></pre></div>
 </div>
 <p>This is also apparent in the ARI score of ≥0.99.</p>
 <section class="level3"><h4 id="multiple-layers">Multiple layers<a class="anchor" aria-label="anchor" href="#multiple-layers"></a>

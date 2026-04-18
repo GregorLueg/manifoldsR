@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -312,7 +312,6 @@
 <code class="sourceCode R"><span><span class="va">precomputed_knn</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_knn_graph.html">generate_knn_graph</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">cluster_data</span><span class="op">$</span><span class="va">data</span>,</span>
 <span>  k <span class="op">=</span> <span class="fl">15L</span>,</span>
-<span>  knn_method <span class="op">=</span> <span class="st">"balltree"</span>,</span>
 <span>  .verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -525,17 +524,17 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: milliseconds</span></span>
 <span><span class="co">#&gt;             expr        min         lq       mean     median         uq</span></span>
-<span><span class="co">#&gt;             umap 21629.5068 21629.5068 21629.5068 21629.5068 21629.5068</span></span>
-<span><span class="co">#&gt;  umap_reticulate 19328.3886 19328.3886 19328.3886 19328.3886 19328.3886</span></span>
-<span><span class="co">#&gt;             uwot  4928.7826  4928.7826  4928.7826  4928.7826  4928.7826</span></span>
-<span><span class="co">#&gt;          uwot_v2  3174.2673  3174.2673  3174.2673  3174.2673  3174.2673</span></span>
-<span><span class="co">#&gt;    manifold_umap   581.6841   581.6841   581.6841   581.6841   581.6841</span></span>
+<span><span class="co">#&gt;             umap 23214.8868 23214.8868 23214.8868 23214.8868 23214.8868</span></span>
+<span><span class="co">#&gt;  umap_reticulate 18716.5314 18716.5314 18716.5314 18716.5314 18716.5314</span></span>
+<span><span class="co">#&gt;             uwot  6032.7033  6032.7033  6032.7033  6032.7033  6032.7033</span></span>
+<span><span class="co">#&gt;          uwot_v2  3056.6300  3056.6300  3056.6300  3056.6300  3056.6300</span></span>
+<span><span class="co">#&gt;    manifold_umap   675.6151   675.6151   675.6151   675.6151   675.6151</span></span>
 <span><span class="co">#&gt;         max neval</span></span>
-<span><span class="co">#&gt;  21629.5068     1</span></span>
-<span><span class="co">#&gt;  19328.3886     1</span></span>
-<span><span class="co">#&gt;   4928.7826     1</span></span>
-<span><span class="co">#&gt;   3174.2673     1</span></span>
-<span><span class="co">#&gt;    581.6841     1</span></span></code></pre></div>
+<span><span class="co">#&gt;  23214.8868     1</span></span>
+<span><span class="co">#&gt;  18716.5314     1</span></span>
+<span><span class="co">#&gt;   6032.7033     1</span></span>
+<span><span class="co">#&gt;   3056.6300     1</span></span>
+<span><span class="co">#&gt;    675.6151     1</span></span></code></pre></div>
 </div>
 <p>We can appreciate that the standard R version is slow (as expected). If we leverage the Python version (with numba behind the scences) via the reticulate, we can get some speed ups (we need to however first JIT compile the numba parts). However, the uwot v2 version and the manifold are the fastest here. Let’s pit them together against each other in a larger data set.</p>
 <div class="cell">
@@ -560,9 +559,12 @@
 <span>  times <span class="op">=</span> <span class="fl">1L</span> <span class="co"># single comparison for speed</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
-<span><span class="co">#&gt;           expr      min       lq     mean   median       uq      max neval</span></span>
-<span><span class="co">#&gt;        uwot_v2 24.09219 24.09219 24.09219 24.09219 24.09219 24.09219     1</span></span>
-<span><span class="co">#&gt;  manifold_umap  7.53760  7.53760  7.53760  7.53760  7.53760  7.53760     1</span></span></code></pre></div>
+<span><span class="co">#&gt;           expr       min        lq      mean    median        uq       max</span></span>
+<span><span class="co">#&gt;        uwot_v2 26.000657 26.000657 26.000657 26.000657 26.000657 26.000657</span></span>
+<span><span class="co">#&gt;  manifold_umap  9.079631  9.079631  9.079631  9.079631  9.079631  9.079631</span></span>
+<span><span class="co">#&gt;  neval</span></span>
+<span><span class="co">#&gt;      1</span></span>
+<span><span class="co">#&gt;      1</span></span></code></pre></div>
 </div>
 <p>Due to optimised memory layouts, aggressive in-lining, heavy parallelism, leveragig look-up tables (LUTs), this version is <strong>fast</strong> and is likely(?) the fastest UMAP available in R, while keeping memory usage minimal due to leveraging Rust from the point that data is moved into the Rust kernel, until the embedding has been fitted. No round tripping through R, just highly optimised and compiled code throughout. The different nearest neighbour search algorithms give additional flexibility.</p>
 </section></section><script id="quarto-html-after-body" type="application/javascript">

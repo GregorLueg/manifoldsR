@@ -1,5 +1,13 @@
 # Changelog
 
+## manifoldsR 0.2.1
+
+### Features
+
+- Version bump for `ann-search-rs` which exposes a new exact nearest
+  neighbour algorithm - updates to defaults, vignettes and
+  documentation.
+
 ## manifoldsR 0.2.0
 
 Scope of the package was a bit extended and now offers also some of the

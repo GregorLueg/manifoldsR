@@ -333,16 +333,15 @@ automatically and returns multiple layers of granularity.
 evoc_res <- evoc(
   data = cluster_data$data,
   n_neighbours = 15L,
-  knn_method = "hnsw",
   seed = 42L,
   .verbose = TRUE
 )
 
 evoc_res
 #> Evoc
-#>   layers:               2 
-#>   best layer:           2 
-#>   best persistence:     2566.602 
+#>   layers:               3 
+#>   best layer:           3 
+#>   best persistence:     2588.148 
 #>   knn:                  not stored
 ```
 
@@ -350,9 +349,9 @@ evoc_res
 evoc_best <- best_membership(evoc_res)
 
 cat("Selected layer:", evoc_best$layer, "\n")
-#> Selected layer: 2
+#> Selected layer: 3
 cat("Persistence score:", round(evoc_best$persistence, 4), "\n")
-#> Persistence score: 2566.602
+#> Persistence score: 2588.148
 cat(
   "Clusters found:",
   length(unique(evoc_best$labels[evoc_best$labels != -1L])),
@@ -388,7 +387,7 @@ cat(
   ),
   "\n"
 )
-#> ARI (excl. noise): 0.9973885
+#> ARI (excl. noise): 1
 ```
 
 This is also apparent in the ARI score of ≥0.99.

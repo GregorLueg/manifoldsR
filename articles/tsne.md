@@ -273,7 +273,6 @@ can precompute the kNN graph and pass it in directly.
 precomputed_knn <- generate_knn_graph(
   data = cluster_data$data,
   k = 30L, # we will use 30 neighbours here...
-  knn_method = "balltree",
   .verbose = FALSE
 )
 
@@ -400,8 +399,8 @@ microbenchmark::microbenchmark(
 )
 #> Unit: seconds
 #>         expr       min        lq      mean    median        uq       max neval
-#>        Rtsne 12.792922 12.792922 12.792922 12.792922 12.792922 12.792922     1
-#>  manifold_bh  4.361363  4.361363  4.361363  4.361363  4.361363  4.361363     1
+#>        Rtsne 11.336091 11.336091 11.336091 11.336091 11.336091 11.336091     1
+#>  manifold_bh  4.526971  4.526971  4.526971  4.526971  4.526971  4.526971     1
 ```
 
 The impact here is massive already. Let’s see what happens with BH and
@@ -436,8 +435,8 @@ microbenchmark::microbenchmark(
 )
 #> Unit: seconds
 #>          expr      min       lq     mean   median       uq      max neval
-#>   manifold_bh 65.79923 65.79923 65.79923 65.79923 65.79923 65.79923     1
-#>  manifold_fft 25.18668 25.18668 25.18668 25.18668 25.18668 25.18668     1
+#>   manifold_bh 72.13245 72.13245 72.13245 72.13245 72.13245 72.13245     1
+#>  manifold_fft 30.43006 30.43006 30.43006 30.43006 30.43006 30.43006     1
 ```
 
 The speed advantage of the Rust implementation comes from a combination

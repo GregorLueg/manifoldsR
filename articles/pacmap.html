@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -443,8 +443,8 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;             expr      min       lq     mean   median       uq      max neval</span></span>
-<span><span class="co">#&gt;    manifold_umap 1.152034 1.164500 1.170546 1.176966 1.179802 1.182639     3</span></span>
-<span><span class="co">#&gt;  manifold_pacmap 2.672542 2.674573 2.686572 2.676604 2.693587 2.710570     3</span></span></code></pre></div>
+<span><span class="co">#&gt;    manifold_umap 1.385269 1.385840 1.386239 1.386410 1.386724 1.387038     3</span></span>
+<span><span class="co">#&gt;  manifold_pacmap 3.018742 3.019929 3.042043 3.021116 3.053693 3.086270     3</span></span></code></pre></div>
 </div>
 <p>PaCMAP is generally slower than UMAP on the same data since it processes all pairs every epoch rather than sampling. The three-phase schedule with 450 epochs (vs UMAP’s 200–500) compounds this. For most datasets up to ~50k samples this is not a concern in practice, but on very large data the difference becomes noticeable.</p>
 </section></section><script id="quarto-html-after-body" type="application/javascript">

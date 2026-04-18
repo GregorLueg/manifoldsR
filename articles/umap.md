@@ -265,7 +265,6 @@ NearestNeighbour class to the algorithm, see below:
 precomputed_knn <- generate_knn_graph(
   data = cluster_data$data,
   k = 15L,
-  knn_method = "balltree",
   .verbose = FALSE
 )
 
@@ -475,17 +474,17 @@ microbenchmark::microbenchmark(
 )
 #> Unit: milliseconds
 #>             expr        min         lq       mean     median         uq
-#>             umap 21629.5068 21629.5068 21629.5068 21629.5068 21629.5068
-#>  umap_reticulate 19328.3886 19328.3886 19328.3886 19328.3886 19328.3886
-#>             uwot  4928.7826  4928.7826  4928.7826  4928.7826  4928.7826
-#>          uwot_v2  3174.2673  3174.2673  3174.2673  3174.2673  3174.2673
-#>    manifold_umap   581.6841   581.6841   581.6841   581.6841   581.6841
+#>             umap 23214.8868 23214.8868 23214.8868 23214.8868 23214.8868
+#>  umap_reticulate 18716.5314 18716.5314 18716.5314 18716.5314 18716.5314
+#>             uwot  6032.7033  6032.7033  6032.7033  6032.7033  6032.7033
+#>          uwot_v2  3056.6300  3056.6300  3056.6300  3056.6300  3056.6300
+#>    manifold_umap   675.6151   675.6151   675.6151   675.6151   675.6151
 #>         max neval
-#>  21629.5068     1
-#>  19328.3886     1
-#>   4928.7826     1
-#>   3174.2673     1
-#>    581.6841     1
+#>  23214.8868     1
+#>  18716.5314     1
+#>   6032.7033     1
+#>   3056.6300     1
+#>    675.6151     1
 ```
 
 We can appreciate that the standard R version is slow (as expected). If
@@ -516,9 +515,12 @@ microbenchmark::microbenchmark(
   times = 1L # single comparison for speed
 )
 #> Unit: seconds
-#>           expr      min       lq     mean   median       uq      max neval
-#>        uwot_v2 24.09219 24.09219 24.09219 24.09219 24.09219 24.09219     1
-#>  manifold_umap  7.53760  7.53760  7.53760  7.53760  7.53760  7.53760     1
+#>           expr       min        lq      mean    median        uq       max
+#>        uwot_v2 26.000657 26.000657 26.000657 26.000657 26.000657 26.000657
+#>  manifold_umap  9.079631  9.079631  9.079631  9.079631  9.079631  9.079631
+#>  neval
+#>      1
+#>      1
 ```
 
 Due to optimised memory layouts, aggressive in-lining, heavy

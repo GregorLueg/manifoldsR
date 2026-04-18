@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -252,7 +252,6 @@
 <code class="sourceCode R"><span><span class="va">precomputed_knn</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_knn_graph.html">generate_knn_graph</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">trajectory_data</span><span class="op">$</span><span class="va">data</span>,</span>
 <span>  k <span class="op">=</span> <span class="fl">15L</span>,</span>
-<span>  knn_method <span class="op">=</span> <span class="st">"balltree"</span>,</span>
 <span>  .verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -380,7 +379,6 @@
 <span><span class="va">phate_landmark</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/phate.html">phate</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">large_trajectory</span><span class="op">$</span><span class="va">data</span>,</span>
 <span>  k <span class="op">=</span> <span class="fl">15L</span>,</span>
-<span>  knn_method <span class="op">=</span> <span class="st">"balltree"</span>,</span>
 <span>  phate_params <span class="op">=</span> <span class="fu"><a href="../reference/params_phate.html">params_phate</a></span><span class="op">(</span></span>
 <span>    n_landmarks <span class="op">=</span> <span class="fl">1024L</span>,</span>
 <span>    landmark_method <span class="op">=</span> <span class="st">"random"</span></span>
@@ -477,14 +475,10 @@
 <span>  <span class="op">}</span>,</span>
 <span>  times <span class="op">=</span> <span class="fl">1L</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt;     SGD-MDS may not have converged: stress changed by -2.6% in final iterations. Consider increasing n_iter or adjusting learning_rate.</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
-<span><span class="co">#&gt;            expr       min        lq      mean    median        uq       max</span></span>
-<span><span class="co">#&gt;          phateR 12.032594 12.032594 12.032594 12.032594 12.032594 12.032594</span></span>
-<span><span class="co">#&gt;  manifold_phate  7.568092  7.568092  7.568092  7.568092  7.568092  7.568092</span></span>
-<span><span class="co">#&gt;  neval</span></span>
-<span><span class="co">#&gt;      1</span></span>
-<span><span class="co">#&gt;      1</span></span></code></pre></div>
+<span><span class="co">#&gt;            expr      min       lq     mean   median       uq      max neval</span></span>
+<span><span class="co">#&gt;          phateR 12.61916 12.61916 12.61916 12.61916 12.61916 12.61916     1</span></span>
+<span><span class="co">#&gt;  manifold_phate 10.28477 10.28477 10.28477 10.28477 10.28477 10.28477     1</span></span></code></pre></div>
 </div>
 <p>And on a larger data set with additionally the random landmark version</p>
 <div class="cell">
@@ -527,9 +521,9 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;                     expr      min       lq     mean   median       uq      max</span></span>
-<span><span class="co">#&gt;                   phateR 56.40936 56.40936 56.40936 56.40936 56.40936 56.40936</span></span>
-<span><span class="co">#&gt;  manifold_phate_spectral 19.75505 19.75505 19.75505 19.75505 19.75505 19.75505</span></span>
-<span><span class="co">#&gt;    manifold_phate_random 14.90559 14.90559 14.90559 14.90559 14.90559 14.90559</span></span>
+<span><span class="co">#&gt;                   phateR 55.47032 55.47032 55.47032 55.47032 55.47032 55.47032</span></span>
+<span><span class="co">#&gt;  manifold_phate_spectral 25.44042 25.44042 25.44042 25.44042 25.44042 25.44042</span></span>
+<span><span class="co">#&gt;    manifold_phate_random 19.38427 19.38427 19.38427 19.38427 19.38427 19.38427</span></span>
 <span><span class="co">#&gt;  neval</span></span>
 <span><span class="co">#&gt;      1</span></span>
 <span><span class="co">#&gt;      1</span></span>

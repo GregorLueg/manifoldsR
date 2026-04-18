@@ -29,7 +29,7 @@ accuracy trade-offs:
 generate_knn_graph(
   data,
   k,
-  knn_method = c("hnsw", "annoy", "nndescent", "balltree", "exhaustive", "ivf"),
+  knn_method = c("kmknn", "hnsw", "annoy", "nndescent", "balltree", "ivf", "exhaustive"),
   nn_params = params_nn(),
   seed = 42L,
   .verbose = TRUE
@@ -50,8 +50,8 @@ generate_knn_graph(
 - knn_method:
 
   Character. The algorithm to use for nearest neighbour search. One of
-  `c("hnsw", "annoy", "nndescent", "balltree", "ivf", "exhaustive")`.
-  Defaults to `"hnsw"`.
+  `c("kmknn", "hnsw", "annoy", "nndescent", "balltree", "ivf", "exhaustive")`.
+  Defaults to `"kmknn"`.
 
 - nn_params:
 

@@ -14,7 +14,7 @@ umap(
   k = 15L,
   min_dist = 0.5,
   spread = 1,
-  knn_method = c("balltree", "hnsw", "annoy", "nndescent", "exhaustive"),
+  knn_method = c("kmknn", "balltree", "hnsw", "annoy", "nndescent", "exhaustive"),
   nn_params = params_nn(),
   umap_params = params_umap(),
   seed = 42L,
@@ -60,9 +60,9 @@ umap(
 
 - knn_method:
 
-  Character. Approximate nearest neighbour algorithm to use. One of
-  `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, or `"exhaustive"`.
-  Defaults to `"balltree"`.
+  Character. (Approximate) Nearest neighbour method to use. One of
+  `"kmknn"`, `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, or
+  `"exhaustive"`. Defaults to `"kmknn"`.
 
 - nn_params:
 
