@@ -32,7 +32,14 @@
   checkmate::qassert(spread, "N1")
   checkmate::assertChoice(
     knn_method,
-    c("hnsw", "annoy", "nndescent", "balltree", "exhaustive")
+    c(
+      "kmknn",
+      "balltree",
+      "hnsw",
+      "annoy",
+      "nndescent",
+      "exhaustive"
+    )
   )
   assertNnParams(nn_params)
   assertUmapParams(umap_params)
@@ -99,9 +106,9 @@
 #' consider reducing this!
 #' @param spread Numeric. Effective scale of embedded points. Determines the
 #' scale at which embedded points will be spread out. Defaults to `1.0`.
-#' @param knn_method Character. Approximate nearest neighbour algorithm to use.
-#' One of `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, or
-#' `"exhaustive"`. Defaults to `"balltree"`.
+#' @param knn_method Character. (Approximate) Nearest neighbour method to use.
+#' One of `"kmknn"`, `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, or
+#' `"exhaustive"`. Defaults to `"kmknn"`.
 #' @param nn_params Named list. Nearest neighbour search parameters, see
 #' [params_nn()].
 #' @param umap_params Named list. UMAP algorithm parameters, see
@@ -120,7 +127,14 @@ umap <- function(
   k = 15L,
   min_dist = 0.5,
   spread = 1.0,
-  knn_method = c("balltree", "hnsw", "annoy", "nndescent", "exhaustive"),
+  knn_method = c(
+    "kmknn",
+    "balltree",
+    "hnsw",
+    "annoy",
+    "nndescent",
+    "exhaustive"
+  ),
   nn_params = params_nn(),
   umap_params = params_umap(),
   seed = 42L,

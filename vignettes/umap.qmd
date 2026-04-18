@@ -56,7 +56,6 @@ We are going to generate three different data sets to showcase the strengths
 
 ```{r}
 #| label: synthetic data
-
 cluster_data <- manifold_synthetic_data(
   type = "cluster",
   n_samples = 25000L
@@ -80,7 +79,6 @@ We will first contrast this against standard PCA to have some bases...
 
 ```{r}
 #| label: clustered data - pca
-
 pca_clusters <- prcomp(cluster_data$data)
 
 pca_clusters_df <- as.data.table(pca_clusters$x[, 1:2]) %>%
@@ -104,7 +102,6 @@ and look at other (faster) optimisers later.
 
 ```{r}
 #| label: clustered data - umap
-
 umap_clusters <- umap(
   data = cluster_data$data,
   min_dist = 0.3, # for sgd lower min dist is usually better
@@ -137,7 +134,6 @@ SwissRole example.
 
 ```{r}
 #| label: swissrole data - pca
-
 pca_swiss_role <- prcomp(swissrole_data$data)
 
 pca_swiss_role_df <- as.data.table(pca_swiss_role$x[, 1:2]) %>%
@@ -163,7 +159,6 @@ PCA clearly captures the Swissrole structure. How does UMAP perform here ... ?
 
 ```{r}
 #| label: swissrole data - umap
-
 umap_swissrole <- umap(
   data = swissrole_data$data,
   knn_method = "exhaustive",
@@ -202,7 +197,6 @@ Let's start with PCA again
 
 ```{r}
 #| label: trajectory data - pca
-
 pca_trajectory <- prcomp(trajectory_data$data)
 
 pca_trajectory_df <- as.data.table(pca_trajectory$x[, 1:2]) %>%
@@ -230,7 +224,6 @@ We can appreciate the branching and the continuum in the data.
 
 ```{r}
 #| label: trajectory data - umap
-
 umap_trajectory <- umap(
   data = trajectory_data$data,
   knn_method = "exhaustive",
@@ -272,11 +265,9 @@ class to the algorithm, see below:
 
 ```{r}
 #| label: umap - use pre-computed kNN
-
 precomputed_knn <- generate_knn_graph(
   data = cluster_data$data,
   k = 15L,
-  knn_method = "balltree",
   .verbose = FALSE
 )
 
@@ -308,7 +299,6 @@ Let's run quickly with different parameters
 
 ```{r}
 #| label: umap - different parameters
-
 umap_clusters_from_knn <- umap(
   data = cluster_data$data,
   knn = precomputed_knn,
@@ -342,7 +332,6 @@ fast. Let's check out the other optimisers:
 
 ```{r}
 #| label: umap - sequential adam
-
 umap_clusters <- umap(
   data = cluster_data$data,
   umap_params = params_umap(optimiser = "adam")
@@ -369,7 +358,6 @@ But let's look at the fast version... Parallised Adam (the default):
 
 ```{r}
 #| label: umap - parallel adam
-
 umap_clusters <- umap(
   data = cluster_data$data
 )
@@ -399,7 +387,6 @@ how does this version compare against other versions, let's do a benchmark:
 ```{r}
 #| label: speed benchmark - small data set
 #| eval: !expr requireNamespace("microbenchmark", quietly = TRUE) && requireNamespace("umap", quietly = TRUE) && requireNamespace("uwot", quietly = TRUE) && requireNamespace("reticulate", quietly = TRUE)
-
 # set up the venv for the Python part/dependencies
 local({
   env_name <- "r-manifolds"
@@ -488,7 +475,6 @@ Let's pit them together against each other in a larger data set.
 ```{r}
 #| label: speed benchmark - large data set
 #| eval: !expr requireNamespace("microbenchmark", quietly = TRUE) && requireNamespace("umap", quietly = TRUE) && requireNamespace("uwot", quietly = TRUE)
-
 benchmark_data_2 <- manifold_synthetic_data(
   type = "cluster",
   n_samples = 50000L

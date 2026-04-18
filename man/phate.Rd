@@ -9,7 +9,7 @@ phate(
   knn = NULL,
   n_dim = 2L,
   k = 5L,
-  knn_method = c("balltree", "hnsw", "annoy", "nndescent", "exhaustive"),
+  knn_method = c("kmknn", "balltree", "hnsw", "annoy", "nndescent", "exhaustive"),
   nn_params = params_nn(),
   phate_params = params_phate(),
   seed = 42L,
@@ -30,9 +30,9 @@ Currently only \code{2L} is supported. Defaults to \code{2L}.}
 \item{k}{Integer. Number of nearest neighbours for graph construction.
 Defaults to \code{5L}.}
 
-\item{knn_method}{Character. Approximate nearest neighbour algorithm to use.
-One of \code{"hnsw"}, \code{"annoy"}, \code{"nndescent"}, \code{"balltree"}, or
-\code{"exhaustive"}. Defaults to \code{"balltree"}.}
+\item{knn_method}{Character. (Approximate) Nearest neighbour method to use.
+One of \code{"kmknn"}, \code{"hnsw"}, \code{"annoy"}, \code{"nndescent"}, \code{"balltree"}, or
+\code{"exhaustive"}. Defaults to \code{"kmknn"}.}
 
 \item{nn_params}{Named list. Nearest neighbour search parameters, see
 \code{\link[=params_nn]{params_nn()}}.}

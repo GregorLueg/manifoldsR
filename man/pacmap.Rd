@@ -9,7 +9,7 @@ pacmap(
   knn = NULL,
   n_dim = 2L,
   k = 10L,
-  knn_method = c("balltree", "hnsw", "annoy", "nndescent", "exhaustive"),
+  knn_method = c("kmknn", "balltree", "hnsw", "annoy", "nndescent", "exhaustive"),
   nn_params = params_nn(),
   pacmap_params = params_pacmap(),
   seed = 42L,
@@ -31,9 +31,9 @@ Defaults to \code{2L}.}
 \code{10L}. Note that the kNN search will use \code{mn_candidate_end} neighbours
 internally; k only controls the near pairs used in optimisation.}
 
-\item{knn_method}{Character. Approximate nearest neighbour algorithm to use.
-One of \code{"hnsw"}, \code{"annoy"}, \code{"nndescent"}, \code{"balltree"}, or
-\code{"exhaustive"}. Defaults to \code{"balltree"}.}
+\item{knn_method}{Character. (Approximate) Nearest neighbour method to use.
+One of \code{"kmknn"}, \code{"hnsw"}, \code{"annoy"}, \code{"nndescent"}, \code{"balltree"}, or
+\code{"exhaustive"}. Defaults to \code{"kmknn"}.}
 
 \item{nn_params}{Named list. Nearest neighbour search parameters, see
 \code{\link[=params_nn]{params_nn()}}.}

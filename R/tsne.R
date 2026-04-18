@@ -20,7 +20,14 @@
 ) {
   checkmate::assertChoice(
     knn_method,
-    c("hnsw", "annoy", "nndescent", "balltree", "exhaustive")
+    c(
+      "kmknn",
+      "balltree",
+      "hnsw",
+      "annoy",
+      "nndescent",
+      "exhaustive"
+    )
   )
   assertNnParams(nn_params)
   assertTsneParams(tsne_params)
@@ -55,9 +62,9 @@
 #' @param approx_type Character. Approximation method for computing repulsive
 #' forces. One of `"bh"` for Barnes-Hut or `"fft"` for FFT-accelerated
 #' interpolation. Defaults to `"bh"`.
-#' @param knn_method Character. Approximate nearest neighbour algorithm to use.
-#' One of `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, or
-#' `"exhaustive"`. Defaults to `"balltree"`.
+#' @param knn_method Character. (Approximate) Nearest neighbour method to use.
+#' One of `"kmknn"`, `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, or
+#' `"exhaustive"`. Defaults to `"kmknn"`.
 #' @param nn_params Named list. Nearest neighbour search parameters, see
 #' [params_nn()].
 #' @param tsne_params Named list. t-SNE algorithm parameters, see
@@ -75,7 +82,14 @@ tsne <- function(
   n_dim = 2L,
   perplexity = 30.0,
   approx_type = c("bh", "fft"),
-  knn_method = c("balltree", "hnsw", "annoy", "nndescent", "exhaustive"),
+  knn_method = c(
+    "kmknn",
+    "balltree",
+    "hnsw",
+    "annoy",
+    "nndescent",
+    "exhaustive"
+  ),
   nn_params = params_nn(),
   tsne_params = params_tsne(),
   seed = 42L,
@@ -106,7 +120,7 @@ tsne <- function(
   )
   checkmate::assertChoice(
     knn_method,
-    c("hnsw", "annoy", "nndescent", "balltree", "exhaustive")
+    c("kmknn", "hnsw", "annoy", "nndescent", "balltree", "exhaustive")
   )
   assertNnParams(nn_params)
   assertTsneParams(tsne_params)

@@ -20,7 +20,14 @@
 ) {
   checkmate::assertChoice(
     knn_method,
-    c("hnsw", "annoy", "nndescent", "balltree", "ivf", "exhaustive")
+    c(
+      "kmknn",
+      "balltree",
+      "hnsw",
+      "annoy",
+      "nndescent",
+      "exhaustive"
+    )
   )
   assertNnParams(nn_params)
   assertEvocParams(evoc_params)
@@ -45,9 +52,9 @@
 #' the kNN graph generation and use this one. Defaults to `NULL`.
 #' @param n_neighbours Integer. Number of nearest neighbours for graph
 #' construction. Defaults to `15L`.
-#' @param knn_method Character. Approximate nearest neighbour algorithm to use.
-#' One of `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, `"ivf"`, or
-#' `"exhaustive"`. Defaults to `"hnsw"`.
+#' @param knn_method Character. (Approximate) Nearest neighbour method to use.
+#' One of `"kmknn"`, `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, or
+#' `"exhaustive"`. Defaults to `"kmknn"`.
 #' @param nn_params Named list. Nearest neighbour search parameters, see
 #' [params_nn()].
 #' @param evoc_params Named list. EVoC algorithm parameters, see
@@ -65,7 +72,15 @@ evoc <- function(
   data,
   knn = NULL,
   n_neighbours = 15L,
-  knn_method = c("hnsw", "annoy", "nndescent", "balltree", "ivf", "exhaustive"),
+  knn_method = c(
+    "kmknn",
+    "hnsw",
+    "annoy",
+    "nndescent",
+    "balltree",
+    "ivf",
+    "exhaustive"
+  ),
   nn_params = params_nn(),
   evoc_params = params_evoc(),
   return_knn = FALSE,
