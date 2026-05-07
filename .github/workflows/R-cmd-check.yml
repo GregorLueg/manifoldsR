@@ -58,7 +58,7 @@ jobs:
         with:
           pak-version: devel
           upgrade: "TRUE"
-          cache-version: 1
+          cache-version: 2
           extra-packages: |
             any::rcmdcheck
             any::rmarkdown
