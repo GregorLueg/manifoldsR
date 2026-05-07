@@ -11,7 +11,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         \n\
     ";
     let footer = "# nolint end\n";
-    let wrappers = manifoldsr::get_manifoldsR_metadata()
+    let wrappers = manifoldsR::get_manifoldsR_metadata()
         .make_r_wrappers(true, "manifoldsR")
         .map_err(|e| format!("failed to generate wrappers: {e}"))?;
     std::fs::write(wrapper_path, format!("{header}{wrappers}{footer}"))
