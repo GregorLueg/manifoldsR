@@ -5,7 +5,7 @@
 \title{Generate synthetic data for manifold learning}
 \usage{
 manifold_synthetic_data(
-  type = c("swiss_role", "clusters", "trajectory", "hierarchical"),
+  type = c("swiss_role", "biased_swiss_role", "clusters", "trajectory", "hierarchical"),
   n_samples,
   dim = 32L,
   seed = 42L,
@@ -16,6 +16,7 @@ manifold_synthetic_data(
 \item{type}{Character. Type of synthetic data to generate. One of:
 \itemize{
 \item \code{"swiss_role"} - Swiss roll manifold
+\item \code{"biased_swiss_role"} - Biased swiss role manifold
 \item \code{"clusters"} - Clustered data
 \item \code{"trajectory"} - Trajectory-like data with branching
 \item \code{"hierarchical"} - Two-level hierarchical cluster structure
@@ -29,10 +30,10 @@ except \code{"swiss_role"}. Defaults to \code{32L}.}
 \item{seed}{Integer. Seed for reproducibility. Defaults to \code{42L}.}
 
 \item{parameters}{A named list of type-specific parameters, constructed via
-\code{\link[=params_swiss_role]{params_swiss_role()}}, \code{\link[=params_clusters]{params_clusters()}}, \code{\link[=params_trajectory]{params_trajectory()}}, or
-\code{\link[=params_hierarchical]{params_hierarchical()}}. If \code{NULL}, defaults for the chosen type are used.
-A plain list is accepted but must contain all required fields for the given
-type.}
+\code{\link[=params_swiss_role]{params_swiss_role()}}, \code{\link[=params_swiss_role_biased]{params_swiss_role_biased()}} \code{\link[=params_clusters]{params_clusters()}},
+\code{\link[=params_trajectory]{params_trajectory()}}, or \code{\link[=params_hierarchical]{params_hierarchical()}}. If \code{NULL}, defaults for
+the chosen type are used. A plain list is accepted but must contain all
+required fields for the given type.}
 }
 \value{
 A list with the following elements:

@@ -8,8 +8,16 @@ use extendr_api::*;
 use faer::MatRef;
 use manifolds_rs::prelude::*;
 use manifolds_rs::PreComputedKnn;
+use std::collections::HashMap;
 
 use crate::utils::get_params_nn;
+
+///////////
+// Types //
+///////////
+
+/// EvocResults type wrapper
+pub type EvocResults = Result<(List, Option<Vec<usize>>, Option<Vec<f32>>)>;
 
 ////////////
 // Params //
@@ -40,11 +48,11 @@ impl InternalEvocParams {
     /// ### Returns
     ///
     /// `InternalEvocParams` ready to pass into the Rust EVoC implementation.
-    pub fn from_r_list(r_list: List, n_neighbours: usize) -> Self {
-        let nn_params = get_params_nn(r_list.clone());
-        let evoc_params = get_params_evoc(r_list.clone(), n_neighbours);
+    pub fn from_r_list(r_list: List, n_neighbours: usize) -> Result<Self> {
+        let nn_params = get_params_nn(r_list.clone())?;
+        let evoc_params = get_params_evoc(r_list.clone(), n_neighbours)?;
 
-        let map = r_list.into_hashmap();
+        let map: HashMap<&str, Robj> = r_list.try_into()?;
 
         let knn_method = String::from(
             map.get("knn_method")
@@ -52,11 +60,11 @@ impl InternalEvocParams {
                 .unwrap_or("hnsw"),
         );
 
-        Self {
+        Ok(Self {
             knn_method,
             param_knn: nn_params,
             evoc: evoc_params,
-        }
+        })
     }
 }
 
@@ -71,8 +79,8 @@ impl InternalEvocParams {
 /// ### Returns
 ///
 /// The [`EvocParams`]
-fn get_params_evoc(r_list: List, n_neighbours: usize) -> EvocParams<f32> {
-    let map = r_list.into_hashmap();
+fn get_params_evoc(r_list: List, n_neighbours: usize) -> Result<EvocParams<f32>> {
+    let map: HashMap<&str, Robj> = r_list.try_into()?;
 
     let noise_level = map
         .get("noise_level")
@@ -124,7 +132,7 @@ fn get_params_evoc(r_list: List, n_neighbours: usize) -> EvocParams<f32> {
         .and_then(|v| v.as_integer())
         .unwrap_or(10) as usize;
 
-    EvocParams {
+    Ok(EvocParams {
         n_neighbours,
         noise_level,
         n_epochs,
@@ -136,7 +144,7 @@ fn get_params_evoc(r_list: List, n_neighbours: usize) -> EvocParams<f32> {
         approx_n_clusters,
         min_similarity_threshold,
         max_layers,
-    }
+    })
 }
 
 //////////
@@ -168,8 +176,8 @@ pub fn evoc_cluster(
     evoc_params: List,
     seed: usize,
     verbose: bool,
-) -> (List, Option<Vec<usize>>, Option<Vec<f32>>) {
-    let params = InternalEvocParams::from_r_list(evoc_params, n_neighbours);
+) -> EvocResults {
+    let params = InternalEvocParams::from_r_list(evoc_params, n_neighbours)?;
 
     let result = evoc(
         data,
@@ -212,7 +220,7 @@ pub fn evoc_cluster(
         (None, None)
     };
 
-    (
+    Ok((
         list!(
             cluster_layers = List::from_values(cluster_layers),
             membership_strengths = List::from_values(membership_strengths),
@@ -220,5 +228,5 @@ pub fn evoc_cluster(
         ),
         nn,
         dist,
-    )
+    ))
 }

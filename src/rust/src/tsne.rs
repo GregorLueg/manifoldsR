@@ -2,10 +2,12 @@
 
 #![warn(missing_docs)]
 
-use extendr_api::List;
+use bixverse_rs::prelude::IntoExtendrErr;
+use extendr_api::{List, Robj};
 use faer::{Mat, MatRef};
 use manifolds_rs::prelude::*;
 use manifolds_rs::*;
+use std::collections::HashMap;
 
 use crate::utils::get_params_nn;
 
@@ -43,11 +45,11 @@ impl InternalTsneParams {
     /// # Returns
     ///
     /// The `InternalTsneParams`
-    pub fn from_r_list(r_list: List) -> Self {
-        let nn_params = get_params_nn(r_list.clone());
-        let optim_params = get_params_tsne_optim(r_list.clone());
+    pub fn from_r_list(r_list: List) -> Result<Self, extendr_api::Error> {
+        let nn_params = get_params_nn(r_list.clone())?;
+        let optim_params = get_params_tsne_optim(r_list.clone())?;
 
-        let tsne_params = r_list.into_hashmap();
+        let tsne_params: HashMap<&str, Robj> = r_list.try_into()?;
 
         let init = std::string::String::from(
             tsne_params
@@ -68,13 +70,13 @@ impl InternalTsneParams {
             .and_then(|v| v.as_bool())
             .unwrap_or(true);
 
-        Self {
+        Ok(Self {
             param_knn: nn_params,
             knn_method,
             init,
             randomised,
             param_optimiser: optim_params,
-        }
+        })
     }
 }
 
@@ -87,8 +89,8 @@ impl InternalTsneParams {
 /// # Returns
 ///
 /// `TsneOptimParams` with sensible defaults if not found in the list
-fn get_params_tsne_optim(r_list: List) -> TsneOptimParams<f32> {
-    let optim_params = r_list.into_hashmap();
+fn get_params_tsne_optim(r_list: List) -> Result<TsneOptimParams<f32>, extendr_api::Error> {
+    let optim_params: HashMap<&str, Robj> = r_list.try_into()?;
 
     let lr = optim_params
         .get("lr")
@@ -120,14 +122,14 @@ fn get_params_tsne_optim(r_list: List) -> TsneOptimParams<f32> {
         .and_then(|v| v.as_integer())
         .unwrap_or(3) as usize;
 
-    TsneOptimParams {
+    Ok(TsneOptimParams {
         n_epochs,
         lr,
         early_exag_iter,
         early_exag_factor,
         theta,
         n_interp_points,
-    }
+    })
 }
 
 //////////
@@ -164,13 +166,13 @@ pub fn tsne_simple(
     tsne_params: List,
     seed: usize,
     verbose: bool,
-) -> Mat<f32> {
+) -> Result<Mat<f32>, extendr_api::Error> {
     assert!(
         n_dim == 2,
         "At the moment, this tSNE implementation only supports n_dim = 2"
     );
 
-    let tsne_params_internal = InternalTsneParams::from_r_list(tsne_params);
+    let tsne_params_internal = InternalTsneParams::from_r_list(tsne_params)?;
 
     let tsne_params = TsneParams {
         n_dim,
@@ -190,10 +192,11 @@ pub fn tsne_simple(
         approx_type,
         seed,
         verbose,
-    );
+    )
+    .to_extendr()?;
 
     let ncol = res.len();
     let nrow = res[0].len();
 
-    Mat::from_fn(nrow, ncol, |i, j| res[j][i])
+    Ok(Mat::from_fn(nrow, ncol, |i, j| res[j][i]))
 }

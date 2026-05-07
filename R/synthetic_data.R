@@ -8,6 +8,7 @@
 #' @param type Character. Type of synthetic data to generate. One of:
 #' \itemize{
 #'  \item `"swiss_role"` - Swiss roll manifold
+#'  \item `"biased_swiss_role"` - Biased swiss role manifold
 #'  \item `"clusters"` - Clustered data
 #'  \item `"trajectory"` - Trajectory-like data with branching
 #'  \item `"hierarchical"` - Two-level hierarchical cluster structure
@@ -17,10 +18,10 @@
 #' except `"swiss_role"`. Defaults to `32L`.
 #' @param seed Integer. Seed for reproducibility. Defaults to `42L`.
 #' @param parameters A named list of type-specific parameters, constructed via
-#' [params_swiss_role()], [params_clusters()], [params_trajectory()], or
-#' [params_hierarchical()]. If `NULL`, defaults for the chosen type are used.
-#' A plain list is accepted but must contain all required fields for the given
-#' type.
+#' [params_swiss_role()], [params_swiss_role_biased()] [params_clusters()],
+#' [params_trajectory()], or [params_hierarchical()]. If `NULL`, defaults for
+#' the chosen type are used. A plain list is accepted but must contain all
+#' required fields for the given type.
 #'
 #' @return A list with the following elements:
 #' \itemize{
@@ -31,7 +32,13 @@
 #'
 #' @export
 manifold_synthetic_data <- function(
-  type = c("swiss_role", "clusters", "trajectory", "hierarchical"),
+  type = c(
+    "swiss_role",
+    "biased_swiss_role",
+    "clusters",
+    "trajectory",
+    "hierarchical"
+  ),
   n_samples,
   dim = 32L,
   seed = 42L,
@@ -46,6 +53,7 @@ manifold_synthetic_data <- function(
     parameters <- switch(
       type,
       swiss_role = params_swiss_role(),
+      biased_swiss_role = params_swiss_role_biased(),
       clusters = params_clusters(),
       trajectory = params_trajectory(),
       hierarchical = params_hierarchical()
@@ -56,6 +64,7 @@ manifold_synthetic_data <- function(
   required_names <- switch(
     type,
     swiss_role = c("noise"),
+    biased_swiss_role = c("bias", "noise"),
     clusters = c("n_clusters"),
     trajectory = c("topology", "cell_trajectories", "noise"),
     hierarchical = c(
@@ -75,6 +84,18 @@ manifold_synthetic_data <- function(
         parameters,
         rs_data_swiss_role(
           n_samples = n_samples,
+          noise = noise,
+          seed = seed
+        )
+      )
+      list(data = data, membership = NULL)
+    },
+    biased_swiss_role = {
+      data <- with(
+        parameters,
+        rs_data_biased_swiss_role(
+          n_samples = n_samples,
+          bias = bias,
           noise = noise,
           seed = seed
         )

@@ -3,6 +3,7 @@
 
 #![allow(clippy::needless_range_loop)]
 
+pub mod diffusion_maps;
 pub mod evoc;
 pub mod k_means;
 pub mod metrics;
@@ -12,14 +13,15 @@ pub mod tsne;
 pub mod umap;
 pub mod utils;
 
-use ann_search_rs::utils::k_means_utils::*;
 use ann_search_rs::utils::matrix_to_flat;
+use bixverse_rs::ml::clustering::{clustering_metrics::adjusted_rand_index, k_means::*};
 use bixverse_rs::prelude::*;
 use bixverse_rs::utils::vec_utils::flatten_vector;
 use extendr_api::prelude::*;
-use manifolds_rs::data::synthetic::BranchSpec;
+use manifolds_rs::data::synthetic::*;
 use manifolds_rs::prelude::*;
 
+use crate::diffusion_maps::*;
 use crate::evoc::*;
 use crate::k_means::*;
 use crate::metrics::*;
@@ -44,6 +46,8 @@ extendr_module! {
     fn rs_phate_from_knn;
     fn rs_pacmap;
     fn rs_pacmap_from_knn;
+    fn rs_diffusion_maps;
+    fn rs_diffusion_maps_from_knn;
     // clustering
     fn rs_evoc;
     fn rs_evoc_from_knn;
@@ -53,6 +57,7 @@ extendr_module! {
     fn rs_approx_nearest_neighbours;
     // synthetic data
     fn rs_data_swiss_role;
+    fn rs_data_biased_swiss_role;
     fn rs_data_clusters;
     fn rs_data_trajectory;
     fn rs_data_hierarchical;
@@ -96,7 +101,7 @@ fn rs_umap(
     umap_params: List,
     seed: usize,
     verbose: bool,
-) -> RMatrix<f64> {
+) -> extendr_api::Result<RMatrix<f64>> {
     let embd = r_matrix_to_faer_fp32(&embd);
 
     let res = umap_manifold(
@@ -109,9 +114,10 @@ fn rs_umap(
         umap_params,
         seed,
         verbose,
-    );
+    )
+    .to_extendr()?;
 
-    faer_to_r_matrix(res.as_ref())
+    Ok(faer_to_r_matrix(res.as_ref()))
 }
 
 /// UMAP implementation
@@ -146,7 +152,7 @@ fn rs_umap_from_knn(
     umap_params: List,
     seed: usize,
     verbose: bool,
-) -> RMatrix<f64> {
+) -> extendr_api::Result<RMatrix<f64>> {
     let embd = r_matrix_to_faer_fp32(&embd);
 
     let knn = nearest_neighbours_to_rust(knn_data);
@@ -161,9 +167,10 @@ fn rs_umap_from_knn(
         umap_params,
         seed,
         verbose,
-    );
+    )
+    .to_extendr()?;
 
-    faer_to_r_matrix(res.as_ref())
+    Ok(faer_to_r_matrix(res.as_ref()))
 }
 
 //////////
@@ -200,7 +207,7 @@ fn rs_tsne(
     tsne_params: List,
     seed: usize,
     verbose: bool,
-) -> RMatrix<f64> {
+) -> extendr_api::Result<RMatrix<f64>> {
     let embd = r_matrix_to_faer_fp32(&embd);
 
     let res = tsne_simple(
@@ -212,9 +219,10 @@ fn rs_tsne(
         tsne_params,
         seed,
         verbose,
-    );
+    )
+    .to_extendr()?;
 
-    faer_to_r_matrix(res.as_ref())
+    Ok(faer_to_r_matrix(res.as_ref()))
 }
 
 /// tSNE implementation
@@ -251,7 +259,7 @@ fn rs_tsne_from_knn(
     tsne_params: List,
     seed: usize,
     verbose: bool,
-) -> RMatrix<f64> {
+) -> extendr_api::Result<RMatrix<f64>> {
     let embd = r_matrix_to_faer_fp32(&embd);
 
     let knn = nearest_neighbours_to_rust(knn_data);
@@ -265,9 +273,10 @@ fn rs_tsne_from_knn(
         tsne_params,
         seed,
         verbose,
-    );
+    )
+    .to_extendr()?;
 
-    faer_to_r_matrix(res.as_ref())
+    Ok(faer_to_r_matrix(res.as_ref()))
 }
 
 ///////////
@@ -302,10 +311,12 @@ fn rs_phate(
     phate_params: List,
     seed: usize,
     verbose: bool,
-) -> RMatrix<f64> {
+) -> extendr_api::Result<RMatrix<f64>> {
     let embd = r_matrix_to_faer_fp32(&embd);
-    let res = phate_simple(embd.as_ref(), None, n_dim, k, phate_params, seed, verbose);
-    faer_to_r_matrix(res.as_ref())
+    let res =
+        phate_simple(embd.as_ref(), None, n_dim, k, phate_params, seed, verbose).to_extendr()?;
+
+    Ok(faer_to_r_matrix(res.as_ref()))
 }
 
 /// Run PHATE dimensionality reduction from a precomputed kNN graph
@@ -338,11 +349,13 @@ fn rs_phate_from_knn(
     phate_params: List,
     seed: usize,
     verbose: bool,
-) -> RMatrix<f64> {
+) -> extendr_api::Result<RMatrix<f64>> {
     let embd = r_matrix_to_faer_fp32(&embd);
     let knn = nearest_neighbours_to_rust(knn_data);
-    let res = phate_simple(embd.as_ref(), knn, n_dim, k, phate_params, seed, verbose);
-    faer_to_r_matrix(res.as_ref())
+    let res =
+        phate_simple(embd.as_ref(), knn, n_dim, k, phate_params, seed, verbose).to_extendr()?;
+
+    Ok(faer_to_r_matrix(res.as_ref()))
 }
 
 ////////////
@@ -375,10 +388,12 @@ fn rs_pacmap(
     pacmap_params: List,
     seed: usize,
     verbose: bool,
-) -> RMatrix<f64> {
+) -> Result<RMatrix<f64>, extendr_api::Error> {
     let embd = r_matrix_to_faer_fp32(&embd);
-    let res = pacmap_manifold(embd.as_ref(), None, n_dim, k, pacmap_params, seed, verbose);
-    faer_to_r_matrix(res.as_ref())
+    let res = pacmap_manifold(embd.as_ref(), None, n_dim, k, pacmap_params, seed, verbose)
+        .to_extendr()?;
+
+    Ok(faer_to_r_matrix(res.as_ref()))
 }
 
 /// PaCMAP implementation with pre-computed kNN
@@ -409,11 +424,86 @@ fn rs_pacmap_from_knn(
     pacmap_params: List,
     seed: usize,
     verbose: bool,
-) -> RMatrix<f64> {
+) -> Result<RMatrix<f64>, extendr_api::Error> {
     let embd = r_matrix_to_faer_fp32(&embd);
     let knn = nearest_neighbours_to_rust(knn_data);
-    let res = pacmap_manifold(embd.as_ref(), knn, n_dim, k, pacmap_params, seed, verbose);
-    faer_to_r_matrix(res.as_ref())
+    let res =
+        pacmap_manifold(embd.as_ref(), knn, n_dim, k, pacmap_params, seed, verbose).to_extendr()?;
+
+    Ok(faer_to_r_matrix(res.as_ref()))
+}
+
+////////////////////
+// Diffusion maps //
+////////////////////
+
+/// Diffusion maps implementation
+///
+/// @description This is the wrapper function into the Rust interface for
+/// diffusion maps.
+///
+/// @param embd Numerical matrix. The data to use to generate the embeddings.
+/// Should be of dimensions samples x features.
+/// @param n_dim Integer. Number of dimensions to return.
+/// @param k Integer. Number of nearest neighbours to consider.
+/// @param dm_params Named list. List that contains all of the key parameters
+/// for the diffusion maps generation.
+/// @param seed Integer. Seed for reproducibility.
+/// @param verbose Boolean. Controls verbosity of the function.
+///
+/// @return The diffusion maps embeddings.
+///
+/// @export
+#[extendr]
+#[allow(clippy::too_many_arguments)]
+fn rs_diffusion_maps(
+    embd: RMatrix<f64>,
+    n_dim: usize,
+    k: usize,
+    dm_params: List,
+    seed: usize,
+    verbose: bool,
+) -> extendr_api::Result<RMatrix<f64>> {
+    let embd = r_matrix_to_faer_fp32(&embd);
+    let res = diffusion_maps_manifold(embd.as_ref(), None, n_dim, k, dm_params, seed, verbose)
+        .to_extendr()?;
+    Ok(faer_to_r_matrix(res.as_ref()))
+}
+
+/// Diffusion maps implementation with pre-computed kNN
+///
+/// @description This is the wrapper function into the Rust interface for
+/// diffusion maps and can use a pre-computed kNN.
+///
+/// @param embd Numerical matrix. The data to use to generate the embeddings.
+/// Should be of dimensions samples x features.
+/// @param knn_data `NearestNeighbours` class from R.
+/// @param n_dim Integer. Number of dimensions to return.
+/// @param k Integer. Number of nearest neighbours to consider.
+/// @param dm_params Named list. List that contains all of the key parameters
+/// for the diffusion maps generation.
+/// @param seed Integer. Seed for reproducibility.
+/// @param verbose Boolean. Controls verbosity of the function.
+///
+/// @return The diffusion maps embeddings.
+///
+/// @export
+#[extendr]
+#[allow(clippy::too_many_arguments)]
+fn rs_diffusion_maps_from_knn(
+    embd: RMatrix<f64>,
+    knn_data: List,
+    n_dim: usize,
+    k: usize,
+    dm_params: List,
+    seed: usize,
+    verbose: bool,
+) -> extendr_api::Result<RMatrix<f64>> {
+    let embd = r_matrix_to_faer_fp32(&embd);
+    let knn = nearest_neighbours_to_rust(knn_data);
+    let res = diffusion_maps_manifold(embd.as_ref(), knn, n_dim, k, dm_params, seed, verbose)
+        .to_extendr()?;
+    Ok(faer_to_r_matrix(res.as_ref()))
 }
 
 /////////////////////////
@@ -429,12 +519,34 @@ fn rs_pacmap_from_knn(
 /// @param noise Numeric. How much noise to add.
 /// @param seed Integer. For reproducibility purposes
 ///
-/// @return The Swiss role synthetic data with the desired parameters.
+/// @return The swiss role synthetic data with the desired parameters.
 ///
 /// @export
 #[extendr]
 fn rs_data_swiss_role(n_samples: usize, noise: f64, seed: usize) -> RMatrix<f64> {
     let res = generate_swiss_roll(n_samples, noise, seed as u64);
+
+    faer_to_r_matrix(res.as_ref())
+}
+
+/// Generates the SwissRole data
+///
+/// @description Generates synthetic data, i.e., the Swiss role to test
+/// different manifold learning techniques
+///
+/// @param n_samples Integer. Number of data points to generate.
+/// @param noise Numeric. How much noise to add.
+/// @param bias Numeric. Sampling bias along `t`. `0.0` recovers uniform
+/// sampling; higher values concentrate samples at the inner end of the roll. A
+/// value of `2.5` mirrors the trajectory accumulation behaviour.
+/// @param seed Integer. For reproducibility purposes
+///
+/// @return The biased swiss role synthetic data with the desired parameters.
+///
+/// @export
+#[extendr]
+fn rs_data_biased_swiss_role(n_samples: usize, noise: f64, bias: f64, seed: usize) -> RMatrix<f64> {
+    let (res, _) = generate_swiss_roll_biased(n_samples, noise, bias, seed as u64);
 
     faer_to_r_matrix(res.as_ref())
 }
@@ -600,10 +712,10 @@ fn rs_approx_nearest_neighbours(
     ann_params: List,
     seed: usize,
     verbose: bool,
-) -> List {
+) -> Result<List, extendr_api::Error> {
     let data = r_matrix_to_faer_fp32(&data);
 
-    let mut nn_params = get_params_nn(ann_params);
+    let mut nn_params = get_params_nn(ann_params)?;
 
     // balltree underperforms on small data set as the budget is too small
     // and individual leafs hold too many data points
@@ -616,12 +728,12 @@ fn rs_approx_nearest_neighbours(
     let indices = flatten_vector(indices);
     let dist = flatten_vector(dist);
 
-    list![
+    Ok(list![
         indices = indices.r_int_convert(),
         dist = dist.r_float_convert(),
         k = k,
         n = data.nrows()
-    ]
+    ])
 }
 
 //////////
@@ -657,7 +769,7 @@ fn rs_evoc(
     return_knn: bool,
     seed: usize,
     verbose: bool,
-) -> List {
+) -> Result<List, extendr_api::Error> {
     let embd = r_matrix_to_faer_fp32(&embd);
     let (res, indices, dist) = evoc_cluster(
         embd.as_ref(),
@@ -667,7 +779,7 @@ fn rs_evoc(
         evoc_params,
         seed,
         verbose,
-    );
+    )?;
 
     let knn = match (indices, dist) {
         (Some(idx), Some(d)) => list!(
@@ -679,7 +791,8 @@ fn rs_evoc(
         .into_robj(),
         _ => NULL.into_robj(),
     };
-    list!(evoc_res = res, knn = knn)
+
+    Ok(list!(evoc_res = res, knn = knn))
 }
 
 /// EVoC clustering from pre-computed kNN
@@ -710,7 +823,7 @@ fn rs_evoc_from_knn(
     evoc_params: List,
     seed: usize,
     verbose: bool,
-) -> List {
+) -> Result<List, extendr_api::Error> {
     let embd = r_matrix_to_faer_fp32(&embd);
     let pre_computed_knn = nearest_neighbours_to_rust(knn_data);
     let (res, _, _) = evoc_cluster(
@@ -721,9 +834,9 @@ fn rs_evoc_from_knn(
         evoc_params,
         seed,
         verbose,
-    );
+    )?;
 
-    res
+    Ok(res)
 }
 
 /////////////
@@ -756,44 +869,24 @@ fn rs_k_means(
     kmeans_params: List,
     seed: usize,
     verbose: bool,
-) -> List {
-    let params = InternalKmeansParams::from_r_list(kmeans_params);
-    let metric = params.dist();
-
-    // transform data to fp32 and flatten
+) -> Result<List, extendr_api::Error> {
+    let params = InternalKmeansParams::from_r_list(kmeans_params)?;
     let data = r_matrix_to_faer_fp32(&data);
-    let (vectors_flat, n, dim) = matrix_to_flat(data.as_ref());
 
-    let centroids = train_centroids(
-        &vectors_flat,
-        dim,
-        n,
+    let (centroids, assignments) = k_means_clusters(
+        data.as_ref(),
+        &params.metric,
         k,
-        &metric,
         params.max_iters,
         seed,
         verbose,
     );
 
-    // Final assignment pass
-    let data_norms = compute_data_norms(&vectors_flat, dim, n, &metric);
-    let centroid_norms = recompute_centroid_norms(&centroids, dim, k, &metric);
-    let assignments = assign_all_parallel(
-        &vectors_flat,
-        &data_norms,
-        dim,
-        n,
-        &centroids,
-        &centroid_norms,
-        k,
-        &metric,
-    );
-
-    // Convert to R (1-indexed assignments, centroids as k x dim matrix)
     let assignments_r: Vec<i32> = assignments.r_int_convert();
-    let centroids_r = flat_to_r_matrix_f64(&centroids, k, dim);
-
-    list!(centroids = centroids_r, assignments = assignments_r)
+    Ok(list!(
+        centroids = faer_to_r_matrix(centroids.as_ref()),
+        assignments = assignments_r
+    ))
 }
 
 /// Mini-batch k-means clustering
@@ -823,32 +916,27 @@ fn rs_k_means_mini_batch(
     kmeans_params: List,
     seed: usize,
     verbose: bool,
-) -> List {
-    let params = InternalKmeansParams::from_r_list(kmeans_params);
-    let metric = params.dist();
-
-    // transform data to fp32 and flatten
+) -> Result<List, extendr_api::Error> {
+    let params = InternalKmeansParams::from_r_list(kmeans_params)?;
     let data = r_matrix_to_faer_fp32(&data);
-    let (vectors_flat, n, dim) = matrix_to_flat(data.as_ref());
 
     let (centroids, assignments) = train_centroids_minibatch(
-        &vectors_flat,
-        dim,
-        n,
+        data.as_ref(),
+        &params.metric,
         k,
-        &metric,
         params.max_iters,
         params.batch_size,
-        params.drift_threshold,
-        params.lr_alpha,
+        params.drift_threshold as f32,
+        params.lr_alpha as f32,
         seed,
         verbose,
     );
 
     let assignments_r: Vec<i32> = assignments.r_int_convert();
-    let centroids_r = flat_to_r_matrix_f64(&centroids, k, dim);
-
-    list!(centroids = centroids_r, assignments = assignments_r)
+    Ok(list!(
+        centroids = faer_to_r_matrix(centroids.as_ref()),
+        assignments = assignments_r
+    ))
 }
 
 /////////////

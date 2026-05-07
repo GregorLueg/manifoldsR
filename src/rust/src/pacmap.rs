@@ -1,9 +1,11 @@
 //! PaCMAP wrapper functions to R from manifolds-rs
 
-use extendr_api::List;
+use bixverse_rs::prelude::IntoExtendrErr;
+use extendr_api::{List, Robj};
 use faer::{Mat, MatRef};
 use manifolds_rs::prelude::*;
 use manifolds_rs::*;
+use std::collections::HashMap;
 
 use crate::utils::get_params_nn;
 
@@ -44,11 +46,11 @@ impl InternalPacmapParams {
     /// ### Returns
     ///
     /// The internal representation of the Pacmap parameters
-    pub fn from_r_list(r_list: List) -> Self {
-        let nn_params = get_params_nn(r_list.clone());
-        let optim_params = get_params_pacmap_optim(r_list.clone());
+    pub fn from_r_list(r_list: List) -> Result<Self, extendr_api::Error> {
+        let nn_params = get_params_nn(r_list.clone())?;
+        let optim_params = get_params_pacmap_optim(r_list.clone())?;
 
-        let params = r_list.into_hashmap();
+        let params: HashMap<&str, Robj> = r_list.try_into()?;
 
         let knn_method = String::from(
             params
@@ -86,7 +88,7 @@ impl InternalPacmapParams {
             .and_then(|v| v.as_integer())
             .unwrap_or(50) as usize;
 
-        Self {
+        Ok(Self {
             knn_method,
             param_knn: nn_params,
             n_mid_near,
@@ -96,7 +98,7 @@ impl InternalPacmapParams {
             init,
             optimiser,
             param_optimiser: optim_params,
-        }
+        })
     }
 }
 
@@ -109,8 +111,8 @@ impl InternalPacmapParams {
 /// ### Returns
 ///
 /// The PacmapOptimParams
-fn get_params_pacmap_optim(r_list: List) -> PacmapOptimParams<f32> {
-    let params = r_list.into_hashmap();
+fn get_params_pacmap_optim(r_list: List) -> Result<PacmapOptimParams<f32>, extendr_api::Error> {
+    let params: HashMap<&str, Robj> = r_list.try_into()?;
 
     let lr = params.get("lr").and_then(|v| v.as_real()).map(|v| v as f32);
 
@@ -144,7 +146,9 @@ fn get_params_pacmap_optim(r_list: List) -> PacmapOptimParams<f32> {
         .and_then(|v| v.as_integer())
         .map(|v| v as usize);
 
-    PacmapOptimParams::new(n_epochs, lr, beta1, beta2, eps, phase1_end, phase2_end)
+    Ok(PacmapOptimParams::new(
+        n_epochs, lr, beta1, beta2, eps, phase1_end, phase2_end,
+    ))
 }
 
 ////////////
@@ -171,8 +175,8 @@ pub fn pacmap_manifold(
     pacmap_params: List,
     seed: usize,
     verbose: bool,
-) -> Mat<f32> {
-    let internal = InternalPacmapParams::from_r_list(pacmap_params);
+) -> Result<Mat<f32>, extendr_api::Error> {
+    let internal = InternalPacmapParams::from_r_list(pacmap_params)?;
 
     let params = PacmapParams::new(
         Some(n_dim),
@@ -188,10 +192,10 @@ pub fn pacmap_manifold(
         Some(internal.param_optimiser),
     );
 
-    let res = pacmap(data, pre_computed_knn, &params, seed, verbose);
+    let res = pacmap(data, pre_computed_knn, &params, seed, verbose).to_extendr()?;
 
     let ncol = res.len();
     let nrow = res[0].len();
 
-    Mat::from_fn(nrow, ncol, |i, j| res[j][i])
+    Ok(Mat::from_fn(nrow, ncol, |i, j| res[j][i]))
 }

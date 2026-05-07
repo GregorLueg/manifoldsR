@@ -172,7 +172,7 @@ ggplot(
   ) +
   scale_fill_viridis_c() +
   theme_bw() +
-  ggtitle("PCA on swissrole data")
+  ggtitle("PHATE on swissrole data")
 ```
 
 PHATE preserves the continuous colour gradient along the roll substantially

@@ -545,6 +545,107 @@ checkPacmapParams <- function(x) {
 #' @keywords internal
 assertPacmapParams <- checkmate::makeAssertionFunction(checkPacmapParams)
 
+## diffusion maps --------------------------------------------------------------
+
+#' Check diffusion maps parameters
+#'
+#' @description Checkmate extension for checking the diffusion maps
+#' parameters.
+#'
+#' @param x The list to check.
+#'
+#' @return `TRUE` if the check was successful, otherwise an error message.
+#'
+#' @keywords internal
+checkDiffusionMapsParams <- function(x) {
+  res <- checkmate::checkList(x)
+  if (!isTRUE(res)) {
+    return(res)
+  }
+
+  res <- checkmate::checkNames(
+    names(x),
+    must.include = c(
+      "bandwidth_scale",
+      "thresh",
+      "graph_symmetry",
+      "alpha_norm",
+      "t_max",
+      "t_custom",
+      "n_landmarks",
+      "landmark_method",
+      "n_svd"
+    )
+  )
+  if (!isTRUE(res)) {
+    return(res)
+  }
+
+  nullable_int <- function(v) is.null(v) || checkmate::qtest(v, "I1[1,)")
+
+  rules <- list(
+    "bandwidth_scale" = function(v) checkmate::qtest(v, "N1(0,)"),
+    "thresh" = function(v) checkmate::qtest(v, "N1[0,)"),
+    "graph_symmetry" = function(v) {
+      checkmate::testChoice(
+        v,
+        c("additive", "multiplicative", "mnn", "none")
+      )
+    },
+    "alpha_norm" = function(v) checkmate::qtest(v, "N1[0,1]"),
+    "t_max" = function(v) checkmate::qtest(v, "I1[1,)"),
+    "t_custom" = nullable_int,
+    "n_landmarks" = nullable_int,
+    "landmark_method" = function(v) {
+      checkmate::testChoice(v, c("spectral", "random", "density"))
+    },
+    "n_svd" = nullable_int
+  )
+
+  res <- purrr::imap_lgl(x, \(val, name) rules[[name]](val))
+
+  if (!isTRUE(all(res))) {
+    broken_elem <- names(res)[which(!res)][1]
+    return(sprintf(
+      paste(
+        "Element `%s` in diffusion maps params does not conform.",
+        "bandwidth_scale must be a positive numeric,",
+        "thresh must be a non-negative numeric,",
+        "graph_symmetry must be one of",
+        "'additive'/'multiplicative'/'mnn'/'none',",
+        "alpha_norm must be numeric in [0, 1],",
+        "t_max must be a positive integer,",
+        "t_custom/n_landmarks/n_svd must be positive integers or NULL,",
+        "and landmark_method must be one of",
+        "'spectral'/'random'/'density'."
+      ),
+      broken_elem
+    ))
+  }
+
+  return(TRUE)
+}
+
+#' Assert diffusion maps parameters
+#'
+#' @description Checkmate extension for asserting the diffusion maps
+#' parameters.
+#'
+#' @inheritParams checkDiffusionMapsParams
+#'
+#' @param .var.name Name of the checked object to print in assertions.
+#' Defaults to the heuristic implemented in checkmate.
+#' @param add Collection to store assertion messages. See
+#' [checkmate::makeAssertCollection()].
+#'
+#' @return Invisibly returns the checked object if the assertion is
+#' successful.
+#'
+#' @keywords internal
+assertDiffusionMapsParams <- checkmate::makeAssertionFunction(
+  checkDiffusionMapsParams
+)
+
 ## evoc ------------------------------------------------------------------------
 
 #' Check EVoC parameters
