@@ -1,5 +1,7 @@
 ---
 title: "Using PHATE"
+date: last-modified
+date-format: YYYY-MM-DD
 vignette: >
   %\VignetteIndexEntry{Using PHATE}
   %\VignetteEngine{quarto::html}

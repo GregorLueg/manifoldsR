@@ -4,6 +4,7 @@
 
 - Diffusion maps implemented.
 - Update to extendr `0.9.0` backends.
+- Documentation and vignette updates
 
 # manifoldsR 0.2.1
 

@@ -1,5 +1,7 @@
 ---
 title: "Using t-SNE"
+date: last-modified
+date-format: YYYY-MM-DD
 vignette: >
   %\VignetteIndexEntry{Using t-SNE}
   %\VignetteEngine{quarto::html}
@@ -234,7 +236,7 @@ And tSNE
 #| label: trajectory data - tsne
 tsne_trajectory <- tsne(
   data = trajectory_data$data,
-  perplexity = 45,
+  perplexity = 25,
   seed = 42L
 )
 
@@ -281,7 +283,7 @@ precomputed_knn <- generate_knn_graph(
 tsne_from_knn <- tsne(
   data = cluster_data$data,
   knn = precomputed_knn,
-  perplexity = 30,
+  perplexity = 10,
   seed = 42L
 )
 
@@ -306,7 +308,7 @@ kNN search:
 tsne_from_knn_highperplex <- tsne(
   data = cluster_data$data,
   knn = precomputed_knn,
-  perplexity = 100,
+  perplexity = 15,
   tsne_params = params_tsne(n_epochs = 300L, lr = 100.0), # we will stop early to show a weirder embedding
   seed = 42L
 )
@@ -398,14 +400,16 @@ microbenchmark::microbenchmark(
 )
 ```
 
-The impact here is massive already. Let's see what happens with BH and FFT?
+The impact here is massive already. Let's see what happens with BH and FFT? (To
+note, FFT's advantage becomes larger the bigger the data set due to its `O(N)`
+complexity.)
 
 ```{r}
 #| label: benchmark - larger
 #| eval: !expr requireNamespace("microbenchmark", quietly = TRUE) && .Platform$OS.type == "unix"
 benchmark_data_large <- manifold_synthetic_data(
   type = "cluster",
-  n_samples = 50000L
+  n_samples = 75000L
 )
 
 microbenchmark::microbenchmark(

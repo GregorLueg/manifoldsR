@@ -21,9 +21,9 @@ rand = "0.10.0"
 rayon = "1.11.0"
 rustc-hash = "2.1.2"
 [target.'cfg(not(windows))'.dependencies]
-manifolds-rs = { version = "0.2.3", features = [ "fft_tsne" ] }
+manifolds-rs = { version = "0.2.4", features = [ "fft_tsne" ] }
 [target.'cfg(windows)'.dependencies]
-manifolds-rs = { version = "0.2.3" }
+manifolds-rs = { version = "0.2.4" }
 
 
 [profile.test]
