@@ -12,6 +12,7 @@ src/rust/vendor
 src/Makevars
 src/Makevars.win
 docs
+vendor.tar.xz
 
 # others
 scratch.R

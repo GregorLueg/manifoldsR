@@ -31,6 +31,7 @@ articles:
       - tsne
       - phate
       - pacmap
+      - diffusion_map
       - clustering
 
 reference:
@@ -41,6 +42,7 @@ reference:
       - umap
       - phate
       - pacmap
+      - diffusion_maps
   - title: "kNN helpers"
     desc: "Everything and anything around kNN graph generation"
     contents:
@@ -75,9 +77,11 @@ reference:
       - params_kmeans
       - params_nn
       - params_pacmap
+      - params_diffusion_maps
       - params_phate
       - params_umap
       - params_swiss_role
+      - params_swiss_role_biased
       - params_trajectory
       - params_tsne
   - title: "Rust wrappers"
@@ -86,10 +90,13 @@ reference:
       - rs_approx_nearest_neighbours
       - rs_ari
       - rs_check_cluster_separation
+      - rs_data_biased_swiss_role
       - rs_data_clusters
       - rs_data_swiss_role
       - rs_data_trajectory
       - rs_data_hierarchical
+      - rs_diffusion_maps
+      - rs_diffusion_maps_from_knn
       - rs_evoc
       - rs_evoc_from_knn
       - rs_intertia

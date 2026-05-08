@@ -4,9 +4,9 @@
 #![warn(missing_docs)]
 
 use extendr_api::*;
-
 use manifolds_rs::prelude::*;
 use manifolds_rs::PreComputedKnn;
+use std::collections::HashMap;
 
 ////////////////////////
 // Nearest neighbours //
@@ -23,8 +23,8 @@ use manifolds_rs::PreComputedKnn;
 ///
 /// The `NearestNeighbourParams` with sensible defaults if not found in the
 /// list.
-pub fn get_params_nn(r_list: List) -> NearestNeighbourParams<f32> {
-    let nn_params = r_list.into_hashmap();
+pub fn get_params_nn(r_list: List) -> Result<NearestNeighbourParams<f32>> {
+    let nn_params: HashMap<&str, Robj> = r_list.try_into()?;
 
     // distance
     let dist_metric = std::string::String::from(
@@ -94,7 +94,7 @@ pub fn get_params_nn(r_list: List) -> NearestNeighbourParams<f32> {
         .and_then(|v| v.as_integer())
         .map(|v| v as usize);
 
-    NearestNeighbourParams {
+    Ok(NearestNeighbourParams {
         dist_metric,
         n_tree,
         search_budget,
@@ -107,7 +107,7 @@ pub fn get_params_nn(r_list: List) -> NearestNeighbourParams<f32> {
         bt_budget,
         n_list,
         n_probes,
-    }
+    })
 }
 
 /// Parse the nearest neighbours to a Rust function

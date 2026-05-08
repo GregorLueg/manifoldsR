@@ -1,3 +1,11 @@
+# manifoldsR 0.2.2
+
+## Features
+
+- Diffusion maps implemented.
+- Update to extendr `0.9.0` backends.
+- Documentation and vignette updates
+
 # manifoldsR 0.2.1
 
 ## Features

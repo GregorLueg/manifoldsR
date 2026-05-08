@@ -2,10 +2,12 @@
 
 #![warn(missing_docs)]
 
-use extendr_api::List;
+use bixverse_rs::prelude::IntoExtendrErr;
+use extendr_api::{List, Robj};
 use faer::{Mat, MatRef};
 use manifolds_rs::prelude::*;
 use manifolds_rs::*;
+use std::collections::HashMap;
 
 use crate::utils::get_params_nn;
 
@@ -51,12 +53,16 @@ impl InternalUmapParams {
     /// ### Returns
     ///
     /// The `BixverseUmapParams`.
-    pub fn from_r_list(r_list: List, min_dist: f32, spread: f32) -> Self {
-        let nn_params = get_params_nn(r_list.clone());
-        let umap_graph_params = get_params_umap_graph(r_list.clone());
-        let optim_params = get_params_umap_optim(r_list.clone(), min_dist, spread);
+    pub fn from_r_list(
+        r_list: List,
+        min_dist: f32,
+        spread: f32,
+    ) -> Result<Self, extendr_api::Error> {
+        let nn_params = get_params_nn(r_list.clone())?;
+        let umap_graph_params = get_params_umap_graph(r_list.clone())?;
+        let optim_params = get_params_umap_optim(r_list.clone(), min_dist, spread)?;
 
-        let umap_params = r_list.into_hashmap();
+        let umap_params: HashMap<&str, Robj> = r_list.try_into()?;
 
         let init = std::string::String::from(
             umap_params
@@ -76,7 +82,7 @@ impl InternalUmapParams {
             umap_params
                 .get("knn_method")
                 .and_then(|v| v.as_str())
-                .unwrap_or("hnsw"),
+                .unwrap_or("kmknn"),
         );
 
         let randomised = umap_params
@@ -84,7 +90,7 @@ impl InternalUmapParams {
             .and_then(|v| v.as_bool())
             .unwrap_or(false);
 
-        Self {
+        Ok(Self {
             param_knn: nn_params,
             umap_graph: umap_graph_params,
             knn_method,
@@ -92,7 +98,7 @@ impl InternalUmapParams {
             randomised,
             optimiser,
             param_optimiser: optim_params,
-        }
+        })
     }
 }
 
@@ -105,8 +111,8 @@ impl InternalUmapParams {
 /// ### Returns
 ///
 /// The `UmapGraphParams` with sensible defaults if not found in the list.
-pub fn get_params_umap_graph(r_list: List) -> UmapGraphParams<f32> {
-    let graph_params = r_list.into_hashmap();
+pub fn get_params_umap_graph(r_list: List) -> Result<UmapGraphParams<f32>, extendr_api::Error> {
+    let graph_params: HashMap<&str, Robj> = r_list.try_into()?;
 
     let mix_weight = graph_params
         .get("mix_weight")
@@ -123,11 +129,11 @@ pub fn get_params_umap_graph(r_list: List) -> UmapGraphParams<f32> {
         .and_then(|v| v.as_real())
         .unwrap_or(1e-5) as f32;
 
-    UmapGraphParams {
+    Ok(UmapGraphParams {
         bandwidth,
         local_connectivity,
         mix_weight,
-    }
+    })
 }
 
 /// Helper function to generate the UMAP optimisation parameters
@@ -144,8 +150,12 @@ pub fn get_params_umap_graph(r_list: List) -> UmapGraphParams<f32> {
 /// ### Returns
 ///
 /// The `UmapOptimParams` with sensible defaults if not found in the list.
-fn get_params_umap_optim(r_list: List, min_dist: f32, spread: f32) -> UmapOptimParams<f32> {
-    let optim_params = r_list.into_hashmap();
+fn get_params_umap_optim(
+    r_list: List,
+    min_dist: f32,
+    spread: f32,
+) -> Result<UmapOptimParams<f32>, extendr_api::Error> {
+    let optim_params: HashMap<&str, Robj> = r_list.try_into()?;
 
     let lr = optim_params
         .get("lr")
@@ -167,7 +177,7 @@ fn get_params_umap_optim(r_list: List, min_dist: f32, spread: f32) -> UmapOptimP
         .and_then(|v| v.as_real())
         .map(|v| v as f32);
 
-    UmapOptimParams::from_min_dist_spread(
+    Ok(UmapOptimParams::from_min_dist_spread(
         min_dist,
         spread,
         lr,
@@ -178,7 +188,7 @@ fn get_params_umap_optim(r_list: List, min_dist: f32, spread: f32) -> UmapOptimP
         None,
         None,
         None,
-    )
+    ))
 }
 
 /////////////////
@@ -216,8 +226,8 @@ pub fn umap_manifold(
     umap_params: List,
     seed: usize,
     verbose: bool,
-) -> Mat<f32> {
-    let umap_params_internal = InternalUmapParams::from_r_list(umap_params, min_dist, spread);
+) -> Result<Mat<f32>, extendr_api::Error> {
+    let umap_params_internal = InternalUmapParams::from_r_list(umap_params, min_dist, spread)?;
 
     let init_range = if umap_params_internal.init == "pca" {
         Some(1e-4)
@@ -238,10 +248,10 @@ pub fn umap_manifold(
         Some(umap_params_internal.randomised),
     );
 
-    let res = umap(data, pre_computed_knn, &umap_params, seed, verbose);
+    let res = umap(data, pre_computed_knn, &umap_params, seed, verbose).to_extendr()?;
 
     let ncol = res.len();
     let nrow = res[0].len();
 
-    Mat::from_fn(nrow, ncol, |i, j| res[j][i])
+    Ok(Mat::from_fn(nrow, ncol, |i, j| res[j][i]))
 }

@@ -201,7 +201,7 @@ params_tsne <- function(
   )
 }
 
-# phate ------------------------------------------------------------------------
+## phate -----------------------------------------------------------------------
 
 #' Wrapper function to generate PHATE parameters
 #'
@@ -369,7 +369,87 @@ params_pacmap <- function(
   )
 }
 
+## diffusion maps --------------------------------------------------------------
+
+#' Wrapper function to generate diffusion maps parameters
+#'
+#' @param bandwidth_scale Numeric. Multiplicative factor applied to the
+#' adaptive kernel bandwidth. Defaults to `1.0`.
+#' @param thresh Numeric. Sparsity threshold applied to kernel entries.
+#' Defaults to `1e-4`.
+#' @param graph_symmetry Character. Method used to symmetrise the affinity
+#' graph. One of `"additive"`, `"multiplicative"`, `"mnn"`, or `"none"`.
+#' Defaults to `"additive"`.
+#' @param alpha_norm Numeric. Anisotropic density-correction exponent in
+#' `[0, 1]`. `0` gives the normalised graph Laplacian, `0.5` the
+#' Fokker-Planck operator, `1` the Laplace-Beltrami operator. Defaults to
+#' `1.0`.
+#' @param t_max Integer. Maximum diffusion time considered during automatic
+#' selection via Von Neumann entropy knee point detection. Defaults to
+#' `100L`.
+#' @param t_custom Integer or `NULL`. Fixed diffusion time. When set,
+#' overrides automatic time selection. Defaults to `NULL`.
+#' @param n_landmarks Integer or `NULL`. Number of landmarks for compressed
+#' diffusion. When `NULL`, the full N x N diffusion operator is used.
+#' Defaults to `2048L`.
+#' @param landmark_method Character. Method used to select landmarks. One of
+#' `"spectral"`, `"random"`, or `"density"`. Defaults to `"spectral"`.
+#' @param n_svd Integer or `NULL`. Number of SVD components used in landmark
+#' construction. When `NULL`, the library selects a sensible default.
+#' Defaults to `NULL`.
+#'
+#' @returns A list with the diffusion maps parameters.
+#'
+#' @export
+params_diffusion_maps <- function(
+  bandwidth_scale = 1.0,
+  thresh = 1e-4,
+  graph_symmetry = "additive",
+  alpha_norm = 1.0,
+  t_max = 100L,
+  t_custom = NULL,
+  n_landmarks = 2048L,
+  landmark_method = "spectral",
+  n_svd = NULL
+) {
+  checkmate::qassert(bandwidth_scale, "N1(0,)")
+  checkmate::qassert(thresh, "N1[0,)")
+  checkmate::assertChoice(
+    graph_symmetry,
+    c("additive", "multiplicative", "mnn", "none")
+  )
+  checkmate::qassert(alpha_norm, "N1[0,1]")
+  checkmate::qassert(t_max, "I1[1,)")
+  checkmate::assert(
+    checkmate::testNull(t_custom),
+    checkmate::qtest(t_custom, "I1[1,)")
+  )
+  checkmate::assert(
+    checkmate::testNull(n_landmarks),
+    checkmate::qtest(n_landmarks, "I1[1,)")
+  )
+  checkmate::assertChoice(landmark_method, c("spectral", "random", "density"))
+  checkmate::assert(
+    checkmate::testNull(n_svd),
+    checkmate::qtest(n_svd, "I1[1,)")
+  )
+
+  list(
+    bandwidth_scale = bandwidth_scale,
+    thresh = thresh,
+    graph_symmetry = graph_symmetry,
+    alpha_norm = alpha_norm,
+    t_max = as.integer(t_max),
+    t_custom = if (!is.null(t_custom)) as.integer(t_custom) else NULL,
+    n_landmarks = if (!is.null(n_landmarks)) as.integer(n_landmarks) else NULL,
+    landmark_method = landmark_method,
+    n_svd = if (!is.null(n_svd)) as.integer(n_svd) else NULL
+  )
+}
+
 ## synthetic data --------------------------------------------------------------
+
+### swiss roles ----------------------------------------------------------------
 
 #' Parameters for swiss roll data generation
 #'
@@ -386,6 +466,27 @@ params_swiss_role <- function(noise = 0.1) {
   list(noise = noise)
 }
 
+#' Parameters for swiss roll data generation
+#'
+#' @param noise Numeric. Amount of noise to add. Must be a positive non-zero
+#' value. Defaults to `0.1`.
+#' @param bias Numeric. The sampling bias across the manifold. Defaults to
+#' `2.5`.
+#'
+#' @return A list of parameters for use with [manifold_synthetic_data()].
+#'
+#' @export
+params_swiss_role_biased <- function(noise = 0.1, bias = 2.5) {
+  # checks
+  checkmate::qassert(noise, "N1(0,)")
+  checkmate::qassert(bias, "N1(0,)")
+
+  # return
+  list(noise = noise, bias = bias)
+}
+
+### clustered data -------------------------------------------------------------
+
 #' Parameters for clustered data generation
 #'
 #' @param n_clusters Integer. Number of clusters to generate. Defaults to
@@ -399,44 +500,6 @@ params_clusters <- function(n_clusters = 15L) {
   checkmate::qassert(n_clusters, "I1(1,)")
   # return
   list(n_clusters = n_clusters)
-}
-
-#' Parameters for trajectory data generation
-#'
-#' @param topology Character. One of `c("bifurcation", "linear",
-#' "combination")`. Ignored if `cell_trajectories` is not `NULL`. Defaults to
-#' `"bifurcation"`.
-#' @param cell_trajectories Optional list. Named list with three equal-length
-#' vectors: `parent` (integer, `NA` for root, zero-indexed), `split_at`
-#' (numeric, fraction along parent where branch starts), and `length` (numeric,
-#' length of the branch). If `NULL`, `topology` is used instead. Defaults to
-#' `NULL`.
-#' @param noise Numeric. Amount of noise to add. Must be a positive non-zero
-#' value. Defaults to `0.1`.
-#'
-#' @return A list of parameters for use with [manifold_synthetic_data()].
-#'
-#' @export
-params_trajectory <- function(
-  topology = c("bifurcation", "linear", "combination"),
-  cell_trajectories = NULL,
-  noise = 0.1
-) {
-  topology <- match.arg(topology)
-
-  # checks
-  checkmate::assertChoice(topology, c("bifurcation", "linear", "combination"))
-  if (!is.null(cell_trajectories)) {
-    assertCellTrajectories(cell_trajectories)
-  }
-  checkmate::qassert(noise, "N1(0,)")
-
-  # return
-  list(
-    topology = topology,
-    cell_trajectories = cell_trajectories,
-    noise = noise
-  )
 }
 
 #' Parameters for hierarchical cluster data generation
@@ -477,6 +540,47 @@ params_hierarchical <- function(
     point_std = point_std
   )
 }
+
+### trajectory -----------------------------------------------------------------
+
+#' Parameters for trajectory data generation
+#'
+#' @param topology Character. One of `c("bifurcation", "linear",
+#' "combination")`. Ignored if `cell_trajectories` is not `NULL`. Defaults to
+#' `"bifurcation"`.
+#' @param cell_trajectories Optional list. Named list with three equal-length
+#' vectors: `parent` (integer, `NA` for root, zero-indexed), `split_at`
+#' (numeric, fraction along parent where branch starts), and `length` (numeric,
+#' length of the branch). If `NULL`, `topology` is used instead. Defaults to
+#' `NULL`.
+#' @param noise Numeric. Amount of noise to add. Must be a positive non-zero
+#' value. Defaults to `0.1`.
+#'
+#' @return A list of parameters for use with [manifold_synthetic_data()].
+#'
+#' @export
+params_trajectory <- function(
+  topology = c("bifurcation", "linear", "combination"),
+  cell_trajectories = NULL,
+  noise = 0.1
+) {
+  topology <- match.arg(topology)
+
+  # checks
+  checkmate::assertChoice(topology, c("bifurcation", "linear", "combination"))
+  if (!is.null(cell_trajectories)) {
+    assertCellTrajectories(cell_trajectories)
+  }
+  checkmate::qassert(noise, "N1(0,)")
+
+  # return
+  list(
+    topology = topology,
+    cell_trajectories = cell_trajectories,
+    noise = noise
+  )
+}
+
 
 ## evoc ------------------------------------------------------------------------
 

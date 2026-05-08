@@ -1,9 +1,10 @@
 # manifoldsR
 
-![r_package](https://img.shields.io/badge/R_package-0.2.1-orange) 
+![r_package](https://img.shields.io/badge/R_package-0.2.2-orange) 
 [![CI](https://github.com/GregorLueg/genewalkR/actions/workflows/R-cmd-check.yml/badge.svg)](https://github.com/GregorLueg/genewalkR/actions/workflows/R-cmd-check.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![pkgdown](https://img.shields.io/badge/pkgdown-website-1b5e9f?logo=github)](https://gregorlueg.github.io/manifoldsR/)
+[![extendr](https://img.shields.io/badge/extendr-^0.9.0-276DC2)](https://extendr.github.io/extendr/extendr_api/)
 
 <img src="man/figures/manifoldsR_logo.png" width="128" height="128" alt="manifoldsR logo">
 
@@ -24,7 +25,8 @@ reduction techniques:
   FFT-accelerated Interpolation-based versions)
 - **PHATE** (Potential of Heat-diffusion for Affinity-based Trajectory 
   Embedding)
-- **PaCMAP** (Pairwise Controlled Manifold Approximatio)
+- **PaCMAP** (Pairwise Controlled Manifold Approximation)
+- **Diffusion map** (A classical method of Manifold learning)
 
 The core algorithms are implemented purely in Rust without any kernel switching 
 for speed while providing user-friendly R interfaces. The optimisations here

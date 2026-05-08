@@ -2,10 +2,12 @@
 
 #![warn(missing_docs)]
 
-use extendr_api::List;
+use bixverse_rs::prelude::IntoExtendrErr;
+use extendr_api::{List, Robj};
 use faer::{Mat, MatRef};
 use manifolds_rs::prelude::*;
 use manifolds_rs::*;
+use std::collections::HashMap;
 
 use crate::utils::get_params_nn;
 
@@ -68,16 +70,16 @@ impl InternalPhateParams {
     /// ### Returns
     ///
     /// A fully populated `InternalPhateParams`.
-    pub fn from_r_list(r_list: List) -> Self {
-        let nn_params = get_params_nn(r_list.clone());
-        let phate_params = get_params_phate(r_list.clone());
-        let base = r_list.into_hashmap();
+    pub fn from_r_list(r_list: List) -> Result<Self, extendr_api::Error> {
+        let nn_params = get_params_nn(r_list.clone())?;
+        let phate_params = get_params_phate(r_list.clone())?;
+        let base: HashMap<&str, Robj> = r_list.try_into()?;
         let knn_method = std::string::String::from(
             base.get("knn_method")
                 .and_then(|v| v.as_str())
-                .unwrap_or("hnsw"),
+                .unwrap_or("kmknn"),
         );
-        Self {
+        Ok(Self {
             graph_symmetry: phate_params.graph_symmetry,
             decay: phate_params.decay,
             bandwidth_scale: phate_params.bandwidth_scale,
@@ -91,7 +93,7 @@ impl InternalPhateParams {
             mds_iter: phate_params.mds_iter,
             knn_method,
             param_knn: nn_params,
-        }
+        })
     }
 }
 
@@ -110,8 +112,8 @@ impl InternalPhateParams {
 /// An `InternalPhateParams` with PHATE fields populated and `knn_method` /
 /// `param_knn` set to their defaults. Callers should override those fields
 /// via `from_r_list`.
-fn get_params_phate(r_list: List) -> InternalPhateParams {
-    let p = r_list.into_hashmap();
+fn get_params_phate(r_list: List) -> Result<InternalPhateParams, extendr_api::Error> {
+    let p: HashMap<&str, Robj> = r_list.try_into()?;
     let graph_symmetry = std::string::String::from(
         p.get("graph_symmetry")
             .and_then(|v| v.as_str())
@@ -163,7 +165,7 @@ fn get_params_phate(r_list: List) -> InternalPhateParams {
         .and_then(|v| v.as_integer())
         .map(|v| v as usize);
 
-    InternalPhateParams {
+    Ok(InternalPhateParams {
         graph_symmetry,
         decay,
         bandwidth_scale,
@@ -175,9 +177,9 @@ fn get_params_phate(r_list: List) -> InternalPhateParams {
         n_svd,
         mds_method,
         mds_iter,
-        knn_method: "hnsw".to_string(),
+        knn_method: "kmknn".to_string(),
         param_knn: NearestNeighbourParams::default(),
-    }
+    })
 }
 
 ///////////
@@ -212,12 +214,12 @@ pub fn phate_simple(
     phate_params: List,
     seed: usize,
     verbose: bool,
-) -> Mat<f32> {
+) -> Result<Mat<f32>, extendr_api::Error> {
     assert!(
         n_dim == 2,
         "At the moment, this tSNE implementation only supports n_dim = 2"
     );
-    let internal_params_phate = InternalPhateParams::from_r_list(phate_params);
+    let internal_params_phate = InternalPhateParams::from_r_list(phate_params)?;
     let params_phate = PhateParams::new(
         Some(n_dim),
         Some(k),
@@ -235,8 +237,9 @@ pub fn phate_simple(
         internal_params_phate.mds_iter,
         Some(true),
     );
-    let res = phate(data, pre_computed_knn, params_phate, seed, verbose);
+    let res = phate(data, pre_computed_knn, params_phate, seed, verbose).to_extendr()?;
     let ncol = res.len();
     let nrow = res[0].len();
-    Mat::from_fn(nrow, ncol, |i, j| res[j][i])
+
+    Ok(Mat::from_fn(nrow, ncol, |i, j| res[j][i]))
 }
