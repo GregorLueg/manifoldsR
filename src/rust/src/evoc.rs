@@ -57,7 +57,7 @@ impl InternalEvocParams {
         let knn_method = String::from(
             map.get("knn_method")
                 .and_then(|v| v.as_str())
-                .unwrap_or("hnsw"),
+                .unwrap_or("kmknn"),
         );
 
         Ok(Self {

@@ -82,7 +82,7 @@ impl InternalUmapParams {
             umap_params
                 .get("knn_method")
                 .and_then(|v| v.as_str())
-                .unwrap_or("hnsw"),
+                .unwrap_or("kmknn"),
         );
 
         let randomised = umap_params

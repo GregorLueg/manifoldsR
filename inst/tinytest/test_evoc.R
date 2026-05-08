@@ -32,6 +32,7 @@ exhaustive <- generate_knn_graph(
 evoc_res <- evoc(
   data = cluster_data,
   n_neighbours = 5L,
+  knn_method = "exhaustive",
   seed = 42L,
   .verbose = FALSE
 )
@@ -70,7 +71,17 @@ expect_true(
 ari_evoc <- calc_ari(as.integer(cluster_membership), best$labels)
 
 # DEBUG
-print(sprintf("ARI EVOC here is %f", ari_evoc))
+print(sprintf("\n[DEBUG] ARI EVOC here is %f", ari_evoc))
+
+print(sprintf(
+  "\n[DEBUG] Length cluster layer: %i\n",
+  length(evoc_res$cluster_layers)
+))
+
+print("\n[DEBUG] Actual cluster membership and structure")
+print(best$labels)
+print(str(evoc_res))
+
 
 expect_true(
   current = ari_evoc > 0.8,
@@ -81,6 +92,7 @@ expect_true(
 
 evoc_res_df <- evoc(
   data = cluster_data_df,
+  knn_method = "exhaustive",
   n_neighbours = 5L,
   seed = 42L,
   .verbose = FALSE
@@ -113,7 +125,7 @@ ari_evoc_knn <- calc_ari(
 )
 
 # DEBUG
-print(sprintf("ARI EVOC here is %f", ari_evoc_knn))
+print(sprintf("[DEBUG] ARI EVOC here is %f", ari_evoc_knn))
 
 expect_true(
   current = ari_evoc_knn > 0.8,
