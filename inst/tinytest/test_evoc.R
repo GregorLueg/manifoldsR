@@ -4,6 +4,7 @@
 
 n_samples <- 500L
 n_clusters <- 3L
+n_neighbours <- 10L
 
 zeallot::`%<-%`(
   c(cluster_data, cluster_membership),
@@ -21,7 +22,7 @@ cluster_data_df <- as.data.frame(cluster_data)
 
 exhaustive <- generate_knn_graph(
   data = cluster_data,
-  k = 5L,
+  k = n_neighbours,
   knn_method = "exhaustive"
 )
 
@@ -31,7 +32,7 @@ exhaustive <- generate_knn_graph(
 
 evoc_res <- evoc(
   data = cluster_data,
-  n_neighbours = 5L,
+  n_neighbours = n_neighbours,
   knn_method = "exhaustive",
   seed = 42L,
   .verbose = FALSE
@@ -70,19 +71,6 @@ expect_true(
 # well-separated synthetic data: best layer should have high ARI
 ari_evoc <- calc_ari(as.integer(cluster_membership), best$labels)
 
-# DEBUG
-print(sprintf("\n[DEBUG] ARI EVOC here is %f", ari_evoc))
-
-print(sprintf(
-  "\n[DEBUG] Length cluster layer: %i\n",
-  length(evoc_res$cluster_layers)
-))
-
-print("\n[DEBUG] Actual cluster membership and structure")
-print(best$labels)
-print(str(evoc_res))
-
-
 expect_true(
   current = ari_evoc > 0.8,
   info = "evoc recovers known clusters on well-separated data"
@@ -93,7 +81,7 @@ expect_true(
 evoc_res_df <- evoc(
   data = cluster_data_df,
   knn_method = "exhaustive",
-  n_neighbours = 5L,
+  n_neighbours = n_neighbours,
   seed = 42L,
   .verbose = FALSE
 )
@@ -109,7 +97,7 @@ expect_equal(
 evoc_res_knn <- evoc(
   data = cluster_data,
   knn = exhaustive,
-  n_neighbours = 5L,
+  n_neighbours = n_neighbours,
   seed = 42L,
   .verbose = FALSE
 )
@@ -124,9 +112,6 @@ ari_evoc_knn <- calc_ari(
   best_membership(evoc_res_knn)$labels
 )
 
-# DEBUG
-print(sprintf("[DEBUG] ARI EVOC here is %f", ari_evoc_knn))
-
 expect_true(
   current = ari_evoc_knn > 0.8,
   info = "evoc from pre-computed kNN recovers known clusters"
@@ -136,7 +121,7 @@ expect_true(
 
 evoc_res_with_knn <- evoc(
   data = cluster_data,
-  n_neighbours = 5L,
+  n_neighbours = n_neighbours,
   return_knn = TRUE,
   seed = 42L,
   .verbose = FALSE
@@ -200,7 +185,7 @@ expect_equal(
 
 evoc_approx <- evoc(
   data = cluster_data,
-  n_neighbours = 5L,
+  n_neighbours = n_neighbours,
   evoc_params = params_evoc(approx_n_clusters = 2L),
   seed = 42L,
   .verbose = FALSE
