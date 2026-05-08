@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Clustering methods in manifoldsR • manifoldsR</title>
+<title>Clustering methods in manifoldsR (with emphasis on EVoC) • manifoldsR</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
@@ -13,7 +13,7 @@
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><script src="clustering_files/libs/quarto-html/popper.min.js"></script><script src="clustering_files/libs/quarto-html/tippy.umd.min.js"></script><link href="clustering_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="clustering_files/libs/quarto-html/light-border.css" rel="stylesheet">
 <!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
-<meta property="og:title" content="Clustering methods in manifoldsR">
+<meta property="og:title" content="Clustering methods in manifoldsR (with emphasis on EVoC)">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -41,7 +41,8 @@
     <li><a class="dropdown-item" href="../articles/tsne.html">Using t-SNE</a></li>
     <li><a class="dropdown-item" href="../articles/phate.html">Using PHATE</a></li>
     <li><a class="dropdown-item" href="../articles/pacmap.html">Using PaCMAP</a></li>
-    <li><a class="dropdown-item" href="../articles/clustering.html">Clustering methods in manifoldsR</a></li>
+    <li><a class="dropdown-item" href="../articles/diffusion_map.html">Using diffusion maps</a></li>
+    <li><a class="dropdown-item" href="../articles/clustering.html">Clustering methods in manifoldsR (with emphasis on EVoC)</a></li>
   </ul>
 </li>
       </ul>
@@ -59,10 +60,10 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>Clustering methods in manifoldsR</h1>
+      <h1>Clustering methods in manifoldsR (with emphasis on EVoC)</h1>
 
       <p class="author">Gregor Lueg</p>
-
+      <p class="date">2026-05-08</p>
 
 
       <div class="d-none name"><code></code></div>
@@ -81,7 +82,12 @@
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://gregorlueg.github.io/manifoldsR/">manifoldsR</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://magrittr.tidyverse.org" class="external-link">magrittr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com" class="external-link">data.table</a></span><span class="op">)</span></span></code></pre></div>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com" class="external-link">data.table</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Attaching package: 'data.table'</span></span>
+<span><span class="co">#&gt; The following object is masked from 'package:base':</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     %notin%</span></span></code></pre></div>
 </div>
 <section class="level2"><h3 id="algorithms-at-a-glance">Algorithms at a glance<a class="anchor" aria-label="anchor" href="#algorithms-at-a-glance"></a>
 </h3>
@@ -158,7 +164,7 @@
 <span><span class="co">#&gt;   metric:     euclidean </span></span>
 <span><span class="co">#&gt;   k:          15 </span></span>
 <span><span class="co">#&gt;   n:          10000 </span></span>
-<span><span class="co">#&gt;   sizes:      min= 0  median= 549  max= 1375</span></span></code></pre></div>
+<span><span class="co">#&gt;   sizes:      min= 0  median= 544  max= 1375</span></span></code></pre></div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
@@ -178,9 +184,9 @@
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"ARI:"</span>, <span class="fu"><a href="../reference/calc_ari.html">calc_ari</a></span><span class="op">(</span><span class="va">cluster_data</span><span class="op">$</span><span class="va">membership</span>, <span class="fu"><a href="../reference/membership.html">membership</a></span><span class="op">(</span><span class="va">km_correct</span><span class="op">)</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ARI: 0.8671962</span></span>
+<span><span class="co">#&gt; ARI: 0.8671586</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Inertia:"</span>, <span class="fu"><a href="../reference/calc_inertia.html">calc_inertia</a></span><span class="op">(</span><span class="va">km_correct</span>, data <span class="op">=</span> <span class="va">cluster_data</span><span class="op">$</span><span class="va">data</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Inertia: 4973351</span></span>
+<span><span class="co">#&gt; Inertia: 4973336</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span></span>
 <span>  <span class="st">"Silhouette:"</span>,</span>
 <span>  <span class="fu"><a href="../reference/calc_silhouette_score.html">calc_silhouette_score</a></span><span class="op">(</span></span>
@@ -189,7 +195,7 @@
 <span>  <span class="op">)</span><span class="op">$</span><span class="va">mean_silhouette</span>,</span>
 <span>  <span class="st">"\n"</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; Silhouette: 0.6270112</span></span></code></pre></div>
+<span><span class="co">#&gt; Silhouette: 0.6270099</span></span></code></pre></div>
 </div>
 </section><section class="level3"><h4 id="over-specifying-k-full-vs-mini-batch">Over-specifying k: full vs mini-batch<a class="anchor" aria-label="anchor" href="#over-specifying-k-full-vs-mini-batch"></a>
 </h4>
@@ -251,7 +257,7 @@
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Full k-means:\n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Full k-means:</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"  ARI:"</span>, <span class="fu"><a href="../reference/calc_ari.html">calc_ari</a></span><span class="op">(</span><span class="va">cluster_data</span><span class="op">$</span><span class="va">membership</span>, <span class="fu"><a href="../reference/membership.html">membership</a></span><span class="op">(</span><span class="va">km_full</span><span class="op">)</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   ARI: 0.7075723</span></span>
+<span><span class="co">#&gt;   ARI: 0.7085234</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"  Effective clusters:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="../reference/membership.html">membership</a></span><span class="op">(</span><span class="va">km_full</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   Effective clusters: 25</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span></span>
@@ -262,7 +268,7 @@
 <span>  <span class="op">)</span><span class="op">$</span><span class="va">mean_silhouette</span>,</span>
 <span>  <span class="st">"\n"</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt;   Silhouette: 0.4141325</span></span>
+<span><span class="co">#&gt;   Silhouette: 0.4139893</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"\nMini-batch k-means:\n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -357,9 +363,9 @@
 <span></span>
 <span><span class="va">evoc_res</span></span>
 <span><span class="co">#&gt; Evoc</span></span>
-<span><span class="co">#&gt;   layers:               3 </span></span>
+<span><span class="co">#&gt;   layers:               4 </span></span>
 <span><span class="co">#&gt;   best layer:           3 </span></span>
-<span><span class="co">#&gt;   best persistence:     2588.148 </span></span>
+<span><span class="co">#&gt;   best persistence:     2547.222 </span></span>
 <span><span class="co">#&gt;   knn:                  not stored</span></span></code></pre></div>
 </div>
 <div class="cell">
@@ -369,7 +375,7 @@
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Selected layer:"</span>, <span class="va">evoc_best</span><span class="op">$</span><span class="va">layer</span>, <span class="st">"\n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Selected layer: 3</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Persistence score:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">evoc_best</span><span class="op">$</span><span class="va">persistence</span>, <span class="fl">4</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Persistence score: 2588.148</span></span>
+<span><span class="co">#&gt; Persistence score: 2547.222</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span></span>
 <span>  <span class="st">"Clusters found:"</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">evoc_best</span><span class="op">$</span><span class="va">labels</span><span class="op">[</span><span class="va">evoc_best</span><span class="op">$</span><span class="va">labels</span> <span class="op">!=</span> <span class="op">-</span><span class="fl">1L</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>,</span>

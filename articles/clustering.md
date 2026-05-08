@@ -1,4 +1,4 @@
-# Clustering methods in manifoldsR
+# Clustering methods in manifoldsR (with emphasis on EVoC)
 
 ## Clustering in manifoldsR
 
@@ -11,10 +11,16 @@ inertia) so you can assess the results without having to load in another
 package (of course also made fast in Rust – you know the drill).
 
 ``` r
+
 library(manifoldsR)
 library(magrittr)
 library(ggplot2)
 library(data.table)
+#> 
+#> Attaching package: 'data.table'
+#> The following object is masked from 'package:base':
+#> 
+#>     %notin%
 ```
 
 ### Algorithms at a glance
@@ -77,6 +83,7 @@ dimensions. This lets us evaluate clustering quality against known
 ground truth.
 
 ``` r
+
 cluster_data <- manifold_synthetic_data(
   type = "clusters",
   n_samples = 10000L,
@@ -95,6 +102,7 @@ For visualisation throughout this vignette, we compute a 2D UMAP
 embedding once and reuse it to colour by different cluster assignments.
 
 ``` r
+
 umap_embd <- umap(
   data = cluster_data$data,
   k = 15L,
@@ -110,6 +118,7 @@ base_df <- as.data.table(umap_embd) %>%
 Let’s plot the UMAP with the original cluster assignment
 
 ``` r
+
 ggplot(base_df, aes(x = UMAP1, y = UMAP2)) +
   geom_point(aes(colour = true_cluster), size = 0.5, alpha = 0.5) +
   theme_bw() +
@@ -126,6 +135,7 @@ Let’s start with the easy case – we know the true number of clusters and
 ask k-means to find exactly that.
 
 ``` r
+
 km_correct <- kmeans_cluster(
   data = cluster_data$data,
   k = n_true,
@@ -141,10 +151,11 @@ km_correct
 #>   metric:     euclidean 
 #>   k:          15 
 #>   n:          10000 
-#>   sizes:      min= 0  median= 549  max= 1375
+#>   sizes:      min= 0  median= 544  max= 1375
 ```
 
 ``` r
+
 base_df[, km_assignment := as.factor(membership(km_correct))]
 
 ggplot(base_df, aes(x = UMAP1, y = UMAP2)) +
@@ -156,10 +167,11 @@ ggplot(base_df, aes(x = UMAP1, y = UMAP2)) +
 ![](clustering_files/figure-html/kmeans%20-%20correct%20k%20plot-1.png)
 
 ``` r
+
 cat("ARI:", calc_ari(cluster_data$membership, membership(km_correct)), "\n")
-#> ARI: 0.8671962
+#> ARI: 0.8671586
 cat("Inertia:", calc_inertia(km_correct, data = cluster_data$data), "\n")
-#> Inertia: 4973351
+#> Inertia: 4973336
 cat(
   "Silhouette:",
   calc_silhouette_score(
@@ -168,7 +180,7 @@ cat(
   )$mean_silhouette,
   "\n"
 )
-#> Silhouette: 0.6270112
+#> Silhouette: 0.6270099
 ```
 
 #### Over-specifying k: full vs mini-batch
@@ -178,6 +190,7 @@ approach is to set `k` higher than expected and see what happens. This
 is where the two k-means variants behave quite differently.
 
 ``` r
+
 k_over <- 25L
 
 km_full <- kmeans_cluster(
@@ -202,6 +215,7 @@ km_mini <- kmeans_cluster(
 ```
 
 ``` r
+
 base_df[, `:=`(
   km_full_over = as.factor(membership(km_full)),
   km_mini_over = as.factor(membership(km_mini))
@@ -231,10 +245,11 @@ regions and attract very few points. The result more closely mirrors the
 true structure.
 
 ``` r
+
 cat("Full k-means:\n")
 #> Full k-means:
 cat("  ARI:", calc_ari(cluster_data$membership, membership(km_full)), "\n")
-#>   ARI: 0.7075723
+#>   ARI: 0.7085234
 cat("  Effective clusters:", length(unique(membership(km_full))), "\n")
 #>   Effective clusters: 25
 cat(
@@ -245,7 +260,7 @@ cat(
   )$mean_silhouette,
   "\n"
 )
-#>   Silhouette: 0.4141325
+#>   Silhouette: 0.4139893
 
 cat("\nMini-batch k-means:\n")
 #> 
@@ -272,6 +287,7 @@ increases. The “elbow”, the point where adding more clusters stops
 yielding meaningful improvement, suggests a reasonable `k`.
 
 ``` r
+
 k_values <- seq(2L, 30L, by = 2L)
 
 elbow_results <- lapply(k_values, function(k) {
@@ -310,6 +326,7 @@ ggplot(elbow_results, aes(x = k)) +
 ![](clustering_files/figure-html/kmeans%20-%20elbow%20plot-1.png)
 
 ``` r
+
 ggplot(elbow_results, aes(x = k, y = ari)) +
   geom_line() +
   geom_point() +
@@ -330,6 +347,7 @@ EVoC does not require specifying `k`. It discovers cluster structure
 automatically and returns multiple layers of granularity.
 
 ``` r
+
 evoc_res <- evoc(
   data = cluster_data$data,
   n_neighbours = 15L,
@@ -339,19 +357,20 @@ evoc_res <- evoc(
 
 evoc_res
 #> Evoc
-#>   layers:               3 
+#>   layers:               4 
 #>   best layer:           3 
-#>   best persistence:     2588.148 
+#>   best persistence:     2547.222 
 #>   knn:                  not stored
 ```
 
 ``` r
+
 evoc_best <- best_membership(evoc_res)
 
 cat("Selected layer:", evoc_best$layer, "\n")
 #> Selected layer: 3
 cat("Persistence score:", round(evoc_best$persistence, 4), "\n")
-#> Persistence score: 2588.148
+#> Persistence score: 2547.222
 cat(
   "Clusters found:",
   length(unique(evoc_best$labels[evoc_best$labels != -1L])),
@@ -363,6 +382,7 @@ cat("Noise points:", sum(evoc_best$labels == -1L), "\n")
 ```
 
 ``` r
+
 base_df[, evoc_label := as.factor(evoc_best$labels)]
 
 ggplot(base_df, aes(x = UMAP1, y = UMAP2)) +
@@ -377,6 +397,7 @@ We can appreciate that EVoC identified (nearly) perfectly the ground
 truth…
 
 ``` r
+
 # exclude noise points for ARI
 non_noise <- evoc_best$labels != -1L
 cat(
@@ -399,6 +420,7 @@ ranked by persistence. Layers with higher persistence scores represent
 more stable cluster structures.
 
 ``` r
+
 n_layers <- length(evoc_res$persistence_scores)
 
 persistence_df <- data.table(
@@ -431,6 +453,7 @@ the minimum cluster size parameter to target approximately that many
 clusters, returning a single layer.
 
 ``` r
+
 evoc_approx <- evoc(
   data = cluster_data$data,
   n_neighbours = 15L,
@@ -455,6 +478,7 @@ cat(
 Let’s just compare at the end the methods
 
 ``` r
+
 base_df[, evoc_approx_label := as.factor(evoc_approx_best$labels)]
 
 p_true <- ggplot(base_df, aes(x = UMAP1, y = UMAP2)) +

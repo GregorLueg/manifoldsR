@@ -3,6 +3,7 @@
 <url><loc>https://gregorlueg.github.io/manifoldsR/LICENSE-text.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/LICENSE.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/articles/clustering.html</loc></url>
+<url><loc>https://gregorlueg.github.io/manifoldsR/articles/diffusion_map.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/articles/index.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/articles/knn_searches.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/articles/pacmap.html</loc></url>
@@ -13,6 +14,7 @@
 <url><loc>https://gregorlueg.github.io/manifoldsR/index.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/news/index.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/assertCellTrajectories.html</loc></url>
+<url><loc>https://gregorlueg.github.io/manifoldsR/reference/assertDiffusionMapsParams.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/assertEvocParams.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/assertKmeansParams.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/assertNnParams.html</loc></url>
@@ -25,6 +27,7 @@
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/calc_inertia.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/calc_silhouette_score.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/checkCellTrajectories.html</loc></url>
+<url><loc>https://gregorlueg.github.io/manifoldsR/reference/checkDiffusionMapsParams.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/checkEvocParams.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/checkKmeansParams.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/checkNnParams.html</loc></url>
@@ -32,7 +35,9 @@
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/checkPhateParams.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/checkTsneParams.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/checkUmapParams.html</loc></url>
+<url><loc>https://gregorlueg.github.io/manifoldsR/reference/diffusion_maps.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/dim.NearestNeighbours.html</loc></url>
+<url><loc>https://gregorlueg.github.io/manifoldsR/reference/dot-prepare_diffusion_maps_params.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/dot-prepare_evoc_params.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/dot-prepare_pacmap_params.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/dot-prepare_phate_params.html</loc></url>
@@ -57,6 +62,7 @@
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/new_nearest_neighbour.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/pacmap.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/params_clusters.html</loc></url>
+<url><loc>https://gregorlueg.github.io/manifoldsR/reference/params_diffusion_maps.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/params_evoc.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/params_hierarchical.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/params_kmeans.html</loc></url>
@@ -64,6 +70,7 @@
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/params_pacmap.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/params_phate.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/params_swiss_role.html</loc></url>
+<url><loc>https://gregorlueg.github.io/manifoldsR/reference/params_swiss_role_biased.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/params_trajectory.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/params_tsne.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/params_umap.html</loc></url>
@@ -74,10 +81,13 @@
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/rs_approx_nearest_neighbours.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/rs_ari.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/rs_check_cluster_separation.html</loc></url>
+<url><loc>https://gregorlueg.github.io/manifoldsR/reference/rs_data_biased_swiss_role.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/rs_data_clusters.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/rs_data_hierarchical.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/rs_data_swiss_role.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/rs_data_trajectory.html</loc></url>
+<url><loc>https://gregorlueg.github.io/manifoldsR/reference/rs_diffusion_maps.html</loc></url>
+<url><loc>https://gregorlueg.github.io/manifoldsR/reference/rs_diffusion_maps_from_knn.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/rs_evoc.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/rs_evoc_from_knn.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/rs_intertia.html</loc></url>

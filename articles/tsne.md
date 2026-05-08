@@ -11,10 +11,16 @@ available, based on the brilliant work of [George, et
 al.](https://www.nature.com/articles/s41592-018-0308-4).
 
 ``` r
+
 library(manifoldsR)
 library(magrittr)
 library(ggplot2)
 library(data.table)
+#> 
+#> Attaching package: 'data.table'
+#> The following object is masked from 'package:base':
+#> 
+#>     %notin%
 ```
 
 ### Intro
@@ -64,6 +70,7 @@ We use the same synthetic datasets as in the UMAP vignette for direct
 comparison.
 
 ``` r
+
 cluster_data <- manifold_synthetic_data(
   type = "cluster",
   n_samples = 25000L
@@ -86,6 +93,7 @@ t-SNE is well known for producing crisp cluster separation. Let’s see
 how it handles the clustered synthetic data. But first, let’s check PCA…
 
 ``` r
+
 pca_clusters <- prcomp(cluster_data$data)
 
 pca_clusters_df <- as.data.table(pca_clusters$x[, 1:2]) %>%
@@ -106,6 +114,7 @@ ggplot(
 And now tSNE:
 
 ``` r
+
 tsne_clusters <- tsne(
   data = cluster_data$data,
   perplexity = 30,
@@ -140,6 +149,7 @@ emphasise the global structure more. Similar to last UMAP, let’s start
 with PCA:
 
 ``` r
+
 pca_swiss_role <- prcomp(swissrole_data$data)
 
 pca_swiss_role_df <- as.data.table(pca_swiss_role$x[, 1:2]) %>%
@@ -166,6 +176,7 @@ ggplot(
 And compare against tSNE:
 
 ``` r
+
 tsne_swissrole <- tsne(
   data = swissrole_data$data,
   knn_method = "exhaustive",
@@ -204,6 +215,7 @@ manifold unrolling methods (check out PHATE here).
 Lastly, let’s look at trajectory type data…
 
 ``` r
+
 pca_trajectory <- prcomp(trajectory_data$data)
 
 pca_trajectory_df <- as.data.table(pca_trajectory$x[, 1:2]) %>%
@@ -228,9 +240,10 @@ ggplot(
 And tSNE
 
 ``` r
+
 tsne_trajectory <- tsne(
   data = trajectory_data$data,
-  perplexity = 45,
+  perplexity = 25,
   seed = 42L
 )
 
@@ -270,6 +283,7 @@ kNN graph fixed (e.g. varying perplexity or the number of epochs), you
 can precompute the kNN graph and pass it in directly.
 
 ``` r
+
 precomputed_knn <- generate_knn_graph(
   data = cluster_data$data,
   k = 30L, # we will use 30 neighbours here...
@@ -279,7 +293,7 @@ precomputed_knn <- generate_knn_graph(
 tsne_from_knn <- tsne(
   data = cluster_data$data,
   knn = precomputed_knn,
-  perplexity = 30,
+  perplexity = 10,
   seed = 42L
 )
 #> Using provided kNN graph.
@@ -303,10 +317,11 @@ Now we can quickly re-run with different t-SNE parameters without
 repeating the kNN search:
 
 ``` r
+
 tsne_from_knn_highperplex <- tsne(
   data = cluster_data$data,
   knn = precomputed_knn,
-  perplexity = 100,
+  perplexity = 15,
   tsne_params = params_tsne(n_epochs = 300L, lr = 100.0), # we will stop early to show a weirder embedding
   seed = 42L
 )
@@ -338,6 +353,7 @@ becomes interesting in situations of ≥ 100,000 samples and more.
 **Note: the FFT variant is only available on Unix-based systems!**
 
 ``` r
+
 tsne_fft <- tsne(
   data = cluster_data$data,
   perplexity = 30,
@@ -372,6 +388,7 @@ C++ BH t-SNE code). The `tsne` package (pure R, naive `O(N^2)`
 implementation) is just too slow to be worth comparing here…
 
 ``` r
+
 benchmark_data <- manifold_synthetic_data(
   type = "cluster",
   n_samples = 5000L
@@ -399,17 +416,19 @@ microbenchmark::microbenchmark(
 )
 #> Unit: seconds
 #>         expr       min        lq      mean    median        uq       max neval
-#>        Rtsne 11.336091 11.336091 11.336091 11.336091 11.336091 11.336091     1
-#>  manifold_bh  4.526971  4.526971  4.526971  4.526971  4.526971  4.526971     1
+#>        Rtsne 11.962777 11.962777 11.962777 11.962777 11.962777 11.962777     1
+#>  manifold_bh  4.371469  4.371469  4.371469  4.371469  4.371469  4.371469     1
 ```
 
 The impact here is massive already. Let’s see what happens with BH and
-FFT?
+FFT? (To note, FFT’s advantage becomes larger the bigger the data set
+due to its `O(N)` complexity.)
 
 ``` r
+
 benchmark_data_large <- manifold_synthetic_data(
   type = "cluster",
-  n_samples = 50000L
+  n_samples = 75000L
 )
 
 microbenchmark::microbenchmark(
@@ -434,9 +453,9 @@ microbenchmark::microbenchmark(
   times = 1L
 )
 #> Unit: seconds
-#>          expr      min       lq     mean   median       uq      max neval
-#>   manifold_bh 72.13245 72.13245 72.13245 72.13245 72.13245 72.13245     1
-#>  manifold_fft 30.43006 30.43006 30.43006 30.43006 30.43006 30.43006     1
+#>          expr       min        lq      mean    median        uq       max neval
+#>   manifold_bh 105.19965 105.19965 105.19965 105.19965 105.19965 105.19965     1
+#>  manifold_fft  34.21267  34.21267  34.21267  34.21267  34.21267  34.21267     1
 ```
 
 The speed advantage of the Rust implementation comes from a combination

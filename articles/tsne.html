@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -41,7 +41,8 @@
     <li><a class="dropdown-item" href="../articles/tsne.html">Using t-SNE</a></li>
     <li><a class="dropdown-item" href="../articles/phate.html">Using PHATE</a></li>
     <li><a class="dropdown-item" href="../articles/pacmap.html">Using PaCMAP</a></li>
-    <li><a class="dropdown-item" href="../articles/clustering.html">Clustering methods in manifoldsR</a></li>
+    <li><a class="dropdown-item" href="../articles/diffusion_map.html">Using diffusion maps</a></li>
+    <li><a class="dropdown-item" href="../articles/clustering.html">Clustering methods in manifoldsR (with emphasis on EVoC)</a></li>
   </ul>
 </li>
       </ul>
@@ -62,7 +63,7 @@
       <h1>Using t-SNE</h1>
 
       <p class="author">Gregor Lueg</p>
-
+      <p class="date">2026-05-08</p>
 
 
       <div class="d-none name"><code></code></div>
@@ -81,7 +82,12 @@
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://gregorlueg.github.io/manifoldsR/">manifoldsR</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://magrittr.tidyverse.org" class="external-link">magrittr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com" class="external-link">data.table</a></span><span class="op">)</span></span></code></pre></div>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com" class="external-link">data.table</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Attaching package: 'data.table'</span></span>
+<span><span class="co">#&gt; The following object is masked from 'package:base':</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     %notin%</span></span></code></pre></div>
 </div>
 <section class="level2"><h3 id="intro">Intro<a class="anchor" aria-label="anchor" href="#intro"></a>
 </h3>
@@ -272,7 +278,7 @@
 <div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tsne_trajectory</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tsne.html">tsne</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">trajectory_data</span><span class="op">$</span><span class="va">data</span>,</span>
-<span>  perplexity <span class="op">=</span> <span class="fl">45</span>,</span>
+<span>  perplexity <span class="op">=</span> <span class="fl">25</span>,</span>
 <span>  seed <span class="op">=</span> <span class="fl">42L</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -316,7 +322,7 @@
 <span><span class="va">tsne_from_knn</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tsne.html">tsne</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">cluster_data</span><span class="op">$</span><span class="va">data</span>,</span>
 <span>  knn <span class="op">=</span> <span class="va">precomputed_knn</span>,</span>
-<span>  perplexity <span class="op">=</span> <span class="fl">30</span>,</span>
+<span>  perplexity <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  seed <span class="op">=</span> <span class="fl">42L</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Using provided kNN graph.</span></span>
@@ -345,7 +351,7 @@
 <code class="sourceCode R"><span><span class="va">tsne_from_knn_highperplex</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tsne.html">tsne</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">cluster_data</span><span class="op">$</span><span class="va">data</span>,</span>
 <span>  knn <span class="op">=</span> <span class="va">precomputed_knn</span>,</span>
-<span>  perplexity <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>  perplexity <span class="op">=</span> <span class="fl">15</span>,</span>
 <span>  tsne_params <span class="op">=</span> <span class="fu"><a href="../reference/params_tsne.html">params_tsne</a></span><span class="op">(</span>n_epochs <span class="op">=</span> <span class="fl">300L</span>, lr <span class="op">=</span> <span class="fl">100.0</span><span class="op">)</span>, <span class="co"># we will stop early to show a weirder embedding</span></span>
 <span>  seed <span class="op">=</span> <span class="fl">42L</span></span>
 <span><span class="op">)</span></span>
@@ -433,15 +439,15 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;         expr       min        lq      mean    median        uq       max neval</span></span>
-<span><span class="co">#&gt;        Rtsne 11.336091 11.336091 11.336091 11.336091 11.336091 11.336091     1</span></span>
-<span><span class="co">#&gt;  manifold_bh  4.526971  4.526971  4.526971  4.526971  4.526971  4.526971     1</span></span></code></pre></div>
+<span><span class="co">#&gt;        Rtsne 11.962777 11.962777 11.962777 11.962777 11.962777 11.962777     1</span></span>
+<span><span class="co">#&gt;  manifold_bh  4.371469  4.371469  4.371469  4.371469  4.371469  4.371469     1</span></span></code></pre></div>
 </div>
-<p>The impact here is massive already. Let’s see what happens with BH and FFT?</p>
+<p>The impact here is massive already. Let’s see what happens with BH and FFT? (To note, FFT’s advantage becomes larger the bigger the data set due to its <code>O(N)</code> complexity.)</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">benchmark_data_large</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/manifold_synthetic_data.html">manifold_synthetic_data</a></span><span class="op">(</span></span>
 <span>  type <span class="op">=</span> <span class="st">"cluster"</span>,</span>
-<span>  n_samples <span class="op">=</span> <span class="fl">50000L</span></span>
+<span>  n_samples <span class="op">=</span> <span class="fl">75000L</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">microbenchmark</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html" class="external-link">microbenchmark</a></span><span class="op">(</span></span>
@@ -466,9 +472,9 @@
 <span>  times <span class="op">=</span> <span class="fl">1L</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
-<span><span class="co">#&gt;          expr      min       lq     mean   median       uq      max neval</span></span>
-<span><span class="co">#&gt;   manifold_bh 72.13245 72.13245 72.13245 72.13245 72.13245 72.13245     1</span></span>
-<span><span class="co">#&gt;  manifold_fft 30.43006 30.43006 30.43006 30.43006 30.43006 30.43006     1</span></span></code></pre></div>
+<span><span class="co">#&gt;          expr       min        lq      mean    median        uq       max neval</span></span>
+<span><span class="co">#&gt;   manifold_bh 105.19965 105.19965 105.19965 105.19965 105.19965 105.19965     1</span></span>
+<span><span class="co">#&gt;  manifold_fft  34.21267  34.21267  34.21267  34.21267  34.21267  34.21267     1</span></span></code></pre></div>
 </div>
 <p>The speed advantage of the Rust implementation comes from a combination of optimised memory layout, aggressive inlining, and the fact that the entire pipeline — kNN construction, probability computation, and gradient descent — runs within the Rust kernel without round-tripping through R. If you like tSNE, but thought it’s too slow… we got you.</p>
 </section></section><script id="quarto-html-after-body" type="application/javascript">

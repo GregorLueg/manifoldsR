@@ -9,10 +9,16 @@ dimensionality reduction method specifically designed for recovering
 continuous structure and trajectories in high-dimensional data.
 
 ``` r
+
 library(manifoldsR)
 library(magrittr)
 library(ggplot2)
 library(data.table)
+#> 
+#> Attaching package: 'data.table'
+#> The following object is masked from 'package:base':
+#> 
+#>     %notin%
 ```
 
 ### Intro
@@ -60,6 +66,7 @@ We use the same synthetic datasets as in the UMAP and t-SNE vignette for
 direct comparison.
 
 ``` r
+
 cluster_data <- manifold_synthetic_data(
   type = "cluster",
   n_samples = 10000L
@@ -85,6 +92,7 @@ expected failure mode, and it is worth seeing what it looks like.
 Similar to the others, let’s start first with PCA:
 
 ``` r
+
 pca_clusters <- prcomp(cluster_data$data)
 
 pca_clusters_df <- as.data.table(pca_clusters$x[, 1:2]) %>%
@@ -105,6 +113,7 @@ ggplot(
 And now check PHATE:
 
 ``` r
+
 phate_clusters <- phate(
   data = cluster_data$data,
   k = 15L,
@@ -137,6 +146,7 @@ meaningfully better than t-SNE or UMAP. The diffusion process captures
 the smooth geometry of the roll rather than tearing it apart.
 
 ``` r
+
 phate_swissrole <- phate(
   data = swissrole_data$data,
   k = 15L,
@@ -160,7 +170,7 @@ ggplot(
   ) +
   scale_fill_viridis_c() +
   theme_bw() +
-  ggtitle("PCA on swissrole data")
+  ggtitle("PHATE on swissrole data")
 ```
 
 ![](phate_files/figure-html/swissrole%20data%20-%20phate-1.png)
@@ -175,6 +185,7 @@ The trajectory data is where PHATE was built to shine. Branching
 trajectories are the canonical use case.
 
 ``` r
+
 phate_trajectory <- phate(
   data = trajectory_data$data,
   k = 15L,
@@ -214,6 +225,7 @@ without repeating the kNN search, you can precompute the graph and pass
 it directly.
 
 ``` r
+
 precomputed_knn <- generate_knn_graph(
   data = trajectory_data$data,
   k = 15L,
@@ -251,6 +263,7 @@ For example, trying a fixed diffusion time rather than automatic
 selection:
 
 ``` r
+
 phate_from_knn_fixed_t <- phate(
   data = trajectory_data$data,
   knn = precomputed_knn,
@@ -312,6 +325,7 @@ materialise a `N x N` dense matrix, calculated the potential distances
 over `N x N`, instead of `N x L`, etc.
 
 ``` r
+
 large_trajectory <- manifold_synthetic_data(
   type = "trajectory",
   n_samples = 50000L
@@ -349,6 +363,7 @@ We can even further accelerate this with the density or random-based
 version
 
 ``` r
+
 large_trajectory <- manifold_synthetic_data(
   type = "trajectory",
   n_samples = 50000L
@@ -392,6 +407,7 @@ implementation, itself a wrapper around the Python `phate` library) on
 the trajectory data.
 
 ``` r
+
 local({
   env_name <- "r-manifolds"
 
@@ -455,14 +471,18 @@ microbenchmark::microbenchmark(
   times = 1L
 )
 #> Unit: seconds
-#>            expr      min       lq     mean   median       uq      max neval
-#>          phateR 12.61916 12.61916 12.61916 12.61916 12.61916 12.61916     1
-#>  manifold_phate 10.28477 10.28477 10.28477 10.28477 10.28477 10.28477     1
+#>            expr       min        lq      mean    median        uq       max
+#>          phateR 11.538472 11.538472 11.538472 11.538472 11.538472 11.538472
+#>  manifold_phate  9.406992  9.406992  9.406992  9.406992  9.406992  9.406992
+#>  neval
+#>      1
+#>      1
 ```
 
 And on a larger data set with additionally the random landmark version
 
 ``` r
+
 benchmark_data_large <- manifold_synthetic_data(
   type = "trajectory",
   n_samples = 100000L
@@ -499,11 +519,12 @@ microbenchmark::microbenchmark(
   },
   times = 1L
 )
+#>     SGD-MDS may not have converged: stress changed by -1.9% in final iterations. Consider increasing n_iter or adjusting learning_rate.
 #> Unit: seconds
 #>                     expr      min       lq     mean   median       uq      max
-#>                   phateR 55.47032 55.47032 55.47032 55.47032 55.47032 55.47032
-#>  manifold_phate_spectral 25.44042 25.44042 25.44042 25.44042 25.44042 25.44042
-#>    manifold_phate_random 19.38427 19.38427 19.38427 19.38427 19.38427 19.38427
+#>                   phateR 55.77747 55.77747 55.77747 55.77747 55.77747 55.77747
+#>  manifold_phate_spectral 61.70343 61.70343 61.70343 61.70343 61.70343 61.70343
+#>    manifold_phate_random 15.65289 15.65289 15.65289 15.65289 15.65289 15.65289
 #>  neval
 #>      1
 #>      1

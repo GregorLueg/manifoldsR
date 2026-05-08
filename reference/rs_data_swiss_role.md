@@ -25,4 +25,4 @@ rs_data_swiss_role(n_samples, noise, seed)
 
 ## Value
 
-The Swiss role synthetic data with the desired parameters.
+The swiss role synthetic data with the desired parameters.

@@ -9,10 +9,16 @@ version is to use a Rust-based version, R purely as an interface, and
 accelerate the algorithm even further.
 
 ``` r
+
 library(manifoldsR)
 library(magrittr)
 library(ggplot2)
 library(data.table)
+#> 
+#> Attaching package: 'data.table'
+#> The following object is masked from 'package:base':
+#> 
+#>     %notin%
 ```
 
 ### Intro
@@ -43,6 +49,7 @@ We are going to generate three different data sets to showcase the
 strengths (and weaknesses) of UMAP:
 
 ``` r
+
 cluster_data <- manifold_synthetic_data(
   type = "cluster",
   n_samples = 25000L
@@ -66,6 +73,7 @@ clusters. We will first contrast this against standard PCA to have some
 bases…
 
 ``` r
+
 pca_clusters <- prcomp(cluster_data$data)
 
 pca_clusters_df <- as.data.table(pca_clusters$x[, 1:2]) %>%
@@ -90,6 +98,7 @@ start using the traditional stochastic gradient descent approach like in
 the original work and look at other (faster) optimisers later.
 
 ``` r
+
 umap_clusters <- umap(
   data = cluster_data$data,
   min_dist = 0.3, # for sgd lower min dist is usually better
@@ -124,6 +133,7 @@ look at the SwissRole example.
 #### Swissrole
 
 ``` r
+
 pca_swiss_role <- prcomp(swissrole_data$data)
 
 pca_swiss_role_df <- as.data.table(pca_swiss_role$x[, 1:2]) %>%
@@ -151,6 +161,7 @@ PCA clearly captures the Swissrole structure. How does UMAP perform here
 … ?
 
 ``` r
+
 umap_swissrole <- umap(
   data = swissrole_data$data,
   knn_method = "exhaustive",
@@ -191,6 +202,7 @@ This is also apparent in the trajectory type data, see below:
 Let’s start with PCA again
 
 ``` r
+
 pca_trajectory <- prcomp(trajectory_data$data)
 
 pca_trajectory_df <- as.data.table(pca_trajectory$x[, 1:2]) %>%
@@ -219,6 +231,7 @@ ggplot(
 We can appreciate the branching and the continuum in the data.
 
 ``` r
+
 umap_trajectory <- umap(
   data = trajectory_data$data,
   knn_method = "exhaustive",
@@ -262,6 +275,7 @@ the number of neighbours constant), you can also provide the
 NearestNeighbour class to the algorithm, see below:
 
 ``` r
+
 precomputed_knn <- generate_knn_graph(
   data = cluster_data$data,
   k = 15L,
@@ -299,6 +313,7 @@ ggplot(
 Let’s run quickly with different parameters
 
 ``` r
+
 umap_clusters_from_knn <- umap(
   data = cluster_data$data,
   knn = precomputed_knn,
@@ -335,6 +350,7 @@ deal with LARGE data sets you throw at the problem and it can generate
 the embeddings very fast. Let’s check out the other optimisers:
 
 ``` r
+
 umap_clusters <- umap(
   data = cluster_data$data,
   umap_params = params_umap(optimiser = "adam")
@@ -364,6 +380,7 @@ embeddings. But let’s look at the fast version… Parallised Adam (the
 default):
 
 ``` r
+
 umap_clusters <- umap(
   data = cluster_data$data
 )
@@ -395,6 +412,7 @@ Rayon. In terms of how does this version compare against other versions,
 let’s do a benchmark:
 
 ``` r
+
 # set up the venv for the Python part/dependencies
 local({
   env_name <- "r-manifolds"
@@ -474,17 +492,17 @@ microbenchmark::microbenchmark(
 )
 #> Unit: milliseconds
 #>             expr        min         lq       mean     median         uq
-#>             umap 23214.8868 23214.8868 23214.8868 23214.8868 23214.8868
-#>  umap_reticulate 18716.5314 18716.5314 18716.5314 18716.5314 18716.5314
-#>             uwot  6032.7033  6032.7033  6032.7033  6032.7033  6032.7033
-#>          uwot_v2  3056.6300  3056.6300  3056.6300  3056.6300  3056.6300
-#>    manifold_umap   675.6151   675.6151   675.6151   675.6151   675.6151
+#>             umap 21693.4742 21693.4742 21693.4742 21693.4742 21693.4742
+#>  umap_reticulate 19414.5881 19414.5881 19414.5881 19414.5881 19414.5881
+#>             uwot  4962.5846  4962.5846  4962.5846  4962.5846  4962.5846
+#>          uwot_v2  3241.2671  3241.2671  3241.2671  3241.2671  3241.2671
+#>    manifold_umap   695.4016   695.4016   695.4016   695.4016   695.4016
 #>         max neval
-#>  23214.8868     1
-#>  18716.5314     1
-#>   6032.7033     1
-#>   3056.6300     1
-#>    675.6151     1
+#>  21693.4742     1
+#>  19414.5881     1
+#>   4962.5846     1
+#>   3241.2671     1
+#>    695.4016     1
 ```
 
 We can appreciate that the standard R version is slow (as expected). If
@@ -495,6 +513,7 @@ are the fastest here. Let’s pit them together against each other in a
 larger data set.
 
 ``` r
+
 benchmark_data_2 <- manifold_synthetic_data(
   type = "cluster",
   n_samples = 50000L
@@ -516,8 +535,8 @@ microbenchmark::microbenchmark(
 )
 #> Unit: seconds
 #>           expr       min        lq      mean    median        uq       max
-#>        uwot_v2 26.000657 26.000657 26.000657 26.000657 26.000657 26.000657
-#>  manifold_umap  9.079631  9.079631  9.079631  9.079631  9.079631  9.079631
+#>        uwot_v2 25.629875 25.629875 25.629875 25.629875 25.629875 25.629875
+#>  manifold_umap  9.293849  9.293849  9.293849  9.293849  9.293849  9.293849
 #>  neval
 #>      1
 #>      1

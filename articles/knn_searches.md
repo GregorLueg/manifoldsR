@@ -9,10 +9,12 @@ used to avoid recomputing the kNN graph if you wish to test different
 parameters.
 
 ``` r
+
 library(manifoldsR)
 ```
 
 ``` r
+
 # number neighbours
 k <- 10L
 
@@ -25,6 +27,7 @@ n_samples <- 1000L
 We will generate some synthetic data and test the different methods out.
 
 ``` r
+
 cluster_data <- manifold_synthetic_data(
   type = "cluster",
   n_samples = n_samples
@@ -39,6 +42,7 @@ locality. On small data sets, this one might in times be even faster
 than the approximate searches we will discuss subsequently.
 
 ``` r
+
 exhaustive <- generate_knn_graph(
   data = cluster_data$data,
   k = k,
@@ -56,6 +60,7 @@ note is that the indices are *0-based (from Rust)*, so if you wish to
 use them in R, you need to be aware of this!
 
 ``` r
+
 # flat representation of the indices
 indices_flat <- get_idx_flat(exhaustive)
 
@@ -66,6 +71,7 @@ indices_mat <- get_idx_mat(exhaustive)
 The distances can also be extracted easily:
 
 ``` r
+
 # flat representation of the distances
 dist_flat <- get_dist_flat(exhaustive)
 
@@ -80,6 +86,7 @@ k-means and triangle inequality to reduce the number of searches - a
 has strong structure.
 
 ``` r
+
 kmknn <- generate_knn_graph(
   data = cluster_data$data,
   k = k,
@@ -93,6 +100,7 @@ kmknn
 ```
 
 ``` r
+
 all(get_idx_flat(kmknn) == get_idx_flat(exhaustive))
 #> [1] TRUE
 ```
@@ -105,13 +113,13 @@ crate](https://github.com/GregorLueg/ann-search-rs) which provides
 various approximate nearest neighbour searches. The 4 methods exposed in
 this package are (+ the exhaustive version above):
 
-| Method    | Features                                                                                                                                                            | Class         | Use case                                                                                                                                                                                                                                                           |
-|-----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| BallTree  | Simple method, good for small data sets (≤ 100,000)                                                                                                                 | Tree-based    | Small data sets, small dimensionality                                                                                                                                                                                                                              |
-| Annoy     | Classic in single cell, scales well to data sets of up to 500,000                                                                                                   | Tree-based    | Large data sets, small dimensionality                                                                                                                                                                                                                              |
-| HNSW      | Powerful on large datasets (≥ 500,000), slightly slower index build type, fast queries. The implementation here uses a benign race condition during index building. | Graph-based   | Large data sets, small to large dimensionality                                                                                                                                                                                                                     |
-| NNDescent | Another graph-based version, good all-rounder when certain sizes are reached (≥ 100,000)                                                                            | Graph-based   | Medium data sets, small to large dimensionality                                                                                                                                                                                                                    |
-| IVF       | A fast cluster-based index powering libraries like FAISS.                                                                                                           | Cluster-based | Large data sets, any dimensionality. You can squeeze out aggressively speed with the n_probe parameter if need be. Be careful to set n_list pending your data structure. If you have few well defined data clusters, it is better to set it lower for this method. |
+| Method | Features | Class | Use case |
+|----|----|----|----|
+| BallTree | Simple method, good for small data sets (≤ 100,000) | Tree-based | Small data sets, small dimensionality |
+| Annoy | Classic in single cell, scales well to data sets of up to 500,000 | Tree-based | Large data sets, small dimensionality |
+| HNSW | Powerful on large datasets (≥ 500,000), slightly slower index build type, fast queries. The implementation here uses a benign race condition during index building. | Graph-based | Large data sets, small to large dimensionality |
+| NNDescent | Another graph-based version, good all-rounder when certain sizes are reached (≥ 100,000) | Graph-based | Medium data sets, small to large dimensionality |
+| IVF | A fast cluster-based index powering libraries like FAISS. | Cluster-based | Large data sets, any dimensionality. You can squeeze out aggressively speed with the n_probe parameter if need be. Be careful to set n_list pending your data structure. If you have few well defined data clusters, it is better to set it lower for this method. |
 
 manifoldsR defaults to `kMkNN`, but you can play around with the
 parameters & methods. The package was written with massive scale in
@@ -125,6 +133,7 @@ samples, some of the other methods will shine.
 Let’s just have a look on how they perform on different sizes
 
 ``` r
+
 microbenchmark::microbenchmark(
   exhaustive = {
     generate_knn_graph(
@@ -189,13 +198,13 @@ microbenchmark::microbenchmark(
 )
 #> Unit: milliseconds
 #>        expr       min        lq      mean    median        uq       max neval
-#>  exhaustive  6.387373  6.387373  6.387373  6.387373  6.387373  6.387373     1
-#>       kmknn  6.029792  6.029792  6.029792  6.029792  6.029792  6.029792     1
-#>       annoy 27.153208 27.153208 27.153208 27.153208 27.153208 27.153208     1
-#>        hnsw 19.550779 19.550779 19.550779 19.550779 19.550779 19.550779     1
-#>    balltree  4.037483  4.037483  4.037483  4.037483  4.037483  4.037483     1
-#>   nndescent 50.040127 50.040127 50.040127 50.040127 50.040127 50.040127     1
-#>         ivf  5.512862  5.512862  5.512862  5.512862  5.512862  5.512862     1
+#>  exhaustive  6.739509  6.739509  6.739509  6.739509  6.739509  6.739509     1
+#>       kmknn  6.033993  6.033993  6.033993  6.033993  6.033993  6.033993     1
+#>       annoy 28.330005 28.330005 28.330005 28.330005 28.330005 28.330005     1
+#>        hnsw 18.956202 18.956202 18.956202 18.956202 18.956202 18.956202     1
+#>    balltree  3.957832  3.957832  3.957832  3.957832  3.957832  3.957832     1
+#>   nndescent 42.345866 42.345866 42.345866 42.345866 42.345866 42.345866     1
+#>         ivf  5.836295  5.836295  5.836295  5.836295  5.836295  5.836295     1
 ```
 
 On small datasets, the exhaustive search beats everything. We need to
@@ -205,6 +214,7 @@ SIMD can do the necessary `O(N^2)` in no time on smaller datasets. What
 about 50k cells?
 
 ``` r
+
 benchmark_data <- manifold_synthetic_data(
   type = "cluster",
   n_samples = 50000L
@@ -273,14 +283,14 @@ microbenchmark::microbenchmark(
   times = 1L # single comparison for speed
 )
 #> Unit: seconds
-#>        expr      min       lq     mean   median       uq      max neval
-#>  exhaustive 9.207060 9.207060 9.207060 9.207060 9.207060 9.207060     1
-#>       kmknn 2.416234 2.416234 2.416234 2.416234 2.416234 2.416234     1
-#>       annoy 3.377985 3.377985 3.377985 3.377985 3.377985 3.377985     1
-#>        hnsw 2.605419 2.605419 2.605419 2.605419 2.605419 2.605419     1
-#>    balltree 1.289521 1.289521 1.289521 1.289521 1.289521 1.289521     1
-#>   nndescent 3.573272 3.573272 3.573272 3.573272 3.573272 3.573272     1
-#>         ivf 2.610498 2.610498 2.610498 2.610498 2.610498 2.610498     1
+#>        expr       min        lq      mean    median        uq       max neval
+#>  exhaustive 11.703229 11.703229 11.703229 11.703229 11.703229 11.703229     1
+#>       kmknn  2.661916  2.661916  2.661916  2.661916  2.661916  2.661916     1
+#>       annoy  3.467459  3.467459  3.467459  3.467459  3.467459  3.467459     1
+#>        hnsw  2.577452  2.577452  2.577452  2.577452  2.577452  2.577452     1
+#>    balltree  1.563946  1.563946  1.563946  1.563946  1.563946  1.563946     1
+#>   nndescent  2.914105  2.914105  2.914105  2.914105  2.914105  2.914105     1
+#>         ivf  2.851967  2.851967  2.851967  2.851967  2.851967  2.851967     1
 ```
 
 We start observing the first pattern, that the approximate nearest
@@ -288,6 +298,7 @@ neighbour searches are faster than the exhaustive search. The delta
 becomes more pronounced with more samples:
 
 ``` r
+
 benchmark_data <- manifold_synthetic_data(
   type = "cluster",
   n_samples = 100000L
@@ -358,13 +369,13 @@ microbenchmark::microbenchmark(
 )
 #> Unit: seconds
 #>        expr       min        lq      mean    median        uq       max neval
-#>  exhaustive 36.503190 36.503190 36.503190 36.503190 36.503190 36.503190     1
-#>       kmknn  7.002098  7.002098  7.002098  7.002098  7.002098  7.002098     1
-#>       annoy  9.443147  9.443147  9.443147  9.443147  9.443147  9.443147     1
-#>        hnsw  6.559948  6.559948  6.559948  6.559948  6.559948  6.559948     1
-#>    balltree  4.793720  4.793720  4.793720  4.793720  4.793720  4.793720     1
-#>   nndescent  8.292144  8.292144  8.292144  8.292144  8.292144  8.292144     1
-#>         ivf 10.075829 10.075829 10.075829 10.075829 10.075829 10.075829     1
+#>  exhaustive 46.791012 46.791012 46.791012 46.791012 46.791012 46.791012     1
+#>       kmknn  7.943377  7.943377  7.943377  7.943377  7.943377  7.943377     1
+#>       annoy  8.783292  8.783292  8.783292  8.783292  8.783292  8.783292     1
+#>        hnsw  6.630387  6.630387  6.630387  6.630387  6.630387  6.630387     1
+#>    balltree  5.942741  5.942741  5.942741  5.942741  5.942741  5.942741     1
+#>   nndescent  6.636090  6.636090  6.636090  6.636090  6.636090  6.636090     1
+#>         ivf 10.882657 10.882657 10.882657 10.882657 10.882657 10.882657     1
 ```
 
 #### Precision
@@ -375,6 +386,7 @@ good they are at recovering the true neighbours. A typical metric is
 here:
 
 ``` r
+
 samples <- 25000L
 
 benchmark_data <- manifold_synthetic_data(

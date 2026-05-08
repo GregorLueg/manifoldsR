@@ -7,7 +7,7 @@ data to test manifold learning techniques and demonstrate differences.
 
 ``` r
 manifold_synthetic_data(
-  type = c("swiss_role", "clusters", "trajectory", "hierarchical"),
+  type = c("swiss_role", "biased_swiss_role", "clusters", "trajectory", "hierarchical"),
   n_samples,
   dim = 32L,
   seed = 42L,
@@ -22,6 +22,8 @@ manifold_synthetic_data(
   Character. Type of synthetic data to generate. One of:
 
   - `"swiss_role"` - Swiss roll manifold
+
+  - `"biased_swiss_role"` - Biased swiss role manifold
 
   - `"clusters"` - Clustered data
 
@@ -46,6 +48,7 @@ manifold_synthetic_data(
 
   A named list of type-specific parameters, constructed via
   [`params_swiss_role()`](https://gregorlueg.github.io/manifoldsR/reference/params_swiss_role.md),
+  [`params_swiss_role_biased()`](https://gregorlueg.github.io/manifoldsR/reference/params_swiss_role_biased.md)
   [`params_clusters()`](https://gregorlueg.github.io/manifoldsR/reference/params_clusters.md),
   [`params_trajectory()`](https://gregorlueg.github.io/manifoldsR/reference/params_trajectory.md),
   or

@@ -9,10 +9,16 @@ balances local and global structure preservation through a principled
 pair-type decomposition and phased optimisation schedule.
 
 ``` r
+
 library(manifoldsR)
 library(magrittr)
 library(ggplot2)
 library(data.table)
+#> 
+#> Attaching package: 'data.table'
+#> The following object is masked from 'package:base':
+#> 
+#>     %notin%
 ```
 
 ### Intro
@@ -62,6 +68,7 @@ A few things to keep in mind:
 We use the same synthetic datasets as in the other vignettes.
 
 ``` r
+
 cluster_data <- manifold_synthetic_data(
   type = "cluster",
   n_samples = 25000L,
@@ -87,6 +94,7 @@ resolved, so clusters end up at geometrically meaningful relative
 positions rather than arranged arbitrarily as in UMAP.
 
 ``` r
+
 pca_clusters <- prcomp(cluster_data$data)
 
 pca_clusters_df <- as.data.table(pca_clusters$x[, 1:2]) %>%
@@ -111,6 +119,7 @@ ggplot(
 Let’s check out how PaCMAP looks like … ?
 
 ``` r
+
 pacmap_clusters <- pacmap(
   data = cluster_data$data,
   pacmap_params = params_pacmap(
@@ -154,6 +163,7 @@ unroll it cleanly, with the colour gradient along the roll preserved in
 the embedding.
 
 ``` r
+
 pacmap_swissrole <- pacmap(
   data = swissrole_data$data,
   k = 5L,
@@ -200,6 +210,7 @@ positions, though PHATE remains the stronger choice if trajectory
 recovery is the primary goal.
 
 ``` r
+
 pacmap_trajectory <- pacmap(
   data = trajectory_data$data,
   k = 10L,
@@ -244,6 +255,7 @@ anchors the supergroup distances before local structure is resolved.
 Let’s generate first the hierarchical data.
 
 ``` r
+
 hierarchical_data <- manifold_synthetic_data(
   type = "hierarchical",
   n_samples = 25000L
@@ -253,6 +265,7 @@ hierarchical_data <- manifold_synthetic_data(
 And now let’s run PacMAP over that hierarchical data
 
 ``` r
+
 pacmap_hierarchical <- pacmap(
   data = hierarchical_data$data,
   k = 10L,
@@ -289,6 +302,7 @@ ggplot(
 And compare to UMAP
 
 ``` r
+
 umap_hierarchical <- umap(
   data = hierarchical_data$data,
   k = 15L,
@@ -332,6 +346,7 @@ As with the other methods, if you want to vary PaCMAP-specific
 parameters without repeating the kNN search, precompute the graph first.
 
 ``` r
+
 precomputed_knn <- generate_knn_graph(
   data = cluster_data$data,
   k = 50L, # we need to set this high for pacmap
@@ -352,6 +367,7 @@ With the kNN fixed, we can quickly vary the phase schedule. For example,
 extending phase 1 to give the global structure more time to settle:
 
 ``` r
+
 pacmap_long_phase1 <- pacmap(
   data = cluster_data$data,
   knn = precomputed_knn,
@@ -389,6 +405,7 @@ points. This is the overall macrostructure in the data.
 ### Benchmarks
 
 ``` r
+
 benchmark_data <- manifold_synthetic_data(
   type = "cluster",
   n_samples = 10000L
@@ -415,8 +432,8 @@ microbenchmark::microbenchmark(
 )
 #> Unit: seconds
 #>             expr      min       lq     mean   median       uq      max neval
-#>    manifold_umap 1.385269 1.385840 1.386239 1.386410 1.386724 1.387038     3
-#>  manifold_pacmap 3.018742 3.019929 3.042043 3.021116 3.053693 3.086270     3
+#>    manifold_umap 1.453757 1.455233 1.458573 1.456708 1.460981 1.465254     3
+#>  manifold_pacmap 2.654690 2.680899 2.699042 2.707108 2.721219 2.735330     3
 ```
 
 PaCMAP is generally slower than UMAP on the same data since it processes

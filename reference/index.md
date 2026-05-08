@@ -12,6 +12,8 @@ The core functions to generate the 2D embeddings
   : Rust-based PHATE
 - [`pacmap()`](https://gregorlueg.github.io/manifoldsR/reference/pacmap.md)
   : Rust-based PaCMAP
+- [`diffusion_maps()`](https://gregorlueg.github.io/manifoldsR/reference/diffusion_maps.md)
+  : Rust-based diffusion maps
 
 ## kNN helpers
 
@@ -77,11 +79,15 @@ Wrapper functions around core parameters
   : Wrapper function to generate nearest neighbour parameters
 - [`params_pacmap()`](https://gregorlueg.github.io/manifoldsR/reference/params_pacmap.md)
   : Wrapper function to generate PaCMAP parameters
+- [`params_diffusion_maps()`](https://gregorlueg.github.io/manifoldsR/reference/params_diffusion_maps.md)
+  : Wrapper function to generate diffusion maps parameters
 - [`params_phate()`](https://gregorlueg.github.io/manifoldsR/reference/params_phate.md)
   : Wrapper function to generate PHATE parameters
 - [`params_umap()`](https://gregorlueg.github.io/manifoldsR/reference/params_umap.md)
   : Wrapper function to generate UMAP parameters
 - [`params_swiss_role()`](https://gregorlueg.github.io/manifoldsR/reference/params_swiss_role.md)
+  : Parameters for swiss roll data generation
+- [`params_swiss_role_biased()`](https://gregorlueg.github.io/manifoldsR/reference/params_swiss_role_biased.md)
   : Parameters for swiss roll data generation
 - [`params_trajectory()`](https://gregorlueg.github.io/manifoldsR/reference/params_trajectory.md)
   : Parameters for trajectory data generation
@@ -99,6 +105,8 @@ Everything rusty - only use this if you know what you are doing…
   : Adjusted Rand index
 - [`rs_check_cluster_separation()`](https://gregorlueg.github.io/manifoldsR/reference/rs_check_cluster_separation.md)
   : Check cluster separation in an embedding
+- [`rs_data_biased_swiss_role()`](https://gregorlueg.github.io/manifoldsR/reference/rs_data_biased_swiss_role.md)
+  : Generates the SwissRole data
 - [`rs_data_clusters()`](https://gregorlueg.github.io/manifoldsR/reference/rs_data_clusters.md)
   : Generates clustered data
 - [`rs_data_swiss_role()`](https://gregorlueg.github.io/manifoldsR/reference/rs_data_swiss_role.md)
@@ -107,6 +115,10 @@ Everything rusty - only use this if you know what you are doing…
   : Generates tree-like data with branches
 - [`rs_data_hierarchical()`](https://gregorlueg.github.io/manifoldsR/reference/rs_data_hierarchical.md)
   : Generate hierarchical cluster data
+- [`rs_diffusion_maps()`](https://gregorlueg.github.io/manifoldsR/reference/rs_diffusion_maps.md)
+  : Diffusion maps implementation
+- [`rs_diffusion_maps_from_knn()`](https://gregorlueg.github.io/manifoldsR/reference/rs_diffusion_maps_from_knn.md)
+  : Diffusion maps implementation with pre-computed kNN
 - [`rs_evoc()`](https://gregorlueg.github.io/manifoldsR/reference/rs_evoc.md)
   : EVoC clustering
 - [`rs_evoc_from_knn()`](https://gregorlueg.github.io/manifoldsR/reference/rs_evoc_from_knn.md)
