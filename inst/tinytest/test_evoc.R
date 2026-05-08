@@ -68,6 +68,10 @@ expect_true(
 
 # well-separated synthetic data: best layer should have high ARI
 ari_evoc <- calc_ari(as.integer(cluster_membership), best$labels)
+
+# DEBUG
+print(sprintf("ARI EVOC here is %f", ari_evoc))
+
 expect_true(
   current = ari_evoc > 0.8,
   info = "evoc recovers known clusters on well-separated data"
@@ -107,6 +111,10 @@ ari_evoc_knn <- calc_ari(
   as.integer(cluster_membership),
   best_membership(evoc_res_knn)$labels
 )
+
+# DEBUG
+print(sprintf("ARI EVOC here is %f", ari_evoc_knn))
+
 expect_true(
   current = ari_evoc_knn > 0.8,
   info = "evoc from pre-computed kNN recovers known clusters"
