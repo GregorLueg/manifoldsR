@@ -2,7 +2,7 @@
 
 ## synthetic data --------------------------------------------------------------
 
-n_samples <- 200L
+n_samples <- 500L
 n_clusters <- 3L
 
 zeallot::`%<-%`(
