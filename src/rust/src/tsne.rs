@@ -95,7 +95,12 @@ fn get_params_tsne_optim(r_list: List) -> Result<TsneOptimParams<f32>, extendr_a
     let lr = optim_params
         .get("lr")
         .and_then(|v| v.as_real())
-        .unwrap_or(200.0) as f32;
+        .map(|v| v as f32);
+
+    let late_exag_factor = optim_params
+        .get("late_exag_factor")
+        .and_then(|v| v.as_real())
+        .map(|v| v as f32);
 
     let n_epochs = optim_params
         .get("n_epochs")
@@ -127,6 +132,7 @@ fn get_params_tsne_optim(r_list: List) -> Result<TsneOptimParams<f32>, extendr_a
         lr,
         early_exag_iter,
         early_exag_factor,
+        late_exag_factor,
         theta,
         n_interp_points,
     })

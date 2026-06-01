@@ -227,25 +227,25 @@ pub fn umap_manifold(
     seed: usize,
     verbose: bool,
 ) -> Result<Mat<f32>, extendr_api::Error> {
-    let umap_params_internal = InternalUmapParams::from_r_list(umap_params, min_dist, spread)?;
+    let internal = InternalUmapParams::from_r_list(umap_params, min_dist, spread)?;
 
-    let init_range = if umap_params_internal.init == "pca" {
+    let init_range = if internal.init == "pca" {
         Some(1e-4)
     } else {
         None
     };
 
     let umap_params = UmapParams::new(
-        Some(n_dim),
-        Some(k),
-        Some(umap_params_internal.optimiser),
-        Some(umap_params_internal.knn_method),
-        Some(umap_params_internal.init),
+        n_dim,
+        k,
+        internal.optimiser,
+        internal.knn_method,
+        internal.init,
         init_range,
-        Some(umap_params_internal.param_knn),
-        Some(umap_params_internal.param_optimiser),
-        Some(umap_params_internal.umap_graph),
-        Some(umap_params_internal.randomised),
+        internal.param_knn,
+        internal.param_optimiser,
+        internal.umap_graph,
+        internal.randomised,
     );
 
     let res = umap(data, pre_computed_knn, &umap_params, seed, verbose).to_extendr()?;

@@ -2,6 +2,7 @@
 
 #![warn(missing_docs)]
 
+use bixverse_rs::prelude::IntoExtendrErr;
 use bixverse_rs::utils::vec_utils::flatten_vector;
 use evoc_rs::{evoc, EvocParams};
 use extendr_api::*;
@@ -187,7 +188,8 @@ pub fn evoc_cluster(
         &params.param_knn,
         seed,
         verbose,
-    );
+    )
+    .to_extendr()?;
 
     // Convert cluster_layers: Vec<Vec<i64>> -> R list of integer vectors
     let cluster_layers: Vec<Robj> = result

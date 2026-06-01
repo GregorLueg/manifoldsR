@@ -288,6 +288,7 @@ checkTsneParams <- function(x) {
       "n_epochs",
       "early_exag_iter",
       "early_exag_factor",
+      "late_exag_factor",
       "theta",
       "n_interp_points",
       "init",
@@ -298,10 +299,11 @@ checkTsneParams <- function(x) {
     return(res)
   }
   rules <- list(
-    "lr" = list(type = "fixed", rule = "N1"),
+    "lr" = list(type = "fixed", rule = c("N1", "0")),
     "n_epochs" = list(type = "fixed", rule = "I1[1,)"),
     "early_exag_iter" = list(type = "fixed", rule = "I1[1,)"),
     "early_exag_factor" = list(type = "fixed", rule = "N1"),
+    "late_exag_factor" = list(type = "fixed", rule = c("N1", "0")),
     "theta" = list(type = "fixed", rule = "N1[0,1]"),
     "n_interp_points" = list(type = "fixed", rule = "I1[1,)"),
     "init" = list(type = "choice", choices = c("spectral", "pca", "random")),
@@ -320,7 +322,8 @@ checkTsneParams <- function(x) {
     return(sprintf(
       paste(
         "Element `%s` in t-SNE params does not conform.",
-        "lr/early_exag_factor/theta must be numeric,",
+        "lr and late_exag_factor must be numeric or NULL",
+        "early_exag_factor/theta must be numeric,",
         "n_epochs/early_exag_iter/n_interp_points must be positive integers,",
         "theta must be between 0 and 1,",
         "init must be one of 'spectral'/'pca'/'random',",
@@ -761,7 +764,10 @@ checkKmeansParams <- function(x) {
       "max_iters",
       "batch_size",
       "drift_threshold",
-      "lr_alpha"
+      "lr_alpha",
+      "init",
+      "use_gemm",
+      "use_hamerly"
     )
   )
   if (!isTRUE(res)) {
@@ -786,12 +792,24 @@ checkKmeansParams <- function(x) {
     },
     if (!checkmate::qtest(x$lr_alpha, "N1")) {
       "Element `lr_alpha` must be a numeric."
+    },
+    if (!checkmate::qtest(x$use_gemm, c("B1", "0"))) {
+      "Element `use_gemm` needs to be a logical or NULL."
+    },
+    if (!checkmate::qtest(x$use_hamerly, c("B1", "0"))) {
+      "Element `use_hamerly` needs to be a logical or NULL."
     }
   )
 
   failed <- Filter(Negate(is.null), checks)
   if (length(failed) > 0L) {
     return(failed[[1L]])
+  }
+
+  res <- checkmate::checkChoice(x$init, c("parallel", "random"))
+
+  if (!isTRUE(res)) {
+    return(res)
   }
 
   TRUE

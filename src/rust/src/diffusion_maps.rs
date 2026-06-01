@@ -6,6 +6,7 @@ use bixverse_rs::prelude::IntoExtendrErr;
 use extendr_api::*;
 use faer::{Mat, MatRef};
 use manifolds_rs::prelude::*;
+use manifolds_rs::utils::diffusions::parse_phate_time;
 use manifolds_rs::*;
 use std::collections::HashMap;
 
@@ -170,21 +171,20 @@ pub fn diffusion_maps_manifold(
 ) -> Result<Mat<f32>> {
     let internal = InternalDiffusionMapsParams::from_r_list(dm_params)?;
 
-    let mut dm_rust_params = DiffusionMapsParams::new(
-        Some(n_dim),
-        Some(k),
-        Some(internal.knn_method),
-        Some(internal.bandwidth_scale),
-        Some(internal.thresh),
-        Some(internal.graph_symmetry),
-        Some(internal.alpha_norm),
-        internal.t_max,
-        internal.t_custom,
+    let dm_rust_params = DiffusionMapsParams::new(
+        n_dim,
+        k,
+        internal.knn_method,
+        internal.param_knn,
+        internal.bandwidth_scale,
+        internal.thresh,
+        internal.graph_symmetry,
+        internal.alpha_norm,
+        parse_phate_time(internal.t_custom, internal.t_max.unwrap_or(100)),
         internal.n_landmarks,
-        Some(internal.landmark_method),
+        internal.landmark_method,
         internal.n_svd,
     );
-    dm_rust_params.ann_params = internal.param_knn;
 
     let res = diffusion_maps(data, pre_computed_knn, dm_rust_params, seed, verbose).to_extendr()?;
 

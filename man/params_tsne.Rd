@@ -5,10 +5,11 @@
 \title{Wrapper function to generate t-SNE parameters}
 \usage{
 params_tsne(
-  lr = 200,
+  lr = NULL,
   n_epochs = 1000L,
   early_exag_iter = 250L,
   early_exag_factor = 12,
+  late_exag_factor = NULL,
   theta = 0.5,
   n_interp_points = 3L,
   init = "pca",
@@ -16,7 +17,9 @@ params_tsne(
 )
 }
 \arguments{
-\item{lr}{Numeric. Learning rate. Defaults to \code{200.0}.}
+\item{lr}{Optional numeric. Learning rate. If \code{NULL} (the default), the Rust
+backend sets it to \code{min(max(n_samples / early_exag_factor, 200), 1000)},
+following the N-dependent heuristic of Belkina et al. (2019).}
 
 \item{n_epochs}{Integer. Number of optimisation epochs. Defaults to \code{1000L}.}
 
@@ -25,6 +28,9 @@ Defaults to \code{250L}.}
 
 \item{early_exag_factor}{Numeric. Early exaggeration factor. Defaults to
 \code{12.0}.}
+
+\item{late_exag_factor}{Optional numeric. If you wish to also use late
+exaggerations. Can be useful on large data sets (set it to \code{2.0} to \code{4.0}).}
 
 \item{theta}{Numeric. Barnes-Hut approximation angle. Lower values increase
 accuracy at the cost of speed. Defaults to \code{0.5}.}
@@ -43,4 +49,7 @@ A list with the t-SNE parameters.
 }
 \description{
 Wrapper function to generate t-SNE parameters
+}
+\references{
+Belkina, et al., Nat. Commun., 2019
 }

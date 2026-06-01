@@ -45,9 +45,9 @@ checksum = "4b46cbb362ab8752921c97e041f5e366ee6297bd428a31275b9fcf1e380f7299"
 
 [[package]]
 name = "ann-search-rs"
-version = "0.2.15"
+version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "89ab79fa0ad824cfc7a0e39bc629edd5cf355afc16fe702be754c605d1607f27"
+checksum = "14d9b143bbeda73bb38e7e41bacd0b8f8da308a5b5cbfca9125d4bddbd131940"
 dependencies = [
  "approx",
  "clap",
@@ -61,8 +61,31 @@ dependencies = [
  "rayon",
  "rdst",
  "rustc-hash",
+ "thiserror 2.0.18",
  "thousands",
- "wide 1.3.0",
+ "wide 1.4.0",
+]
+
+[[package]]
+name = "ann-search-rs"
+version = "0.4.0"
+source = "git+https://github.com/GregorLueg/ann-search-rs?branch=feat-turboquant-attempt2#b41e00bbbce08a2ec93c7dc533efb2866bd0e4b7"
+dependencies = [
+ "approx",
+ "clap",
+ "document-features",
+ "faer",
+ "faer-traits",
+ "fixedbitset",
+ "num-traits",
+ "rand 0.9.4",
+ "rand_distr 0.5.1",
+ "rayon",
+ "rdst",
+ "rustc-hash",
+ "thiserror 2.0.18",
+ "thousands",
+ "wide 1.4.0",
 ]
 
 [[package]]
@@ -166,17 +189,17 @@ checksum = "c4512299f36f043ab09a583e57bceb5a5aab7a73db1805848e8fef3c9e8c78b3"
 
 [[package]]
 name = "bixverse-rs"
-version = "0.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "14eb2c4b8fbdd796724e2209159ec9971b86756e6c637c3d78bee97bcdb0cff0"
+version = "0.2.1"
+source = "git+https://github.com/GregorLueg/bixverse-rs.git?branch=release-0.2.1#f536eefe12ec889671e3fb195dbb18baadc2baf6"
 dependencies = [
- "ann-search-rs",
+ "ann-search-rs 0.4.0 (git+https://github.com/GregorLueg/ann-search-rs?branch=feat-turboquant-attempt2)",
  "approx",
  "document-features",
  "either",
  "extendr-api",
  "faer",
  "faer-entity",
+ "fmt",
  "num-traits",
  "once_cell",
  "petgraph",
@@ -188,7 +211,7 @@ dependencies = [
  "statrs",
  "thiserror 2.0.18",
  "thousands",
- "wide 1.3.0",
+ "wide 1.4.0",
 ]
 
 [[package]]
@@ -663,11 +686,10 @@ checksum = "877a4ace8713b0bcf2a4e7eec82529c029f1d0619886d18145fea96c3ffe5c0f"
 
 [[package]]
 name = "evoc-rs"
-version = "0.1.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6fb34336dc352ddd76e9c25c30691777e3ea40f20c77d4176251fc5d51a5bb87"
+version = "0.1.5"
+source = "git+https://github.com/GregorLueg/evoc-rs.git?branch=v0.1.5#40035ef7b59c1b9fded5530d535b2faeb14ff357"
 dependencies = [
- "ann-search-rs",
+ "ann-search-rs 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "approx",
  "faer",
  "faer-traits",
@@ -676,6 +698,7 @@ dependencies = [
  "rand 0.10.1",
  "rayon",
  "rustc-hash",
+ "thiserror 2.0.18",
 ]
 
 [[package]]
@@ -840,6 +863,12 @@ dependencies = [
  "crc32fast",
  "miniz_oxide",
 ]
+
+[[package]]
+name = "fmt"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "09904adae26440d46daeacb5ed7922fee69d43ebf84d31e078cd49652cecd718"
 
 [[package]]
 name = "foldhash"
@@ -1283,11 +1312,10 @@ dependencies = [
 
 [[package]]
 name = "manifolds-rs"
-version = "0.2.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d772c86f2008950a71a9ad4d0fab585964bfdbbb3f92804325569fca62503482"
+version = "0.3.0"
+source = "git+https://github.com/GregorLueg/manifolds-rs.git?branch=v0.2.6#34c934ee08a757fffc257e5cc7511fe8cdebc246"
 dependencies = [
- "ann-search-rs",
+ "ann-search-rs 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "approx",
  "faer",
  "faer-traits",
@@ -1303,9 +1331,9 @@ dependencies = [
 
 [[package]]
 name = "manifoldsr"
-version = "0.2.2"
+version = "0.2.3"
 dependencies = [
- "ann-search-rs",
+ "ann-search-rs 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "bixverse-rs",
  "evoc-rs",
  "extendr-api",
@@ -2680,9 +2708,9 @@ dependencies = [
 
 [[package]]
 name = "wide"
-version = "1.3.0"
+version = "1.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c9479f84a757f819cfab37295955906479181395de83add28f74975fde083141"
+checksum = "9a7714cd0430a663154667c74da5d09325c2387695bee18b3f7f72825aa3693a"
 dependencies = [
  "bytemuck",
  "safe_arch 1.0.0",

@@ -179,17 +179,17 @@ pub fn pacmap_manifold(
     let internal = InternalPacmapParams::from_r_list(pacmap_params)?;
 
     let params = PacmapParams::new(
-        Some(n_dim),
-        Some(k),
-        Some(internal.knn_method),
-        Some(internal.optimiser),
-        Some(internal.n_mid_near),
-        Some(internal.n_further),
-        Some(internal.mn_candidate_start),
-        Some(internal.mn_candidate_end),
-        Some(internal.init),
-        Some(internal.param_knn),
-        Some(internal.param_optimiser),
+        n_dim,
+        k,
+        internal.knn_method,
+        internal.optimiser,
+        internal.n_mid_near,
+        internal.n_further,
+        internal.mn_candidate_start,
+        internal.mn_candidate_end,
+        internal.init,
+        internal.param_knn,
+        internal.param_optimiser,
     );
 
     let res = pacmap(data, pre_computed_knn, &params, seed, verbose).to_extendr()?;

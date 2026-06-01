@@ -463,7 +463,7 @@ microbenchmark::microbenchmark(
       knn = 5L,
       npca = 100L,
       n.jobs = -1,
-      verbose = FALSE
+      verbose = TRUE
     )
   },
   manifold_phate_spectral = {
@@ -472,7 +472,7 @@ microbenchmark::microbenchmark(
       k = 5L,
       knn_method = "nndescent", # good allrounder for larger data sets
       seed = 42L,
-      .verbose = FALSE
+      .verbose = TRUE
     )
   },
   manifold_phate_random = {
@@ -482,7 +482,7 @@ microbenchmark::microbenchmark(
       knn_method = "nndescent", # good allrounder for larger data sets
       phate_params = params_phate(landmark_method = "random"),
       seed = 42L,
-      .verbose = FALSE
+      .verbose = TRUE
     )
   },
   times = 1L

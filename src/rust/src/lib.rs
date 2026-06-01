@@ -723,7 +723,8 @@ fn rs_approx_nearest_neighbours(
         nn_params.bt_budget = 0.5
     }
 
-    let (indices, dist) = run_ann_search(data.as_ref(), k, ann_method, &nn_params, seed, verbose);
+    let (indices, dist) =
+        run_ann_search(data.as_ref(), k, ann_method, &nn_params, seed, verbose).to_extendr()?;
 
     let indices = flatten_vector(indices);
     let dist = flatten_vector(dist);
@@ -873,14 +874,23 @@ fn rs_k_means(
     let params = InternalKmeansParams::from_r_list(kmeans_params)?;
     let data = r_matrix_to_faer_fp32(&data);
 
+    // parse and prepare everything for the bixverse function
+    let path = match (params.use_gemm, params.use_hamerly) {
+        (None, None) => None,
+        (g, h) => Some(parse_kmean_path(g.unwrap_or(false), h.unwrap_or(false))),
+    };
+    let init = parse_kmeans_init(&params.init);
+    let bx_kmeans_params = KMeansParamsWrappers::new(params.max_iters, init, path);
+
     let (centroids, assignments) = k_means_clusters(
         data.as_ref(),
         &params.metric,
         k,
-        params.max_iters,
+        Some(bx_kmeans_params),
         seed,
         verbose,
-    );
+    )
+    .to_extendr()?;
 
     let assignments_r: Vec<i32> = assignments.r_int_convert();
     Ok(list!(
