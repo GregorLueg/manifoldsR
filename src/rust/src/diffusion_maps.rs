@@ -10,7 +10,7 @@ use manifolds_rs::utils::diffusions::parse_phate_time;
 use manifolds_rs::*;
 use std::collections::HashMap;
 
-use crate::utils::get_params_nn;
+use crate::utils::get_params_nn_manifolds;
 
 ////////////
 // Params //
@@ -59,7 +59,7 @@ impl InternalDiffusionMapsParams {
     ///
     /// The `InternalDiffusionMapsParams`.
     pub fn from_r_list(r_list: List) -> Result<Self> {
-        let nn_params = get_params_nn(r_list.clone())?;
+        let nn_params = get_params_nn_manifolds(r_list.clone())?;
 
         let dm_params: HashMap<&str, Robj> = r_list.try_into()?;
 
@@ -154,7 +154,8 @@ impl InternalDiffusionMapsParams {
 /// * `dm_params` - Named R list that has all of the various diffusion maps
 ///   parameters.
 /// * `seed` - For reproducibility.
-/// * `verbose` - Controls verbosity.
+/// * `verbose` - If `0` -> silent or `1` for normal verbosity, `2` for detailed
+///   verbosity.
 ///
 /// ### Returns
 ///
@@ -167,7 +168,7 @@ pub fn diffusion_maps_manifold(
     k: usize,
     dm_params: List,
     seed: usize,
-    verbose: bool,
+    verbose: usize,
 ) -> Result<Mat<f32>> {
     let internal = InternalDiffusionMapsParams::from_r_list(dm_params)?;
 

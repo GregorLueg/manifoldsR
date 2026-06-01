@@ -9,7 +9,7 @@ use manifolds_rs::prelude::*;
 use manifolds_rs::*;
 use std::collections::HashMap;
 
-use crate::utils::get_params_nn;
+use crate::utils::get_params_nn_manifolds;
 
 ////////////
 // Params //
@@ -46,7 +46,7 @@ impl InternalTsneParams {
     ///
     /// The `InternalTsneParams`
     pub fn from_r_list(r_list: List) -> Result<Self, extendr_api::Error> {
-        let nn_params = get_params_nn(r_list.clone())?;
+        let nn_params = get_params_nn_manifolds(r_list.clone())?;
         let optim_params = get_params_tsne_optim(r_list.clone())?;
 
         let tsne_params: HashMap<&str, Robj> = r_list.try_into()?;
@@ -157,7 +157,8 @@ fn get_params_tsne_optim(r_list: List) -> Result<TsneOptimParams<f32>, extendr_a
 /// * `perplexity` - Perplexity parameter (typical: 5-50)
 /// * `tsne_params` - Named R list with all t-SNE parameters
 /// * `seed` - Random seed for reproducibility
-/// * `verbose` - Controls verbosity
+/// * `verbose` - If `0` -> silent or `1` for normal verbosity, `2` for detailed
+///   verbosity.
 ///
 /// ### Returns
 ///
@@ -171,7 +172,7 @@ pub fn tsne_simple(
     perplexity: f32,
     tsne_params: List,
     seed: usize,
-    verbose: bool,
+    verbose: usize,
 ) -> Result<Mat<f32>, extendr_api::Error> {
     assert!(
         n_dim == 2,
@@ -188,7 +189,7 @@ pub fn tsne_simple(
         nn_params: tsne_params_internal.param_knn,
         optim_params: tsne_params_internal.param_optimiser,
         randomised_init: tsne_params_internal.randomised,
-        init_range: Some(1e-4),
+        init_range: Some(0.5),
     };
 
     let res = tsne(

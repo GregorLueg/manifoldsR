@@ -55,8 +55,8 @@
 #' Defaults to `2L`.
 #' @param k Integer. Number of nearest neighbours to consider for the
 #' affinity graph. Defaults to `5L`.
-#' @param knn_method Character. (Approximate) Nearest neighbour method to
-#' use. One of `"kmknn"`, `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`,
+#' @param knn_method Character. (Approximate) Nearest neighbour method to use.
+#' One of `"kmknn"`, `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, `"ivf"`
 #' or `"exhaustive"`. Defaults to `"kmknn"`.
 #' @param nn_params Named list. Nearest neighbour search parameters, see
 #' [params_nn()].
@@ -105,7 +105,7 @@ diffusion_maps <- function(
   )
   checkmate::assert_int(n_dim, lower = 1, upper = ncol(data))
   checkmate::qassert(k, "I1[2,)")
-  checkmate::qassert(.verbose, "B1")
+  checkmate::qassert(.verbose, c("B1", "I1[0, 2]"))
   checkmate::qassert(seed, "I1")
 
   final_dm_params <- .prepare_diffusion_maps_params(
@@ -127,7 +127,7 @@ diffusion_maps <- function(
           k = k,
           dm_params = final_dm_params,
           seed = seed,
-          verbose = .verbose
+          verbose = parse_verbosity(.verbose)
         )
       },
       error = function(e) {
@@ -147,7 +147,7 @@ diffusion_maps <- function(
           k = k,
           dm_params = final_dm_params,
           seed = seed,
-          verbose = .verbose
+          verbose = parse_verbosity(.verbose)
         )
       },
       error = function(e) {

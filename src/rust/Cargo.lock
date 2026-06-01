@@ -45,31 +45,9 @@ checksum = "4b46cbb362ab8752921c97e041f5e366ee6297bd428a31275b9fcf1e380f7299"
 
 [[package]]
 name = "ann-search-rs"
-version = "0.4.0"
+version = "0.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "14d9b143bbeda73bb38e7e41bacd0b8f8da308a5b5cbfca9125d4bddbd131940"
-dependencies = [
- "approx",
- "clap",
- "document-features",
- "faer",
- "faer-traits",
- "fixedbitset",
- "num-traits",
- "rand 0.9.4",
- "rand_distr 0.5.1",
- "rayon",
- "rdst",
- "rustc-hash",
- "thiserror 2.0.18",
- "thousands",
- "wide 1.4.0",
-]
-
-[[package]]
-name = "ann-search-rs"
-version = "0.4.0"
-source = "git+https://github.com/GregorLueg/ann-search-rs?branch=feat-turboquant-attempt2#b41e00bbbce08a2ec93c7dc533efb2866bd0e4b7"
+checksum = "8e56ec304e8e675921e8a8c2fcb4a4d4546970664644c2a74a42b423d9739a9c"
 dependencies = [
  "approx",
  "clap",
@@ -189,10 +167,11 @@ checksum = "c4512299f36f043ab09a583e57bceb5a5aab7a73db1805848e8fef3c9e8c78b3"
 
 [[package]]
 name = "bixverse-rs"
-version = "0.2.1"
-source = "git+https://github.com/GregorLueg/bixverse-rs.git?branch=release-0.2.1#f536eefe12ec889671e3fb195dbb18baadc2baf6"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c3907cf26ee47f1c4fdffdfb9c88fe4017eb050c06a3b82009ab9983182be2d8"
 dependencies = [
- "ann-search-rs 0.4.0 (git+https://github.com/GregorLueg/ann-search-rs?branch=feat-turboquant-attempt2)",
+ "ann-search-rs",
  "approx",
  "document-features",
  "either",
@@ -686,14 +665,14 @@ checksum = "877a4ace8713b0bcf2a4e7eec82529c029f1d0619886d18145fea96c3ffe5c0f"
 
 [[package]]
 name = "evoc-rs"
-version = "0.1.5"
-source = "git+https://github.com/GregorLueg/evoc-rs.git?branch=v0.1.5#40035ef7b59c1b9fded5530d535b2faeb14ff357"
+version = "0.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "00468022259f6fd8c5bb4bb88ccb742a6d9fe0471059564dfd5fbc54c343ce79"
 dependencies = [
- "ann-search-rs 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "ann-search-rs",
  "approx",
  "faer",
  "faer-traits",
- "manifolds-rs",
  "num-traits",
  "rand 0.10.1",
  "rayon",
@@ -1312,10 +1291,10 @@ dependencies = [
 
 [[package]]
 name = "manifolds-rs"
-version = "0.3.0"
-source = "git+https://github.com/GregorLueg/manifolds-rs.git?branch=v0.2.6#34c934ee08a757fffc257e5cc7511fe8cdebc246"
+version = "0.3.2"
+source = "git+https://github.com/GregorLueg/manifolds-rs.git?branch=feat-numeric-stability#1374c7c9a58ad0911e2a41f351e73ede8a0a89aa"
 dependencies = [
- "ann-search-rs 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "ann-search-rs",
  "approx",
  "faer",
  "faer-traits",
@@ -1333,7 +1312,7 @@ dependencies = [
 name = "manifoldsr"
 version = "0.2.3"
 dependencies = [
- "ann-search-rs 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "ann-search-rs",
  "bixverse-rs",
  "evoc-rs",
  "extendr-api",

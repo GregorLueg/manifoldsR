@@ -12,14 +12,14 @@ params_tsne(
   late_exag_factor = NULL,
   theta = 0.5,
   n_interp_points = 3L,
-  init = "pca",
+  init = c("pca", "spectral", "random"),
   randomised = TRUE
 )
 }
 \arguments{
 \item{lr}{Optional numeric. Learning rate. If \code{NULL} (the default), the Rust
-backend sets it to \code{min(max(n_samples / early_exag_factor, 200), 1000)},
-following the N-dependent heuristic of Belkina et al. (2019).}
+backend sets it to \code{max((n_samples / 12), 200)}, following the N-dependent
+heuristic of Belkina et al. (2019).}
 
 \item{n_epochs}{Integer. Number of optimisation epochs. Defaults to \code{1000L}.}
 

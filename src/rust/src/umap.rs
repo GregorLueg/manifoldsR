@@ -9,7 +9,7 @@ use manifolds_rs::prelude::*;
 use manifolds_rs::*;
 use std::collections::HashMap;
 
-use crate::utils::get_params_nn;
+use crate::utils::get_params_nn_manifolds;
 
 ////////////
 // Params //
@@ -58,7 +58,7 @@ impl InternalUmapParams {
         min_dist: f32,
         spread: f32,
     ) -> Result<Self, extendr_api::Error> {
-        let nn_params = get_params_nn(r_list.clone())?;
+        let nn_params = get_params_nn_manifolds(r_list.clone())?;
         let umap_graph_params = get_params_umap_graph(r_list.clone())?;
         let optim_params = get_params_umap_optim(r_list.clone(), min_dist, spread)?;
 
@@ -210,7 +210,8 @@ fn get_params_umap_optim(
 /// * `spread` - Spread parameter
 /// * `umap_list` - Named R list that has all of the various UMAP parameters.
 /// * `seed` - For reproducibility
-/// * `verbose` - Controls verbosity
+/// * `verbose` - If `0` -> silent or `1` for normal verbosity, `2` for detailed
+///   verbosity.
 ///
 /// ### Returns
 ///
@@ -225,7 +226,7 @@ pub fn umap_manifold(
     spread: f32,
     umap_params: List,
     seed: usize,
-    verbose: bool,
+    verbose: usize,
 ) -> Result<Mat<f32>, extendr_api::Error> {
     let internal = InternalUmapParams::from_r_list(umap_params, min_dist, spread)?;
 

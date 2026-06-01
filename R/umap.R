@@ -43,7 +43,7 @@
   )
   assertNnParams(nn_params)
   assertUmapParams(umap_params)
-  checkmate::qassert(.verbose, "B1")
+  checkmate::qassert(.verbose, c("B1", "I1[0, 2]"))
 
   final_params <- c(nn_params, umap_params)
   final_params[["min_dist"]] <- min_dist
@@ -107,8 +107,8 @@
 #' @param spread Numeric. Effective scale of embedded points. Determines the
 #' scale at which embedded points will be spread out. Defaults to `1.0`.
 #' @param knn_method Character. (Approximate) Nearest neighbour method to use.
-#' One of `"kmknn"`, `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, or
-#' `"exhaustive"`. Defaults to `"kmknn"`.
+#' One of `"kmknn"`, `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, `"ivf"`
+#' or `"exhaustive"`. Defaults to `"kmknn"`.
 #' @param nn_params Named list. Nearest neighbour search parameters, see
 #' [params_nn()].
 #' @param umap_params Named list. UMAP algorithm parameters, see
@@ -161,7 +161,7 @@ umap <- function(
   checkmate::qassert(k, "I1[2,)")
   checkmate::qassert(min_dist, "N1[0,)")
   checkmate::qassert(spread, "N1[0,)")
-  checkmate::qassert(.verbose, "B1")
+  checkmate::qassert(.verbose, c("B1", "I1[0, 2]"))
   checkmate::qassert(seed, "I1")
 
   final_umap_params <- .prepare_umap_params(
@@ -190,7 +190,7 @@ umap <- function(
           k = k,
           umap_params = final_umap_params,
           seed = seed,
-          verbose = .verbose
+          verbose = parse_verbosity(.verbose)
         )
       },
       error = function(e) {
@@ -208,7 +208,7 @@ umap <- function(
           k = k,
           umap_params = final_umap_params,
           seed = seed,
-          verbose = .verbose
+          verbose = parse_verbosity(.verbose)
         )
       },
       error = function(e) {

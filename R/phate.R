@@ -22,7 +22,8 @@
       "hnsw",
       "annoy",
       "nndescent",
-      "exhaustive"
+      "exhaustive",
+      "ivf"
     )
   )
   assertNnParams(nn_params)
@@ -52,8 +53,8 @@
 #' @param k Integer. Number of nearest neighbours for graph construction.
 #' Defaults to `5L`.
 #' @param knn_method Character. (Approximate) Nearest neighbour method to use.
-#' One of `"kmknn"`, `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, or
-#' `"exhaustive"`. Defaults to `"kmknn"`.
+#' One of `"kmknn"`, `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, `"ivf"`
+#' or `"exhaustive"`. Defaults to `"kmknn"`.
 #' @param nn_params Named list. Nearest neighbour search parameters, see
 #' [params_nn()].
 #' @param phate_params Named list. PHATE algorithm parameters, see
@@ -76,7 +77,8 @@ phate <- function(
     "hnsw",
     "annoy",
     "nndescent",
-    "exhaustive"
+    "exhaustive",
+    "ivf"
   ),
   nn_params = params_nn(),
   phate_params = params_phate(),
@@ -103,12 +105,12 @@ phate <- function(
   checkmate::qassert(k, "I1[1,)")
   checkmate::assertChoice(
     knn_method,
-    c("kmknn", "hnsw", "annoy", "nndescent", "balltree", "exhaustive")
+    c("kmknn", "balltree", "hnsw", "annoy", "nndescent", "exhaustive", "ivf")
   )
   assertNnParams(nn_params)
   assertPhateParams(phate_params)
   checkmate::qassert(seed, "I1")
-  checkmate::qassert(.verbose, "B1")
+  checkmate::qassert(.verbose, c("B1", "I1[0, 2]"))
 
   final_phate_params <- .prepare_phate_params(
     knn_method = knn_method,
@@ -146,7 +148,7 @@ phate <- function(
           k = as.integer(k),
           phate_params = final_phate_params,
           seed = seed,
-          verbose = .verbose
+          verbose = parse_verbosity(.verbose)
         )
       },
       error = function(e) {
@@ -162,7 +164,7 @@ phate <- function(
           k = as.integer(k),
           phate_params = final_phate_params,
           seed = seed,
-          verbose = .verbose
+          verbose = parse_verbosity(.verbose)
         )
       },
       error = function(e) {

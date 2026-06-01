@@ -53,8 +53,8 @@
 #' @param n_neighbours Integer. Number of nearest neighbours for graph
 #' construction. Defaults to `15L`.
 #' @param knn_method Character. (Approximate) Nearest neighbour method to use.
-#' One of `"kmknn"`, `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, or
-#' `"exhaustive"`. Defaults to `"kmknn"`.
+#' One of `"kmknn"`, `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, `"ivf"`
+#' or `"exhaustive"`. Defaults to `"kmknn"`.
 #' @param nn_params Named list. Nearest neighbour search parameters, see
 #' [params_nn()].
 #' @param evoc_params Named list. EVoC algorithm parameters, see
@@ -105,7 +105,7 @@ evoc <- function(
   checkmate::qassert(n_neighbours, "I1[2,)")
   checkmate::qassert(return_knn, "B1")
   checkmate::qassert(seed, "I1")
-  checkmate::qassert(.verbose, "B1")
+  checkmate::qassert(.verbose, c("B1", "I1[0, 2]"))
 
   final_params <- .prepare_evoc_params(
     knn_method = knn_method,
@@ -124,7 +124,7 @@ evoc <- function(
         n_neighbours = n_neighbours,
         evoc_params = final_params,
         seed = seed,
-        verbose = .verbose
+        verbose = parse_verbosity(.verbose)
       ),
       error = function(e) {
         stop("EVoC clustering failed: ", e$message, call. = FALSE)
@@ -140,7 +140,7 @@ evoc <- function(
         evoc_params = final_params,
         return_knn = return_knn,
         seed = seed,
-        verbose = .verbose
+        verbose = parse_verbosity(.verbose)
       ),
       error = function(e) {
         stop("EVoC clustering failed: ", e$message, call. = FALSE)

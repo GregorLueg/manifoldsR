@@ -154,8 +154,8 @@ params_umap <- function(
 #' Wrapper function to generate t-SNE parameters
 #'
 #' @param lr Optional numeric. Learning rate. If `NULL` (the default), the Rust
-#' backend sets it to `min(max(n_samples / early_exag_factor, 200), 1000)`,
-#' following the N-dependent heuristic of Belkina et al. (2019).
+#' backend sets it to `max((n_samples / 12), 200)`, following the N-dependent
+#' heuristic of Belkina et al. (2019).
 #' @param n_epochs Integer. Number of optimisation epochs. Defaults to `1000L`.
 #' @param early_exag_iter Integer. Number of early exaggeration iterations.
 #' Defaults to `250L`.

@@ -72,7 +72,7 @@ generate_knn_graph <- function(
   )
   assertNnParams(nn_params)
   checkmate::qassert(seed, "I1")
-  checkmate::qassert(.verbose, "B1")
+  checkmate::qassert(.verbose, c("B1", "I1[0, 2]"))
 
   # rust
   nn_data <- rs_approx_nearest_neighbours(
@@ -81,7 +81,7 @@ generate_knn_graph <- function(
     ann_method = knn_method,
     ann_params = nn_params,
     seed = seed,
-    verbose = .verbose
+    verbose = parse_verbosity(.verbose)
   )
 
   res <- with(

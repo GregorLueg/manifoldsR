@@ -23,7 +23,7 @@ use std::collections::HashMap;
 ///
 /// The `NearestNeighbourParams` with sensible defaults if not found in the
 /// list.
-pub fn get_params_nn(r_list: List) -> Result<NearestNeighbourParams<f32>> {
+pub fn get_params_nn_manifolds(r_list: List) -> Result<NearestNeighbourParams<f32>> {
     let nn_params: HashMap<&str, Robj> = r_list.try_into()?;
 
     // distance

@@ -19,7 +19,8 @@ rs_approx_nearest_neighbours(data, k, ann_method, ann_params, seed, verbose)
 
 \item{seed}{Integer. Seed for reproducibility}
 
-\item{verbose}{Boolean. Controls verbosity of the function.}
+\item{verbose}{Integer. If \code{0L} -> silent or \code{1L} for normal verbosity; \code{2L}
+for detailed verbosity.}
 }
 \value{
 A list with the following elements

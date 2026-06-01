@@ -30,8 +30,8 @@ Defaults to \code{2L}.}
 \item{k}{Integer. Number of nearest neighbours to consider for the
 affinity graph. Defaults to \code{5L}.}
 
-\item{knn_method}{Character. (Approximate) Nearest neighbour method to
-use. One of \code{"kmknn"}, \code{"hnsw"}, \code{"annoy"}, \code{"nndescent"}, \code{"balltree"},
+\item{knn_method}{Character. (Approximate) Nearest neighbour method to use.
+One of \code{"kmknn"}, \code{"hnsw"}, \code{"annoy"}, \code{"nndescent"}, \code{"balltree"}, \code{"ivf"}
 or \code{"exhaustive"}. Defaults to \code{"kmknn"}.}
 
 \item{nn_params}{Named list. Nearest neighbour search parameters, see

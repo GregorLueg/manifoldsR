@@ -85,7 +85,8 @@ extendr_module! {
 /// @param umap_params Named list. List that contains all of the key parameters
 /// for the UMAP generation.
 /// @param seed Integer. Seed for reproducibility.
-/// @param verbose Boolean. Controls verbosity of the function.
+/// @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
+/// for detailed verbosity.
 ///
 /// @return The UMAP embeddings.
 ///
@@ -100,7 +101,7 @@ fn rs_umap(
     k: usize,
     umap_params: List,
     seed: usize,
-    verbose: bool,
+    verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
     let embd = r_matrix_to_faer_fp32(&embd);
 
@@ -135,7 +136,8 @@ fn rs_umap(
 /// @param umap_params Named list. List that contains all of the key parameters
 /// for the UMAP generation.
 /// @param seed Integer. Seed for reproducibility.
-/// @param verbose Boolean. Controls verbosity of the function.
+/// @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
+/// for detailed verbosity.
 ///
 /// @return The UMAP embeddings.
 ///
@@ -151,7 +153,7 @@ fn rs_umap_from_knn(
     k: usize,
     umap_params: List,
     seed: usize,
-    verbose: bool,
+    verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
     let embd = r_matrix_to_faer_fp32(&embd);
 
@@ -193,7 +195,8 @@ fn rs_umap_from_knn(
 /// @param tsne_params Named list. List that contains all of the key parameters
 /// for the tSNE generation.
 /// @param seed Integer. Seed for reproducibility.
-/// @param verbose Boolean. Controls verbosity of the function.
+/// @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
+/// for detailed verbosity.
 ///
 /// @return The tSNE embeddings.
 ///
@@ -206,7 +209,7 @@ fn rs_tsne(
     approx_type: String,
     tsne_params: List,
     seed: usize,
-    verbose: bool,
+    verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
     let embd = r_matrix_to_faer_fp32(&embd);
 
@@ -243,7 +246,8 @@ fn rs_tsne(
 /// @param tsne_params Named list. List that contains all of the key parameters
 /// for the tSNE generation.
 /// @param seed Integer. Seed for reproducibility.
-/// @param verbose Boolean. Controls verbosity of the function.
+/// @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
+/// for detailed verbosity.
 ///
 /// @return The tSNE embeddings.
 ///
@@ -258,7 +262,7 @@ fn rs_tsne_from_knn(
     approx_type: String,
     tsne_params: List,
     seed: usize,
-    verbose: bool,
+    verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
     let embd = r_matrix_to_faer_fp32(&embd);
 
@@ -298,7 +302,8 @@ fn rs_tsne_from_knn(
 /// @param phate_params Named list. Contains all key parameters for PHATE,
 /// see [params_phate()] and [params_nn()].
 /// @param seed Integer. Seed for reproducibility.
-/// @param verbose Boolean. Controls verbosity of the function.
+/// @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
+/// for detailed verbosity.
 ///
 /// @return The PHATE embedding as a matrix of shape samples x n_dim.
 ///
@@ -310,7 +315,7 @@ fn rs_phate(
     k: usize,
     phate_params: List,
     seed: usize,
-    verbose: bool,
+    verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
     let embd = r_matrix_to_faer_fp32(&embd);
     let res =
@@ -335,7 +340,8 @@ fn rs_phate(
 /// @param phate_params Named list. Contains all key parameters for PHATE,
 /// see [params_phate()] and [params_nn()].
 /// @param seed Integer. Seed for reproducibility.
-/// @param verbose Boolean. Controls verbosity of the function.
+/// @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
+/// for detailed verbosity.
 ///
 /// @return The PHATE embedding as a matrix of shape samples x n_dim.
 ///
@@ -348,7 +354,7 @@ fn rs_phate_from_knn(
     k: usize,
     phate_params: List,
     seed: usize,
-    verbose: bool,
+    verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
     let embd = r_matrix_to_faer_fp32(&embd);
     let knn = nearest_neighbours_to_rust(knn_data);
@@ -374,7 +380,8 @@ fn rs_phate_from_knn(
 /// @param pacmap_params Named list. List that contains all of the key
 /// parameters for the PaCMAP generation.
 /// @param seed Integer. Seed for reproducibility.
-/// @param verbose Boolean. Controls verbosity of the function.
+/// @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
+/// for detailed verbosity.
 ///
 /// @return The PaCMAP embeddings.
 ///
@@ -387,7 +394,7 @@ fn rs_pacmap(
     k: usize,
     pacmap_params: List,
     seed: usize,
-    verbose: bool,
+    verbose: usize,
 ) -> Result<RMatrix<f64>, extendr_api::Error> {
     let embd = r_matrix_to_faer_fp32(&embd);
     let res = pacmap_manifold(embd.as_ref(), None, n_dim, k, pacmap_params, seed, verbose)
@@ -409,7 +416,8 @@ fn rs_pacmap(
 /// @param pacmap_params Named list. List that contains all of the key
 /// parameters for the PaCMAP generation.
 /// @param seed Integer. Seed for reproducibility.
-/// @param verbose Boolean. Controls verbosity of the function.
+/// @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
+/// for detailed verbosity.
 ///
 /// @return The PaCMAP embeddings.
 ///
@@ -423,7 +431,7 @@ fn rs_pacmap_from_knn(
     k: usize,
     pacmap_params: List,
     seed: usize,
-    verbose: bool,
+    verbose: usize,
 ) -> Result<RMatrix<f64>, extendr_api::Error> {
     let embd = r_matrix_to_faer_fp32(&embd);
     let knn = nearest_neighbours_to_rust(knn_data);
@@ -449,7 +457,8 @@ fn rs_pacmap_from_knn(
 /// @param dm_params Named list. List that contains all of the key parameters
 /// for the diffusion maps generation.
 /// @param seed Integer. Seed for reproducibility.
-/// @param verbose Boolean. Controls verbosity of the function.
+/// @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
+/// for detailed verbosity.
 ///
 /// @return The diffusion maps embeddings.
 ///
@@ -462,7 +471,7 @@ fn rs_diffusion_maps(
     k: usize,
     dm_params: List,
     seed: usize,
-    verbose: bool,
+    verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
     let embd = r_matrix_to_faer_fp32(&embd);
     let res = diffusion_maps_manifold(embd.as_ref(), None, n_dim, k, dm_params, seed, verbose)
@@ -483,7 +492,8 @@ fn rs_diffusion_maps(
 /// @param dm_params Named list. List that contains all of the key parameters
 /// for the diffusion maps generation.
 /// @param seed Integer. Seed for reproducibility.
-/// @param verbose Boolean. Controls verbosity of the function.
+/// @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
+/// for detailed verbosity.
 ///
 /// @return The diffusion maps embeddings.
 ///
@@ -497,7 +507,7 @@ fn rs_diffusion_maps_from_knn(
     k: usize,
     dm_params: List,
     seed: usize,
-    verbose: bool,
+    verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
     let embd = r_matrix_to_faer_fp32(&embd);
     let knn = nearest_neighbours_to_rust(knn_data);
@@ -693,7 +703,8 @@ fn rs_data_hierarchical(
 /// `c("hsnw", "balltree", "annoy", "nndescent")`
 /// @param ann_params Named list. Contains the nearest neighbour parameters.
 /// @param seed Integer. Seed for reproducibility
-/// @param verbose Boolean. Controls verbosity of the function.
+/// @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
+/// for detailed verbosity.
 ///
 /// @returns A list with the following elements
 /// \itemize{
@@ -711,11 +722,11 @@ fn rs_approx_nearest_neighbours(
     ann_method: String,
     ann_params: List,
     seed: usize,
-    verbose: bool,
+    verbose: usize,
 ) -> Result<List, extendr_api::Error> {
     let data = r_matrix_to_faer_fp32(&data);
 
-    let mut nn_params = get_params_nn(ann_params)?;
+    let mut nn_params = get_params_nn_manifolds(ann_params)?;
 
     // balltree underperforms on small data set as the budget is too small
     // and individual leafs hold too many data points
@@ -753,7 +764,8 @@ fn rs_approx_nearest_neighbours(
 /// for EVoC clustering.
 /// @param return_knn Boolean. Shall the kNN graph be returned.
 /// @param seed Integer. Seed for reproducibility.
-/// @param verbose Boolean. Controls verbosity of the function.
+/// @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
+/// for detailed verbosity.
 ///
 /// @return A named list with:
 /// \itemize{
@@ -769,7 +781,7 @@ fn rs_evoc(
     evoc_params: List,
     return_knn: bool,
     seed: usize,
-    verbose: bool,
+    verbose: usize,
 ) -> Result<List, extendr_api::Error> {
     let embd = r_matrix_to_faer_fp32(&embd);
     let (res, indices, dist) = evoc_cluster(
@@ -810,7 +822,8 @@ fn rs_evoc(
 /// @param evoc_params Named list. List that contains all of the key parameters
 /// for EVoC clustering.
 /// @param seed Integer. Seed for reproducibility.
-/// @param verbose Boolean. Controls verbosity of the function.
+/// @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
+/// for detailed verbosity.
 ///
 /// @return A named list with cluster layers, membership strengths, persistence
 /// scores, and the kNN graph.
@@ -823,7 +836,7 @@ fn rs_evoc_from_knn(
     n_neighbours: usize,
     evoc_params: List,
     seed: usize,
-    verbose: bool,
+    verbose: usize,
 ) -> Result<List, extendr_api::Error> {
     let embd = r_matrix_to_faer_fp32(&embd);
     let pre_computed_knn = nearest_neighbours_to_rust(knn_data);
