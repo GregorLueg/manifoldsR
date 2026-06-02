@@ -20,10 +20,11 @@ num-traits = "0.2.19"
 rand = "0.10.0"
 rayon = "1.11.0"
 rustc-hash = "2.1.2"
+rand_distr = "0.5.1"
 [target.'cfg(not(windows))'.dependencies]
-manifolds-rs = { git = "https://github.com/GregorLueg/manifolds-rs.git", branch = "feat-numeric-stability", features = [ "fft_tsne" ] }
+manifolds-rs = { version = "0.3.2", features = [ "fft_tsne" ] }
 [target.'cfg(windows)'.dependencies]
-manifolds-rs = { git = "https://github.com/GregorLueg/manifolds-rs.git", branch = "feat-numeric-stability" }
+manifolds-rs = { version = "0.3.2" }
 
 
 [profile.test]

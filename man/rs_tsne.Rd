@@ -32,5 +32,6 @@ The tSNE embeddings.
 \description{
 This is the wrapper function into the Rust interface for tSNE.
 You have the option to use the Barnes-Hut implemetation or the
-FFT-accelerated version to approximate the repulsive forces.
+FFT-accelerated version to approximate the repulsive forces. Uses \code{fp64}
+path on larger data sets to avoid catastrophic cancelleation.
 }

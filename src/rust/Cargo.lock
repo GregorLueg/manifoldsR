@@ -1292,7 +1292,8 @@ dependencies = [
 [[package]]
 name = "manifolds-rs"
 version = "0.3.2"
-source = "git+https://github.com/GregorLueg/manifolds-rs.git?branch=feat-numeric-stability#1374c7c9a58ad0911e2a41f351e73ede8a0a89aa"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "658334040887ba9a01c34e142826c1abde6a97155becd97c6c81d0ab00d5dcdb"
 dependencies = [
  "ann-search-rs",
  "approx",
@@ -1321,6 +1322,7 @@ dependencies = [
  "manifolds-rs",
  "num-traits",
  "rand 0.10.1",
+ "rand_distr 0.5.1",
  "rayon",
  "rustc-hash",
 ]

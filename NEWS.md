@@ -7,6 +7,8 @@
 - Improved tSNE on large scale: `late_exag_factor` added that can be used on
   large data sets to increase repulsion on the later epochs. Also, speed 
   improvements for both versions of tSNE.
+- Faster PHATE (or rather fast again - k-means clustering iterations reduced
+  here to avoid unncessary iterations).
 
 ## Bug fixes
 

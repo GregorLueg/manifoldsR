@@ -18,6 +18,7 @@ use bixverse_rs::ml::clustering::{clustering_metrics::adjusted_rand_index, k_mea
 use bixverse_rs::prelude::*;
 use bixverse_rs::utils::vec_utils::flatten_vector;
 use extendr_api::prelude::*;
+use faer::Mat;
 use manifolds_rs::data::synthetic::*;
 use manifolds_rs::prelude::*;
 
@@ -66,6 +67,46 @@ extendr_module! {
     fn rs_ari;
     fn rs_silhouette_score;
     fn rs_intertia;
+}
+
+////////////
+// Consts //
+////////////
+
+/// Threshold at which the switch from fp32 to fp64 happens. Some algorithms
+/// (tSNE, cough) are very sensitive to precision differences.
+const SAMPLE_THRESHOLD_HIGH_PRECISION: usize = 100_000;
+
+///////////
+// Enums //
+///////////
+
+/// Enum defining the floating point operation precision. Some algorithms suffer
+/// from catastrophic cancellation and accumulation of precision errors
+#[derive(Debug, Clone, Copy, Default)]
+enum FloatingPointPrecision {
+    /// FP32
+    #[default]
+    FP32,
+    /// FP64
+    FP64,
+}
+
+/// Auto detection of the precision based on sensible thresholds
+///
+/// ### Params
+///
+/// * `n` - Number of samples
+///
+/// ### Returns
+///
+/// The [FloatingPointPrecision]
+fn auto_precision(n: usize) -> FloatingPointPrecision {
+    if n > SAMPLE_THRESHOLD_HIGH_PRECISION {
+        FloatingPointPrecision::FP64
+    } else {
+        FloatingPointPrecision::FP32
+    }
 }
 
 //////////
@@ -183,7 +224,8 @@ fn rs_umap_from_knn(
 ///
 /// @description This is the wrapper function into the Rust interface for tSNE.
 /// You have the option to use the Barnes-Hut implemetation or the
-/// FFT-accelerated version to approximate the repulsive forces.
+/// FFT-accelerated version to approximate the repulsive forces. Uses `fp64`
+/// path on larger data sets to avoid catastrophic cancelleation.
 ///
 /// @param embd Numerical matrix. The data to use to generate the embeddings.
 /// Should be of dimensions samples x features.
@@ -211,21 +253,53 @@ fn rs_tsne(
     seed: usize,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let embd = r_matrix_to_faer_fp32(&embd);
+    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let precision = auto_precision(embd.nrows());
 
-    let res = tsne_simple(
-        embd.as_ref(),
-        None,
-        n_dim,
-        &approx_type,
-        perplexity as f32,
-        tsne_params,
-        seed,
-        verbose,
-    )
-    .to_extendr()?;
+    match precision {
+        FloatingPointPrecision::FP64 => {
+            if verbosity.detailed_verbosity() {
+                println!("Larger data set. Using high precision floats.")
+            }
 
-    Ok(faer_to_r_matrix(res.as_ref()))
+            let embd = r_matrix_to_faer(&embd);
+
+            let res = tsne_simple(
+                embd.as_ref(),
+                None,
+                n_dim,
+                &approx_type,
+                perplexity,
+                tsne_params,
+                seed,
+                verbose,
+            )
+            .to_extendr()?;
+
+            Ok(faer_to_r_matrix(res.as_ref()))
+        }
+        FloatingPointPrecision::FP32 => {
+            if verbosity.detailed_verbosity() {
+                println!("Smaller data set. Using lower precision floats.")
+            }
+
+            let embd = r_matrix_to_faer_fp32(&embd);
+
+            let res = tsne_simple(
+                embd.as_ref(),
+                None,
+                n_dim,
+                &approx_type,
+                perplexity as f32,
+                tsne_params,
+                seed,
+                verbose,
+            )
+            .to_extendr()?;
+
+            Ok(faer_to_r_matrix(res.as_ref()))
+        }
+    }
 }
 
 /// tSNE implementation
@@ -233,7 +307,8 @@ fn rs_tsne(
 /// @description This is the wrapper function into the Rust interface for tSNE.
 /// You have the option to use the Barnes-Hut implemetation or the
 /// FFT-accelerated version to approximate the repulsive forces. This one
-/// can use a pre-computed kNN.
+/// can use a pre-computed kNN. Uses `fp64` path on larger data sets to avoid
+/// catastrophic cancelleation.
 ///
 /// @param embd Numerical matrix. The data to use to generate the embeddings.
 /// Should be of dimensions samples x features.
@@ -264,23 +339,58 @@ fn rs_tsne_from_knn(
     seed: usize,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let embd = r_matrix_to_faer_fp32(&embd);
+    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
 
-    let knn = nearest_neighbours_to_rust(knn_data);
+    let precision = auto_precision(embd.nrows());
 
-    let res = tsne_simple(
-        embd.as_ref(),
-        knn,
-        n_dim,
-        &approx_type,
-        perplexity as f32,
-        tsne_params,
-        seed,
-        verbose,
-    )
-    .to_extendr()?;
+    match precision {
+        FloatingPointPrecision::FP32 => {
+            if verbosity.detailed_verbosity() {
+                println!("Smaller data set. Using higher precision floats.")
+            }
 
-    Ok(faer_to_r_matrix(res.as_ref()))
+            let embd = r_matrix_to_faer_fp32(&embd);
+
+            let knn = nearest_neighbours_to_rust(knn_data);
+
+            let res = tsne_simple(
+                embd.as_ref(),
+                knn,
+                n_dim,
+                &approx_type,
+                perplexity as f32,
+                tsne_params,
+                seed,
+                verbose,
+            )
+            .to_extendr()?;
+
+            Ok(faer_to_r_matrix(res.as_ref()))
+        }
+        FloatingPointPrecision::FP64 => {
+            if verbosity.detailed_verbosity() {
+                println!("Large data set. Using higher precision floats.")
+            }
+
+            let embd = r_matrix_to_faer(&embd);
+
+            let knn = nearest_neighbours_to_rust(knn_data);
+
+            let res = tsne_simple(
+                embd.as_ref(),
+                knn,
+                n_dim,
+                &approx_type,
+                perplexity,
+                tsne_params,
+                seed,
+                verbose,
+            )
+            .to_extendr()?;
+
+            Ok(faer_to_r_matrix(res.as_ref()))
+        }
+    }
 }
 
 ///////////
@@ -579,7 +689,8 @@ fn rs_data_biased_swiss_role(n_samples: usize, noise: f64, bias: f64, seed: usiz
 /// @export
 #[extendr]
 fn rs_data_clusters(n_samples: usize, dim: usize, n_clusters: usize, seed: usize) -> List {
-    let (res, clusters) = generate_clustered_data(n_samples, dim, n_clusters, seed as u64);
+    let (res, clusters): (Mat<f64>, Vec<usize>) =
+        generate_clustered_data(n_samples, dim, n_clusters, seed as u64);
 
     list!(data = faer_to_r_matrix(res.as_ref()), clusters = clusters)
 }

@@ -23,72 +23,70 @@ use std::collections::HashMap;
 ///
 /// The `NearestNeighbourParams` with sensible defaults if not found in the
 /// list.
-pub fn get_params_nn_manifolds(r_list: List) -> Result<NearestNeighbourParams<f32>> {
+/// Helper function to generate the UMAP NN parameters
+///
+/// # Arguments
+///
+/// * `r_list` - The list that has the nearest neighbour graph generation
+///   parameters.
+///
+/// # Returns
+///
+/// `NearestNeighbourParams` with sensible defaults if not found in the list.
+pub fn get_params_nn_manifolds<T>(r_list: List) -> Result<NearestNeighbourParams<T>>
+where
+    T: ManifoldsFloat,
+{
     let nn_params: HashMap<&str, Robj> = r_list.try_into()?;
-
-    // distance
     let dist_metric = std::string::String::from(
         nn_params
             .get("dist_metric")
             .and_then(|v| v.as_str())
             .unwrap_or("cosine"),
     );
-
-    // annoy
     let n_tree = nn_params
         .get("n_tree")
         .and_then(|v| v.as_integer())
         .unwrap_or(50) as usize;
-
     let search_budget = nn_params
         .get("search_budget")
         .and_then(|v| v.as_integer())
         .map(|v| v as usize);
-
-    // hnsw
     let m = nn_params
         .get("m")
         .and_then(|v| v.as_integer())
         .unwrap_or(16) as usize;
-
     let ef_construction = nn_params
         .get("ef_construction")
         .and_then(|v| v.as_integer())
         .unwrap_or(100) as usize;
-
     let ef_search = nn_params
         .get("ef_search")
         .and_then(|v| v.as_integer())
         .unwrap_or(100) as usize;
-
-    // nn descent
     let diversify_prob = nn_params
         .get("diversify_prob")
         .and_then(|v| v.as_real())
-        .unwrap_or(0.0) as f32;
-
+        .map(|v| T::from_f64(v).unwrap())
+        .unwrap_or(T::from_f64(0.0).unwrap());
     let delta = nn_params
         .get("delta")
         .and_then(|v| v.as_real())
-        .unwrap_or(0.001) as f32;
-
+        .map(|v| T::from_f64(v).unwrap())
+        .unwrap_or(T::from_f64(0.001).unwrap());
     let ef_budget = nn_params
         .get("ef_budget")
         .and_then(|v| v.as_integer())
         .map(|v| v as usize);
-
-    // balltree
     let bt_budget = nn_params
         .get("bt_budget")
         .and_then(|v| v.as_real())
-        .unwrap_or(0.1) as f32;
-
-    // ivf
+        .map(|v| T::from_f64(v).unwrap())
+        .unwrap_or(T::from_f64(0.1).unwrap());
     let n_list = nn_params
         .get("n_list")
         .and_then(|v| v.as_integer())
         .map(|v| v as usize);
-
     let n_probes = nn_params
         .get("n_probes")
         .and_then(|v| v.as_integer())
@@ -119,7 +117,10 @@ pub fn get_params_nn_manifolds(r_list: List) -> Result<NearestNeighbourParams<f3
 /// ### Returns
 ///
 /// A PreComputedKnn<f32> for the 2D embedding methods
-pub fn nearest_neighbours_to_rust(nn: List) -> PreComputedKnn<f32> {
+pub fn nearest_neighbours_to_rust<T>(nn: List) -> PreComputedKnn<T>
+where
+    T: ManifoldsFloat,
+{
     let k = nn.dollar("k").unwrap().as_integer().unwrap() as usize;
 
     let indices: Vec<i32> = nn.dollar("indices").unwrap().as_integer_vector().unwrap();
@@ -130,9 +131,9 @@ pub fn nearest_neighbours_to_rust(nn: List) -> PreComputedKnn<f32> {
         .map(|chunk| chunk.iter().map(|&i| (i - 1) as usize).collect())
         .collect();
 
-    let dist: Vec<Vec<f32>> = dist
+    let dist: Vec<Vec<T>> = dist
         .chunks(k)
-        .map(|chunk| chunk.iter().map(|&d| d as f32).collect())
+        .map(|chunk| chunk.iter().map(|&d| T::from_f64(d).unwrap()).collect())
         .collect();
 
     Some((indices, dist))

@@ -44,5 +44,6 @@ The tSNE embeddings.
 This is the wrapper function into the Rust interface for tSNE.
 You have the option to use the Barnes-Hut implemetation or the
 FFT-accelerated version to approximate the repulsive forces. This one
-can use a pre-computed kNN.
+can use a pre-computed kNN. Uses \code{fp64} path on larger data sets to avoid
+catastrophic cancelleation.
 }

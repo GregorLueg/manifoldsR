@@ -52,3 +52,4 @@ Suggests:
 VignetteBuilder: quarto
 URL: https://gregorlueg.github.io/manifoldsR/
 Config/roxygen2/version: 8.0.0
+RoxygenNote: 7.3.3

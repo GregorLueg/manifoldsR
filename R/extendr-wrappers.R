@@ -53,7 +53,8 @@ rs_umap_from_knn <- function(embd, knn_data, n_dim, min_dist, spread, k, umap_pa
 #'
 #' @description This is the wrapper function into the Rust interface for tSNE.
 #' You have the option to use the Barnes-Hut implemetation or the
-#' FFT-accelerated version to approximate the repulsive forces.
+#' FFT-accelerated version to approximate the repulsive forces. Uses `fp64`
+#' path on larger data sets to avoid catastrophic cancelleation.
 #'
 #' @param embd Numerical matrix. The data to use to generate the embeddings.
 #' Should be of dimensions samples x features.
@@ -78,7 +79,8 @@ rs_tsne <- function(embd, n_dim, perplexity, approx_type, tsne_params, seed, ver
 #' @description This is the wrapper function into the Rust interface for tSNE.
 #' You have the option to use the Barnes-Hut implemetation or the
 #' FFT-accelerated version to approximate the repulsive forces. This one
-#' can use a pre-computed kNN.
+#' can use a pre-computed kNN. Uses `fp64` path on larger data sets to avoid
+#' catastrophic cancelleation.
 #'
 #' @param embd Numerical matrix. The data to use to generate the embeddings.
 #' Should be of dimensions samples x features.
