@@ -2,9 +2,11 @@
 
 #![warn(missing_docs)]
 
+use ann_search_rs::cpu::hnsw::{HnswIndex, HnswState};
+use ann_search_rs::cpu::nndescent::{ApplySortedUpdates, NNDescent, NNDescentQuery};
 use bixverse_rs::prelude::IntoExtendrErr;
 use bixverse_rs::utils::vec_utils::flatten_vector;
-use evoc_rs::prelude::NearestNeighbourParamsEvoc;
+use evoc_rs::prelude::{EvocFloat, NearestNeighbourParamsEvoc};
 use evoc_rs::{evoc, EvocParams};
 use extendr_api::*;
 use faer::MatRef;
@@ -37,7 +39,10 @@ pub type EvocResults = Result<(List, Option<Vec<usize>>, Option<Vec<f32>>)>;
 ///
 /// The `NearestNeighbourParamsEvoc` with sensible defaults if not found in the
 /// list.
-pub fn get_params_nn_evoc(r_list: List) -> Result<NearestNeighbourParamsEvoc<f32>> {
+pub fn get_params_nn_evoc<T>(r_list: List) -> Result<NearestNeighbourParamsEvoc<T>>
+where
+    T: EvocFloat,
+{
     let nn_params: HashMap<&str, Robj> = r_list.try_into()?;
 
     // distance
@@ -79,12 +84,14 @@ pub fn get_params_nn_evoc(r_list: List) -> Result<NearestNeighbourParamsEvoc<f32
     let diversify_prob = nn_params
         .get("diversify_prob")
         .and_then(|v| v.as_real())
-        .unwrap_or(0.0) as f32;
+        .map(|v| T::from_f64(v).unwrap())
+        .unwrap_or(T::from_f64(0.0).unwrap());
 
     let delta = nn_params
         .get("delta")
         .and_then(|v| v.as_real())
-        .unwrap_or(0.001) as f32;
+        .map(|v| T::from_f64(v).unwrap())
+        .unwrap_or(T::from_f64(0.001).unwrap());
 
     let ef_budget = nn_params
         .get("ef_budget")
@@ -95,7 +102,8 @@ pub fn get_params_nn_evoc(r_list: List) -> Result<NearestNeighbourParamsEvoc<f32
     let bt_budget = nn_params
         .get("bt_budget")
         .and_then(|v| v.as_real())
-        .unwrap_or(0.1) as f32;
+        .map(|v| T::from_f64(v).unwrap())
+        .unwrap_or(T::from_f64(0.1).unwrap());
 
     // ivf
     let n_list = nn_params
@@ -129,16 +137,19 @@ pub fn get_params_nn_evoc(r_list: List) -> Result<NearestNeighbourParamsEvoc<f32
 /// Internal representation of the parameters needed for EVoC clustering,
 /// populated from an R list.
 #[derive(Debug)]
-pub struct InternalEvocParams {
+pub struct InternalEvocParams<T> {
     /// Which approximate nearest neighbour search to use.
     pub knn_method: String,
     /// Nearest neighbour parameters forwarded to the ANN backend.
-    pub param_knn: NearestNeighbourParamsEvoc<f32>,
+    pub param_knn: NearestNeighbourParamsEvoc<T>,
     /// EVoC-specific clustering parameters.
-    pub evoc: EvocParams<f32>,
+    pub evoc: EvocParams<T>,
 }
 
-impl InternalEvocParams {
+impl<T> InternalEvocParams<T>
+where
+    T: EvocFloat,
+{
     /// Build from an R list.
     ///
     /// ### Params
@@ -180,13 +191,17 @@ impl InternalEvocParams {
 /// ### Returns
 ///
 /// The [`EvocParams`]
-fn get_params_evoc(r_list: List, n_neighbours: usize) -> Result<EvocParams<f32>> {
+fn get_params_evoc<T>(r_list: List, n_neighbours: usize) -> Result<EvocParams<T>>
+where
+    T: EvocFloat,
+{
     let map: HashMap<&str, Robj> = r_list.try_into()?;
 
     let noise_level = map
         .get("noise_level")
         .and_then(|v| v.as_real())
-        .unwrap_or(0.5) as f32;
+        .map(|v| T::from_f64(v).unwrap())
+        .unwrap_or(T::from_f64(0.5).unwrap());
 
     let n_epochs = map
         .get("n_epochs")
@@ -201,7 +216,8 @@ fn get_params_evoc(r_list: List, n_neighbours: usize) -> Result<EvocParams<f32>>
     let neighbour_scale = map
         .get("neighbour_scale")
         .and_then(|v| v.as_real())
-        .unwrap_or(1.0) as f32;
+        .map(|v| T::from_f64(v).unwrap())
+        .unwrap_or(T::from_f64(1.0).unwrap());
 
     let symmetrise = map
         .get("symmetrise")
@@ -270,15 +286,21 @@ fn get_params_evoc(r_list: List, n_neighbours: usize) -> Result<EvocParams<f32>>
 /// A named R list with `cluster_layers`, `membership_strengths`,
 /// `persistence_scores`, `nn_indices`, and `nn_distances`.
 #[allow(clippy::too_many_arguments)]
-pub fn evoc_cluster(
-    data: MatRef<f32>,
-    pre_computed_knn: PreComputedKnn<f32>,
+pub fn evoc_cluster<T>(
+    data: MatRef<T>,
+    pre_computed_knn: PreComputedKnn<T>,
     n_neighbours: usize,
     return_knn: bool,
     evoc_params: List,
     seed: usize,
     verbose: usize,
-) -> EvocResults {
+) -> EvocResults
+where
+    T: EvocFloat,
+    HnswIndex<T>: HnswState<T>,
+    NNDescent<T>: ApplySortedUpdates<T> + NNDescentQuery<T>,
+    std::vec::Vec<T>: std::iter::FromIterator<T>,
+{
     let params = InternalEvocParams::from_r_list(evoc_params, n_neighbours)?;
 
     let result = evoc(
@@ -307,7 +329,7 @@ pub fn evoc_cluster(
         .membership_strengths
         .iter()
         .map(|layer| {
-            let v: Vec<f64> = layer.iter().map(|&s| s as f64).collect();
+            let v: Vec<f64> = layer.iter().map(|s| s.to_f64().unwrap()).collect();
             v.into_robj()
         })
         .collect();
@@ -317,7 +339,8 @@ pub fn evoc_cluster(
 
     let (nn, dist) = if return_knn {
         let nn_indices: Vec<usize> = flatten_vector(result.nn_indices);
-        let nn_distances: Vec<f32> = flatten_vector(result.nn_distances);
+        let nn_distances: Vec<T> = flatten_vector(result.nn_distances);
+        let nn_distances = nn_distances.iter().map(|x| x.to_f32().unwrap()).collect();
         (Some(nn_indices), Some(nn_distances))
     } else {
         (None, None)

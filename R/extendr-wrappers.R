@@ -18,13 +18,15 @@ NULL
 #' @param umap_params Named list. List that contains all of the key parameters
 #' for the UMAP generation.
 #' @param seed Integer. Seed for reproducibility.
+#' @param use_high_precision Optional logical. Controls `fp32` vs `fp64` for.
+#' If `NULL` will use sensible default thresholding.
 #' @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
 #' for detailed verbosity.
 #'
 #' @return The UMAP embeddings.
 #'
 #' @export
-rs_umap <- function(embd, n_dim, min_dist, spread, k, umap_params, seed, verbose) .Call(wrap__rs_umap, embd, n_dim, min_dist, spread, k, umap_params, seed, verbose)
+rs_umap <- function(embd, n_dim, min_dist, spread, k, umap_params, seed, use_high_precision, verbose) .Call(wrap__rs_umap, embd, n_dim, min_dist, spread, k, umap_params, seed, use_high_precision, verbose)
 
 #' UMAP implementation
 #'
@@ -41,13 +43,15 @@ rs_umap <- function(embd, n_dim, min_dist, spread, k, umap_params, seed, verbose
 #' @param umap_params Named list. List that contains all of the key parameters
 #' for the UMAP generation.
 #' @param seed Integer. Seed for reproducibility.
+#' @param use_high_precision Optional logical. Controls `fp32` vs `fp64` for.
+#' If `NULL` will use sensible default thresholding.
 #' @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
 #' for detailed verbosity.
 #'
 #' @return The UMAP embeddings.
 #'
 #' @export
-rs_umap_from_knn <- function(embd, knn_data, n_dim, min_dist, spread, k, umap_params, seed, verbose) .Call(wrap__rs_umap_from_knn, embd, knn_data, n_dim, min_dist, spread, k, umap_params, seed, verbose)
+rs_umap_from_knn <- function(embd, knn_data, n_dim, min_dist, spread, k, umap_params, seed, use_high_precision, verbose) .Call(wrap__rs_umap_from_knn, embd, knn_data, n_dim, min_dist, spread, k, umap_params, seed, use_high_precision, verbose)
 
 #' tSNE implementation
 #'
@@ -66,13 +70,15 @@ rs_umap_from_knn <- function(embd, knn_data, n_dim, min_dist, spread, k, umap_pa
 #' @param tsne_params Named list. List that contains all of the key parameters
 #' for the tSNE generation.
 #' @param seed Integer. Seed for reproducibility.
+#' @param use_high_precision Optional logical. Controls `fp32` vs `fp64` for.
+#' If `NULL` will use sensible default thresholding.
 #' @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
 #' for detailed verbosity.
 #'
 #' @return The tSNE embeddings.
 #'
 #' @export
-rs_tsne <- function(embd, n_dim, perplexity, approx_type, tsne_params, seed, verbose) .Call(wrap__rs_tsne, embd, n_dim, perplexity, approx_type, tsne_params, seed, verbose)
+rs_tsne <- function(embd, n_dim, perplexity, approx_type, tsne_params, seed, use_high_precision, verbose) .Call(wrap__rs_tsne, embd, n_dim, perplexity, approx_type, tsne_params, seed, use_high_precision, verbose)
 
 #' tSNE implementation
 #'
@@ -93,13 +99,15 @@ rs_tsne <- function(embd, n_dim, perplexity, approx_type, tsne_params, seed, ver
 #' @param tsne_params Named list. List that contains all of the key parameters
 #' for the tSNE generation.
 #' @param seed Integer. Seed for reproducibility.
+#' @param use_high_precision Optional logical. Controls `fp32` vs `fp64` for.
+#' If `NULL` will use sensible default thresholding.
 #' @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
 #' for detailed verbosity.
 #'
 #' @return The tSNE embeddings.
 #'
 #' @export
-rs_tsne_from_knn <- function(embd, knn_data, n_dim, perplexity, approx_type, tsne_params, seed, verbose) .Call(wrap__rs_tsne_from_knn, embd, knn_data, n_dim, perplexity, approx_type, tsne_params, seed, verbose)
+rs_tsne_from_knn <- function(embd, knn_data, n_dim, perplexity, approx_type, tsne_params, seed, use_high_precision, verbose) .Call(wrap__rs_tsne_from_knn, embd, knn_data, n_dim, perplexity, approx_type, tsne_params, seed, use_high_precision, verbose)
 
 #' Run PHATE dimensionality reduction
 #'
@@ -116,13 +124,15 @@ rs_tsne_from_knn <- function(embd, knn_data, n_dim, perplexity, approx_type, tsn
 #' @param phate_params Named list. Contains all key parameters for PHATE,
 #' see [params_phate()] and [params_nn()].
 #' @param seed Integer. Seed for reproducibility.
+#' @param use_high_precision Optional logical. Controls `fp32` vs `fp64` for.
+#' If `NULL` will use sensible default thresholding.
 #' @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
 #' for detailed verbosity.
 #'
 #' @return The PHATE embedding as a matrix of shape samples x n_dim.
 #'
 #' @export
-rs_phate <- function(embd, n_dim, k, phate_params, seed, verbose) .Call(wrap__rs_phate, embd, n_dim, k, phate_params, seed, verbose)
+rs_phate <- function(embd, n_dim, k, phate_params, seed, use_high_precision, verbose) .Call(wrap__rs_phate, embd, n_dim, k, phate_params, seed, use_high_precision, verbose)
 
 #' Run PHATE dimensionality reduction from a precomputed kNN graph
 #'
@@ -140,13 +150,15 @@ rs_phate <- function(embd, n_dim, k, phate_params, seed, verbose) .Call(wrap__rs
 #' @param phate_params Named list. Contains all key parameters for PHATE,
 #' see [params_phate()] and [params_nn()].
 #' @param seed Integer. Seed for reproducibility.
+#' @param use_high_precision Optional logical. Controls `fp32` vs `fp64` for.
+#' If `NULL` will use sensible default thresholding.
 #' @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
 #' for detailed verbosity.
 #'
 #' @return The PHATE embedding as a matrix of shape samples x n_dim.
 #'
 #' @export
-rs_phate_from_knn <- function(embd, knn_data, n_dim, k, phate_params, seed, verbose) .Call(wrap__rs_phate_from_knn, embd, knn_data, n_dim, k, phate_params, seed, verbose)
+rs_phate_from_knn <- function(embd, knn_data, n_dim, k, phate_params, seed, use_high_precision, verbose) .Call(wrap__rs_phate_from_knn, embd, knn_data, n_dim, k, phate_params, seed, use_high_precision, verbose)
 
 #' PaCMAP implementation
 #'
@@ -160,13 +172,15 @@ rs_phate_from_knn <- function(embd, knn_data, n_dim, k, phate_params, seed, verb
 #' @param pacmap_params Named list. List that contains all of the key
 #' parameters for the PaCMAP generation.
 #' @param seed Integer. Seed for reproducibility.
+#' @param use_high_precision Optional logical. Controls `fp32` vs `fp64` for.
+#' If `NULL` will use sensible default thresholding.
 #' @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
 #' for detailed verbosity.
 #'
 #' @return The PaCMAP embeddings.
 #'
 #' @export
-rs_pacmap <- function(embd, n_dim, k, pacmap_params, seed, verbose) .Call(wrap__rs_pacmap, embd, n_dim, k, pacmap_params, seed, verbose)
+rs_pacmap <- function(embd, n_dim, k, pacmap_params, seed, use_high_precision, verbose) .Call(wrap__rs_pacmap, embd, n_dim, k, pacmap_params, seed, use_high_precision, verbose)
 
 #' PaCMAP implementation with pre-computed kNN
 #'
@@ -181,13 +195,15 @@ rs_pacmap <- function(embd, n_dim, k, pacmap_params, seed, verbose) .Call(wrap__
 #' @param pacmap_params Named list. List that contains all of the key
 #' parameters for the PaCMAP generation.
 #' @param seed Integer. Seed for reproducibility.
+#' @param use_high_precision Optional logical. Controls `fp32` vs `fp64` for.
+#' If `NULL` will use sensible default thresholding.
 #' @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
 #' for detailed verbosity.
 #'
 #' @return The PaCMAP embeddings.
 #'
 #' @export
-rs_pacmap_from_knn <- function(embd, knn_data, n_dim, k, pacmap_params, seed, verbose) .Call(wrap__rs_pacmap_from_knn, embd, knn_data, n_dim, k, pacmap_params, seed, verbose)
+rs_pacmap_from_knn <- function(embd, knn_data, n_dim, k, pacmap_params, seed, use_high_precision, verbose) .Call(wrap__rs_pacmap_from_knn, embd, knn_data, n_dim, k, pacmap_params, seed, use_high_precision, verbose)
 
 #' Diffusion maps implementation
 #'
@@ -201,13 +217,15 @@ rs_pacmap_from_knn <- function(embd, knn_data, n_dim, k, pacmap_params, seed, ve
 #' @param dm_params Named list. List that contains all of the key parameters
 #' for the diffusion maps generation.
 #' @param seed Integer. Seed for reproducibility.
+#' @param use_high_precision Optional logical. Controls `fp32` vs `fp64` for.
+#' If `NULL` will use sensible default thresholding.
 #' @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
 #' for detailed verbosity.
 #'
 #' @return The diffusion maps embeddings.
 #'
 #' @export
-rs_diffusion_maps <- function(embd, n_dim, k, dm_params, seed, verbose) .Call(wrap__rs_diffusion_maps, embd, n_dim, k, dm_params, seed, verbose)
+rs_diffusion_maps <- function(embd, n_dim, k, dm_params, seed, use_high_precision, verbose) .Call(wrap__rs_diffusion_maps, embd, n_dim, k, dm_params, seed, use_high_precision, verbose)
 
 #' Diffusion maps implementation with pre-computed kNN
 #'
@@ -222,13 +240,15 @@ rs_diffusion_maps <- function(embd, n_dim, k, dm_params, seed, verbose) .Call(wr
 #' @param dm_params Named list. List that contains all of the key parameters
 #' for the diffusion maps generation.
 #' @param seed Integer. Seed for reproducibility.
+#' @param use_high_precision Optional logical. Controls `fp32` vs `fp64` for.
+#' If `NULL` will use sensible default thresholding.
 #' @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
 #' for detailed verbosity.
 #'
 #' @return The diffusion maps embeddings.
 #'
 #' @export
-rs_diffusion_maps_from_knn <- function(embd, knn_data, n_dim, k, dm_params, seed, verbose) .Call(wrap__rs_diffusion_maps_from_knn, embd, knn_data, n_dim, k, dm_params, seed, verbose)
+rs_diffusion_maps_from_knn <- function(embd, knn_data, n_dim, k, dm_params, seed, use_high_precision, verbose) .Call(wrap__rs_diffusion_maps_from_knn, embd, knn_data, n_dim, k, dm_params, seed, use_high_precision, verbose)
 
 #' EVoC clustering
 #'
@@ -252,7 +272,7 @@ rs_diffusion_maps_from_knn <- function(embd, knn_data, n_dim, k, dm_params, seed
 #' }
 #'
 #' @export
-rs_evoc <- function(embd, n_neighbours, evoc_params, return_knn, seed, verbose) .Call(wrap__rs_evoc, embd, n_neighbours, evoc_params, return_knn, seed, verbose)
+rs_evoc <- function(embd, n_neighbours, evoc_params, return_knn, seed, use_high_precision, verbose) .Call(wrap__rs_evoc, embd, n_neighbours, evoc_params, return_knn, seed, use_high_precision, verbose)
 
 #' EVoC clustering from pre-computed kNN
 #'
@@ -275,7 +295,7 @@ rs_evoc <- function(embd, n_neighbours, evoc_params, return_knn, seed, verbose) 
 #' scores, and the kNN graph.
 #'
 #' @export
-rs_evoc_from_knn <- function(embd, knn_data, n_neighbours, evoc_params, seed, verbose) .Call(wrap__rs_evoc_from_knn, embd, knn_data, n_neighbours, evoc_params, seed, verbose)
+rs_evoc_from_knn <- function(embd, knn_data, n_neighbours, evoc_params, seed, use_high_precision, verbose) .Call(wrap__rs_evoc_from_knn, embd, knn_data, n_neighbours, evoc_params, seed, use_high_precision, verbose)
 
 #' Full k-means clustering
 #'

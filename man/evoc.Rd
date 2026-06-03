@@ -13,6 +13,7 @@ evoc(
   evoc_params = params_evoc(),
   return_knn = FALSE,
   seed = 42L,
+  use_high_precision = NULL,
   .verbose = TRUE
 )
 }
@@ -40,6 +41,9 @@ or \code{"exhaustive"}. Defaults to \code{"kmknn"}.}
 provided, it is returned as-is. Defaults to \code{FALSE}.}
 
 \item{seed}{Integer. Random seed for reproducibility. Defaults to \code{42L}.}
+
+\item{use_high_precision}{Optional boolean. Gives fine-grained control over
+\code{fp32} vs \code{fp64} usage.}
 
 \item{.verbose}{Logical. Controls verbosity. Defaults to \code{TRUE}.}
 }

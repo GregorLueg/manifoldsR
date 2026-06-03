@@ -4,7 +4,7 @@
 \alias{rs_phate}
 \title{Run PHATE dimensionality reduction}
 \usage{
-rs_phate(embd, n_dim, k, phate_params, seed, verbose)
+rs_phate(embd, n_dim, k, phate_params, seed, use_high_precision, verbose)
 }
 \arguments{
 \item{embd}{Numerical matrix. The data to embed of shape samples x
@@ -19,6 +19,9 @@ features.}
 see \code{\link[=params_phate]{params_phate()}} and \code{\link[=params_nn]{params_nn()}}.}
 
 \item{seed}{Integer. Seed for reproducibility.}
+
+\item{use_high_precision}{Optional logical. Controls \code{fp32} vs \code{fp64} for.
+If \code{NULL} will use sensible default thresholding.}
 
 \item{verbose}{Integer. If \code{0L} -> silent or \code{1L} for normal verbosity; \code{2L}
 for detailed verbosity.}

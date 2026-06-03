@@ -4,7 +4,16 @@
 \alias{rs_phate_from_knn}
 \title{Run PHATE dimensionality reduction from a precomputed kNN graph}
 \usage{
-rs_phate_from_knn(embd, knn_data, n_dim, k, phate_params, seed, verbose)
+rs_phate_from_knn(
+  embd,
+  knn_data,
+  n_dim,
+  k,
+  phate_params,
+  seed,
+  use_high_precision,
+  verbose
+)
 }
 \arguments{
 \item{embd}{Numerical matrix. The data to embed of shape samples x
@@ -22,6 +31,9 @@ construction. Must match the k used to generate \code{knn_data}.}
 see \code{\link[=params_phate]{params_phate()}} and \code{\link[=params_nn]{params_nn()}}.}
 
 \item{seed}{Integer. Seed for reproducibility.}
+
+\item{use_high_precision}{Optional logical. Controls \code{fp32} vs \code{fp64} for.
+If \code{NULL} will use sensible default thresholding.}
 
 \item{verbose}{Integer. If \code{0L} -> silent or \code{1L} for normal verbosity; \code{2L}
 for detailed verbosity.}

@@ -4,7 +4,15 @@
 \alias{rs_evoc_from_knn}
 \title{EVoC clustering from pre-computed kNN}
 \usage{
-rs_evoc_from_knn(embd, knn_data, n_neighbours, evoc_params, seed, verbose)
+rs_evoc_from_knn(
+  embd,
+  knn_data,
+  n_neighbours,
+  evoc_params,
+  seed,
+  use_high_precision,
+  verbose
+)
 }
 \arguments{
 \item{embd}{Numerical matrix. The data to cluster. Should be of dimensions

@@ -63,6 +63,8 @@
 #' @param dm_params Named list. Diffusion maps algorithm parameters, see
 #' [params_diffusion_maps()].
 #' @param seed Integer. Random seed for reproducibility. Defaults to `42L`.
+#' @param use_high_precision Optional boolean. Gives fine-grained control over
+#' `fp32` vs `fp64` usage.
 #' @param .verbose Logical. Controls verbosity. Defaults to `TRUE`.
 #'
 #' @return A numerical matrix with dimensions samples x n_dim containing the
@@ -80,11 +82,13 @@ diffusion_maps <- function(
     "hnsw",
     "annoy",
     "nndescent",
-    "exhaustive"
+    "exhaustive",
+    "ivf"
   ),
   nn_params = params_nn(),
   dm_params = params_diffusion_maps(),
   seed = 42L,
+  use_high_precision = NULL,
   .verbose = TRUE
 ) {
   if (is.data.frame(data)) {
@@ -106,6 +110,7 @@ diffusion_maps <- function(
   checkmate::assert_int(n_dim, lower = 1, upper = ncol(data))
   checkmate::qassert(k, "I1[2,)")
   checkmate::qassert(.verbose, c("B1", "I1[0, 2]"))
+  checkmate::qassert(use_high_precision, c("0", "B1"))
   checkmate::qassert(seed, "I1")
 
   final_dm_params <- .prepare_diffusion_maps_params(
@@ -127,6 +132,7 @@ diffusion_maps <- function(
           k = k,
           dm_params = final_dm_params,
           seed = seed,
+          use_high_precision = use_high_precision,
           verbose = parse_verbosity(.verbose)
         )
       },
@@ -147,6 +153,7 @@ diffusion_maps <- function(
           k = k,
           dm_params = final_dm_params,
           seed = seed,
+          use_high_precision = use_high_precision,
           verbose = parse_verbosity(.verbose)
         )
       },

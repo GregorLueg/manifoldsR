@@ -1,10 +1,13 @@
 //! PaCMAP wrapper functions to R from manifolds-rs
 
+use ann_search_rs::cpu::hnsw::{HnswIndex, HnswState};
+use ann_search_rs::cpu::nndescent::{ApplySortedUpdates, NNDescent, NNDescentQuery};
 use bixverse_rs::prelude::IntoExtendrErr;
 use extendr_api::{List, Robj};
 use faer::{Mat, MatRef};
 use manifolds_rs::prelude::*;
 use manifolds_rs::*;
+use rand_distr::{Distribution, StandardNormal};
 use std::collections::HashMap;
 
 use crate::utils::get_params_nn_manifolds;
@@ -15,11 +18,11 @@ use crate::utils::get_params_nn_manifolds;
 
 /// InternalPacmapParams
 #[derive(Debug)]
-pub struct InternalPacmapParams {
+pub struct InternalPacmapParams<T> {
     /// Which approximate nearest neighbour search to use.
     pub knn_method: String,
     /// Nearest neighbour parameters forwarded to the ANN methods.
-    pub param_knn: NearestNeighbourParams<f32>,
+    pub param_knn: NearestNeighbourParams<T>,
     /// Mid-near pairs per point.
     pub n_mid_near: usize,
     /// Further (random) pairs per point.
@@ -33,10 +36,13 @@ pub struct InternalPacmapParams {
     /// Which optimiser to use. One of `"adam"` or `"adam_parallel"`.
     pub optimiser: String,
     /// PaCMAP optimisation parameters.
-    pub param_optimiser: PacmapOptimParams<f32>,
+    pub param_optimiser: PacmapOptimParams<T>,
 }
 
-impl InternalPacmapParams {
+impl<T> InternalPacmapParams<T>
+where
+    T: ManifoldsFloat,
+{
     /// Generate PaCMAP parameters from an R list.
     ///
     /// ### Params
@@ -111,10 +117,16 @@ impl InternalPacmapParams {
 /// ### Returns
 ///
 /// The PacmapOptimParams
-fn get_params_pacmap_optim(r_list: List) -> Result<PacmapOptimParams<f32>, extendr_api::Error> {
+fn get_params_pacmap_optim<T>(r_list: List) -> Result<PacmapOptimParams<T>, extendr_api::Error>
+where
+    T: ManifoldsFloat,
+{
     let params: HashMap<&str, Robj> = r_list.try_into()?;
 
-    let lr = params.get("lr").and_then(|v| v.as_real()).map(|v| v as f32);
+    let lr = params
+        .get("lr")
+        .and_then(|v| v.as_real())
+        .map(|v| T::from_f64(v).unwrap());
 
     let n_epochs = params
         .get("n_epochs")
@@ -124,17 +136,17 @@ fn get_params_pacmap_optim(r_list: List) -> Result<PacmapOptimParams<f32>, exten
     let beta1 = params
         .get("beta1")
         .and_then(|v| v.as_real())
-        .map(|v| v as f32);
+        .map(|v| T::from_f64(v).unwrap());
 
     let beta2 = params
         .get("beta2")
         .and_then(|v| v.as_real())
-        .map(|v| v as f32);
+        .map(|v| T::from_f64(v).unwrap());
 
     let eps = params
         .get("eps")
         .and_then(|v| v.as_real())
-        .map(|v| v as f32);
+        .map(|v| T::from_f64(v).unwrap());
 
     let phase1_end = params
         .get("phase1_end")
@@ -172,15 +184,21 @@ fn get_params_pacmap_optim(r_list: List) -> Result<PacmapOptimParams<f32>, exten
 ///
 /// Returns the PaCMAP embeddings as matrix.
 #[allow(clippy::too_many_arguments)]
-pub fn pacmap_manifold(
-    data: MatRef<f32>,
-    pre_computed_knn: PreComputedKnn<f32>,
+pub fn pacmap_manifold<T>(
+    data: MatRef<T>,
+    pre_computed_knn: PreComputedKnn<T>,
     n_dim: usize,
     k: usize,
     pacmap_params: List,
     seed: usize,
     verbose: usize,
-) -> Result<Mat<f32>, extendr_api::Error> {
+) -> Result<Mat<T>, extendr_api::Error>
+where
+    T: ManifoldsFloat,
+    HnswIndex<T>: HnswState<T>,
+    NNDescent<T>: ApplySortedUpdates<T> + NNDescentQuery<T>,
+    StandardNormal: Distribution<T>,
+{
     let internal = InternalPacmapParams::from_r_list(pacmap_params)?;
 
     let params = PacmapParams::new(

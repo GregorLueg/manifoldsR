@@ -1,3 +1,12 @@
+# manifoldsR 0.2.4
+
+## Features
+
+- More control over floating point operations to avoid catastrophic cancellation
+  on large data sets across all algorithms. This is controlled via the
+  `use_high_precision = NULL` parameter. `NULL` will default to sensible 
+  defaults, but fine-grained control if you know what you are doing.
+
 # manifoldsR 0.2.3
 
 ## Features

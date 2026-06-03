@@ -114,6 +114,8 @@
 #' @param umap_params Named list. UMAP algorithm parameters, see
 #' [params_umap()].
 #' @param seed Integer. Random seed for reproducibility. Defaults to `42L`.
+#' @param use_high_precision Optional boolean. Gives fine-grained control over
+#' `fp32` vs `fp64` usage.
 #' @param .verbose Logical. Controls verbosity. Defaults to `TRUE`.
 #'
 #' @return A numerical matrix with dimensions samples x n_dim containing
@@ -138,6 +140,7 @@ umap <- function(
   nn_params = params_nn(),
   umap_params = params_umap(),
   seed = 42L,
+  use_high_precision = NULL,
   .verbose = TRUE
 ) {
   # transformation
@@ -162,6 +165,7 @@ umap <- function(
   checkmate::qassert(min_dist, "N1[0,)")
   checkmate::qassert(spread, "N1[0,)")
   checkmate::qassert(.verbose, c("B1", "I1[0, 2]"))
+  checkmate::qassert(use_high_precision, c("0", "B1"))
   checkmate::qassert(seed, "I1")
 
   final_umap_params <- .prepare_umap_params(
@@ -190,6 +194,7 @@ umap <- function(
           k = k,
           umap_params = final_umap_params,
           seed = seed,
+          use_high_precision = use_high_precision,
           verbose = parse_verbosity(.verbose)
         )
       },
@@ -208,6 +213,7 @@ umap <- function(
           k = k,
           umap_params = final_umap_params,
           seed = seed,
+          use_high_precision = use_high_precision,
           verbose = parse_verbosity(.verbose)
         )
       },
