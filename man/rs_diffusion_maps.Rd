@@ -4,7 +4,7 @@
 \alias{rs_diffusion_maps}
 \title{Diffusion maps implementation}
 \usage{
-rs_diffusion_maps(embd, n_dim, k, dm_params, seed, verbose)
+rs_diffusion_maps(embd, n_dim, k, dm_params, seed, use_high_precision, verbose)
 }
 \arguments{
 \item{embd}{Numerical matrix. The data to use to generate the embeddings.
@@ -18,6 +18,9 @@ Should be of dimensions samples x features.}
 for the diffusion maps generation.}
 
 \item{seed}{Integer. Seed for reproducibility.}
+
+\item{use_high_precision}{Optional logical. Controls \code{fp32} vs \code{fp64} for.
+If \code{NULL} will use sensible default thresholding.}
 
 \item{verbose}{Integer. If \code{0L} -> silent or \code{1L} for normal verbosity; \code{2L}
 for detailed verbosity.}

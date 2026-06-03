@@ -99,7 +99,7 @@ params_nn <- function(
 #' @param optimiser Character. One of `"sgd"`, `"adam"`, or
 #' `"adam_parallel"`. Defaults to `"adam_parallel"`.
 #' @param init Character. Embedding initialisation method. One of `"spectral"`,
-#' `"pca"`, or `"random"`. Defaults to `"pca"`.
+#' `"pca"`, or `"random"`. Defaults to `"spectral"`.
 #' @param randomised Logical. Use randomised SVD for PCA initialisation.
 #' Defaults to `FALSE`.
 #'
@@ -115,7 +115,7 @@ params_umap <- function(
   neg_sample_rate = 5L,
   gamma = 1.0,
   optimiser = c("adam_parallel", "sgd", "adam"),
-  init = c("pca", "spectral", "random"),
+  init = c("spectral", "pca", "random"),
   randomised = FALSE
 ) {
   optimiser <- match.arg(optimiser)

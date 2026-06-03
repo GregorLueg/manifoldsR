@@ -60,6 +60,8 @@
 #' @param phate_params Named list. PHATE algorithm parameters, see
 #' [params_phate()].
 #' @param seed Integer. Random seed for reproducibility. Defaults to `42L`.
+#' @param use_high_precision Optional boolean. Gives fine-grained control over
+#' `fp32` vs `fp64` usage.
 #' @param .verbose Logical. Controls verbosity. Defaults to `TRUE`.
 #'
 #' @return A numerical matrix with dimensions samples x n_dim containing
@@ -83,6 +85,7 @@ phate <- function(
   nn_params = params_nn(),
   phate_params = params_phate(),
   seed = 42L,
+  use_high_precision = NULL,
   .verbose = TRUE
 ) {
   if (is.data.frame(data)) {
@@ -110,6 +113,7 @@ phate <- function(
   assertNnParams(nn_params)
   assertPhateParams(phate_params)
   checkmate::qassert(seed, "I1")
+  checkmate::qassert(use_high_precision, c("0", "B1"))
   checkmate::qassert(.verbose, c("B1", "I1[0, 2]"))
 
   final_phate_params <- .prepare_phate_params(
@@ -148,6 +152,7 @@ phate <- function(
           k = as.integer(k),
           phate_params = final_phate_params,
           seed = seed,
+          use_high_precision = use_high_precision,
           verbose = parse_verbosity(.verbose)
         )
       },
@@ -164,6 +169,7 @@ phate <- function(
           k = as.integer(k),
           phate_params = final_phate_params,
           seed = seed,
+          use_high_precision = use_high_precision,
           verbose = parse_verbosity(.verbose)
         )
       },

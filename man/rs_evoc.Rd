@@ -4,7 +4,15 @@
 \alias{rs_evoc}
 \title{EVoC clustering}
 \usage{
-rs_evoc(embd, n_neighbours, evoc_params, return_knn, seed, verbose)
+rs_evoc(
+  embd,
+  n_neighbours,
+  evoc_params,
+  return_knn,
+  seed,
+  use_high_precision,
+  verbose
+)
 }
 \arguments{
 \item{embd}{Numerical matrix. The data to cluster. Should be of dimensions

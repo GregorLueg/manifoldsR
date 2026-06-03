@@ -4,7 +4,16 @@
 \alias{rs_tsne}
 \title{tSNE implementation}
 \usage{
-rs_tsne(embd, n_dim, perplexity, approx_type, tsne_params, seed, verbose)
+rs_tsne(
+  embd,
+  n_dim,
+  perplexity,
+  approx_type,
+  tsne_params,
+  seed,
+  use_high_precision,
+  verbose
+)
 }
 \arguments{
 \item{embd}{Numerical matrix. The data to use to generate the embeddings.
@@ -22,6 +31,9 @@ approximations to use.}
 for the tSNE generation.}
 
 \item{seed}{Integer. Seed for reproducibility.}
+
+\item{use_high_precision}{Optional logical. Controls \code{fp32} vs \code{fp64} for.
+If \code{NULL} will use sensible default thresholding.}
 
 \item{verbose}{Integer. If \code{0L} -> silent or \code{1L} for normal verbosity; \code{2L}
 for detailed verbosity.}

@@ -299,7 +299,7 @@ where
     T: EvocFloat,
     HnswIndex<T>: HnswState<T>,
     NNDescent<T>: ApplySortedUpdates<T> + NNDescentQuery<T>,
-    std::vec::Vec<f64>: std::iter::FromIterator<T>,
+    std::vec::Vec<T>: std::iter::FromIterator<T>,
 {
     let params = InternalEvocParams::from_r_list(evoc_params, n_neighbours)?;
 

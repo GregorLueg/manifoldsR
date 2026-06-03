@@ -602,12 +602,35 @@ fn rs_phate_from_knn(
     use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let embd = r_matrix_to_faer_fp32(&embd);
-    let knn = nearest_neighbours_to_rust(knn_data);
-    let res =
-        phate_simple(embd.as_ref(), knn, n_dim, k, phate_params, seed, verbose).to_extendr()?;
+    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let precision = parse_precision(use_high_precision, embd.nrows());
 
-    Ok(faer_to_r_matrix(res.as_ref()))
+    match precision {
+        FloatingPointPrecision::FP32 => {
+            if verbosity.detailed_verbosity() {
+                println!("Lower precision (fp32) path chosen.")
+            }
+
+            let embd = r_matrix_to_faer_fp32(&embd);
+            let knn = nearest_neighbours_to_rust(knn_data);
+            let res = phate_simple(embd.as_ref(), knn, n_dim, k, phate_params, seed, verbose)
+                .to_extendr()?;
+
+            Ok(faer_to_r_matrix(res.as_ref()))
+        }
+        FloatingPointPrecision::FP64 => {
+            if verbosity.detailed_verbosity() {
+                println!("Higher precision (fp64) path chosen.")
+            }
+
+            let embd = r_matrix_to_faer(&embd);
+            let knn = nearest_neighbours_to_rust(knn_data);
+            let res = phate_simple(embd.as_ref(), knn, n_dim, k, phate_params, seed, verbose)
+                .to_extendr()?;
+
+            Ok(faer_to_r_matrix(res.as_ref()))
+        }
+    }
 }
 
 ////////////
@@ -645,11 +668,33 @@ fn rs_pacmap(
     use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> Result<RMatrix<f64>, extendr_api::Error> {
-    let embd = r_matrix_to_faer_fp32(&embd);
-    let res = pacmap_manifold(embd.as_ref(), None, n_dim, k, pacmap_params, seed, verbose)
-        .to_extendr()?;
+    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let precision = parse_precision(use_high_precision, embd.nrows());
 
-    Ok(faer_to_r_matrix(res.as_ref()))
+    match precision {
+        FloatingPointPrecision::FP32 => {
+            if verbosity.detailed_verbosity() {
+                println!("Lower precision (fp32) path chosen.")
+            }
+
+            let embd = r_matrix_to_faer_fp32(&embd);
+            let res = pacmap_manifold(embd.as_ref(), None, n_dim, k, pacmap_params, seed, verbose)
+                .to_extendr()?;
+
+            Ok(faer_to_r_matrix(res.as_ref()))
+        }
+        FloatingPointPrecision::FP64 => {
+            if verbosity.detailed_verbosity() {
+                println!("Higher precision (fp64) path chosen.")
+            }
+
+            let embd = r_matrix_to_faer(&embd);
+            let res = pacmap_manifold(embd.as_ref(), None, n_dim, k, pacmap_params, seed, verbose)
+                .to_extendr()?;
+
+            Ok(faer_to_r_matrix(res.as_ref()))
+        }
+    }
 }
 
 /// PaCMAP implementation with pre-computed kNN
@@ -685,12 +730,35 @@ fn rs_pacmap_from_knn(
     use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> Result<RMatrix<f64>, extendr_api::Error> {
-    let embd = r_matrix_to_faer_fp32(&embd);
-    let knn = nearest_neighbours_to_rust(knn_data);
-    let res =
-        pacmap_manifold(embd.as_ref(), knn, n_dim, k, pacmap_params, seed, verbose).to_extendr()?;
+    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let precision = parse_precision(use_high_precision, embd.nrows());
 
-    Ok(faer_to_r_matrix(res.as_ref()))
+    match precision {
+        FloatingPointPrecision::FP32 => {
+            if verbosity.detailed_verbosity() {
+                println!("Lower precision (fp32) path chosen.")
+            }
+
+            let embd = r_matrix_to_faer_fp32(&embd);
+            let knn = nearest_neighbours_to_rust(knn_data);
+            let res = pacmap_manifold(embd.as_ref(), knn, n_dim, k, pacmap_params, seed, verbose)
+                .to_extendr()?;
+
+            Ok(faer_to_r_matrix(res.as_ref()))
+        }
+        FloatingPointPrecision::FP64 => {
+            if verbosity.detailed_verbosity() {
+                println!("High precision (fp64) path chosen.")
+            }
+
+            let embd = r_matrix_to_faer(&embd);
+            let knn = nearest_neighbours_to_rust(knn_data);
+            let res = pacmap_manifold(embd.as_ref(), knn, n_dim, k, pacmap_params, seed, verbose)
+                .to_extendr()?;
+
+            Ok(faer_to_r_matrix(res.as_ref()))
+        }
+    }
 }
 
 ////////////////////
@@ -728,10 +796,33 @@ fn rs_diffusion_maps(
     use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let embd = r_matrix_to_faer_fp32(&embd);
-    let res = diffusion_maps_manifold(embd.as_ref(), None, n_dim, k, dm_params, seed, verbose)
-        .to_extendr()?;
-    Ok(faer_to_r_matrix(res.as_ref()))
+    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let precision = parse_precision(use_high_precision, embd.nrows());
+
+    match precision {
+        FloatingPointPrecision::FP32 => {
+            if verbosity.detailed_verbosity() {
+                println!("Lower precision (fp32) path chosen.")
+            }
+
+            let embd = r_matrix_to_faer_fp32(&embd);
+            let res =
+                diffusion_maps_manifold(embd.as_ref(), None, n_dim, k, dm_params, seed, verbose)
+                    .to_extendr()?;
+            Ok(faer_to_r_matrix(res.as_ref()))
+        }
+        FloatingPointPrecision::FP64 => {
+            if verbosity.detailed_verbosity() {
+                println!("Higher precision (fp64) path chosen.")
+            }
+
+            let embd = r_matrix_to_faer(&embd);
+            let res =
+                diffusion_maps_manifold(embd.as_ref(), None, n_dim, k, dm_params, seed, verbose)
+                    .to_extendr()?;
+            Ok(faer_to_r_matrix(res.as_ref()))
+        }
+    }
 }
 
 /// Diffusion maps implementation with pre-computed kNN
@@ -767,11 +858,35 @@ fn rs_diffusion_maps_from_knn(
     use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let embd = r_matrix_to_faer_fp32(&embd);
-    let knn = nearest_neighbours_to_rust(knn_data);
-    let res = diffusion_maps_manifold(embd.as_ref(), knn, n_dim, k, dm_params, seed, verbose)
-        .to_extendr()?;
-    Ok(faer_to_r_matrix(res.as_ref()))
+    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let precision = parse_precision(use_high_precision, embd.nrows());
+
+    match precision {
+        FloatingPointPrecision::FP32 => {
+            if verbosity.detailed_verbosity() {
+                println!("Lower precision (fp32) path chosen.")
+            }
+
+            let embd = r_matrix_to_faer_fp32(&embd);
+            let knn = nearest_neighbours_to_rust(knn_data);
+            let res =
+                diffusion_maps_manifold(embd.as_ref(), knn, n_dim, k, dm_params, seed, verbose)
+                    .to_extendr()?;
+            Ok(faer_to_r_matrix(res.as_ref()))
+        }
+        FloatingPointPrecision::FP64 => {
+            if verbosity.detailed_verbosity() {
+                println!("Higher precision (fp64) path chosen.")
+            }
+
+            let embd = r_matrix_to_faer(&embd);
+            let knn = nearest_neighbours_to_rust(knn_data);
+            let res =
+                diffusion_maps_manifold(embd.as_ref(), knn, n_dim, k, dm_params, seed, verbose)
+                    .to_extendr()?;
+            Ok(faer_to_r_matrix(res.as_ref()))
+        }
+    }
 }
 
 /////////////////////////
@@ -1040,18 +1155,46 @@ fn rs_evoc(
     evoc_params: List,
     return_knn: bool,
     seed: usize,
+    use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> Result<List, extendr_api::Error> {
-    let embd = r_matrix_to_faer(&embd);
-    let (res, indices, dist) = evoc_cluster(
-        embd.as_ref(),
-        None,
-        n_neighbours,
-        return_knn,
-        evoc_params,
-        seed,
-        verbose,
-    )?;
+    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let precision = parse_precision(use_high_precision, embd.nrows());
+
+    let (res, indices, dist) = match precision {
+        FloatingPointPrecision::FP32 => {
+            if verbosity.detailed_verbosity() {
+                println!("Lower precision (fp32) path chosen.")
+            }
+
+            let embd = r_matrix_to_faer_fp32(&embd);
+            evoc_cluster(
+                embd.as_ref(),
+                None,
+                n_neighbours,
+                return_knn,
+                evoc_params,
+                seed,
+                verbose,
+            )
+        }
+        FloatingPointPrecision::FP64 => {
+            if verbosity.detailed_verbosity() {
+                println!("Higher precision (fp64) path chosen.")
+            }
+
+            let embd = r_matrix_to_faer(&embd);
+            evoc_cluster(
+                embd.as_ref(),
+                None,
+                n_neighbours,
+                return_knn,
+                evoc_params,
+                seed,
+                verbose,
+            )
+        }
+    }?;
 
     let knn = match (indices, dist) {
         (Some(idx), Some(d)) => list!(
@@ -1095,19 +1238,48 @@ fn rs_evoc_from_knn(
     n_neighbours: usize,
     evoc_params: List,
     seed: usize,
+    use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> Result<List, extendr_api::Error> {
-    let embd = r_matrix_to_faer(&embd);
-    let pre_computed_knn = nearest_neighbours_to_rust(knn_data);
-    let (res, _, _) = evoc_cluster(
-        embd.as_ref(),
-        pre_computed_knn,
-        n_neighbours,
-        false,
-        evoc_params,
-        seed,
-        verbose,
-    )?;
+    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let precision = parse_precision(use_high_precision, embd.nrows());
+
+    let (res, _, _) = match precision {
+        FloatingPointPrecision::FP32 => {
+            if verbosity.detailed_verbosity() {
+                println!("Lower precision (fp32) path chosen.")
+            }
+
+            let embd = r_matrix_to_faer_fp32(&embd);
+            let pre_computed_knn = nearest_neighbours_to_rust(knn_data);
+            evoc_cluster(
+                embd.as_ref(),
+                pre_computed_knn,
+                n_neighbours,
+                false,
+                evoc_params,
+                seed,
+                verbose,
+            )
+        }
+        FloatingPointPrecision::FP64 => {
+            if verbosity.detailed_verbosity() {
+                println!("Higher precision (fp64) path chosen.")
+            }
+
+            let embd = r_matrix_to_faer(&embd);
+            let pre_computed_knn = nearest_neighbours_to_rust(knn_data);
+            evoc_cluster(
+                embd.as_ref(),
+                pre_computed_knn,
+                n_neighbours,
+                false,
+                evoc_params,
+                seed,
+                verbose,
+            )
+        }
+    }?;
 
     Ok(res)
 }

@@ -62,6 +62,8 @@
 #' @param return_knn Logical. Whether to return the kNN graph. If `knn` is
 #' provided, it is returned as-is. Defaults to `FALSE`.
 #' @param seed Integer. Random seed for reproducibility. Defaults to `42L`.
+#' @param use_high_precision Optional boolean. Gives fine-grained control over
+#' `fp32` vs `fp64` usage.
 #' @param .verbose Logical. Controls verbosity. Defaults to `TRUE`.
 #'
 #' @return An `Evoc` S3 object (see [print.Evoc], [best_membership],
@@ -85,6 +87,7 @@ evoc <- function(
   evoc_params = params_evoc(),
   return_knn = FALSE,
   seed = 42L,
+  use_high_precision = NULL,
   .verbose = TRUE
 ) {
   if (is.data.frame(data)) {
@@ -105,6 +108,7 @@ evoc <- function(
   checkmate::qassert(n_neighbours, "I1[2,)")
   checkmate::qassert(return_knn, "B1")
   checkmate::qassert(seed, "I1")
+  checkmate::qassert(use_high_precision, c("0", "B1"))
   checkmate::qassert(.verbose, c("B1", "I1[0, 2]"))
 
   final_params <- .prepare_evoc_params(
@@ -124,6 +128,7 @@ evoc <- function(
         n_neighbours = n_neighbours,
         evoc_params = final_params,
         seed = seed,
+        use_high_precision = use_high_precision,
         verbose = parse_verbosity(.verbose)
       ),
       error = function(e) {
@@ -140,6 +145,7 @@ evoc <- function(
         evoc_params = final_params,
         return_knn = return_knn,
         seed = seed,
+        use_high_precision = use_high_precision,
         verbose = parse_verbosity(.verbose)
       ),
       error = function(e) {

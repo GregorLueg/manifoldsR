@@ -13,6 +13,7 @@ pacmap(
   nn_params = params_nn(),
   pacmap_params = params_pacmap(),
   seed = 42L,
+  use_high_precision = NULL,
   .verbose = TRUE
 )
 }
@@ -42,6 +43,9 @@ or \code{"exhaustive"}. Defaults to \code{"kmknn"}.}
 \code{\link[=params_pacmap]{params_pacmap()}}.}
 
 \item{seed}{Integer. Random seed for reproducibility. Defaults to \code{42L}.}
+
+\item{use_high_precision}{Optional boolean. Gives fine-grained control over
+\code{fp32} vs \code{fp64} usage.}
 
 \item{.verbose}{Logical. Controls verbosity. Defaults to \code{TRUE}.}
 }
