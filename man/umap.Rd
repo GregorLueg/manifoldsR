@@ -42,8 +42,8 @@ consider reducing this!}
 scale at which embedded points will be spread out. Defaults to \code{1.0}.}
 
 \item{knn_method}{Character. (Approximate) Nearest neighbour method to use.
-One of \code{"kmknn"}, \code{"hnsw"}, \code{"annoy"}, \code{"nndescent"}, \code{"balltree"}, or
-\code{"exhaustive"}. Defaults to \code{"kmknn"}.}
+One of \code{"kmknn"}, \code{"hnsw"}, \code{"annoy"}, \code{"nndescent"}, \code{"balltree"}, \code{"ivf"}
+or \code{"exhaustive"}. Defaults to \code{"kmknn"}.}
 
 \item{nn_params}{Named list. Nearest neighbour search parameters, see
 \code{\link[=params_nn]{params_nn()}}.}

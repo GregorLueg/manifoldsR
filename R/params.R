@@ -99,7 +99,7 @@ params_nn <- function(
 #' @param optimiser Character. One of `"sgd"`, `"adam"`, or
 #' `"adam_parallel"`. Defaults to `"adam_parallel"`.
 #' @param init Character. Embedding initialisation method. One of `"spectral"`,
-#' `"pca"`, or `"random"`. Defaults to `"spectral"`.
+#' `"pca"`, or `"random"`. Defaults to `"pca"`.
 #' @param randomised Logical. Use randomised SVD for PCA initialisation.
 #' Defaults to `FALSE`.
 #'
@@ -114,10 +114,13 @@ params_umap <- function(
   n_epochs = NULL,
   neg_sample_rate = 5L,
   gamma = 1.0,
-  optimiser = "adam_parallel",
-  init = "spectral",
+  optimiser = c("adam_parallel", "sgd", "adam"),
+  init = c("pca", "spectral", "random"),
   randomised = FALSE
 ) {
+  optimiser <- match.arg(optimiser)
+  init <- match.arg(init)
+
   checkmate::qassert(local_connectivity, "N1")
   checkmate::qassert(bandwidth, "N1")
   checkmate::qassert(mix_weight, "N1")
@@ -150,12 +153,16 @@ params_umap <- function(
 
 #' Wrapper function to generate t-SNE parameters
 #'
-#' @param lr Numeric. Learning rate. Defaults to `200.0`.
+#' @param lr Optional numeric. Learning rate. If `NULL` (the default), the Rust
+#' backend sets it to `max((n_samples / 12), 200)`, following the N-dependent
+#' heuristic of Belkina et al. (2019).
 #' @param n_epochs Integer. Number of optimisation epochs. Defaults to `1000L`.
 #' @param early_exag_iter Integer. Number of early exaggeration iterations.
 #' Defaults to `250L`.
 #' @param early_exag_factor Numeric. Early exaggeration factor. Defaults to
 #' `12.0`.
+#' @param late_exag_factor Optional numeric. If you wish to also use late
+#' exaggerations. Can be useful on large data sets (set it to `2.0` to `4.0`).
 #' @param theta Numeric. Barnes-Hut approximation angle. Lower values increase
 #' accuracy at the cost of speed. Defaults to `0.5`.
 #' @param n_interp_points Integer. Number of interpolation points per grid cell
@@ -168,21 +175,27 @@ params_umap <- function(
 #' @returns A list with the t-SNE parameters.
 #'
 #' @export
+#'
+#' @references Belkina, et al., Nat. Commun., 2019
 params_tsne <- function(
-  lr = 200.0,
+  lr = NULL,
   n_epochs = 1000L,
   early_exag_iter = 250L,
   early_exag_factor = 12.0,
+  late_exag_factor = NULL,
   theta = 0.5,
   n_interp_points = 3L,
-  init = "pca",
+  init = c("pca", "spectral", "random"),
   randomised = TRUE
 ) {
+  init <- match.arg(init)
+
   # checks
-  checkmate::qassert(lr, "N1")
+  checkmate::qassert(lr, c("N1", "0"))
   checkmate::qassert(n_epochs, "I1[1,)")
   checkmate::qassert(early_exag_iter, "I1[1,)")
   checkmate::qassert(early_exag_factor, "N1")
+  checkmate::qassert(late_exag_factor, c("N1", "0"))
   checkmate::qassert(theta, "N1[0,1]")
   checkmate::qassert(n_interp_points, "I1[1,)")
   checkmate::assertChoice(init, c("spectral", "pca", "random"))
@@ -194,6 +207,7 @@ params_tsne <- function(
     n_epochs = n_epochs,
     early_exag_iter = early_exag_iter,
     early_exag_factor = early_exag_factor,
+    late_exag_factor = late_exag_factor,
     theta = theta,
     n_interp_points = n_interp_points,
     init = init,
@@ -668,6 +682,12 @@ params_evoc <- function(
 #' `method = "minibatch"`
 #' @param lr_alpha Float. Learning rate decay for the mini-batch k-means.
 #' Original paper uses `1.0`.
+#' @param init String. One of `c("parallel", "random")`. The initialisation of
+#' the centroids.
+#' @param use_gemm Optional boolean. Shall the GEMM path be used. Useful on
+#' high dimensional data. If `NULL`, choice will be based on heuristics.
+#' @param use_hamerly Optional boolean. Shall Hamerly's method be used (only
+#' available if `metric == "euclidean"`).
 #'
 #' @return A named list with the k-means parameters.
 #'
@@ -677,19 +697,30 @@ params_kmeans <- function(
   max_iters = 1000L,
   batch_size = 4096L,
   drift_threshold = 1e-4,
-  lr_alpha = 1.0
+  lr_alpha = 1.0,
+  init = c("parallel", "random"),
+  use_hamerly = NULL,
+  use_gemm = NULL
 ) {
   metric <- match.arg(metric)
+  init <- match.arg(init)
+
   checkmate::qassert(max_iters, "I1[1,)")
   checkmate::qassert(batch_size, "I1[1,)")
   checkmate::qassert(drift_threshold, "N1")
   checkmate::qassert(lr_alpha, "N1")
+  checkmate::assertChoice(init, c("parallel", "random"))
+  checkmate::qassert(use_hamerly, c("0", "B1"))
+  checkmate::qassert(use_gemm, c("0", "B1"))
 
   list(
     metric = metric,
     max_iters = max_iters,
     batch_size = batch_size,
     drift_threshold = drift_threshold,
-    lr_alpha = lr_alpha
+    lr_alpha = lr_alpha,
+    init = init,
+    use_hamerly = use_hamerly,
+    use_gemm = use_gemm
   )
 }

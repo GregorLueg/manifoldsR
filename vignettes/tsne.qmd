@@ -328,7 +328,7 @@ ggplot(
 
 ## FFT-accelerated t-SNE
 
-For large datasets, the Barnes-Hut approximation `(O(N log N))` can still be
+For large datasets, the Barnes-Hut approximation `O(N log N)` can still be
 slow. The FFT-accelerated variant reduces this to `O(N)` by interpolating the
 repulsive forces on a grid, making it substantially faster at scale. The
 constant however is higher. This version of tSNE becomes interesting in
@@ -362,6 +362,16 @@ ggplot(
 The embeddings are qualitatively similar to the BH version, with the FFT
 version trading a small amount of precision for a significant speed gain on
 large datasets.
+
+**Important note:** On large data sets (and the effect grows with N) you may
+observe that the clusters do not separate into distinct islands but instead
+relax into a single, gapless disc tiled into Voronoi-like cells, with clusters
+meeting along shared boundaries rather than separated by empty space. This is
+not a convergence failure: the optimiser has reached the equilibrium implied by
+its parameters. It arises because the main optimisation phase runs at an
+exaggeration of 1, and at high point density the attraction-repulsion balance
+at that setting is a space-filling layout. If you observe this set 
+`late_exag_factor` to values of 2 to 4 (pending your data set size.)
 
 ## Benchmarks
 

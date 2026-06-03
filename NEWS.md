@@ -1,3 +1,20 @@
+# manifoldsR 0.2.3
+
+## Features
+
+- Updates to various Rust crates
+- More control over verbosity over the functions.
+- Improved tSNE on large scale: `late_exag_factor` added that can be used on
+  large data sets to increase repulsion on the later epochs. Also, speed 
+  improvements for both versions of tSNE.
+- Faster PHATE (or rather fast again - k-means clustering iterations reduced
+  here to avoid unncessary iterations).
+
+## Bug fixes
+
+- Numerical stability problem solved for very large data sets with 
+  FFT-accelerated tSNE
+
 # manifoldsR 0.2.2
 
 ## Features

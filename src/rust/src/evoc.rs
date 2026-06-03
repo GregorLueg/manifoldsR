@@ -2,15 +2,14 @@
 
 #![warn(missing_docs)]
 
+use bixverse_rs::prelude::IntoExtendrErr;
 use bixverse_rs::utils::vec_utils::flatten_vector;
+use evoc_rs::prelude::NearestNeighbourParamsEvoc;
 use evoc_rs::{evoc, EvocParams};
 use extendr_api::*;
 use faer::MatRef;
-use manifolds_rs::prelude::*;
 use manifolds_rs::PreComputedKnn;
 use std::collections::HashMap;
-
-use crate::utils::get_params_nn;
 
 ///////////
 // Types //
@@ -23,6 +22,108 @@ pub type EvocResults = Result<(List, Option<Vec<usize>>, Option<Vec<f32>>)>;
 // Params //
 ////////////
 
+/// Helper function to generate the UMAP NN parameters
+///
+/// This is a near duplicate of [crate::utils::get_params_nn_manifolds()], but
+/// avoids the previous tight coupling between the two crates `evoc-rs` and
+/// `manifolds-rs`.
+///
+/// ### Params
+///
+/// * `r_list` - The list that has the nearest neighbour graph generation
+///   parameters.
+///
+/// ### Returns
+///
+/// The `NearestNeighbourParamsEvoc` with sensible defaults if not found in the
+/// list.
+pub fn get_params_nn_evoc(r_list: List) -> Result<NearestNeighbourParamsEvoc<f32>> {
+    let nn_params: HashMap<&str, Robj> = r_list.try_into()?;
+
+    // distance
+    let dist_metric = std::string::String::from(
+        nn_params
+            .get("dist_metric")
+            .and_then(|v| v.as_str())
+            .unwrap_or("cosine"),
+    );
+
+    // annoy
+    let n_tree = nn_params
+        .get("n_tree")
+        .and_then(|v| v.as_integer())
+        .unwrap_or(50) as usize;
+
+    let search_budget = nn_params
+        .get("search_budget")
+        .and_then(|v| v.as_integer())
+        .map(|v| v as usize);
+
+    // hnsw
+    let m = nn_params
+        .get("m")
+        .and_then(|v| v.as_integer())
+        .unwrap_or(16) as usize;
+
+    let ef_construction = nn_params
+        .get("ef_construction")
+        .and_then(|v| v.as_integer())
+        .unwrap_or(100) as usize;
+
+    let ef_search = nn_params
+        .get("ef_search")
+        .and_then(|v| v.as_integer())
+        .unwrap_or(100) as usize;
+
+    // nn descent
+    let diversify_prob = nn_params
+        .get("diversify_prob")
+        .and_then(|v| v.as_real())
+        .unwrap_or(0.0) as f32;
+
+    let delta = nn_params
+        .get("delta")
+        .and_then(|v| v.as_real())
+        .unwrap_or(0.001) as f32;
+
+    let ef_budget = nn_params
+        .get("ef_budget")
+        .and_then(|v| v.as_integer())
+        .map(|v| v as usize);
+
+    // balltree
+    let bt_budget = nn_params
+        .get("bt_budget")
+        .and_then(|v| v.as_real())
+        .unwrap_or(0.1) as f32;
+
+    // ivf
+    let n_list = nn_params
+        .get("n_list")
+        .and_then(|v| v.as_integer())
+        .map(|v| v as usize);
+
+    let n_probes = nn_params
+        .get("n_probes")
+        .and_then(|v| v.as_integer())
+        .map(|v| v as usize);
+
+    Ok(NearestNeighbourParamsEvoc {
+        dist_metric,
+        n_tree,
+        search_budget,
+        m,
+        ef_construction,
+        ef_budget,
+        ef_search,
+        diversify_prob,
+        delta,
+        bt_budget,
+        n_list,
+        n_probes,
+    })
+}
+
 /// InternalEvocParams
 ///
 /// Internal representation of the parameters needed for EVoC clustering,
@@ -32,7 +133,7 @@ pub struct InternalEvocParams {
     /// Which approximate nearest neighbour search to use.
     pub knn_method: String,
     /// Nearest neighbour parameters forwarded to the ANN backend.
-    pub param_knn: NearestNeighbourParams<f32>,
+    pub param_knn: NearestNeighbourParamsEvoc<f32>,
     /// EVoC-specific clustering parameters.
     pub evoc: EvocParams<f32>,
 }
@@ -49,7 +150,7 @@ impl InternalEvocParams {
     ///
     /// `InternalEvocParams` ready to pass into the Rust EVoC implementation.
     pub fn from_r_list(r_list: List, n_neighbours: usize) -> Result<Self> {
-        let nn_params = get_params_nn(r_list.clone())?;
+        let nn_params = get_params_nn_evoc(r_list.clone())?;
         let evoc_params = get_params_evoc(r_list.clone(), n_neighbours)?;
 
         let map: HashMap<&str, Robj> = r_list.try_into()?;
@@ -161,7 +262,8 @@ fn get_params_evoc(r_list: List, n_neighbours: usize) -> Result<EvocParams<f32>>
 /// * `return_knn` - Shall the kNN be returned.
 /// * `evoc_params` - Merged named R list with all parameters.
 /// * `seed` - Random seed.
-/// * `verbose` - Controls verbosity.
+/// * `verbose` - If `0` -> silent or `1` for normal verbosity, `2` for detailed
+///   verbosity.
 ///
 /// ### Returns
 ///
@@ -175,7 +277,7 @@ pub fn evoc_cluster(
     return_knn: bool,
     evoc_params: List,
     seed: usize,
-    verbose: bool,
+    verbose: usize,
 ) -> EvocResults {
     let params = InternalEvocParams::from_r_list(evoc_params, n_neighbours)?;
 
@@ -187,7 +289,8 @@ pub fn evoc_cluster(
         &params.param_knn,
         seed,
         verbose,
-    );
+    )
+    .to_extendr()?;
 
     // Convert cluster_layers: Vec<Vec<i64>> -> R list of integer vectors
     let cluster_layers: Vec<Robj> = result

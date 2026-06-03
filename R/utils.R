@@ -1,5 +1,21 @@
 # metrics ----------------------------------------------------------------------
 
+## others ----------------------------------------------------------------------
+
+#' Helper to parse verbosity
+#'
+#' @param x Boolean or integer to parse
+#'
+#' @returns The integer value controlling the verbosity
+#'
+#' @keywords internal
+parse_verbosity <- function(x) {
+  # checks
+  checkmate::qassert(x, c("B1", "I1[0,2]"))
+
+  as.integer(sum(x))
+}
+
 ## cluster metrics -------------------------------------------------------------
 
 #' Adjusted Rand index calculation

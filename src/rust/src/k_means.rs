@@ -17,6 +17,8 @@ use std::collections::HashMap;
 pub struct InternalKmeansParams {
     /// Distance metric. One of `"euclidean"` or `"cosine"`.
     pub metric: String,
+    /// Initialisation. One of `"random"` or `"parallel"`
+    pub init: String,
     /// Maximum number of Lloyd's / mini-batch iterations.
     pub max_iters: usize,
     /// Mini-batch size. Only used by the mini-batch path.
@@ -26,6 +28,11 @@ pub struct InternalKmeansParams {
     /// Learning rate exponent. `eta = m / count[c]^lr_alpha`.
     /// 1.0 = original Sculley (rather aggressive decay).
     pub lr_alpha: f64,
+    /// Use Hamerly path (only available for Euclidean distance)
+    pub use_hamerly: Option<bool>,
+    /// Use GEMM instead of SIMD. Can be faster on larger data sets with high
+    /// dimensionality.
+    pub use_gemm: Option<bool>,
 }
 
 impl InternalKmeansParams {
@@ -63,6 +70,15 @@ impl InternalKmeansParams {
             .get("lr_alpha")
             .and_then(|v| v.as_real())
             .unwrap_or(1.0);
+        let use_hamerly = params.get("use_hamerly").and_then(|v| v.as_bool());
+        let use_gemm = params.get("use_gemm").and_then(|v| v.as_bool());
+
+        let init = String::from(
+            params
+                .get("init")
+                .and_then(|v| v.as_str())
+                .unwrap_or("parallel"),
+        );
 
         Ok(Self {
             metric,
@@ -70,6 +86,9 @@ impl InternalKmeansParams {
             batch_size,
             drift_threshold,
             lr_alpha,
+            use_hamerly,
+            use_gemm,
+            init,
         })
     }
 
@@ -77,7 +96,7 @@ impl InternalKmeansParams {
     pub fn dist(&self) -> Dist {
         match self.metric.as_str() {
             "cosine" => Dist::Cosine,
-            _ => Dist::Euclidean,
+            _ => Dist::SquaredEuclidean,
         }
     }
 }

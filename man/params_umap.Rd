@@ -12,8 +12,8 @@ params_umap(
   n_epochs = NULL,
   neg_sample_rate = 5L,
   gamma = 1,
-  optimiser = "adam_parallel",
-  init = "spectral",
+  optimiser = c("adam_parallel", "sgd", "adam"),
+  init = c("pca", "spectral", "random"),
   randomised = FALSE
 )
 }
@@ -41,7 +41,7 @@ sample. Defaults to \code{5L}.}
 \code{"adam_parallel"}. Defaults to \code{"adam_parallel"}.}
 
 \item{init}{Character. Embedding initialisation method. One of \code{"spectral"},
-\code{"pca"}, or \code{"random"}. Defaults to \code{"spectral"}.}
+\code{"pca"}, or \code{"random"}. Defaults to \code{"pca"}.}
 
 \item{randomised}{Logical. Use randomised SVD for PCA initialisation.
 Defaults to \code{FALSE}.}

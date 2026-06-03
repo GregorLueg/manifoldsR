@@ -33,7 +33,7 @@
   )
   assertNnParams(nn_params)
   assertPacmapParams(pacmap_params)
-  checkmate::qassert(.verbose, "B1")
+  checkmate::qassert(.verbose, c("B1", "I1[0, 2]"))
 
   final_params <- c(nn_params, pacmap_params)
   final_params[["knn_method"]] <- knn_method
@@ -70,8 +70,8 @@
 #' `10L`. Note that the kNN search will use `mn_candidate_end` neighbours
 #' internally; k only controls the near pairs used in optimisation.
 #' @param knn_method Character. (Approximate) Nearest neighbour method to use.
-#' One of `"kmknn"`, `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, or
-#' `"exhaustive"`. Defaults to `"kmknn"`.
+#' One of `"kmknn"`, `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, `"ivf"`
+#' or `"exhaustive"`. Defaults to `"kmknn"`.
 #' @param nn_params Named list. Nearest neighbour search parameters, see
 #' [params_nn()].
 #' @param pacmap_params Named list. PaCMAP algorithm parameters, see
@@ -120,7 +120,7 @@ pacmap <- function(
   checkmate::assert_int(n_dim, lower = 1, upper = ncol(data))
   checkmate::qassert(k, "I1[2,)")
   checkmate::qassert(seed, "I1")
-  checkmate::qassert(.verbose, "B1")
+  checkmate::qassert(.verbose, c("B1", "I1[0, 2]"))
 
   final_pacmap_params <- .prepare_pacmap_params(
     knn_method = knn_method,
@@ -142,7 +142,7 @@ pacmap <- function(
           k = k,
           pacmap_params = final_pacmap_params,
           seed = seed,
-          verbose = .verbose
+          verbose = parse_verbosity(.verbose)
         )
       },
       error = function(e) {
@@ -158,7 +158,7 @@ pacmap <- function(
           k = k,
           pacmap_params = final_pacmap_params,
           seed = seed,
-          verbose = .verbose
+          verbose = parse_verbosity(.verbose)
         )
       },
       error = function(e) {

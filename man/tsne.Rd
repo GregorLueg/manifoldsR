@@ -8,9 +8,9 @@ tsne(
   data,
   knn = NULL,
   n_dim = 2L,
-  perplexity = 30,
+  perplexity = 20,
   approx_type = c("bh", "fft"),
-  knn_method = c("kmknn", "balltree", "hnsw", "annoy", "nndescent", "exhaustive"),
+  knn_method = c("kmknn", "balltree", "hnsw", "annoy", "nndescent", "exhaustive", "ivf"),
   nn_params = params_nn(),
   tsne_params = params_tsne(),
   seed = 42L,
@@ -30,15 +30,15 @@ Currently only \code{2L} is supported. Defaults to \code{2L}.}
 
 \item{perplexity}{Numeric. Perplexity parameter, related to the number of
 nearest neighbours used in manifold learning. Typical values are between
-5 and 50. Defaults to \code{30.0}.}
+5 and 50. Defaults to \code{20.0}.}
 
 \item{approx_type}{Character. Approximation method for computing repulsive
 forces. One of \code{"bh"} for Barnes-Hut or \code{"fft"} for FFT-accelerated
 interpolation. Defaults to \code{"bh"}.}
 
 \item{knn_method}{Character. (Approximate) Nearest neighbour method to use.
-One of \code{"kmknn"}, \code{"hnsw"}, \code{"annoy"}, \code{"nndescent"}, \code{"balltree"}, or
-\code{"exhaustive"}. Defaults to \code{"kmknn"}.}
+One of \code{"kmknn"}, \code{"hnsw"}, \code{"annoy"}, \code{"nndescent"}, \code{"balltree"}, \code{"ivf"}
+or \code{"exhaustive"}. Defaults to \code{"kmknn"}.}
 
 \item{nn_params}{Named list. Nearest neighbour search parameters, see
 \code{\link[=params_nn]{params_nn()}}.}

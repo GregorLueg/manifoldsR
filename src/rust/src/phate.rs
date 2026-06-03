@@ -9,7 +9,7 @@ use manifolds_rs::prelude::*;
 use manifolds_rs::*;
 use std::collections::HashMap;
 
-use crate::utils::get_params_nn;
+use crate::utils::get_params_nn_manifolds;
 
 ////////////
 // Params //
@@ -71,7 +71,7 @@ impl InternalPhateParams {
     ///
     /// A fully populated `InternalPhateParams`.
     pub fn from_r_list(r_list: List) -> Result<Self, extendr_api::Error> {
-        let nn_params = get_params_nn(r_list.clone())?;
+        let nn_params = get_params_nn_manifolds(r_list.clone())?;
         let phate_params = get_params_phate(r_list.clone())?;
         let base: HashMap<&str, Robj> = r_list.try_into()?;
         let knn_method = std::string::String::from(
@@ -201,11 +201,12 @@ fn get_params_phate(r_list: List) -> Result<InternalPhateParams, extendr_api::Er
 /// * `phate_params` - Named R list of parameters, as produced by
 ///   `params_phate()` and `params_nn()` on the R side.
 /// * `seed` - Random seed for reproducibility.
-/// * `verbose` - Print progress information.
+/// * `verbose` - If `0` -> silent or `1` for normal verbosity, `2` for detailed
+///   verbosity.
 ///
 /// ### Returns
 ///
-/// Embedding matrix of shape samples × n_dim.
+/// Returns the PHATE embeddings as matrix.
 pub fn phate_simple(
     data: MatRef<f32>,
     pre_computed_knn: PreComputedKnn<f32>,
@@ -213,30 +214,38 @@ pub fn phate_simple(
     k: usize,
     phate_params: List,
     seed: usize,
-    verbose: bool,
+    verbose: usize,
 ) -> Result<Mat<f32>, extendr_api::Error> {
     assert!(
         n_dim == 2,
-        "At the moment, this tSNE implementation only supports n_dim = 2"
+        "At the moment, this PHATE implementation only supports n_dim = 2"
     );
-    let internal_params_phate = InternalPhateParams::from_r_list(phate_params)?;
+    let internal = InternalPhateParams::from_r_list(phate_params)?;
+
+    let diffusion_params = PhateDiffusionParams::new(
+        Some(internal.decay.unwrap_or(40.0)),
+        internal.bandwidth_scale.unwrap_or(1.0),
+        1e-4,
+        internal.graph_symmetry,
+        internal.n_landmarks,
+        internal.landmark_method,
+        internal.n_svd,
+        internal.t_max,
+        internal.t_custom,
+        internal.gamma.unwrap_or(1.0),
+    );
+
     let params_phate = PhateParams::new(
-        Some(n_dim),
-        Some(k),
-        Some(internal_params_phate.knn_method),
-        internal_params_phate.decay,
-        internal_params_phate.bandwidth_scale,
-        Some(internal_params_phate.graph_symmetry),
-        internal_params_phate.t_max,
-        internal_params_phate.gamma,
-        internal_params_phate.n_landmarks,
-        Some(internal_params_phate.landmark_method),
-        internal_params_phate.n_svd,
-        internal_params_phate.t_custom,
-        Some(internal_params_phate.mds_method),
-        internal_params_phate.mds_iter,
-        Some(true),
+        n_dim,
+        k,
+        internal.knn_method,
+        internal.param_knn,
+        diffusion_params,
+        internal.mds_method,
+        internal.mds_iter,
+        true,
     );
+
     let res = phate(data, pre_computed_knn, params_phate, seed, verbose).to_extendr()?;
     let ncol = res.len();
     let nrow = res[0].len();

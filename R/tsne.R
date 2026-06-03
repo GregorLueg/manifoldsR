@@ -26,7 +26,8 @@
       "hnsw",
       "annoy",
       "nndescent",
-      "exhaustive"
+      "exhaustive",
+      "ivf"
     )
   )
   assertNnParams(nn_params)
@@ -58,13 +59,13 @@
 #' Currently only `2L` is supported. Defaults to `2L`.
 #' @param perplexity Numeric. Perplexity parameter, related to the number of
 #' nearest neighbours used in manifold learning. Typical values are between
-#' 5 and 50. Defaults to `30.0`.
+#' 5 and 50. Defaults to `20.0`.
 #' @param approx_type Character. Approximation method for computing repulsive
 #' forces. One of `"bh"` for Barnes-Hut or `"fft"` for FFT-accelerated
 #' interpolation. Defaults to `"bh"`.
 #' @param knn_method Character. (Approximate) Nearest neighbour method to use.
-#' One of `"kmknn"`, `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, or
-#' `"exhaustive"`. Defaults to `"kmknn"`.
+#' One of `"kmknn"`, `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, `"ivf"`
+#' or `"exhaustive"`. Defaults to `"kmknn"`.
 #' @param nn_params Named list. Nearest neighbour search parameters, see
 #' [params_nn()].
 #' @param tsne_params Named list. t-SNE algorithm parameters, see
@@ -80,7 +81,7 @@ tsne <- function(
   data,
   knn = NULL,
   n_dim = 2L,
-  perplexity = 30.0,
+  perplexity = 20.0,
   approx_type = c("bh", "fft"),
   knn_method = c(
     "kmknn",
@@ -88,7 +89,8 @@ tsne <- function(
     "hnsw",
     "annoy",
     "nndescent",
-    "exhaustive"
+    "exhaustive",
+    "ivf"
   ),
   nn_params = params_nn(),
   tsne_params = params_tsne(),
@@ -120,12 +122,12 @@ tsne <- function(
   )
   checkmate::assertChoice(
     knn_method,
-    c("kmknn", "hnsw", "annoy", "nndescent", "balltree", "exhaustive")
+    c("kmknn", "hnsw", "annoy", "nndescent", "balltree", "exhaustive", "ivf")
   )
   assertNnParams(nn_params)
   assertTsneParams(tsne_params)
   checkmate::qassert(seed, "I1")
-  checkmate::qassert(.verbose, "B1")
+  checkmate::qassert(.verbose, c("B1", "I1[0, 2]"))
 
   # warning when on windows...
   if (approx_type == "fft" && .Platform$OS.type != "unix") {
@@ -155,7 +157,7 @@ tsne <- function(
           approx_type = approx_type,
           tsne_params = final_tsne_params,
           seed = seed,
-          verbose = .verbose
+          verbose = parse_verbosity(.verbose)
         )
       },
       error = function(e) {
@@ -172,7 +174,7 @@ tsne <- function(
           approx_type = approx_type,
           tsne_params = final_tsne_params,
           seed = seed,
-          verbose = .verbose
+          verbose = parse_verbosity(.verbose)
         )
       },
       error = function(e) {

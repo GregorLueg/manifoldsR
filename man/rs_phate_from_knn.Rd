@@ -23,7 +23,8 @@ see \code{\link[=params_phate]{params_phate()}} and \code{\link[=params_nn]{para
 
 \item{seed}{Integer. Seed for reproducibility.}
 
-\item{verbose}{Boolean. Controls verbosity of the function.}
+\item{verbose}{Integer. If \code{0L} -> silent or \code{1L} for normal verbosity; \code{2L}
+for detailed verbosity.}
 }
 \value{
 The PHATE embedding as a matrix of shape samples x n_dim.

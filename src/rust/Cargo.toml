@@ -1,7 +1,7 @@
 [package]
 name = 'manifoldsr'
 publish = false
-version = '0.2.2'
+version = '0.2.3'
 edition = '2021'
 rust-version = '1.85'
 
@@ -10,20 +10,21 @@ crate-type = ['staticlib', 'rlib']
 name = 'manifoldsR'
 
 [dependencies]
-ann-search-rs = "0.2.15"
-bixverse-rs = { version = "0.2.0" }
+ann-search-rs = "0.4.1"
+bixverse-rs = "0.3.0"
 extendr-api = "0.9.0"
-evoc-rs = { version = "0.1.4" }
+evoc-rs = "0.2.1"
 faer = "0.23.2"
 faer-entity = "0.20.1"
 num-traits = "0.2.19"
 rand = "0.10.0"
 rayon = "1.11.0"
 rustc-hash = "2.1.2"
+rand_distr = "0.5.1"
 [target.'cfg(not(windows))'.dependencies]
-manifolds-rs = { version = "0.2.4", features = [ "fft_tsne" ] }
+manifolds-rs = { version = "0.3.2", features = [ "fft_tsne" ] }
 [target.'cfg(windows)'.dependencies]
-manifolds-rs = { version = "0.2.4" }
+manifolds-rs = { version = "0.3.2" }
 
 
 [profile.test]
@@ -33,7 +34,7 @@ debug = false
 [profile.release]
 opt-level = 3
 lto = "thin"
-codegen-units = 1
+codegen-units = 4
 
 [lints.rust]
 non_snake_case = "allow"

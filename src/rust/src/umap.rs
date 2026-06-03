@@ -9,7 +9,7 @@ use manifolds_rs::prelude::*;
 use manifolds_rs::*;
 use std::collections::HashMap;
 
-use crate::utils::get_params_nn;
+use crate::utils::get_params_nn_manifolds;
 
 ////////////
 // Params //
@@ -58,7 +58,7 @@ impl InternalUmapParams {
         min_dist: f32,
         spread: f32,
     ) -> Result<Self, extendr_api::Error> {
-        let nn_params = get_params_nn(r_list.clone())?;
+        let nn_params = get_params_nn_manifolds(r_list.clone())?;
         let umap_graph_params = get_params_umap_graph(r_list.clone())?;
         let optim_params = get_params_umap_optim(r_list.clone(), min_dist, spread)?;
 
@@ -210,7 +210,8 @@ fn get_params_umap_optim(
 /// * `spread` - Spread parameter
 /// * `umap_list` - Named R list that has all of the various UMAP parameters.
 /// * `seed` - For reproducibility
-/// * `verbose` - Controls verbosity
+/// * `verbose` - If `0` -> silent or `1` for normal verbosity, `2` for detailed
+///   verbosity.
 ///
 /// ### Returns
 ///
@@ -225,27 +226,27 @@ pub fn umap_manifold(
     spread: f32,
     umap_params: List,
     seed: usize,
-    verbose: bool,
+    verbose: usize,
 ) -> Result<Mat<f32>, extendr_api::Error> {
-    let umap_params_internal = InternalUmapParams::from_r_list(umap_params, min_dist, spread)?;
+    let internal = InternalUmapParams::from_r_list(umap_params, min_dist, spread)?;
 
-    let init_range = if umap_params_internal.init == "pca" {
+    let init_range = if internal.init == "pca" {
         Some(1e-4)
     } else {
         None
     };
 
     let umap_params = UmapParams::new(
-        Some(n_dim),
-        Some(k),
-        Some(umap_params_internal.optimiser),
-        Some(umap_params_internal.knn_method),
-        Some(umap_params_internal.init),
+        n_dim,
+        k,
+        internal.optimiser,
+        internal.knn_method,
+        internal.init,
         init_range,
-        Some(umap_params_internal.param_knn),
-        Some(umap_params_internal.param_optimiser),
-        Some(umap_params_internal.umap_graph),
-        Some(umap_params_internal.randomised),
+        internal.param_knn,
+        internal.param_optimiser,
+        internal.umap_graph,
+        internal.randomised,
     );
 
     let res = umap(data, pre_computed_knn, &umap_params, seed, verbose).to_extendr()?;

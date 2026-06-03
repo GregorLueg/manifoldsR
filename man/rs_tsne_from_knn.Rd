@@ -34,7 +34,8 @@ for the tSNE generation.}
 
 \item{seed}{Integer. Seed for reproducibility.}
 
-\item{verbose}{Boolean. Controls verbosity of the function.}
+\item{verbose}{Integer. If \code{0L} -> silent or \code{1L} for normal verbosity; \code{2L}
+for detailed verbosity.}
 }
 \value{
 The tSNE embeddings.
@@ -43,5 +44,6 @@ The tSNE embeddings.
 This is the wrapper function into the Rust interface for tSNE.
 You have the option to use the Barnes-Hut implemetation or the
 FFT-accelerated version to approximate the repulsive forces. This one
-can use a pre-computed kNN.
+can use a pre-computed kNN. Uses \code{fp64} path on larger data sets to avoid
+catastrophic cancelleation.
 }

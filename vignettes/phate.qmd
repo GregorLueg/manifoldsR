@@ -368,7 +368,7 @@ phate_landmark <- phate(
 
 phate_landmark_df <- as.data.table(phate_landmark) %>%
   `colnames<-`(c("PHATE1", "PHATE2")) %>%
-  dplyr::mutate(branch = large_trajectory$membership)
+  .[, branch := large_trajectory$membership]
 
 ggplot(
   data = phate_landmark_df[
@@ -472,7 +472,7 @@ microbenchmark::microbenchmark(
       k = 5L,
       knn_method = "nndescent", # good allrounder for larger data sets
       seed = 42L,
-      .verbose = FALSE
+      .verbose = TRUE
     )
   },
   manifold_phate_random = {

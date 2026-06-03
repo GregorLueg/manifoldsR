@@ -18,7 +18,8 @@ NULL
 #' @param umap_params Named list. List that contains all of the key parameters
 #' for the UMAP generation.
 #' @param seed Integer. Seed for reproducibility.
-#' @param verbose Boolean. Controls verbosity of the function.
+#' @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
+#' for detailed verbosity.
 #'
 #' @return The UMAP embeddings.
 #'
@@ -40,7 +41,8 @@ rs_umap <- function(embd, n_dim, min_dist, spread, k, umap_params, seed, verbose
 #' @param umap_params Named list. List that contains all of the key parameters
 #' for the UMAP generation.
 #' @param seed Integer. Seed for reproducibility.
-#' @param verbose Boolean. Controls verbosity of the function.
+#' @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
+#' for detailed verbosity.
 #'
 #' @return The UMAP embeddings.
 #'
@@ -51,7 +53,8 @@ rs_umap_from_knn <- function(embd, knn_data, n_dim, min_dist, spread, k, umap_pa
 #'
 #' @description This is the wrapper function into the Rust interface for tSNE.
 #' You have the option to use the Barnes-Hut implemetation or the
-#' FFT-accelerated version to approximate the repulsive forces.
+#' FFT-accelerated version to approximate the repulsive forces. Uses `fp64`
+#' path on larger data sets to avoid catastrophic cancelleation.
 #'
 #' @param embd Numerical matrix. The data to use to generate the embeddings.
 #' Should be of dimensions samples x features.
@@ -63,7 +66,8 @@ rs_umap_from_knn <- function(embd, knn_data, n_dim, min_dist, spread, k, umap_pa
 #' @param tsne_params Named list. List that contains all of the key parameters
 #' for the tSNE generation.
 #' @param seed Integer. Seed for reproducibility.
-#' @param verbose Boolean. Controls verbosity of the function.
+#' @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
+#' for detailed verbosity.
 #'
 #' @return The tSNE embeddings.
 #'
@@ -75,7 +79,8 @@ rs_tsne <- function(embd, n_dim, perplexity, approx_type, tsne_params, seed, ver
 #' @description This is the wrapper function into the Rust interface for tSNE.
 #' You have the option to use the Barnes-Hut implemetation or the
 #' FFT-accelerated version to approximate the repulsive forces. This one
-#' can use a pre-computed kNN.
+#' can use a pre-computed kNN. Uses `fp64` path on larger data sets to avoid
+#' catastrophic cancelleation.
 #'
 #' @param embd Numerical matrix. The data to use to generate the embeddings.
 #' Should be of dimensions samples x features.
@@ -88,7 +93,8 @@ rs_tsne <- function(embd, n_dim, perplexity, approx_type, tsne_params, seed, ver
 #' @param tsne_params Named list. List that contains all of the key parameters
 #' for the tSNE generation.
 #' @param seed Integer. Seed for reproducibility.
-#' @param verbose Boolean. Controls verbosity of the function.
+#' @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
+#' for detailed verbosity.
 #'
 #' @return The tSNE embeddings.
 #'
@@ -110,7 +116,8 @@ rs_tsne_from_knn <- function(embd, knn_data, n_dim, perplexity, approx_type, tsn
 #' @param phate_params Named list. Contains all key parameters for PHATE,
 #' see [params_phate()] and [params_nn()].
 #' @param seed Integer. Seed for reproducibility.
-#' @param verbose Boolean. Controls verbosity of the function.
+#' @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
+#' for detailed verbosity.
 #'
 #' @return The PHATE embedding as a matrix of shape samples x n_dim.
 #'
@@ -133,7 +140,8 @@ rs_phate <- function(embd, n_dim, k, phate_params, seed, verbose) .Call(wrap__rs
 #' @param phate_params Named list. Contains all key parameters for PHATE,
 #' see [params_phate()] and [params_nn()].
 #' @param seed Integer. Seed for reproducibility.
-#' @param verbose Boolean. Controls verbosity of the function.
+#' @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
+#' for detailed verbosity.
 #'
 #' @return The PHATE embedding as a matrix of shape samples x n_dim.
 #'
@@ -152,7 +160,8 @@ rs_phate_from_knn <- function(embd, knn_data, n_dim, k, phate_params, seed, verb
 #' @param pacmap_params Named list. List that contains all of the key
 #' parameters for the PaCMAP generation.
 #' @param seed Integer. Seed for reproducibility.
-#' @param verbose Boolean. Controls verbosity of the function.
+#' @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
+#' for detailed verbosity.
 #'
 #' @return The PaCMAP embeddings.
 #'
@@ -172,7 +181,8 @@ rs_pacmap <- function(embd, n_dim, k, pacmap_params, seed, verbose) .Call(wrap__
 #' @param pacmap_params Named list. List that contains all of the key
 #' parameters for the PaCMAP generation.
 #' @param seed Integer. Seed for reproducibility.
-#' @param verbose Boolean. Controls verbosity of the function.
+#' @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
+#' for detailed verbosity.
 #'
 #' @return The PaCMAP embeddings.
 #'
@@ -191,7 +201,8 @@ rs_pacmap_from_knn <- function(embd, knn_data, n_dim, k, pacmap_params, seed, ve
 #' @param dm_params Named list. List that contains all of the key parameters
 #' for the diffusion maps generation.
 #' @param seed Integer. Seed for reproducibility.
-#' @param verbose Boolean. Controls verbosity of the function.
+#' @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
+#' for detailed verbosity.
 #'
 #' @return The diffusion maps embeddings.
 #'
@@ -211,7 +222,8 @@ rs_diffusion_maps <- function(embd, n_dim, k, dm_params, seed, verbose) .Call(wr
 #' @param dm_params Named list. List that contains all of the key parameters
 #' for the diffusion maps generation.
 #' @param seed Integer. Seed for reproducibility.
-#' @param verbose Boolean. Controls verbosity of the function.
+#' @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
+#' for detailed verbosity.
 #'
 #' @return The diffusion maps embeddings.
 #'
@@ -230,7 +242,8 @@ rs_diffusion_maps_from_knn <- function(embd, knn_data, n_dim, k, dm_params, seed
 #' for EVoC clustering.
 #' @param return_knn Boolean. Shall the kNN graph be returned.
 #' @param seed Integer. Seed for reproducibility.
-#' @param verbose Boolean. Controls verbosity of the function.
+#' @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
+#' for detailed verbosity.
 #'
 #' @return A named list with:
 #' \itemize{
@@ -255,7 +268,8 @@ rs_evoc <- function(embd, n_neighbours, evoc_params, return_knn, seed, verbose) 
 #' @param evoc_params Named list. List that contains all of the key parameters
 #' for EVoC clustering.
 #' @param seed Integer. Seed for reproducibility.
-#' @param verbose Boolean. Controls verbosity of the function.
+#' @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
+#' for detailed verbosity.
 #'
 #' @return A named list with cluster layers, membership strengths, persistence
 #' scores, and the kNN graph.
@@ -315,7 +329,8 @@ rs_k_means_mini_batch <- function(data, k, kmeans_params, seed, verbose) .Call(w
 #' `c("hsnw", "balltree", "annoy", "nndescent")`
 #' @param ann_params Named list. Contains the nearest neighbour parameters.
 #' @param seed Integer. Seed for reproducibility
-#' @param verbose Boolean. Controls verbosity of the function.
+#' @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
+#' for detailed verbosity.
 #'
 #' @returns A list with the following elements
 #' \itemize{

@@ -7,7 +7,7 @@ use manifolds_rs::prelude::*;
 use manifolds_rs::*;
 use std::collections::HashMap;
 
-use crate::utils::get_params_nn;
+use crate::utils::get_params_nn_manifolds;
 
 ////////////
 // Params //
@@ -47,7 +47,7 @@ impl InternalPacmapParams {
     ///
     /// The internal representation of the Pacmap parameters
     pub fn from_r_list(r_list: List) -> Result<Self, extendr_api::Error> {
-        let nn_params = get_params_nn(r_list.clone())?;
+        let nn_params = get_params_nn_manifolds(r_list.clone())?;
         let optim_params = get_params_pacmap_optim(r_list.clone())?;
 
         let params: HashMap<&str, Robj> = r_list.try_into()?;
@@ -165,7 +165,12 @@ fn get_params_pacmap_optim(r_list: List) -> Result<PacmapOptimParams<f32>, exten
 /// * `k` - Number of nearest neighbours for graph construction.
 /// * `pacmap_params` - R list that contains the Pacmap parameters.
 /// * `seed` - Seed for reproducibility
-/// * `verbose` - Controls the verbosity of the functions
+/// * `verbose` - If `0` -> silent or `1` for normal verbosity, `2` for detailed
+///   verbosity.
+///
+/// ### Returns
+///
+/// Returns the PaCMAP embeddings as matrix.
 #[allow(clippy::too_many_arguments)]
 pub fn pacmap_manifold(
     data: MatRef<f32>,
@@ -174,22 +179,22 @@ pub fn pacmap_manifold(
     k: usize,
     pacmap_params: List,
     seed: usize,
-    verbose: bool,
+    verbose: usize,
 ) -> Result<Mat<f32>, extendr_api::Error> {
     let internal = InternalPacmapParams::from_r_list(pacmap_params)?;
 
     let params = PacmapParams::new(
-        Some(n_dim),
-        Some(k),
-        Some(internal.knn_method),
-        Some(internal.optimiser),
-        Some(internal.n_mid_near),
-        Some(internal.n_further),
-        Some(internal.mn_candidate_start),
-        Some(internal.mn_candidate_end),
-        Some(internal.init),
-        Some(internal.param_knn),
-        Some(internal.param_optimiser),
+        n_dim,
+        k,
+        internal.knn_method,
+        internal.optimiser,
+        internal.n_mid_near,
+        internal.n_further,
+        internal.mn_candidate_start,
+        internal.mn_candidate_end,
+        internal.init,
+        internal.param_knn,
+        internal.param_optimiser,
     );
 
     let res = pacmap(data, pre_computed_knn, &params, seed, verbose).to_extendr()?;
