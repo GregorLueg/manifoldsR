@@ -17,6 +17,7 @@ tsne(
   nn_params = params_nn(),
   tsne_params = params_tsne(),
   seed = 42L,
+  use_high_precision = NULL,
   .verbose = TRUE
 )
 ```
@@ -70,6 +71,11 @@ tsne(
 - seed:
 
   Integer. Random seed for reproducibility.
+
+- use_high_precision:
+
+  Optional boolean. Gives fine-grained control over `fp32` vs `fp64`
+  usage.
 
 - .verbose:
 

@@ -12,10 +12,11 @@ diffusion_maps(
   knn = NULL,
   n_dim = 2L,
   k = 5L,
-  knn_method = c("kmknn", "balltree", "hnsw", "annoy", "nndescent", "exhaustive"),
+  knn_method = c("kmknn", "balltree", "hnsw", "annoy", "nndescent", "exhaustive", "ivf"),
   nn_params = params_nn(),
   dm_params = params_diffusion_maps(),
   seed = 42L,
+  use_high_precision = NULL,
   .verbose = TRUE
 )
 ```
@@ -62,6 +63,11 @@ diffusion_maps(
 - seed:
 
   Integer. Random seed for reproducibility. Defaults to `42L`.
+
+- use_high_precision:
+
+  Optional boolean. Gives fine-grained control over `fp32` vs `fp64`
+  usage.
 
 - .verbose:
 

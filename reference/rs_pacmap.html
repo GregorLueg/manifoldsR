@@ -9,7 +9,7 @@ PaCMAP."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,7 +51,7 @@ PaCMAP.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">rs_pacmap</span><span class="op">(</span><span class="va">embd</span>, <span class="va">n_dim</span>, <span class="va">k</span>, <span class="va">pacmap_params</span>, <span class="va">seed</span>, <span class="va">verbose</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">rs_pacmap</span><span class="op">(</span><span class="va">embd</span>, <span class="va">n_dim</span>, <span class="va">k</span>, <span class="va">pacmap_params</span>, <span class="va">seed</span>, <span class="va">use_high_precision</span>, <span class="va">verbose</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -78,6 +78,11 @@ parameters for the PaCMAP generation.</p></dd>
 
 <dt id="arg-seed">seed<a class="anchor" aria-label="anchor" href="#arg-seed"></a></dt>
 <dd><p>Integer. Seed for reproducibility.</p></dd>
+
+
+<dt id="arg-use-high-precision">use_high_precision<a class="anchor" aria-label="anchor" href="#arg-use-high-precision"></a></dt>
+<dd><p>Optional logical. Controls <code>fp32</code> vs <code>fp64</code> for.
+If <code>NULL</code> will use sensible default thresholding.</p></dd>
 
 
 <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>

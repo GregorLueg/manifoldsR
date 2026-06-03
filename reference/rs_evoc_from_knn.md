@@ -6,7 +6,15 @@ pre-computed kNN graph.
 ## Usage
 
 ``` r
-rs_evoc_from_knn(embd, knn_data, n_neighbours, evoc_params, seed, verbose)
+rs_evoc_from_knn(
+  embd,
+  knn_data,
+  n_neighbours,
+  evoc_params,
+  seed,
+  use_high_precision,
+  verbose
+)
 ```
 
 ## Arguments

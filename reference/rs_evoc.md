@@ -5,7 +5,15 @@ Wrapper function into the Rust interface for EVoC clustering.
 ## Usage
 
 ``` r
-rs_evoc(embd, n_neighbours, evoc_params, return_knn, seed, verbose)
+rs_evoc(
+  embd,
+  n_neighbours,
+  evoc_params,
+  return_knn,
+  seed,
+  use_high_precision,
+  verbose
+)
 ```
 
 ## Arguments

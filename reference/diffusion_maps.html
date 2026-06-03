@@ -11,7 +11,7 @@ validation before calling the Rust implementation."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -59,10 +59,11 @@ validation before calling the Rust implementation.</p>
 <span>  knn <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  n_dim <span class="op">=</span> <span class="fl">2L</span>,</span>
 <span>  k <span class="op">=</span> <span class="fl">5L</span>,</span>
-<span>  knn_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"kmknn"</span>, <span class="st">"balltree"</span>, <span class="st">"hnsw"</span>, <span class="st">"annoy"</span>, <span class="st">"nndescent"</span>, <span class="st">"exhaustive"</span><span class="op">)</span>,</span>
+<span>  knn_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"kmknn"</span>, <span class="st">"balltree"</span>, <span class="st">"hnsw"</span>, <span class="st">"annoy"</span>, <span class="st">"nndescent"</span>, <span class="st">"exhaustive"</span>, <span class="st">"ivf"</span><span class="op">)</span>,</span>
 <span>  nn_params <span class="op">=</span> <span class="fu"><a href="params_nn.html">params_nn</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  dm_params <span class="op">=</span> <span class="fu"><a href="params_diffusion_maps.html">params_diffusion_maps</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  seed <span class="op">=</span> <span class="fl">42L</span>,</span>
+<span>  use_high_precision <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  .verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -110,6 +111,11 @@ or <code>"exhaustive"</code>. Defaults to <code>"kmknn"</code>.</p></dd>
 
 <dt id="arg-seed">seed<a class="anchor" aria-label="anchor" href="#arg-seed"></a></dt>
 <dd><p>Integer. Random seed for reproducibility. Defaults to <code>42L</code>.</p></dd>
+
+
+<dt id="arg-use-high-precision">use_high_precision<a class="anchor" aria-label="anchor" href="#arg-use-high-precision"></a></dt>
+<dd><p>Optional boolean. Gives fine-grained control over
+<code>fp32</code> vs <code>fp64</code> usage.</p></dd>
 
 
 <dt id="arg--verbose">.verbose<a class="anchor" aria-label="anchor" href="#arg--verbose"></a></dt>

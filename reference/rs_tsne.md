@@ -8,7 +8,16 @@ data sets to avoid catastrophic cancelleation.
 ## Usage
 
 ``` r
-rs_tsne(embd, n_dim, perplexity, approx_type, tsne_params, seed, verbose)
+rs_tsne(
+  embd,
+  n_dim,
+  perplexity,
+  approx_type,
+  tsne_params,
+  seed,
+  use_high_precision,
+  verbose
+)
 ```
 
 ## Arguments
@@ -40,6 +49,11 @@ rs_tsne(embd, n_dim, perplexity, approx_type, tsne_params, seed, verbose)
 - seed:
 
   Integer. Seed for reproducibility.
+
+- use_high_precision:
+
+  Optional logical. Controls `fp32` vs `fp64` for. If `NULL` will use
+  sensible default thresholding.
 
 - verbose:
 

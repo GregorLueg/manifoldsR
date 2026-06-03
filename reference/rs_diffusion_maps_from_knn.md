@@ -6,7 +6,16 @@ and can use a pre-computed kNN.
 ## Usage
 
 ``` r
-rs_diffusion_maps_from_knn(embd, knn_data, n_dim, k, dm_params, seed, verbose)
+rs_diffusion_maps_from_knn(
+  embd,
+  knn_data,
+  n_dim,
+  k,
+  dm_params,
+  seed,
+  use_high_precision,
+  verbose
+)
 ```
 
 ## Arguments
@@ -36,6 +45,11 @@ rs_diffusion_maps_from_knn(embd, knn_data, n_dim, k, dm_params, seed, verbose)
 - seed:
 
   Integer. Seed for reproducibility.
+
+- use_high_precision:
+
+  Optional logical. Controls `fp32` vs `fp64` for. If `NULL` will use
+  sensible default thresholding.
 
 - verbose:
 

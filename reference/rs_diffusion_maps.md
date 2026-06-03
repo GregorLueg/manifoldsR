@@ -5,7 +5,7 @@ This is the wrapper function into the Rust interface for diffusion maps.
 ## Usage
 
 ``` r
-rs_diffusion_maps(embd, n_dim, k, dm_params, seed, verbose)
+rs_diffusion_maps(embd, n_dim, k, dm_params, seed, use_high_precision, verbose)
 ```
 
 ## Arguments
@@ -31,6 +31,11 @@ rs_diffusion_maps(embd, n_dim, k, dm_params, seed, verbose)
 - seed:
 
   Integer. Seed for reproducibility.
+
+- use_high_precision:
+
+  Optional logical. Controls `fp32` vs `fp64` for. If `NULL` will use
+  sensible default thresholding.
 
 - verbose:
 

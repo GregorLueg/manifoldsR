@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -482,12 +482,9 @@
 <span>  times <span class="op">=</span> <span class="fl">1L</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
-<span><span class="co">#&gt;            expr       min        lq      mean    median        uq       max</span></span>
-<span><span class="co">#&gt;          phateR 11.954605 11.954605 11.954605 11.954605 11.954605 11.954605</span></span>
-<span><span class="co">#&gt;  manifold_phate  9.435793  9.435793  9.435793  9.435793  9.435793  9.435793</span></span>
-<span><span class="co">#&gt;  neval</span></span>
-<span><span class="co">#&gt;      1</span></span>
-<span><span class="co">#&gt;      1</span></span></code></pre></div>
+<span><span class="co">#&gt;            expr      min       lq     mean   median       uq      max neval</span></span>
+<span><span class="co">#&gt;          phateR 9.741344 9.741344 9.741344 9.741344 9.741344 9.741344     1</span></span>
+<span><span class="co">#&gt;  manifold_phate 8.970944 8.970944 8.970944 8.970944 8.970944 8.970944     1</span></span></code></pre></div>
 </div>
 <p>And on a larger data set with additionally the random landmark version</p>
 <div class="cell">
@@ -528,12 +525,11 @@
 <span>  <span class="op">}</span>,</span>
 <span>  times <span class="op">=</span> <span class="fl">1L</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt;     SGD-MDS may not have converged: stress changed by -1.4% in final iterations. Consider increasing n_iter or adjusting learning_rate.</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;                     expr      min       lq     mean   median       uq      max</span></span>
-<span><span class="co">#&gt;                   phateR 62.09122 62.09122 62.09122 62.09122 62.09122 62.09122</span></span>
-<span><span class="co">#&gt;  manifold_phate_spectral 35.39567 35.39567 35.39567 35.39567 35.39567 35.39567</span></span>
-<span><span class="co">#&gt;    manifold_phate_random 16.49417 16.49417 16.49417 16.49417 16.49417 16.49417</span></span>
+<span><span class="co">#&gt;                   phateR 42.65406 42.65406 42.65406 42.65406 42.65406 42.65406</span></span>
+<span><span class="co">#&gt;  manifold_phate_spectral 30.55970 30.55970 30.55970 30.55970 30.55970 30.55970</span></span>
+<span><span class="co">#&gt;    manifold_phate_random 14.41898 14.41898 14.41898 14.41898 14.41898 14.41898</span></span>
 <span><span class="co">#&gt;  neval</span></span>
 <span><span class="co">#&gt;      1</span></span>
 <span><span class="co">#&gt;      1</span></span>

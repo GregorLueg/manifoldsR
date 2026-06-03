@@ -16,6 +16,7 @@ pacmap(
   nn_params = params_nn(),
   pacmap_params = params_pacmap(),
   seed = 42L,
+  use_high_precision = NULL,
   .verbose = TRUE
 )
 ```
@@ -63,6 +64,11 @@ pacmap(
 - seed:
 
   Integer. Random seed for reproducibility. Defaults to `42L`.
+
+- use_high_precision:
+
+  Optional boolean. Gives fine-grained control over `fp32` vs `fp64`
+  usage.
 
 - .verbose:
 

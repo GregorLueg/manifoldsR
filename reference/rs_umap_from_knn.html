@@ -9,7 +9,7 @@ and can use a pre-computed kNN."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,6 +60,7 @@ and can use a pre-computed kNN.</p>
 <span>  <span class="va">k</span>,</span>
 <span>  <span class="va">umap_params</span>,</span>
 <span>  <span class="va">seed</span>,</span>
+<span>  <span class="va">use_high_precision</span>,</span>
 <span>  <span class="va">verbose</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -100,6 +101,11 @@ for the UMAP generation.</p></dd>
 
 <dt id="arg-seed">seed<a class="anchor" aria-label="anchor" href="#arg-seed"></a></dt>
 <dd><p>Integer. Seed for reproducibility.</p></dd>
+
+
+<dt id="arg-use-high-precision">use_high_precision<a class="anchor" aria-label="anchor" href="#arg-use-high-precision"></a></dt>
+<dd><p>Optional logical. Controls <code>fp32</code> vs <code>fp64</code> for.
+If <code>NULL</code> will use sensible default thresholding.</p></dd>
 
 
 <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
