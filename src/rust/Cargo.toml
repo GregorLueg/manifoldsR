@@ -1,9 +1,9 @@
 [package]
 name = 'manifoldsr'
 publish = false
-version = '0.2.3'
+version = '0.2.4'
 edition = '2021'
-rust-version = '1.85'
+rust-version = '1.90'
 
 [lib]
 crate-type = ['staticlib', 'rlib']

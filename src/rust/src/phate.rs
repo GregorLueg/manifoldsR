@@ -2,11 +2,14 @@
 
 #![warn(missing_docs)]
 
+use ann_search_rs::cpu::hnsw::{HnswIndex, HnswState};
+use ann_search_rs::cpu::nndescent::{ApplySortedUpdates, NNDescent, NNDescentQuery};
 use bixverse_rs::prelude::IntoExtendrErr;
 use extendr_api::{List, Robj};
 use faer::{Mat, MatRef};
 use manifolds_rs::prelude::*;
 use manifolds_rs::*;
+use rand_distr::{Distribution, StandardNormal};
 use std::collections::HashMap;
 
 use crate::utils::get_params_nn_manifolds;
@@ -19,22 +22,22 @@ use crate::utils::get_params_nn_manifolds;
 ///
 /// Overall wrapper over various parameters needed for PHATE.
 #[derive(Debug)]
-pub struct InternalPhateParams {
+pub struct InternalPhateParams<T> {
     /// Method to symmetrise the affinity graph. One of `"average"` or `"add"`.
     /// Defaults to `"average"`.
     pub graph_symmetry: String,
     /// Alpha decay parameter controlling the kernel bandwidth.
-    pub decay: Option<f32>,
+    pub decay: Option<T>,
     /// Scaling factor for the bandwidth. `None` lets the library select a
     /// sensible default.
-    pub bandwidth_scale: Option<f32>,
+    pub bandwidth_scale: Option<T>,
     /// Maximum diffusion time considered during automatic selection via
     /// Von Neumann entropy knee point detection.
     pub t_max: Option<usize>,
     /// Fixed diffusion time. When `Some`, overrides automatic time selection.
     pub t_custom: Option<usize>,
     /// Informational distance parameter for the diffusion potential.
-    pub gamma: Option<f32>,
+    pub gamma: Option<T>,
     /// Number of landmarks for compressed diffusion. `None` uses the full N × N
     /// diffusion operator.
     pub n_landmarks: Option<usize>,
@@ -51,10 +54,13 @@ pub struct InternalPhateParams {
     /// Which approximate nearest neighbour method to use.
     pub knn_method: String,
     /// Nearest neighbour parameters forwarded to the ANN methods.
-    pub param_knn: NearestNeighbourParams<f32>,
+    pub param_knn: NearestNeighbourParams<T>,
 }
 
-impl InternalPhateParams {
+impl<T> InternalPhateParams<T>
+where
+    T: ManifoldsFloat,
+{
     /// Construct `InternalPhateParams` from an R named list.
     ///
     /// Delegates to `get_params_nn` and `get_params_phate` for their
@@ -72,7 +78,7 @@ impl InternalPhateParams {
     /// A fully populated `InternalPhateParams`.
     pub fn from_r_list(r_list: List) -> Result<Self, extendr_api::Error> {
         let nn_params = get_params_nn_manifolds(r_list.clone())?;
-        let phate_params = get_params_phate(r_list.clone())?;
+        let phate_params = get_params_phate::<T>(r_list.clone())?;
         let base: HashMap<&str, Robj> = r_list.try_into()?;
         let knn_method = std::string::String::from(
             base.get("knn_method")
@@ -112,7 +118,10 @@ impl InternalPhateParams {
 /// An `InternalPhateParams` with PHATE fields populated and `knn_method` /
 /// `param_knn` set to their defaults. Callers should override those fields
 /// via `from_r_list`.
-fn get_params_phate(r_list: List) -> Result<InternalPhateParams, extendr_api::Error> {
+fn get_params_phate<T>(r_list: List) -> Result<InternalPhateParams<T>, extendr_api::Error>
+where
+    T: ManifoldsFloat,
+{
     let p: HashMap<&str, Robj> = r_list.try_into()?;
     let graph_symmetry = std::string::String::from(
         p.get("graph_symmetry")
@@ -122,12 +131,12 @@ fn get_params_phate(r_list: List) -> Result<InternalPhateParams, extendr_api::Er
     let decay = p
         .get("decay")
         .and_then(|v| v.as_real())
-        .map(|v| v as f32)
-        .or(Some(40.0));
+        .map(|v| T::from_f64(v).unwrap())
+        .or(Some(T::from_f64(40.0).unwrap()));
     let bandwidth_scale = p
         .get("bandwidth_scale")
         .and_then(|v| v.as_real())
-        .map(|v| v as f32);
+        .map(|v| T::from_f64(v).unwrap());
     let t_max = p
         .get("t_max")
         .and_then(|v| v.as_integer())
@@ -140,8 +149,8 @@ fn get_params_phate(r_list: List) -> Result<InternalPhateParams, extendr_api::Er
     let gamma = p
         .get("gamma")
         .and_then(|v| v.as_real())
-        .map(|v| v as f32)
-        .or(Some(1.0));
+        .map(|v| T::from_f64(v).unwrap())
+        .or(Some(T::from_f64(1.0).unwrap()));
     let n_landmarks = p
         .get("n_landmarks")
         .and_then(|v| v.as_integer())
@@ -207,32 +216,40 @@ fn get_params_phate(r_list: List) -> Result<InternalPhateParams, extendr_api::Er
 /// ### Returns
 ///
 /// Returns the PHATE embeddings as matrix.
-pub fn phate_simple(
-    data: MatRef<f32>,
-    pre_computed_knn: PreComputedKnn<f32>,
+pub fn phate_simple<T>(
+    data: MatRef<T>,
+    pre_computed_knn: PreComputedKnn<T>,
     n_dim: usize,
     k: usize,
     phate_params: List,
     seed: usize,
     verbose: usize,
-) -> Result<Mat<f32>, extendr_api::Error> {
+) -> Result<Mat<T>, extendr_api::Error>
+where
+    T: ManifoldsFloat,
+    HnswIndex<T>: HnswState<T>,
+    NNDescent<T>: ApplySortedUpdates<T> + NNDescentQuery<T>,
+    StandardNormal: Distribution<T>,
+{
     assert!(
         n_dim == 2,
         "At the moment, this PHATE implementation only supports n_dim = 2"
     );
-    let internal = InternalPhateParams::from_r_list(phate_params)?;
+    let internal = InternalPhateParams::<T>::from_r_list(phate_params)?;
 
     let diffusion_params = PhateDiffusionParams::new(
-        Some(internal.decay.unwrap_or(40.0)),
-        internal.bandwidth_scale.unwrap_or(1.0),
-        1e-4,
+        Some(internal.decay.unwrap_or(T::from_f64(40.0).unwrap())),
+        internal
+            .bandwidth_scale
+            .unwrap_or(T::from_f64(1.0).unwrap()),
+        T::from_f64(1e-4).unwrap(),
         internal.graph_symmetry,
         internal.n_landmarks,
         internal.landmark_method,
         internal.n_svd,
         internal.t_max,
         internal.t_custom,
-        internal.gamma.unwrap_or(1.0),
+        internal.gamma.unwrap_or(T::from_f64(1.0).unwrap()),
     );
 
     let params_phate = PhateParams::new(

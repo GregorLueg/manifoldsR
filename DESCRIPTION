@@ -1,6 +1,6 @@
 Package: manifoldsR
 Title: Package for 2D embeddings
-Version: 0.2.3
+Version: 0.2.4
 Authors@R: 
     c(
         person(

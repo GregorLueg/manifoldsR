@@ -1311,7 +1311,7 @@ dependencies = [
 
 [[package]]
 name = "manifoldsr"
-version = "0.2.3"
+version = "0.2.4"
 dependencies = [
  "ann-search-rs",
  "bixverse-rs",
