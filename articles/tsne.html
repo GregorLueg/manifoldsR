@@ -7,8 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Using t-SNE • manifoldsR</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><script src="tsne_files/libs/quarto-html/popper.min.js"></script><script src="tsne_files/libs/quarto-html/tippy.umd.min.js"></script><link href="tsne_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="tsne_files/libs/quarto-html/light-border.css" rel="stylesheet">
@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,7 +63,7 @@
       <h1>Using t-SNE</h1>
 
       <p class="author">Gregor Lueg</p>
-      <p class="date">2026-05-08</p>
+      <p class="date">2026-06-03</p>
 
 
       <div class="d-none name"><code></code></div>
@@ -377,7 +377,7 @@
 </div>
 </section><section class="level2"><h3 id="fft-accelerated-t-sne">FFT-accelerated t-SNE<a class="anchor" aria-label="anchor" href="#fft-accelerated-t-sne"></a>
 </h3>
-<p>For large datasets, the Barnes-Hut approximation <code>(O(N log N))</code> can still be slow. The FFT-accelerated variant reduces this to <code>O(N)</code> by interpolating the repulsive forces on a grid, making it substantially faster at scale. The constant however is higher. This version of tSNE becomes interesting in situations of ≥ 100,000 samples and more.</p>
+<p>For large datasets, the Barnes-Hut approximation <code>O(N log N)</code> can still be slow. The FFT-accelerated variant reduces this to <code>O(N)</code> by interpolating the repulsive forces on a grid, making it substantially faster at scale. The constant however is higher. This version of tSNE becomes interesting in situations of ≥ 100,000 samples and more.</p>
 <p><strong>Note: the FFT variant is only available on Unix-based systems!</strong></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
@@ -407,6 +407,7 @@
 </div>
 </div>
 <p>The embeddings are qualitatively similar to the BH version, with the FFT version trading a small amount of precision for a significant speed gain on large datasets.</p>
+<p><strong>Important note:</strong> On large data sets (and the effect grows with N) you may observe that the clusters do not separate into distinct islands but instead relax into a single, gapless disc tiled into Voronoi-like cells, with clusters meeting along shared boundaries rather than separated by empty space. This is not a convergence failure: the optimiser has reached the equilibrium implied by its parameters. It arises because the main optimisation phase runs at an exaggeration of 1, and at high point density the attraction-repulsion balance at that setting is a space-filling layout. If you observe this set <code>late_exag_factor</code> to values of 2 to 4 (pending your data set size.)</p>
 </section><section class="level2"><h3 id="benchmarks">Benchmarks<a class="anchor" aria-label="anchor" href="#benchmarks"></a>
 </h3>
 <p>Let’s compare the BH implementation in <code>manifoldsR</code> against <code>Rtsne</code> (the most widely used t-SNE implementation in R, itself a wrapper around the C++ BH t-SNE code). The <code>tsne</code> package (pure R, naive <code>O(N^2)</code> implementation) is just too slow to be worth comparing here…</p>
@@ -439,8 +440,8 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;         expr       min        lq      mean    median        uq       max neval</span></span>
-<span><span class="co">#&gt;        Rtsne 11.962777 11.962777 11.962777 11.962777 11.962777 11.962777     1</span></span>
-<span><span class="co">#&gt;  manifold_bh  4.371469  4.371469  4.371469  4.371469  4.371469  4.371469     1</span></span></code></pre></div>
+<span><span class="co">#&gt;        Rtsne 13.133333 13.133333 13.133333 13.133333 13.133333 13.133333     1</span></span>
+<span><span class="co">#&gt;  manifold_bh  4.851301  4.851301  4.851301  4.851301  4.851301  4.851301     1</span></span></code></pre></div>
 </div>
 <p>The impact here is massive already. Let’s see what happens with BH and FFT? (To note, FFT’s advantage becomes larger the bigger the data set due to its <code>O(N)</code> complexity.)</p>
 <div class="cell">
@@ -473,8 +474,8 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;          expr       min        lq      mean    median        uq       max neval</span></span>
-<span><span class="co">#&gt;   manifold_bh 105.19965 105.19965 105.19965 105.19965 105.19965 105.19965     1</span></span>
-<span><span class="co">#&gt;  manifold_fft  34.21267  34.21267  34.21267  34.21267  34.21267  34.21267     1</span></span></code></pre></div>
+<span><span class="co">#&gt;   manifold_bh 115.43251 115.43251 115.43251 115.43251 115.43251 115.43251     1</span></span>
+<span><span class="co">#&gt;  manifold_fft  59.11075  59.11075  59.11075  59.11075  59.11075  59.11075     1</span></span></code></pre></div>
 </div>
 <p>The speed advantage of the Rust implementation comes from a combination of optimised memory layout, aggressive inlining, and the fact that the entire pipeline — kNN construction, probability computation, and gradient descent — runs within the Rust kernel without round-tripping through R. If you like tSNE, but thought it’s too slow… we got you.</p>
 </section></section><script id="quarto-html-after-body" type="application/javascript">

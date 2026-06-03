@@ -40,8 +40,8 @@ evoc(
 - knn_method:
 
   Character. (Approximate) Nearest neighbour method to use. One of
-  `"kmknn"`, `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, or
-  `"exhaustive"`. Defaults to `"kmknn"`.
+  `"kmknn"`, `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, `"ivf"`
+  or `"exhaustive"`. Defaults to `"kmknn"`.
 
 - nn_params:
 

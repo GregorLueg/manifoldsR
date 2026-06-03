@@ -39,7 +39,8 @@ rs_diffusion_maps_from_knn(embd, knn_data, n_dim, k, dm_params, seed, verbose)
 
 - verbose:
 
-  Boolean. Controls verbosity of the function.
+  Integer. If `0L` -\> silent or `1L` for normal verbosity; `2L` for
+  detailed verbosity.
 
 ## Value
 

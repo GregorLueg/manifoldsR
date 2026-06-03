@@ -10,7 +10,10 @@ params_kmeans(
   max_iters = 1000L,
   batch_size = 4096L,
   drift_threshold = 1e-04,
-  lr_alpha = 1
+  lr_alpha = 1,
+  init = c("parallel", "random"),
+  use_hamerly = NULL,
+  use_gemm = NULL
 )
 ```
 
@@ -39,6 +42,21 @@ params_kmeans(
 
   Float. Learning rate decay for the mini-batch k-means. Original paper
   uses `1.0`.
+
+- init:
+
+  String. One of `c("parallel", "random")`. The initialisation of the
+  centroids.
+
+- use_hamerly:
+
+  Optional boolean. Shall Hamerly's method be used (only available if
+  `metric == "euclidean"`).
+
+- use_gemm:
+
+  Optional boolean. Shall the GEMM path be used. Useful on high
+  dimensional data. If `NULL`, choice will be based on heuristics.
 
 ## Value
 

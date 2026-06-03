@@ -7,8 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Clustering methods in manifoldsR (with emphasis on EVoC) • manifoldsR</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><script src="clustering_files/libs/quarto-html/popper.min.js"></script><script src="clustering_files/libs/quarto-html/tippy.umd.min.js"></script><link href="clustering_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="clustering_files/libs/quarto-html/light-border.css" rel="stylesheet">
@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,7 +63,7 @@
       <h1>Clustering methods in manifoldsR (with emphasis on EVoC)</h1>
 
       <p class="author">Gregor Lueg</p>
-      <p class="date">2026-05-08</p>
+      <p class="date">2026-06-03</p>
 
 
       <div class="d-none name"><code></code></div>
@@ -76,7 +76,7 @@
 
     <section class="section level2"><h2 id="clustering-in-manifoldsr">Clustering in manifoldsR<a class="anchor" aria-label="anchor" href="#clustering-in-manifoldsr"></a>
 </h2>
-<p><code>manifoldsR</code> provides two clustering approaches (for now): <strong>k-means</strong> (full Lloyd’s and mini-batch) and <strong>EVoC</strong> (Embedding Vector Oriented Clustering). Both are implemented in Rust with SIMD acceleration, heavy parallelism and the cache-friendly memory layouts for speed. The package also ships cluster evaluation metrics (ARI, silhouette score and inertia) so you can assess the results without having to load in another package (of course also made fast in Rust – you know the drill).</p>
+<p><code>manifoldsR</code> provides two clustering approaches (for now): <strong>k-means</strong> (full Lloyd’s and mini-batch) and more importantly <strong>EVoC</strong> (Embedding Vector Oriented Clustering). Both are implemented in Rust with SIMD acceleration, heavy parallelism and the cache-friendly memory layouts for speed. The package also ships some cluster evaluation metrics (ARI, silhouette score and inertia) so you can assess the results without having to load in another package (of course also made fast in Rust… You know the drill by now).</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://gregorlueg.github.io/manifoldsR/">manifoldsR</a></span><span class="op">)</span></span>
@@ -92,7 +92,7 @@
 <section class="level2"><h3 id="algorithms-at-a-glance">Algorithms at a glance<a class="anchor" aria-label="anchor" href="#algorithms-at-a-glance"></a>
 </h3>
 <p><strong>K-means</strong> partitions data into exactly <code>k</code> clusters by iteratively assigning points to the nearest centroid and recomputing centroids as cluster means.</p>
-<p>The <strong>full</strong> (Lloyd’s) implementation in <code>manifoldsR</code> is heavily optimised (original from <a href="https://crates.io/crates/ann-search-rs" class="external-link">ann-search-rs</a>). For high-dimensional data (dim &gt;= 96), it uses Hamerly’s algorithm: per-point upper and lower distance bounds prune the vast majority of distance computations after the first few iterations, while GEMM-based assignment (computing dot products via matrix multiplication) keeps the remaining work cache-friendly. For Euclidean distance, this typically prunes 90%+ of point-centroid comparisons after 3-4 iterations, meaning convergence cost is closer to a handful of full passes than the theoretical worst case. For cosine distance (where Hamerly’s bounds do not apply, since cosine lacks the triangle inequality), a full GEMM reassignment is performed each iteration. Lower-dimensional data (dim &lt; 96) falls back to direct SIMD-accelerated loops, which avoid the GEMM kernel overhead at small dimensions.</p>
+<p>The <strong>full</strong> (Lloyd’s) implementation in <code>manifoldsR</code> is heavily optimised (original from <a href="https://crates.io/crates/ann-search-rs" class="external-link">ann-search-rs</a>). For high-dimensional data (dim &gt;= 96), it defaults to the Hamerly’s algorithm: per-point upper and lower distance bounds prune the vast majority of distance computations after the first few iterations, while GEMM-based assignment (defaulted to when the dimensionality is high enough) keeps the remaining work cache-friendly. For Euclidean distance, this typically prunes 90%+ of point-centroid comparisons after 3-4 iterations, meaning convergence cost is closer to a handful of full passes than the theoretical worst case. For cosine distance (where Hamerly’s bounds do not apply, since cosine lacks the triangle inequality), a full GEMM reassignment is performed each iteration. Lower-dimensional data (dim &lt; 96) falls back to direct SIMD-accelerated loops, which avoid the GEMM kernel overhead at small dimensions. (If you wish you can actually control the exact dispatch. The <code><a href="../reference/params_kmeans.html">params_kmeans()</a></code> give you tight control if needed.)</p>
 <p>The <strong>mini-batch</strong> variant (Sculley 2010) samples a random subset of points per iteration and applies an incremental centroid update with a decaying learning rate (<code>eta = 1/count</code>). The appeal is that each iteration is cheap: only <code>batch_size</code> distance computations instead of <code>n</code>. In practice, however, the full version’s bound-based pruning is so aggressive that mini-batch does not offer a speed advantage until data sets become very large (roughly 10M+ points) or cluster structure is messy enough that Hamerly’s pruning cannot eliminate most candidates. At moderate scales (up to ~1M), the full version often converges faster in wall-clock time.</p>
 <p>Where mini-batch does differ meaningfully is in its <strong>behaviour under over-specification of <code>k</code></strong>. Because the incremental learning rate causes centroids near dense clusters to stabilise quickly (their counts grow large, shrinking eta), extra centroids in low-density regions receive few updates and effectively starve. The result is that mini-batch k-means is more robust to setting <code>k</code> higher than the true number of clusters, i.e., it naturally concentrates mass on the real structure rather than forcing every centroid to carve out territory.</p>
 <p><strong>EVoC</strong> (Embedding Vector Oriented Clustering) takes a fundamentally different approach. It constructs a k-nearest neighbour graph, learns a lower-dimensional embedding optimised for clustering (similar to UMAP, but with more target dimensions and a different loss focus), then applies hierarchical density-based clustering (in the spirit of HDBSCAN) with multi-layer persistence analysis. The key advantage is that EVoC <strong>does not require you to specify the number of clusters</strong> – it discovers them automatically and returns multiple layers of granularity ranked by persistence. It also handles noise and outliers naturally, assigning them a label of <code>-1</code>.</p>
@@ -156,15 +156,7 @@
 <span>  seed <span class="op">=</span> <span class="fl">42L</span>,</span>
 <span>  .verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; Running full k-means (k=15, metric=euclidean)</span></span>
-<span></span>
-<span><span class="va">km_correct</span></span>
-<span><span class="co">#&gt; KMeansCluster</span></span>
-<span><span class="co">#&gt;   method:     full </span></span>
-<span><span class="co">#&gt;   metric:     euclidean </span></span>
-<span><span class="co">#&gt;   k:          15 </span></span>
-<span><span class="co">#&gt;   n:          10000 </span></span>
-<span><span class="co">#&gt;   sizes:      min= 0  median= 544  max= 1375</span></span></code></pre></div>
+<span><span class="co">#&gt; Running full k-means (k=15, metric=euclidean)</span></span></code></pre></div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">

@@ -11,9 +11,9 @@ tsne(
   data,
   knn = NULL,
   n_dim = 2L,
-  perplexity = 30,
+  perplexity = 20,
   approx_type = c("bh", "fft"),
-  knn_method = c("kmknn", "balltree", "hnsw", "annoy", "nndescent", "exhaustive"),
+  knn_method = c("kmknn", "balltree", "hnsw", "annoy", "nndescent", "exhaustive", "ivf"),
   nn_params = params_nn(),
   tsne_params = params_tsne(),
   seed = 42L,
@@ -43,7 +43,7 @@ tsne(
 
   Numeric. Perplexity parameter, related to the number of nearest
   neighbours used in manifold learning. Typical values are between 5
-  and 50. Defaults to `30.0`.
+  and 50. Defaults to `20.0`.
 
 - approx_type:
 
@@ -54,8 +54,8 @@ tsne(
 - knn_method:
 
   Character. (Approximate) Nearest neighbour method to use. One of
-  `"kmknn"`, `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, or
-  `"exhaustive"`. Defaults to `"kmknn"`.
+  `"kmknn"`, `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, `"ivf"`
+  or `"exhaustive"`. Defaults to `"kmknn"`.
 
 - nn_params:
 

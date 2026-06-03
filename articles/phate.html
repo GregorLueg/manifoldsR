@@ -7,8 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Using PHATE • manifoldsR</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><script src="phate_files/libs/quarto-html/popper.min.js"></script><script src="phate_files/libs/quarto-html/tippy.umd.min.js"></script><link href="phate_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="phate_files/libs/quarto-html/light-border.css" rel="stylesheet">
@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,7 +63,7 @@
       <h1>Using PHATE</h1>
 
       <p class="author">Gregor Lueg</p>
-      <p class="date">2026-05-08</p>
+      <p class="date">2026-06-03</p>
 
 
       <div class="d-none name"><code></code></div>
@@ -394,7 +394,7 @@
 <span></span>
 <span><span class="va">phate_landmark_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/as.data.table.html" class="external-link">as.data.table</a></span><span class="op">(</span><span class="va">phate_landmark</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu">`colnames&lt;-`</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PHATE1"</span>, <span class="st">"PHATE2"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>branch <span class="op">=</span> <span class="va">large_trajectory</span><span class="op">$</span><span class="va">membership</span><span class="op">)</span></span>
+<span>  <span class="va">.</span><span class="op">[</span>, <span class="va">branch</span> <span class="op">:=</span> <span class="va">large_trajectory</span><span class="op">$</span><span class="va">membership</span><span class="op">]</span></span>
 <span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">phate_landmark_df</span><span class="op">[</span></span>
@@ -483,8 +483,8 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;            expr       min        lq      mean    median        uq       max</span></span>
-<span><span class="co">#&gt;          phateR 11.538472 11.538472 11.538472 11.538472 11.538472 11.538472</span></span>
-<span><span class="co">#&gt;  manifold_phate  9.406992  9.406992  9.406992  9.406992  9.406992  9.406992</span></span>
+<span><span class="co">#&gt;          phateR 11.954605 11.954605 11.954605 11.954605 11.954605 11.954605</span></span>
+<span><span class="co">#&gt;  manifold_phate  9.435793  9.435793  9.435793  9.435793  9.435793  9.435793</span></span>
 <span><span class="co">#&gt;  neval</span></span>
 <span><span class="co">#&gt;      1</span></span>
 <span><span class="co">#&gt;      1</span></span></code></pre></div>
@@ -513,7 +513,7 @@
 <span>      k <span class="op">=</span> <span class="fl">5L</span>,</span>
 <span>      knn_method <span class="op">=</span> <span class="st">"nndescent"</span>, <span class="co"># good allrounder for larger data sets</span></span>
 <span>      seed <span class="op">=</span> <span class="fl">42L</span>,</span>
-<span>      .verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>      .verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span>    <span class="op">)</span></span>
 <span>  <span class="op">}</span>,</span>
 <span>  manifold_phate_random <span class="op">=</span> <span class="op">{</span></span>
@@ -528,12 +528,12 @@
 <span>  <span class="op">}</span>,</span>
 <span>  times <span class="op">=</span> <span class="fl">1L</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt;     SGD-MDS may not have converged: stress changed by -1.9% in final iterations. Consider increasing n_iter or adjusting learning_rate.</span></span>
+<span><span class="co">#&gt;     SGD-MDS may not have converged: stress changed by -1.4% in final iterations. Consider increasing n_iter or adjusting learning_rate.</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;                     expr      min       lq     mean   median       uq      max</span></span>
-<span><span class="co">#&gt;                   phateR 55.77747 55.77747 55.77747 55.77747 55.77747 55.77747</span></span>
-<span><span class="co">#&gt;  manifold_phate_spectral 61.70343 61.70343 61.70343 61.70343 61.70343 61.70343</span></span>
-<span><span class="co">#&gt;    manifold_phate_random 15.65289 15.65289 15.65289 15.65289 15.65289 15.65289</span></span>
+<span><span class="co">#&gt;                   phateR 62.09122 62.09122 62.09122 62.09122 62.09122 62.09122</span></span>
+<span><span class="co">#&gt;  manifold_phate_spectral 35.39567 35.39567 35.39567 35.39567 35.39567 35.39567</span></span>
+<span><span class="co">#&gt;    manifold_phate_random 16.49417 16.49417 16.49417 16.49417 16.49417 16.49417</span></span>
 <span><span class="co">#&gt;  neval</span></span>
 <span><span class="co">#&gt;      1</span></span>
 <span><span class="co">#&gt;      1</span></span>

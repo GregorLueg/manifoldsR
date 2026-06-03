@@ -6,13 +6,14 @@ Wrapper function to generate t-SNE parameters
 
 ``` r
 params_tsne(
-  lr = 200,
+  lr = NULL,
   n_epochs = 1000L,
   early_exag_iter = 250L,
   early_exag_factor = 12,
+  late_exag_factor = NULL,
   theta = 0.5,
   n_interp_points = 3L,
-  init = "pca",
+  init = c("pca", "spectral", "random"),
   randomised = TRUE
 )
 ```
@@ -21,7 +22,9 @@ params_tsne(
 
 - lr:
 
-  Numeric. Learning rate. Defaults to `200.0`.
+  Optional numeric. Learning rate. If `NULL` (the default), the Rust
+  backend sets it to `max((n_samples / 12), 200)`, following the
+  N-dependent heuristic of Belkina et al. (2019).
 
 - n_epochs:
 
@@ -34,6 +37,11 @@ params_tsne(
 - early_exag_factor:
 
   Numeric. Early exaggeration factor. Defaults to `12.0`.
+
+- late_exag_factor:
+
+  Optional numeric. If you wish to also use late exaggerations. Can be
+  useful on large data sets (set it to `2.0` to `4.0`).
 
 - theta:
 
@@ -58,3 +66,7 @@ params_tsne(
 ## Value
 
 A list with the t-SNE parameters.
+
+## References
+
+Belkina, et al., Nat. Commun., 2019

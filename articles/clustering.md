@@ -3,12 +3,13 @@
 ## Clustering in manifoldsR
 
 `manifoldsR` provides two clustering approaches (for now): **k-means**
-(full Lloyd’s and mini-batch) and **EVoC** (Embedding Vector Oriented
-Clustering). Both are implemented in Rust with SIMD acceleration, heavy
-parallelism and the cache-friendly memory layouts for speed. The package
-also ships cluster evaluation metrics (ARI, silhouette score and
-inertia) so you can assess the results without having to load in another
-package (of course also made fast in Rust – you know the drill).
+(full Lloyd’s and mini-batch) and more importantly **EVoC** (Embedding
+Vector Oriented Clustering). Both are implemented in Rust with SIMD
+acceleration, heavy parallelism and the cache-friendly memory layouts
+for speed. The package also ships some cluster evaluation metrics (ARI,
+silhouette score and inertia) so you can assess the results without
+having to load in another package (of course also made fast in Rust… You
+know the drill by now).
 
 ``` r
 
@@ -32,18 +33,21 @@ cluster means.
 The **full** (Lloyd’s) implementation in `manifoldsR` is heavily
 optimised (original from
 [ann-search-rs](https://crates.io/crates/ann-search-rs)). For
-high-dimensional data (dim \>= 96), it uses Hamerly’s algorithm:
-per-point upper and lower distance bounds prune the vast majority of
-distance computations after the first few iterations, while GEMM-based
-assignment (computing dot products via matrix multiplication) keeps the
-remaining work cache-friendly. For Euclidean distance, this typically
-prunes 90%+ of point-centroid comparisons after 3-4 iterations, meaning
-convergence cost is closer to a handful of full passes than the
-theoretical worst case. For cosine distance (where Hamerly’s bounds do
-not apply, since cosine lacks the triangle inequality), a full GEMM
-reassignment is performed each iteration. Lower-dimensional data (dim \<
-96) falls back to direct SIMD-accelerated loops, which avoid the GEMM
-kernel overhead at small dimensions.
+high-dimensional data (dim \>= 96), it defaults to the Hamerly’s
+algorithm: per-point upper and lower distance bounds prune the vast
+majority of distance computations after the first few iterations, while
+GEMM-based assignment (defaulted to when the dimensionality is high
+enough) keeps the remaining work cache-friendly. For Euclidean distance,
+this typically prunes 90%+ of point-centroid comparisons after 3-4
+iterations, meaning convergence cost is closer to a handful of full
+passes than the theoretical worst case. For cosine distance (where
+Hamerly’s bounds do not apply, since cosine lacks the triangle
+inequality), a full GEMM reassignment is performed each iteration.
+Lower-dimensional data (dim \< 96) falls back to direct SIMD-accelerated
+loops, which avoid the GEMM kernel overhead at small dimensions. (If you
+wish you can actually control the exact dispatch. The
+[`params_kmeans()`](https://gregorlueg.github.io/manifoldsR/reference/params_kmeans.md)
+give you tight control if needed.)
 
 The **mini-batch** variant (Sculley 2010) samples a random subset of
 points per iteration and applies an incremental centroid update with a
@@ -144,14 +148,6 @@ km_correct <- kmeans_cluster(
   .verbose = TRUE
 )
 #> Running full k-means (k=15, metric=euclidean)
-
-km_correct
-#> KMeansCluster
-#>   method:     full 
-#>   metric:     euclidean 
-#>   k:          15 
-#>   n:          10000 
-#>   sizes:      min= 0  median= 544  max= 1375
 ```
 
 ``` r

@@ -381,7 +381,7 @@ phate_landmark <- phate(
 
 phate_landmark_df <- as.data.table(phate_landmark) %>%
   `colnames<-`(c("PHATE1", "PHATE2")) %>%
-  dplyr::mutate(branch = large_trajectory$membership)
+  .[, branch := large_trajectory$membership]
 
 ggplot(
   data = phate_landmark_df[
@@ -472,8 +472,8 @@ microbenchmark::microbenchmark(
 )
 #> Unit: seconds
 #>            expr       min        lq      mean    median        uq       max
-#>          phateR 11.538472 11.538472 11.538472 11.538472 11.538472 11.538472
-#>  manifold_phate  9.406992  9.406992  9.406992  9.406992  9.406992  9.406992
+#>          phateR 11.954605 11.954605 11.954605 11.954605 11.954605 11.954605
+#>  manifold_phate  9.435793  9.435793  9.435793  9.435793  9.435793  9.435793
 #>  neval
 #>      1
 #>      1
@@ -504,7 +504,7 @@ microbenchmark::microbenchmark(
       k = 5L,
       knn_method = "nndescent", # good allrounder for larger data sets
       seed = 42L,
-      .verbose = FALSE
+      .verbose = TRUE
     )
   },
   manifold_phate_random = {
@@ -519,12 +519,12 @@ microbenchmark::microbenchmark(
   },
   times = 1L
 )
-#>     SGD-MDS may not have converged: stress changed by -1.9% in final iterations. Consider increasing n_iter or adjusting learning_rate.
+#>     SGD-MDS may not have converged: stress changed by -1.4% in final iterations. Consider increasing n_iter or adjusting learning_rate.
 #> Unit: seconds
 #>                     expr      min       lq     mean   median       uq      max
-#>                   phateR 55.77747 55.77747 55.77747 55.77747 55.77747 55.77747
-#>  manifold_phate_spectral 61.70343 61.70343 61.70343 61.70343 61.70343 61.70343
-#>    manifold_phate_random 15.65289 15.65289 15.65289 15.65289 15.65289 15.65289
+#>                   phateR 62.09122 62.09122 62.09122 62.09122 62.09122 62.09122
+#>  manifold_phate_spectral 35.39567 35.39567 35.39567 35.39567 35.39567 35.39567
+#>    manifold_phate_random 16.49417 16.49417 16.49417 16.49417 16.49417 16.49417
 #>  neval
 #>      1
 #>      1

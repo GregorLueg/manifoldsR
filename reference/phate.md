@@ -12,7 +12,7 @@ phate(
   knn = NULL,
   n_dim = 2L,
   k = 5L,
-  knn_method = c("kmknn", "balltree", "hnsw", "annoy", "nndescent", "exhaustive"),
+  knn_method = c("kmknn", "balltree", "hnsw", "annoy", "nndescent", "exhaustive", "ivf"),
   nn_params = params_nn(),
   phate_params = params_phate(),
   seed = 42L,
@@ -47,8 +47,8 @@ phate(
 - knn_method:
 
   Character. (Approximate) Nearest neighbour method to use. One of
-  `"kmknn"`, `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, or
-  `"exhaustive"`. Defaults to `"kmknn"`.
+  `"kmknn"`, `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, `"ivf"`
+  or `"exhaustive"`. Defaults to `"kmknn"`.
 
 - nn_params:
 

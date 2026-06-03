@@ -3,7 +3,8 @@
 This is the wrapper function into the Rust interface for tSNE. You have
 the option to use the Barnes-Hut implemetation or the FFT-accelerated
 version to approximate the repulsive forces. This one can use a
-pre-computed kNN.
+pre-computed kNN. Uses `fp64` path on larger data sets to avoid
+catastrophic cancelleation.
 
 ## Usage
 
@@ -56,7 +57,8 @@ rs_tsne_from_knn(
 
 - verbose:
 
-  Boolean. Controls verbosity of the function.
+  Integer. If `0L` -\> silent or `1L` for normal verbosity; `2L` for
+  detailed verbosity.
 
 ## Value
 

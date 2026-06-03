@@ -344,8 +344,8 @@ ggplot(
 
 ### FFT-accelerated t-SNE
 
-For large datasets, the Barnes-Hut approximation `(O(N log N))` can
-still be slow. The FFT-accelerated variant reduces this to `O(N)` by
+For large datasets, the Barnes-Hut approximation `O(N log N)` can still
+be slow. The FFT-accelerated variant reduces this to `O(N)` by
 interpolating the repulsive forces on a grid, making it substantially
 faster at scale. The constant however is higher. This version of tSNE
 becomes interesting in situations of ≥ 100,000 samples and more.
@@ -379,6 +379,17 @@ ggplot(
 The embeddings are qualitatively similar to the BH version, with the FFT
 version trading a small amount of precision for a significant speed gain
 on large datasets.
+
+**Important note:** On large data sets (and the effect grows with N) you
+may observe that the clusters do not separate into distinct islands but
+instead relax into a single, gapless disc tiled into Voronoi-like cells,
+with clusters meeting along shared boundaries rather than separated by
+empty space. This is not a convergence failure: the optimiser has
+reached the equilibrium implied by its parameters. It arises because the
+main optimisation phase runs at an exaggeration of 1, and at high point
+density the attraction-repulsion balance at that setting is a
+space-filling layout. If you observe this set `late_exag_factor` to
+values of 2 to 4 (pending your data set size.)
 
 ### Benchmarks
 
@@ -416,8 +427,8 @@ microbenchmark::microbenchmark(
 )
 #> Unit: seconds
 #>         expr       min        lq      mean    median        uq       max neval
-#>        Rtsne 11.962777 11.962777 11.962777 11.962777 11.962777 11.962777     1
-#>  manifold_bh  4.371469  4.371469  4.371469  4.371469  4.371469  4.371469     1
+#>        Rtsne 13.133333 13.133333 13.133333 13.133333 13.133333 13.133333     1
+#>  manifold_bh  4.851301  4.851301  4.851301  4.851301  4.851301  4.851301     1
 ```
 
 The impact here is massive already. Let’s see what happens with BH and
@@ -454,8 +465,8 @@ microbenchmark::microbenchmark(
 )
 #> Unit: seconds
 #>          expr       min        lq      mean    median        uq       max neval
-#>   manifold_bh 105.19965 105.19965 105.19965 105.19965 105.19965 105.19965     1
-#>  manifold_fft  34.21267  34.21267  34.21267  34.21267  34.21267  34.21267     1
+#>   manifold_bh 115.43251 115.43251 115.43251 115.43251 115.43251 115.43251     1
+#>  manifold_fft  59.11075  59.11075  59.11075  59.11075  59.11075  59.11075     1
 ```
 
 The speed advantage of the Rust implementation comes from a combination

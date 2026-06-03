@@ -35,7 +35,8 @@ rs_approx_nearest_neighbours(data, k, ann_method, ann_params, seed, verbose)
 
 - verbose:
 
-  Boolean. Controls verbosity of the function.
+  Integer. If `0L` -\> silent or `1L` for normal verbosity; `2L` for
+  detailed verbosity.
 
 ## Value
 
