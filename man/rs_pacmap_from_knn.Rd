@@ -8,7 +8,6 @@ rs_pacmap_from_knn(
   embd,
   knn_data,
   n_dim,
-  k,
   pacmap_params,
   seed,
   use_high_precision,
@@ -23,8 +22,6 @@ Should be of dimensions samples x features.}
 
 \item{n_dim}{Integer. Number of dimensions to return.}
 
-\item{k}{Integer. Number of nearest neighbours to consider.}
-
 \item{pacmap_params}{Named list. List that contains all of the key
 parameters for the PaCMAP generation.}
 
@@ -35,6 +32,8 @@ If \code{NULL} will use sensible default thresholding.}
 
 \item{verbose}{Integer. If \code{0L} -> silent or \code{1L} for normal verbosity; \code{2L}
 for detailed verbosity.}
+
+\item{k}{Integer. Number of nearest neighbours to consider.}
 }
 \value{
 The PaCMAP embeddings.

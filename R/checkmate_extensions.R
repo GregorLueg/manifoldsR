@@ -468,6 +468,7 @@ checkPacmapParams <- function(x) {
   res <- checkmate::checkNames(
     names(x),
     must.include = c(
+      "n_near",
       "n_mid_near",
       "n_further",
       "mn_candidate_start",
@@ -488,6 +489,7 @@ checkPacmapParams <- function(x) {
   }
 
   rules <- list(
+    "n_near" = list(type = "fixed", rule = "I1"),
     "n_mid_near" = list(type = "fixed", rule = "I1"),
     "n_further" = list(type = "fixed", rule = "I1"),
     "mn_candidate_start" = list(type = "fixed", rule = "I1"),
@@ -519,8 +521,8 @@ checkPacmapParams <- function(x) {
     return(sprintf(
       paste(
         "Element `%s` in PaCMAP params does not conform.",
-        "n_mid_near/n_further/mn_candidate_start/mn_candidate_end must be",
-        "integers, lr/beta1/beta2/eps must be numeric,",
+        "n_near/n_mid_near/n_further/mn_candidate_start/mn_candidate_end must",
+        "be integers, lr/beta1/beta2/eps must be numeric,",
         "n_epochs/phase1_end/phase2_end must be positive integers or NULL,",
         "init must be one of 'pca'/'random',",
         "and optimiser must be one of 'adam'/'adam_parallel'."

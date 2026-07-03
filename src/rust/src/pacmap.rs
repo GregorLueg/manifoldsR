@@ -23,6 +23,8 @@ pub struct InternalPacmapParams<T> {
     pub knn_method: String,
     /// Nearest neighbour parameters forwarded to the ANN methods.
     pub param_knn: NearestNeighbourParams<T>,
+    /// Near pairs per point (attractive).
+    pub n_near: usize,
     /// Mid-near pairs per point.
     pub n_mid_near: usize,
     /// Further (random) pairs per point.
@@ -74,15 +76,20 @@ where
                 .unwrap_or("adam_parallel"),
         );
 
+        let n_near = params
+            .get("n_near")
+            .and_then(|v| v.as_integer())
+            .unwrap_or(10) as usize;
+
         let n_mid_near = params
             .get("n_mid_near")
             .and_then(|v| v.as_integer())
-            .unwrap_or(2) as usize;
+            .unwrap_or(5) as usize;
 
         let n_further = params
             .get("n_further")
             .and_then(|v| v.as_integer())
-            .unwrap_or(2) as usize;
+            .unwrap_or(20) as usize;
 
         let mn_candidate_start = params
             .get("mn_candidate_start")
@@ -97,6 +104,7 @@ where
         Ok(Self {
             knn_method,
             param_knn: nn_params,
+            n_near,
             n_mid_near,
             n_further,
             mn_candidate_start,
@@ -174,7 +182,6 @@ where
 /// * `data` - Input data matrix of shape samples × features.
 /// * `pre_computed_knn` - Optional pre-computed kNN to be used.
 /// * `n_dim` - Number of output dimensions. Currently only `2` is supported.
-/// * `k` - Number of nearest neighbours for graph construction.
 /// * `pacmap_params` - R list that contains the Pacmap parameters.
 /// * `seed` - Seed for reproducibility
 /// * `verbose` - If `0` -> silent or `1` for normal verbosity, `2` for detailed
@@ -183,12 +190,10 @@ where
 /// ### Returns
 ///
 /// Returns the PaCMAP embeddings as matrix.
-#[allow(clippy::too_many_arguments)]
 pub fn pacmap_manifold<T>(
     data: MatRef<T>,
     pre_computed_knn: PreComputedKnn<T>,
     n_dim: usize,
-    k: usize,
     pacmap_params: List,
     seed: usize,
     verbose: usize,
@@ -203,14 +208,15 @@ where
 
     let params = PacmapParams::new(
         n_dim,
-        k,
         internal.knn_method,
         internal.optimiser,
+        internal.n_near,
         internal.n_mid_near,
         internal.n_further,
         internal.mn_candidate_start,
         internal.mn_candidate_end,
         internal.init,
+        None,
         internal.param_knn,
         internal.param_optimiser,
     );

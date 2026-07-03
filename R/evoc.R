@@ -26,7 +26,8 @@
       "hnsw",
       "annoy",
       "nndescent",
-      "exhaustive"
+      "exhaustive",
+      "ivf"
     )
   )
   assertNnParams(nn_params)

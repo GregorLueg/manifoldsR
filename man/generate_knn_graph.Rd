@@ -36,7 +36,7 @@ A nearest neighbours class object with 1-indexed neighbour indices
 and distances.
 }
 \description{
-This function generates a kNN graph based on a given numeric matrix. Four
+This function generates a kNN graph based on a given numeric matrix. Seven
 different algorithms are implemented with different speed and accuracy
 trade-offs:
 \itemize{
@@ -52,5 +52,7 @@ configurable budget.
 \item \code{"ivf"} - Inverted file index that leverages k-means clustering
 and probing a few of the clusters.
 \item \code{"exhaustive"} - Exact nearest neighbour search.
+\item \code{"kmknn"} - Fast exact nearest neighbour search using triangle
+inequality
 }
 }

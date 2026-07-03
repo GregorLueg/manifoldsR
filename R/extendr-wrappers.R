@@ -168,7 +168,6 @@ rs_phate_from_knn <- function(embd, knn_data, n_dim, k, phate_params, seed, use_
 #' @param embd Numerical matrix. The data to use to generate the embeddings.
 #' Should be of dimensions samples x features.
 #' @param n_dim Integer. Number of dimensions to return.
-#' @param k Integer. Number of nearest neighbours to consider.
 #' @param pacmap_params Named list. List that contains all of the key
 #' parameters for the PaCMAP generation.
 #' @param seed Integer. Seed for reproducibility.
@@ -180,7 +179,7 @@ rs_phate_from_knn <- function(embd, knn_data, n_dim, k, phate_params, seed, use_
 #' @return The PaCMAP embeddings.
 #'
 #' @export
-rs_pacmap <- function(embd, n_dim, k, pacmap_params, seed, use_high_precision, verbose) .Call(wrap__rs_pacmap, embd, n_dim, k, pacmap_params, seed, use_high_precision, verbose)
+rs_pacmap <- function(embd, n_dim, pacmap_params, seed, use_high_precision, verbose) .Call(wrap__rs_pacmap, embd, n_dim, pacmap_params, seed, use_high_precision, verbose)
 
 #' PaCMAP implementation with pre-computed kNN
 #'
@@ -191,7 +190,6 @@ rs_pacmap <- function(embd, n_dim, k, pacmap_params, seed, use_high_precision, v
 #' Should be of dimensions samples x features.
 #' @param knn_data `NearestNeighbours` class from R.
 #' @param n_dim Integer. Number of dimensions to return.
-#' @param k Integer. Number of nearest neighbours to consider.
 #' @param pacmap_params Named list. List that contains all of the key
 #' parameters for the PaCMAP generation.
 #' @param seed Integer. Seed for reproducibility.
@@ -203,7 +201,7 @@ rs_pacmap <- function(embd, n_dim, k, pacmap_params, seed, use_high_precision, v
 #' @return The PaCMAP embeddings.
 #'
 #' @export
-rs_pacmap_from_knn <- function(embd, knn_data, n_dim, k, pacmap_params, seed, use_high_precision, verbose) .Call(wrap__rs_pacmap_from_knn, embd, knn_data, n_dim, k, pacmap_params, seed, use_high_precision, verbose)
+rs_pacmap_from_knn <- function(embd, knn_data, n_dim, pacmap_params, seed, use_high_precision, verbose) .Call(wrap__rs_pacmap_from_knn, embd, knn_data, n_dim, pacmap_params, seed, use_high_precision, verbose)
 
 #' Diffusion maps implementation
 #'
@@ -262,6 +260,8 @@ rs_diffusion_maps_from_knn <- function(embd, knn_data, n_dim, k, dm_params, seed
 #' for EVoC clustering.
 #' @param return_knn Boolean. Shall the kNN graph be returned.
 #' @param seed Integer. Seed for reproducibility.
+#' @param use_high_precision Optional logical. Controls `fp32` vs `fp64` for.
+#' If `NULL` will use sensible default thresholding.
 #' @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
 #' for detailed verbosity.
 #'
@@ -288,6 +288,8 @@ rs_evoc <- function(embd, n_neighbours, evoc_params, return_knn, seed, use_high_
 #' @param evoc_params Named list. List that contains all of the key parameters
 #' for EVoC clustering.
 #' @param seed Integer. Seed for reproducibility.
+#' @param use_high_precision Optional logical. Controls `fp32` vs `fp64` for.
+#' If `NULL` will use sensible default thresholding.
 #' @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
 #' for detailed verbosity.
 #'

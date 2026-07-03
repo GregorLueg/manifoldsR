@@ -1,6 +1,6 @@
 Package: manifoldsR
 Title: Package for 2D embeddings
-Version: 0.2.4
+Version: 0.2.5
 Authors@R: 
     c(
         person(
@@ -52,4 +52,3 @@ Suggests:
 VignetteBuilder: quarto
 URL: https://gregorlueg.github.io/manifoldsR/
 Config/roxygen2/version: 8.0.0
-RoxygenNote: 7.3.3

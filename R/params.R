@@ -5,7 +5,7 @@
 #' Wrapper function to generate nearest neighbour parameters
 #'
 #' @param dist_metric Character. The distance metric to use. Defaults to
-#' `"cosine"`.
+#' `"euclidean"`.
 #' @param n_tree Integer. Number of trees for Annoy. Defaults to `50L`.
 #' @param search_budget Integer or `NULL`. Search budget for Annoy. Defaults
 #' to `NULL`.
@@ -303,18 +303,19 @@ params_phate <- function(
 
 #' Wrapper function to generate PaCMAP parameters
 #'
-#' @param n_mid_near Integer. Mid-near pairs per point. Defaults to `2L`.
+#' @param n_near Integer. Near pairs per point (attractive). Defaults to `10L`.
+#' @param n_mid_near Integer. Mid-near pairs per point. Defaults to `5L`.
 #' @param n_further Integer. Further (random) pairs per point. Defaults to
-#' `2L`.
+#' `20L`.
 #' @param mn_candidate_start Integer. Start index into kNN list for mid-near
 #' candidate window. Defaults to `4L`.
 #' @param mn_candidate_end Integer. End index into kNN list for mid-near
-#' candidate window. Defaults to `50L`.
+#' candidate window. Also determines the kNN search size. Defaults to `50L`.
 #' @param init Character. Embedding initialisation. One of `"pca"` or
 #' `"random"`. Defaults to `"pca"`.
 #' @param optimiser Character. One of `"adam"` or `"adam_parallel"`. Defaults
 #' to `"adam_parallel"`.
-#' @param lr Numeric. Adam learning rate. Defaults to `0.01`.
+#' @param lr Numeric. Adam learning rate. Defaults to `1.0`.
 #' @param n_epochs Integer or `NULL`. Total optimisation epochs. Defaults to
 #' `NULL`, resolved downstream to `450`.
 #' @param beta1 Numeric. Adam first moment decay. Defaults to `0.9`.
@@ -329,13 +330,14 @@ params_phate <- function(
 #'
 #' @export
 params_pacmap <- function(
-  n_mid_near = 2L,
-  n_further = 2L,
+  n_near = 10L,
+  n_mid_near = 5L,
+  n_further = 20L,
   mn_candidate_start = 4L,
   mn_candidate_end = 50L,
   init = "pca",
   optimiser = "adam_parallel",
-  lr = 0.01,
+  lr = 1.0,
   n_epochs = NULL,
   beta1 = 0.9,
   beta2 = 0.999,
@@ -343,6 +345,7 @@ params_pacmap <- function(
   phase1_end = NULL,
   phase2_end = NULL
 ) {
+  checkmate::qassert(n_near, "I1")
   checkmate::qassert(n_mid_near, "I1")
   checkmate::qassert(n_further, "I1")
   checkmate::qassert(mn_candidate_start, "I1")
@@ -367,6 +370,7 @@ params_pacmap <- function(
   )
 
   list(
+    n_near = n_near,
     n_mid_near = n_mid_near,
     n_further = n_further,
     mn_candidate_start = mn_candidate_start,

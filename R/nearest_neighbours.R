@@ -3,7 +3,7 @@
 #' Generate a k-nearest neighbour graph.
 #'
 #' @description
-#' This function generates a kNN graph based on a given numeric matrix. Four
+#' This function generates a kNN graph based on a given numeric matrix. Seven
 #' different algorithms are implemented with different speed and accuracy
 #' trade-offs:
 #' \itemize{
@@ -19,6 +19,8 @@
 #'   \item `"ivf"` - Inverted file index that leverages k-means clustering
 #'   and probing a few of the clusters.
 #'   \item `"exhaustive"` - Exact nearest neighbour search.
+#'   \item `"kmknn"` - Fast exact nearest neighbour search using triangle
+#'   inequality
 #' }
 #'
 #' @param data Numeric matrix. The embedding or feature matrix to compute
