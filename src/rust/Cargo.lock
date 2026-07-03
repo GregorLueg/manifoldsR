@@ -45,9 +45,9 @@ checksum = "4b46cbb362ab8752921c97e041f5e366ee6297bd428a31275b9fcf1e380f7299"
 
 [[package]]
 name = "ann-search-rs"
-version = "0.4.1"
+version = "0.4.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8e56ec304e8e675921e8a8c2fcb4a4d4546970664644c2a74a42b423d9739a9c"
+checksum = "b2665db76c5afce94fdbacfc8094bbab38fbb21c5cc533ac4de611e85a42523b"
 dependencies = [
  "approx",
  "clap",
@@ -167,9 +167,9 @@ checksum = "c4512299f36f043ab09a583e57bceb5a5aab7a73db1805848e8fef3c9e8c78b3"
 
 [[package]]
 name = "bixverse-rs"
-version = "0.3.0"
+version = "0.3.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c3907cf26ee47f1c4fdffdfb9c88fe4017eb050c06a3b82009ab9983182be2d8"
+checksum = "427abdd0d4bf58afb160149674dc81c39559494be0087b197dc3c784c515dabf"
 dependencies = [
  "ann-search-rs",
  "approx",
@@ -178,6 +178,7 @@ dependencies = [
  "extendr-api",
  "faer",
  "faer-entity",
+ "faer-traits",
  "fmt",
  "num-traits",
  "once_cell",
@@ -1291,9 +1292,8 @@ dependencies = [
 
 [[package]]
 name = "manifolds-rs"
-version = "0.3.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "658334040887ba9a01c34e142826c1abde6a97155becd97c6c81d0ab00d5dcdb"
+version = "0.3.6"
+source = "git+https://github.com/GregorLueg/manifolds-rs?branch=fix-pacmap#7240fbd5cb3e7cf16c127b64f9ef505a194b8794"
 dependencies = [
  "ann-search-rs",
  "approx",
@@ -1311,7 +1311,7 @@ dependencies = [
 
 [[package]]
 name = "manifoldsr"
-version = "0.2.4"
+version = "0.2.5"
 dependencies = [
  "ann-search-rs",
  "bixverse-rs",

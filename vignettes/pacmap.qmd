@@ -125,12 +125,8 @@ Let's check out how PaCMAP looks like ... ?
 pacmap_clusters <- pacmap(
   data = cluster_data$data,
   pacmap_params = params_pacmap(
-    mn_candidate_start = 4L,
-    mn_candidate_end = 25L, # the official paper default is 50L, but usally this looks better
-    n_further = 5L,
     optimiser = "adam"
   ),
-  k = 10L,
   seed = 42L
 )
 
@@ -165,12 +161,8 @@ cleanly, with the colour gradient along the roll preserved in the embedding.
 #| label: swissrole data - pacmap
 pacmap_swissrole <- pacmap(
   data = swissrole_data$data,
-  k = 5L,
   knn_method = "exhaustive",
   pacmap_params = params_pacmap(
-    mn_candidate_start = 4L,
-    mn_candidate_end = 15L,
-    n_further = 5L,
     optimiser = "adam_parallel"
   ),
   seed = 42L
@@ -209,11 +201,7 @@ PHATE remains the stronger choice if trajectory recovery is the primary goal.
 #| label: trajectory data - pacmap
 pacmap_trajectory <- pacmap(
   data = trajectory_data$data,
-  k = 10L,
   pacmap_params = params_pacmap(
-    mn_candidate_start = 4L,
-    mn_candidate_end = 25L,
-    n_further = 5L,
     optimiser = "adam_parallel"
   ),
   seed = 42L
@@ -252,7 +240,8 @@ hierarchical data.
 #| label: hierarchical data
 hierarchical_data <- manifold_synthetic_data(
   type = "hierarchical",
-  n_samples = 25000L
+  n_samples = 25000L,
+  parameters = params_hierarchical(point_std = 0.8)
 )
 ```
 
@@ -262,12 +251,8 @@ And now let's run PacMAP over that hierarchical data
 #| label: hierarchical data - pacmap
 pacmap_hierarchical <- pacmap(
   data = hierarchical_data$data,
-  k = 10L,
   pacmap_params = params_pacmap(
-    mn_candidate_start = 4L,
-    mn_candidate_end = 25L,
-    n_further = 5L,
-    optimiser = "adam_parallel"
+    optimiser = "adam"
   ),
   seed = 42L
 )
@@ -345,7 +330,6 @@ precomputed_knn <- generate_knn_graph(
 pacmap_from_knn <- pacmap(
   data = cluster_data$data,
   knn = precomputed_knn,
-  k = 10L,
   seed = 42L
 )
 ```
@@ -358,7 +342,6 @@ extending phase 1 to give the global structure more time to settle:
 pacmap_long_phase1 <- pacmap(
   data = cluster_data$data,
   knn = precomputed_knn,
-  k = 10L,
   pacmap_params = params_pacmap(
     mn_candidate_start = 4L,
     mn_candidate_end = 25L,
@@ -407,7 +390,6 @@ microbenchmark::microbenchmark(
   manifold_pacmap = {
     pacmap(
       data = benchmark_data$data,
-      k = 10L,
       seed = 42L,
       .verbose = FALSE
     )

@@ -8,8 +8,7 @@ pacmap(
   data,
   knn = NULL,
   n_dim = 2L,
-  k = 10L,
-  knn_method = c("kmknn", "balltree", "hnsw", "annoy", "nndescent", "exhaustive"),
+  knn_method = c("kmknn", "balltree", "hnsw", "annoy", "nndescent", "exhaustive", "ivf"),
   nn_params = params_nn(),
   pacmap_params = params_pacmap(),
   seed = 42L,
@@ -28,10 +27,6 @@ the k-nearest neighbour graph generation and use this one. Defaults to
 \item{n_dim}{Integer. Number of dimensions in the embedding space.
 Defaults to \code{2L}.}
 
-\item{k}{Integer. Number of nearest neighbours to consider. Defaults to
-\code{10L}. Note that the kNN search will use \code{mn_candidate_end} neighbours
-internally; k only controls the near pairs used in optimisation.}
-
 \item{knn_method}{Character. (Approximate) Nearest neighbour method to use.
 One of \code{"kmknn"}, \code{"hnsw"}, \code{"annoy"}, \code{"nndescent"}, \code{"balltree"}, \code{"ivf"}
 or \code{"exhaustive"}. Defaults to \code{"kmknn"}.}
@@ -40,7 +35,8 @@ or \code{"exhaustive"}. Defaults to \code{"kmknn"}.}
 \code{\link[=params_nn]{params_nn()}}.}
 
 \item{pacmap_params}{Named list. PaCMAP algorithm parameters, see
-\code{\link[=params_pacmap]{params_pacmap()}}.}
+\code{\link[=params_pacmap]{params_pacmap()}}. Controls near/mid-near/further pair counts and the kNN
+search size (via \code{mn_candidate_end}).}
 
 \item{seed}{Integer. Random seed for reproducibility. Defaults to \code{42L}.}
 

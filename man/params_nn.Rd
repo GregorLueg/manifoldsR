@@ -21,7 +21,7 @@ params_nn(
 }
 \arguments{
 \item{dist_metric}{Character. The distance metric to use. Defaults to
-\code{"cosine"}.}
+\code{"euclidean"}.}
 
 \item{n_tree}{Integer. Number of trees for Annoy. Defaults to \code{50L}.}
 

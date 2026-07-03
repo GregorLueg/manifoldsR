@@ -38,7 +38,8 @@
       "hnsw",
       "annoy",
       "nndescent",
-      "exhaustive"
+      "exhaustive",
+      "ivf"
     )
   )
   assertNnParams(nn_params)
@@ -135,7 +136,8 @@ umap <- function(
     "hnsw",
     "annoy",
     "nndescent",
-    "exhaustive"
+    "exhaustive",
+    "ivf"
   ),
   nn_params = params_nn(),
   umap_params = params_umap(),

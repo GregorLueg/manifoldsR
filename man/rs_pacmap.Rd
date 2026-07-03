@@ -4,15 +4,13 @@
 \alias{rs_pacmap}
 \title{PaCMAP implementation}
 \usage{
-rs_pacmap(embd, n_dim, k, pacmap_params, seed, use_high_precision, verbose)
+rs_pacmap(embd, n_dim, pacmap_params, seed, use_high_precision, verbose)
 }
 \arguments{
 \item{embd}{Numerical matrix. The data to use to generate the embeddings.
 Should be of dimensions samples x features.}
 
 \item{n_dim}{Integer. Number of dimensions to return.}
-
-\item{k}{Integer. Number of nearest neighbours to consider.}
 
 \item{pacmap_params}{Named list. List that contains all of the key
 parameters for the PaCMAP generation.}

@@ -237,7 +237,6 @@ umap_trajectory_df <- as.data.table(umap_trajectory) %>%
   `colnames<-`(c("UMAP1", "UMAP2")) %>%
   .[, branch := trajectory_data$membership]
 
-
 ggplot(
   data = umap_trajectory_df[
     sample(1:nrow(pca_trajectory_df), nrow(pca_trajectory_df)),

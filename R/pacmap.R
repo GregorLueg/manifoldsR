@@ -28,7 +28,8 @@
       "hnsw",
       "annoy",
       "nndescent",
-      "exhaustive"
+      "exhaustive",
+      "ivf"
     )
   )
   assertNnParams(nn_params)
@@ -66,16 +67,14 @@
 #' `NULL`.
 #' @param n_dim Integer. Number of dimensions in the embedding space.
 #' Defaults to `2L`.
-#' @param k Integer. Number of nearest neighbours to consider. Defaults to
-#' `10L`. Note that the kNN search will use `mn_candidate_end` neighbours
-#' internally; k only controls the near pairs used in optimisation.
 #' @param knn_method Character. (Approximate) Nearest neighbour method to use.
 #' One of `"kmknn"`, `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, `"ivf"`
 #' or `"exhaustive"`. Defaults to `"kmknn"`.
 #' @param nn_params Named list. Nearest neighbour search parameters, see
 #' [params_nn()].
 #' @param pacmap_params Named list. PaCMAP algorithm parameters, see
-#' [params_pacmap()].
+#' [params_pacmap()]. Controls near/mid-near/further pair counts and the kNN
+#' search size (via `mn_candidate_end`).
 #' @param seed Integer. Random seed for reproducibility. Defaults to `42L`.
 #' @param use_high_precision Optional boolean. Gives fine-grained control over
 #' `fp32` vs `fp64` usage.
@@ -89,14 +88,14 @@ pacmap <- function(
   data,
   knn = NULL,
   n_dim = 2L,
-  k = 10L,
   knn_method = c(
     "kmknn",
     "balltree",
     "hnsw",
     "annoy",
     "nndescent",
-    "exhaustive"
+    "exhaustive",
+    "ivf"
   ),
   nn_params = params_nn(),
   pacmap_params = params_pacmap(),
@@ -121,7 +120,6 @@ pacmap <- function(
     checkmate::testClass(knn, "NearestNeighbours")
   )
   checkmate::assert_int(n_dim, lower = 1, upper = ncol(data))
-  checkmate::qassert(k, "I1[2,)")
   checkmate::qassert(seed, "I1")
   checkmate::qassert(use_high_precision, c("0", "B1"))
   checkmate::qassert(.verbose, c("B1", "I1[0, 2]"))
@@ -143,7 +141,6 @@ pacmap <- function(
           embd = data,
           knn_data = knn,
           n_dim = n_dim,
-          k = k,
           pacmap_params = final_pacmap_params,
           seed = seed,
           use_high_precision = use_high_precision,
@@ -160,7 +157,6 @@ pacmap <- function(
         rs_pacmap(
           embd = data,
           n_dim = n_dim,
-          k = k,
           pacmap_params = final_pacmap_params,
           seed = seed,
           use_high_precision = use_high_precision,

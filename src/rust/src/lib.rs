@@ -645,7 +645,6 @@ fn rs_phate_from_knn(
 /// @param embd Numerical matrix. The data to use to generate the embeddings.
 /// Should be of dimensions samples x features.
 /// @param n_dim Integer. Number of dimensions to return.
-/// @param k Integer. Number of nearest neighbours to consider.
 /// @param pacmap_params Named list. List that contains all of the key
 /// parameters for the PaCMAP generation.
 /// @param seed Integer. Seed for reproducibility.
@@ -662,7 +661,6 @@ fn rs_phate_from_knn(
 fn rs_pacmap(
     embd: RMatrix<f64>,
     n_dim: usize,
-    k: usize,
     pacmap_params: List,
     seed: usize,
     use_high_precision: Nullable<Rbool>,
@@ -678,7 +676,7 @@ fn rs_pacmap(
             }
 
             let embd = r_matrix_to_faer_fp32(&embd);
-            let res = pacmap_manifold(embd.as_ref(), None, n_dim, k, pacmap_params, seed, verbose)
+            let res = pacmap_manifold(embd.as_ref(), None, n_dim, pacmap_params, seed, verbose)
                 .to_extendr()?;
 
             Ok(faer_to_r_matrix(res.as_ref()))
@@ -689,7 +687,7 @@ fn rs_pacmap(
             }
 
             let embd = r_matrix_to_faer(&embd);
-            let res = pacmap_manifold(embd.as_ref(), None, n_dim, k, pacmap_params, seed, verbose)
+            let res = pacmap_manifold(embd.as_ref(), None, n_dim, pacmap_params, seed, verbose)
                 .to_extendr()?;
 
             Ok(faer_to_r_matrix(res.as_ref()))
@@ -706,7 +704,6 @@ fn rs_pacmap(
 /// Should be of dimensions samples x features.
 /// @param knn_data `NearestNeighbours` class from R.
 /// @param n_dim Integer. Number of dimensions to return.
-/// @param k Integer. Number of nearest neighbours to consider.
 /// @param pacmap_params Named list. List that contains all of the key
 /// parameters for the PaCMAP generation.
 /// @param seed Integer. Seed for reproducibility.
@@ -724,7 +721,6 @@ fn rs_pacmap_from_knn(
     embd: RMatrix<f64>,
     knn_data: List,
     n_dim: usize,
-    k: usize,
     pacmap_params: List,
     seed: usize,
     use_high_precision: Nullable<Rbool>,
@@ -741,7 +737,7 @@ fn rs_pacmap_from_knn(
 
             let embd = r_matrix_to_faer_fp32(&embd);
             let knn = nearest_neighbours_to_rust(knn_data);
-            let res = pacmap_manifold(embd.as_ref(), knn, n_dim, k, pacmap_params, seed, verbose)
+            let res = pacmap_manifold(embd.as_ref(), knn, n_dim, pacmap_params, seed, verbose)
                 .to_extendr()?;
 
             Ok(faer_to_r_matrix(res.as_ref()))
@@ -753,7 +749,7 @@ fn rs_pacmap_from_knn(
 
             let embd = r_matrix_to_faer(&embd);
             let knn = nearest_neighbours_to_rust(knn_data);
-            let res = pacmap_manifold(embd.as_ref(), knn, n_dim, k, pacmap_params, seed, verbose)
+            let res = pacmap_manifold(embd.as_ref(), knn, n_dim, pacmap_params, seed, verbose)
                 .to_extendr()?;
 
             Ok(faer_to_r_matrix(res.as_ref()))
@@ -1138,6 +1134,8 @@ fn rs_approx_nearest_neighbours(
 /// for EVoC clustering.
 /// @param return_knn Boolean. Shall the kNN graph be returned.
 /// @param seed Integer. Seed for reproducibility.
+/// @param use_high_precision Optional logical. Controls `fp32` vs `fp64` for.
+/// If `NULL` will use sensible default thresholding.
 /// @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
 /// for detailed verbosity.
 ///
@@ -1224,6 +1222,8 @@ fn rs_evoc(
 /// @param evoc_params Named list. List that contains all of the key parameters
 /// for EVoC clustering.
 /// @param seed Integer. Seed for reproducibility.
+/// @param use_high_precision Optional logical. Controls `fp32` vs `fp64` for.
+/// If `NULL` will use sensible default thresholding.
 /// @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
 /// for detailed verbosity.
 ///

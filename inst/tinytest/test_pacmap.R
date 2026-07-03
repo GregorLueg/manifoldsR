@@ -40,7 +40,6 @@ pacmap_test_params <- params_pacmap(
 
 pacmap_res <- pacmap(
   data = cluster_data,
-  k = 5L,
   pacmap_params = pacmap_test_params,
   .verbose = FALSE
 )
@@ -68,7 +67,6 @@ expect_true(
 
 pacmap_res_from_df <- pacmap(
   data = cluster_data_df,
-  k = 5L,
   pacmap_params = pacmap_test_params,
   .verbose = FALSE
 )
@@ -85,7 +83,6 @@ pacmap_res_knn <- pacmap(
   data = cluster_data,
   knn = exhaustive,
   pacmap_params = pacmap_test_params,
-  k = 5L,
   .verbose = FALSE
 )
 

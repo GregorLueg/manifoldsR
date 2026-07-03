@@ -5,13 +5,14 @@
 \title{Wrapper function to generate PaCMAP parameters}
 \usage{
 params_pacmap(
-  n_mid_near = 2L,
-  n_further = 2L,
+  n_near = 10L,
+  n_mid_near = 5L,
+  n_further = 20L,
   mn_candidate_start = 4L,
   mn_candidate_end = 50L,
   init = "pca",
   optimiser = "adam_parallel",
-  lr = 0.01,
+  lr = 1,
   n_epochs = NULL,
   beta1 = 0.9,
   beta2 = 0.999,
@@ -21,16 +22,18 @@ params_pacmap(
 )
 }
 \arguments{
-\item{n_mid_near}{Integer. Mid-near pairs per point. Defaults to \code{2L}.}
+\item{n_near}{Integer. Near pairs per point (attractive). Defaults to \code{10L}.}
+
+\item{n_mid_near}{Integer. Mid-near pairs per point. Defaults to \code{5L}.}
 
 \item{n_further}{Integer. Further (random) pairs per point. Defaults to
-\code{2L}.}
+\code{20L}.}
 
 \item{mn_candidate_start}{Integer. Start index into kNN list for mid-near
 candidate window. Defaults to \code{4L}.}
 
 \item{mn_candidate_end}{Integer. End index into kNN list for mid-near
-candidate window. Defaults to \code{50L}.}
+candidate window. Also determines the kNN search size. Defaults to \code{50L}.}
 
 \item{init}{Character. Embedding initialisation. One of \code{"pca"} or
 \code{"random"}. Defaults to \code{"pca"}.}
@@ -38,7 +41,7 @@ candidate window. Defaults to \code{50L}.}
 \item{optimiser}{Character. One of \code{"adam"} or \code{"adam_parallel"}. Defaults
 to \code{"adam_parallel"}.}
 
-\item{lr}{Numeric. Adam learning rate. Defaults to \code{0.01}.}
+\item{lr}{Numeric. Adam learning rate. Defaults to \code{1.0}.}
 
 \item{n_epochs}{Integer or \code{NULL}. Total optimisation epochs. Defaults to
 \code{NULL}, resolved downstream to \code{450}.}

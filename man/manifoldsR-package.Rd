@@ -20,6 +20,7 @@ Useful links:
 
 Authors:
 \itemize{
+  \item Gregor Lueg \email{gregorlueg@me.com}
   \item Grant Neilson \email{grant.neilson5@gmail.com}
 }
 
