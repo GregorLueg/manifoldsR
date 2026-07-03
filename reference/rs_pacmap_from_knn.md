@@ -10,7 +10,6 @@ rs_pacmap_from_knn(
   embd,
   knn_data,
   n_dim,
-  k,
   pacmap_params,
   seed,
   use_high_precision,
@@ -33,10 +32,6 @@ rs_pacmap_from_knn(
 
   Integer. Number of dimensions to return.
 
-- k:
-
-  Integer. Number of nearest neighbours to consider.
-
 - pacmap_params:
 
   Named list. List that contains all of the key parameters for the
@@ -55,6 +50,10 @@ rs_pacmap_from_knn(
 
   Integer. If `0L` -\> silent or `1L` for normal verbosity; `2L` for
   detailed verbosity.
+
+- k:
+
+  Integer. Number of nearest neighbours to consider.
 
 ## Value
 

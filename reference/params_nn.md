@@ -25,7 +25,7 @@ params_nn(
 
 - dist_metric:
 
-  Character. The distance metric to use. Defaults to `"cosine"`.
+  Character. The distance metric to use. Defaults to `"euclidean"`.
 
 - n_tree:
 

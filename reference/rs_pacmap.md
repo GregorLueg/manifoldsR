@@ -5,7 +5,7 @@ This is the wrapper function into the Rust interface for PaCMAP.
 ## Usage
 
 ``` r
-rs_pacmap(embd, n_dim, k, pacmap_params, seed, use_high_precision, verbose)
+rs_pacmap(embd, n_dim, pacmap_params, seed, use_high_precision, verbose)
 ```
 
 ## Arguments
@@ -18,10 +18,6 @@ rs_pacmap(embd, n_dim, k, pacmap_params, seed, use_high_precision, verbose)
 - n_dim:
 
   Integer. Number of dimensions to return.
-
-- k:
-
-  Integer. Number of nearest neighbours to consider.
 
 - pacmap_params:
 

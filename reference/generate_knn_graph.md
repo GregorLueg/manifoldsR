@@ -1,7 +1,7 @@
 # Generate a k-nearest neighbour graph.
 
 This function generates a kNN graph based on a given numeric matrix.
-Four different algorithms are implemented with different speed and
+Seven different algorithms are implemented with different speed and
 accuracy trade-offs:
 
 - `"hnsw"` - Hierarchical Navigable Small Worlds vector search with
@@ -22,6 +22,9 @@ accuracy trade-offs:
   probing a few of the clusters.
 
 - `"exhaustive"` - Exact nearest neighbour search.
+
+- `"kmknn"` - Fast exact nearest neighbour search using triangle
+  inequality
 
 ## Usage
 

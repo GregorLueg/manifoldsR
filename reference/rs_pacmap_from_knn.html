@@ -9,7 +9,7 @@ PaCMAP and can use a pre-computed kNN."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -55,7 +55,6 @@ PaCMAP and can use a pre-computed kNN.</p>
 <span>  <span class="va">embd</span>,</span>
 <span>  <span class="va">knn_data</span>,</span>
 <span>  <span class="va">n_dim</span>,</span>
-<span>  <span class="va">k</span>,</span>
 <span>  <span class="va">pacmap_params</span>,</span>
 <span>  <span class="va">seed</span>,</span>
 <span>  <span class="va">use_high_precision</span>,</span>
@@ -80,10 +79,6 @@ Should be of dimensions samples x features.</p></dd>
 <dd><p>Integer. Number of dimensions to return.</p></dd>
 
 
-<dt id="arg-k">k<a class="anchor" aria-label="anchor" href="#arg-k"></a></dt>
-<dd><p>Integer. Number of nearest neighbours to consider.</p></dd>
-
-
 <dt id="arg-pacmap-params">pacmap_params<a class="anchor" aria-label="anchor" href="#arg-pacmap-params"></a></dt>
 <dd><p>Named list. List that contains all of the key
 parameters for the PaCMAP generation.</p></dd>
@@ -101,6 +96,10 @@ If <code>NULL</code> will use sensible default thresholding.</p></dd>
 <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
 <dd><p>Integer. If <code>0L</code> -&gt; silent or <code>1L</code> for normal verbosity; <code>2L</code>
 for detailed verbosity.</p></dd>
+
+
+<dt id="arg-k">k<a class="anchor" aria-label="anchor" href="#arg-k"></a></dt>
+<dd><p>Integer. Number of nearest neighbours to consider.</p></dd>
 
 </dl></div>
     <div class="section level2">

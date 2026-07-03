@@ -14,7 +14,7 @@ params_umap(
   neg_sample_rate = 5L,
   gamma = 1,
   optimiser = c("adam_parallel", "sgd", "adam"),
-  init = c("pca", "spectral", "random"),
+  init = c("spectral", "pca", "random"),
   randomised = FALSE
 )
 ```
@@ -62,7 +62,7 @@ params_umap(
 - init:
 
   Character. Embedding initialisation method. One of `"spectral"`,
-  `"pca"`, or `"random"`. Defaults to `"pca"`.
+  `"pca"`, or `"random"`. Defaults to `"spectral"`.
 
 - randomised:
 

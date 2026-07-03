@@ -1,5 +1,19 @@
 # Changelog
 
+## manifoldsR 0.2.5
+
+### Features
+
+- Various version bumps to recent Rust crates.
+
+### Bug fixes
+
+- The PacMAP optimisation was broken in the original Rust crate. This
+  has been fixed now. The k parameter disappeared for PacMAP! This is a
+  breaking change.
+- Chosing `"ivf"` as a knn search method would have errored out due to
+  wrong checkmate assertions.
+
 ## manifoldsR 0.2.4
 
 ### Features

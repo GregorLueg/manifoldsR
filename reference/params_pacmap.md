@@ -6,13 +6,14 @@ Wrapper function to generate PaCMAP parameters
 
 ``` r
 params_pacmap(
-  n_mid_near = 2L,
-  n_further = 2L,
+  n_near = 10L,
+  n_mid_near = 5L,
+  n_further = 20L,
   mn_candidate_start = 4L,
   mn_candidate_end = 50L,
   init = "pca",
   optimiser = "adam_parallel",
-  lr = 0.01,
+  lr = 1,
   n_epochs = NULL,
   beta1 = 0.9,
   beta2 = 0.999,
@@ -24,13 +25,17 @@ params_pacmap(
 
 ## Arguments
 
+- n_near:
+
+  Integer. Near pairs per point (attractive). Defaults to `10L`.
+
 - n_mid_near:
 
-  Integer. Mid-near pairs per point. Defaults to `2L`.
+  Integer. Mid-near pairs per point. Defaults to `5L`.
 
 - n_further:
 
-  Integer. Further (random) pairs per point. Defaults to `2L`.
+  Integer. Further (random) pairs per point. Defaults to `20L`.
 
 - mn_candidate_start:
 
@@ -39,8 +44,8 @@ params_pacmap(
 
 - mn_candidate_end:
 
-  Integer. End index into kNN list for mid-near candidate window.
-  Defaults to `50L`.
+  Integer. End index into kNN list for mid-near candidate window. Also
+  determines the kNN search size. Defaults to `50L`.
 
 - init:
 
@@ -54,7 +59,7 @@ params_pacmap(
 
 - lr:
 
-  Numeric. Adam learning rate. Defaults to `0.01`.
+  Numeric. Adam learning rate. Defaults to `1.0`.
 
 - n_epochs:
 

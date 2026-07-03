@@ -244,7 +244,6 @@ umap_trajectory_df <- as.data.table(umap_trajectory) %>%
   `colnames<-`(c("UMAP1", "UMAP2")) %>%
   .[, branch := trajectory_data$membership]
 
-
 ggplot(
   data = umap_trajectory_df[
     sample(1:nrow(pca_trajectory_df), nrow(pca_trajectory_df)),
@@ -492,17 +491,17 @@ microbenchmark::microbenchmark(
 )
 #> Unit: milliseconds
 #>             expr        min         lq       mean     median         uq
-#>             umap 18213.7417 18213.7417 18213.7417 18213.7417 18213.7417
-#>  umap_reticulate 15059.2278 15059.2278 15059.2278 15059.2278 15059.2278
-#>             uwot  4820.0094  4820.0094  4820.0094  4820.0094  4820.0094
-#>          uwot_v2  2466.9357  2466.9357  2466.9357  2466.9357  2466.9357
-#>    manifold_umap   567.5056   567.5056   567.5056   567.5056   567.5056
+#>             umap 17633.8159 17633.8159 17633.8159 17633.8159 17633.8159
+#>  umap_reticulate 15101.5695 15101.5695 15101.5695 15101.5695 15101.5695
+#>             uwot  4449.3497  4449.3497  4449.3497  4449.3497  4449.3497
+#>          uwot_v2  2754.2076  2754.2076  2754.2076  2754.2076  2754.2076
+#>    manifold_umap   563.3634   563.3634   563.3634   563.3634   563.3634
 #>         max neval
-#>  18213.7417     1
-#>  15059.2278     1
-#>   4820.0094     1
-#>   2466.9357     1
-#>    567.5056     1
+#>  17633.8159     1
+#>  15101.5695     1
+#>   4449.3497     1
+#>   2754.2076     1
+#>    563.3634     1
 ```
 
 We can appreciate that the standard R version is slow (as expected). If
@@ -535,8 +534,8 @@ microbenchmark::microbenchmark(
 )
 #> Unit: seconds
 #>           expr       min        lq      mean    median        uq       max
-#>        uwot_v2 20.322246 20.322246 20.322246 20.322246 20.322246 20.322246
-#>  manifold_umap  7.201955  7.201955  7.201955  7.201955  7.201955  7.201955
+#>        uwot_v2 20.163684 20.163684 20.163684 20.163684 20.163684 20.163684
+#>  manifold_umap  7.220308  7.220308  7.220308  7.220308  7.220308  7.220308
 #>  neval
 #>      1
 #>      1

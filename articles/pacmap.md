@@ -123,12 +123,8 @@ Let’s check out how PaCMAP looks like … ?
 pacmap_clusters <- pacmap(
   data = cluster_data$data,
   pacmap_params = params_pacmap(
-    mn_candidate_start = 4L,
-    mn_candidate_end = 25L, # the official paper default is 50L, but usally this looks better
-    n_further = 5L,
     optimiser = "adam"
   ),
-  k = 10L,
   seed = 42L
 )
 
@@ -166,12 +162,8 @@ the embedding.
 
 pacmap_swissrole <- pacmap(
   data = swissrole_data$data,
-  k = 5L,
   knn_method = "exhaustive",
   pacmap_params = params_pacmap(
-    mn_candidate_start = 4L,
-    mn_candidate_end = 15L,
-    n_further = 5L,
     optimiser = "adam_parallel"
   ),
   seed = 42L
@@ -213,11 +205,7 @@ recovery is the primary goal.
 
 pacmap_trajectory <- pacmap(
   data = trajectory_data$data,
-  k = 10L,
   pacmap_params = params_pacmap(
-    mn_candidate_start = 4L,
-    mn_candidate_end = 25L,
-    n_further = 5L,
     optimiser = "adam_parallel"
   ),
   seed = 42L
@@ -258,7 +246,8 @@ Let’s generate first the hierarchical data.
 
 hierarchical_data <- manifold_synthetic_data(
   type = "hierarchical",
-  n_samples = 25000L
+  n_samples = 25000L,
+  parameters = params_hierarchical(point_std = 0.8)
 )
 ```
 
@@ -268,12 +257,8 @@ And now let’s run PacMAP over that hierarchical data
 
 pacmap_hierarchical <- pacmap(
   data = hierarchical_data$data,
-  k = 10L,
   pacmap_params = params_pacmap(
-    mn_candidate_start = 4L,
-    mn_candidate_end = 25L,
-    n_further = 5L,
-    optimiser = "adam_parallel"
+    optimiser = "adam"
   ),
   seed = 42L
 )
@@ -357,7 +342,6 @@ precomputed_knn <- generate_knn_graph(
 pacmap_from_knn <- pacmap(
   data = cluster_data$data,
   knn = precomputed_knn,
-  k = 10L,
   seed = 42L
 )
 #> Using provided kNN graph.
@@ -371,7 +355,6 @@ extending phase 1 to give the global structure more time to settle:
 pacmap_long_phase1 <- pacmap(
   data = cluster_data$data,
   knn = precomputed_knn,
-  k = 10L,
   pacmap_params = params_pacmap(
     mn_candidate_start = 4L,
     mn_candidate_end = 25L,
@@ -423,7 +406,6 @@ microbenchmark::microbenchmark(
   manifold_pacmap = {
     pacmap(
       data = benchmark_data$data,
-      k = 10L,
       seed = 42L,
       .verbose = FALSE
     )
@@ -431,9 +413,9 @@ microbenchmark::microbenchmark(
   times = 3L
 )
 #> Unit: seconds
-#>             expr      min       lq     mean   median       uq      max neval
-#>    manifold_umap 1.625339 1.627455 1.628349 1.629571 1.629854 1.630137     3
-#>  manifold_pacmap 3.228368 3.228548 3.245428 3.228729 3.253958 3.279187     3
+#>             expr      min       lq     mean   median      uq      max neval
+#>    manifold_umap 1.611583 1.614202 1.617955 1.616821 1.62114 1.625459     3
+#>  manifold_pacmap 1.835090 1.856939 1.875437 1.878787 1.89561 1.912432     3
 ```
 
 PaCMAP is generally slower than UMAP on the same data since it processes

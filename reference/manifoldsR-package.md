@@ -17,4 +17,6 @@ Useful links:
 
 Authors:
 
+- Gregor Lueg <gregorlueg@me.com>
+
 - Grant Neilson <grant.neilson5@gmail.com>

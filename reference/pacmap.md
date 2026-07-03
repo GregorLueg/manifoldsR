@@ -11,8 +11,7 @@ pacmap(
   data,
   knn = NULL,
   n_dim = 2L,
-  k = 10L,
-  knn_method = c("kmknn", "balltree", "hnsw", "annoy", "nndescent", "exhaustive"),
+  knn_method = c("kmknn", "balltree", "hnsw", "annoy", "nndescent", "exhaustive", "ivf"),
   nn_params = params_nn(),
   pacmap_params = params_pacmap(),
   seed = 42L,
@@ -39,12 +38,6 @@ pacmap(
   Integer. Number of dimensions in the embedding space. Defaults to
   `2L`.
 
-- k:
-
-  Integer. Number of nearest neighbours to consider. Defaults to `10L`.
-  Note that the kNN search will use `mn_candidate_end` neighbours
-  internally; k only controls the near pairs used in optimisation.
-
 - knn_method:
 
   Character. (Approximate) Nearest neighbour method to use. One of
@@ -60,6 +53,8 @@ pacmap(
 
   Named list. PaCMAP algorithm parameters, see
   [`params_pacmap()`](https://gregorlueg.github.io/manifoldsR/reference/params_pacmap.md).
+  Controls near/mid-near/further pair counts and the kNN search size
+  (via `mn_candidate_end`).
 
 - seed:
 

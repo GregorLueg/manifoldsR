@@ -11,7 +11,7 @@ before calling the Rust implementation."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,8 +58,7 @@ before calling the Rust implementation.</p>
 <span>  <span class="va">data</span>,</span>
 <span>  knn <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  n_dim <span class="op">=</span> <span class="fl">2L</span>,</span>
-<span>  k <span class="op">=</span> <span class="fl">10L</span>,</span>
-<span>  knn_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"kmknn"</span>, <span class="st">"balltree"</span>, <span class="st">"hnsw"</span>, <span class="st">"annoy"</span>, <span class="st">"nndescent"</span>, <span class="st">"exhaustive"</span><span class="op">)</span>,</span>
+<span>  knn_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"kmknn"</span>, <span class="st">"balltree"</span>, <span class="st">"hnsw"</span>, <span class="st">"annoy"</span>, <span class="st">"nndescent"</span>, <span class="st">"exhaustive"</span>, <span class="st">"ivf"</span><span class="op">)</span>,</span>
 <span>  nn_params <span class="op">=</span> <span class="fu"><a href="params_nn.html">params_nn</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  pacmap_params <span class="op">=</span> <span class="fu"><a href="params_pacmap.html">params_pacmap</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  seed <span class="op">=</span> <span class="fl">42L</span>,</span>
@@ -88,12 +87,6 @@ the k-nearest neighbour graph generation and use this one. Defaults to
 Defaults to <code>2L</code>.</p></dd>
 
 
-<dt id="arg-k">k<a class="anchor" aria-label="anchor" href="#arg-k"></a></dt>
-<dd><p>Integer. Number of nearest neighbours to consider. Defaults to
-<code>10L</code>. Note that the kNN search will use <code>mn_candidate_end</code> neighbours
-internally; k only controls the near pairs used in optimisation.</p></dd>
-
-
 <dt id="arg-knn-method">knn_method<a class="anchor" aria-label="anchor" href="#arg-knn-method"></a></dt>
 <dd><p>Character. (Approximate) Nearest neighbour method to use.
 One of <code>"kmknn"</code>, <code>"hnsw"</code>, <code>"annoy"</code>, <code>"nndescent"</code>, <code>"balltree"</code>, <code>"ivf"</code>
@@ -107,7 +100,8 @@ or <code>"exhaustive"</code>. Defaults to <code>"kmknn"</code>.</p></dd>
 
 <dt id="arg-pacmap-params">pacmap_params<a class="anchor" aria-label="anchor" href="#arg-pacmap-params"></a></dt>
 <dd><p>Named list. PaCMAP algorithm parameters, see
-<code><a href="params_pacmap.html">params_pacmap()</a></code>.</p></dd>
+<code><a href="params_pacmap.html">params_pacmap()</a></code>. Controls near/mid-near/further pair counts and the kNN
+search size (via <code>mn_candidate_end</code>).</p></dd>
 
 
 <dt id="arg-seed">seed<a class="anchor" aria-label="anchor" href="#arg-seed"></a></dt>
