@@ -32,5 +32,8 @@ A list with the following elements
 }
 }
 \description{
-Wrapper around some nearest neighbour searches integrated into manifold-rs
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+This is an interface into various (approximate) nearest neighbour searches
+implemented in the Rust crate \code{ann-search-rs}. They designed for incredible
+fast in-memory searches for kNN generation.
 }

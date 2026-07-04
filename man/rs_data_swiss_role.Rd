@@ -17,6 +17,7 @@ rs_data_swiss_role(n_samples, noise, seed)
 The swiss role synthetic data with the desired parameters.
 }
 \description{
-Generates synthetic data, i.e., the Swiss role to test
-different manifold learning techniques
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+Generates synthetic data, i.e., the Swiss role to test different manifold
+learning techniques
 }

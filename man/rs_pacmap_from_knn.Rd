@@ -32,13 +32,13 @@ If \code{NULL} will use sensible default thresholding.}
 
 \item{verbose}{Integer. If \code{0L} -> silent or \code{1L} for normal verbosity; \code{2L}
 for detailed verbosity.}
-
-\item{k}{Integer. Number of nearest neighbours to consider.}
 }
 \value{
 The PaCMAP embeddings.
 }
 \description{
-This is the wrapper function into the Rust interface for
-PaCMAP and can use a pre-computed kNN.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+Leverages the PacMAP implementation in manifolds-rs - a very fast Rust-based
+implementation. This version uses a pre-computed kNN graph, please see
+\code{\link[=new_nearest_neighbour]{new_nearest_neighbour()}}.
 }

@@ -26,7 +26,7 @@ A named list with:
 }
 }
 \description{
-Rust interface for mini-batch k-means clustering
-(Sculley 2010). Uses random mini-batches with a decaying learning rate
-for faster convergence on large data sets.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+Rust interface for mini batch k-means clustering from \code{bixverse-rs}. This
+version can be very useful in cases where you overcluster the data.
 }

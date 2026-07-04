@@ -89,7 +89,6 @@ reference:
     contents:
       - rs_approx_nearest_neighbours
       - rs_ari
-      - rs_check_cluster_separation
       - rs_data_biased_swiss_role
       - rs_data_clusters
       - rs_data_swiss_role

@@ -17,3 +17,4 @@ A named list with \code{within_dists} and \code{between_dists}.
 \description{
 Check cluster separation in an embedding
 }
+\keyword{internal}

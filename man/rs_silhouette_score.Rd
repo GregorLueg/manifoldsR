@@ -19,5 +19,7 @@ A list with the following items
 }
 }
 \description{
-Uses the squared Euclidean distance under the hood for speed.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+Calculates the Silhouette in Rust given the original data and a membership
+vector. Uses squared Euclidean distance under the hood for speed.
 }

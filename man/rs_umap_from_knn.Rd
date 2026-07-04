@@ -46,6 +46,8 @@ for detailed verbosity.}
 The UMAP embeddings.
 }
 \description{
-This is the wrapper function into the Rust interface for UMAP
-and can use a pre-computed kNN.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+Leverages the UMAP implementation in manifolds-rs - a very fast Rust-based
+implementation. This version uses a pre-computed kNN graph, please see
+\code{\link[=new_nearest_neighbour]{new_nearest_neighbour()}}.
 }

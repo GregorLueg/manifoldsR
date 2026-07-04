@@ -31,6 +31,7 @@ A list with the following elements:
 }
 }
 \description{
-Generates synthetic data that has a tree-like structure to
-simulate evolution/trajectory of data.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+Generates synthetic data that has a tree-like structure to simulate
+evolution/trajectory of data.
 }

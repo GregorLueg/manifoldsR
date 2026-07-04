@@ -179,7 +179,7 @@ where
 /// t-SNE embeddings as matrix
 #[allow(clippy::too_many_arguments)]
 #[cfg(not(target_os = "windows"))]
-pub fn tsne_simple<T>(
+pub fn tsne_manifold<T>(
     data: MatRef<T>,
     pre_computed_knn: PreComputedKnn<T>,
     n_dim: usize,
@@ -252,7 +252,7 @@ where
 /// t-SNE embeddings as matrix
 #[allow(clippy::too_many_arguments)]
 #[cfg(target_os = "windows")]
-pub fn tsne_simple<T>(
+pub fn tsne_manifold<T>(
     data: MatRef<T>,
     pre_computed_knn: PreComputedKnn<T>,
     n_dim: usize,
