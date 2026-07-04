@@ -1,6 +1,7 @@
 # Calculates the intertia for k-means clustering
 
-Calculates the intertia for k-means clustering
+**\[experimental\]** Calculates inertia for k-means clustering given the
+data, centroids and membership
 
 ## Usage
 

@@ -1,6 +1,7 @@
 # UMAP implementation
 
-This is the wrapper function into the Rust interface for UMAP.
+**\[experimental\]** Leverages the UMAP implementation in manifolds-rs -
+a very fast Rust-based implementation.
 
 ## Usage
 

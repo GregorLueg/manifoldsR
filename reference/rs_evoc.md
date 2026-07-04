@@ -1,6 +1,7 @@
 # EVoC clustering
 
-Wrapper function into the Rust interface for EVoC clustering.
+**\[experimental\]** Wrapper function into the Rust interface for EVoC
+clustering.
 
 ## Usage
 
@@ -39,6 +40,11 @@ rs_evoc(
 - seed:
 
   Integer. Seed for reproducibility.
+
+- use_high_precision:
+
+  Optional logical. Controls `fp32` vs `fp64` for. If `NULL` will use
+  sensible default thresholding.
 
 - verbose:
 

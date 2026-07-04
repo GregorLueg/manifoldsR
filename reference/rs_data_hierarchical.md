@@ -1,9 +1,9 @@
 # Generate hierarchical cluster data
 
-Generates synthetic data with a two-level cluster hierarchy:
-`n_supergroups` top-level groups each containing `n_subclusts` tight
-subclusters. Supergroup centres are spread far apart; subcluster centres
-sit tightly around their supergroup centre.
+**\[experimental\]** Generates synthetic data with a two-level cluster
+hierarchy: `n_supergroups` top-level groups each containing
+`n_subclusts` tight subclusters. Supergroup centres are spread far
+apart; subcluster centres sit tightly around their supergroup centre.
 
 Note that the actual number of samples returned may be slightly less
 than `n_samples` if it is not evenly divisible by

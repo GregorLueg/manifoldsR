@@ -1,6 +1,7 @@
 # PaCMAP implementation
 
-This is the wrapper function into the Rust interface for PaCMAP.
+**\[experimental\]** Leverages the PacMAP implementation in
+manifolds-rs - a very fast Rust-based implementation.
 
 ## Usage
 

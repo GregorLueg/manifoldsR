@@ -1,5 +1,12 @@
 # Changelog
 
+## manifoldsR 0.2.6
+
+### Features
+
+- Substantially faster tSNE implementations for both the `"bh"` and
+  `"fft"` version.
+
 ## manifoldsR 0.2.5
 
 ### Features

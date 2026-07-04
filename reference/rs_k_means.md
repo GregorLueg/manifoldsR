@@ -1,7 +1,9 @@
-# Full k-means clustering
+# K-means clustering (full)
 
-Rust interface for k-means clustering using Lloyd's algorithm with SIMD
-or GEMM acceleration depending on dimensionality.
+**\[experimental\]** Rust interface for k-means clustering using Lloyd's
+algorithm with SIMD or GEMM acceleration depending on dimensionality. It
+exposes the high performance k-means clustering code from the Rust crate
+`ann-search-rs` for rapid clustering.
 
 ## Usage
 

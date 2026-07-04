@@ -1,8 +1,9 @@
 # Run PHATE dimensionality reduction from a precomputed kNN graph
 
-Wrapper function into the Rust interface for PHATE using a precomputed
-kNN graph. Useful when iterating over diffusion parameters without
-repeating the neighbour search.
+**\[experimental\]** Leverages the PHATE implementation in
+manifolds-rs - a very fast Rust-based implementation. This version uses
+a pre-computed kNN graph, please see
+[`new_nearest_neighbour()`](https://gregorlueg.github.io/manifoldsR/reference/new_nearest_neighbour.md).
 
 ## Usage
 

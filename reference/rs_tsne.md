@@ -1,9 +1,9 @@
 # tSNE implementation
 
-This is the wrapper function into the Rust interface for tSNE. You have
-the option to use the Barnes-Hut implemetation or the FFT-accelerated
-version to approximate the repulsive forces. Uses `fp64` path on larger
-data sets to avoid catastrophic cancelleation.
+**\[experimental\]** Leverages the tSNE implementation in manifolds-rs -
+a very fast Rust-based implementation. You have two optimiser options:
+`"bh"` which tends to be faster on smaller datasets and `"fft"` for
+large data sets.
 
 ## Usage
 

@@ -99,51 +99,51 @@ Wrapper functions around core parameters
 Everything rusty - only use this if you know what you are doing…
 
 - [`rs_approx_nearest_neighbours()`](https://gregorlueg.github.io/manifoldsR/reference/rs_approx_nearest_neighbours.md)
-  : Wrapper around some nearest neighbour searches integrated into
-  manifold-rs
+  **\[experimental\]** : Wrapper around some nearest neighbour searches
+  integrated into manifold-rs
 - [`rs_ari()`](https://gregorlueg.github.io/manifoldsR/reference/rs_ari.md)
-  : Adjusted Rand index
-- [`rs_check_cluster_separation()`](https://gregorlueg.github.io/manifoldsR/reference/rs_check_cluster_separation.md)
-  : Check cluster separation in an embedding
+  **\[experimental\]** : Adjusted Rand index
 - [`rs_data_biased_swiss_role()`](https://gregorlueg.github.io/manifoldsR/reference/rs_data_biased_swiss_role.md)
-  : Generates the SwissRole data
+  **\[experimental\]** : Generates the SwissRole data
 - [`rs_data_clusters()`](https://gregorlueg.github.io/manifoldsR/reference/rs_data_clusters.md)
-  : Generates clustered data
+  **\[experimental\]** : Generates clustered data
 - [`rs_data_swiss_role()`](https://gregorlueg.github.io/manifoldsR/reference/rs_data_swiss_role.md)
-  : Generates the SwissRole data
+  **\[experimental\]** : Generates the SwissRole data
 - [`rs_data_trajectory()`](https://gregorlueg.github.io/manifoldsR/reference/rs_data_trajectory.md)
-  : Generates tree-like data with branches
+  **\[experimental\]** : Generates tree-like data with branches
 - [`rs_data_hierarchical()`](https://gregorlueg.github.io/manifoldsR/reference/rs_data_hierarchical.md)
-  : Generate hierarchical cluster data
+  **\[experimental\]** : Generate hierarchical cluster data
 - [`rs_diffusion_maps()`](https://gregorlueg.github.io/manifoldsR/reference/rs_diffusion_maps.md)
-  : Diffusion maps implementation
+  **\[experimental\]** : Diffusion maps implementation
 - [`rs_diffusion_maps_from_knn()`](https://gregorlueg.github.io/manifoldsR/reference/rs_diffusion_maps_from_knn.md)
-  : Diffusion maps implementation with pre-computed kNN
+  **\[experimental\]** : Diffusion maps implementation with pre-computed
+  kNN
 - [`rs_evoc()`](https://gregorlueg.github.io/manifoldsR/reference/rs_evoc.md)
-  : EVoC clustering
+  **\[experimental\]** : EVoC clustering
 - [`rs_evoc_from_knn()`](https://gregorlueg.github.io/manifoldsR/reference/rs_evoc_from_knn.md)
-  : EVoC clustering from pre-computed kNN
+  **\[experimental\]** : EVoC clustering from pre-computed kNN
 - [`rs_intertia()`](https://gregorlueg.github.io/manifoldsR/reference/rs_intertia.md)
-  : Calculates the intertia for k-means clustering
+  **\[experimental\]** : Calculates the intertia for k-means clustering
 - [`rs_k_means()`](https://gregorlueg.github.io/manifoldsR/reference/rs_k_means.md)
-  : Full k-means clustering
+  **\[experimental\]** : K-means clustering (full)
 - [`rs_k_means_mini_batch()`](https://gregorlueg.github.io/manifoldsR/reference/rs_k_means_mini_batch.md)
-  : Mini-batch k-means clustering
+  **\[experimental\]** : Mini-batch k-means clustering
 - [`rs_pacmap()`](https://gregorlueg.github.io/manifoldsR/reference/rs_pacmap.md)
-  : PaCMAP implementation
+  **\[experimental\]** : PaCMAP implementation
 - [`rs_pacmap_from_knn()`](https://gregorlueg.github.io/manifoldsR/reference/rs_pacmap_from_knn.md)
-  : PaCMAP implementation with pre-computed kNN
+  **\[experimental\]** : PaCMAP implementation with pre-computed kNN
 - [`rs_phate()`](https://gregorlueg.github.io/manifoldsR/reference/rs_phate.md)
-  : Run PHATE dimensionality reduction
+  **\[experimental\]** : Run PHATE dimensionality reduction
 - [`rs_phate_from_knn()`](https://gregorlueg.github.io/manifoldsR/reference/rs_phate_from_knn.md)
-  : Run PHATE dimensionality reduction from a precomputed kNN graph
+  **\[experimental\]** : Run PHATE dimensionality reduction from a
+  precomputed kNN graph
 - [`rs_silhouette_score()`](https://gregorlueg.github.io/manifoldsR/reference/rs_silhouette_score.md)
-  : Calculates the cluster silhouette scores
+  **\[experimental\]** : Calculates the cluster silhouette scores
 - [`rs_tsne()`](https://gregorlueg.github.io/manifoldsR/reference/rs_tsne.md)
-  : tSNE implementation
+  **\[experimental\]** : tSNE implementation
 - [`rs_tsne_from_knn()`](https://gregorlueg.github.io/manifoldsR/reference/rs_tsne_from_knn.md)
-  : tSNE implementation
+  **\[experimental\]** : tSNE implementation
 - [`rs_umap()`](https://gregorlueg.github.io/manifoldsR/reference/rs_umap.md)
-  : UMAP implementation
+  **\[experimental\]** : UMAP implementation
 - [`rs_umap_from_knn()`](https://gregorlueg.github.io/manifoldsR/reference/rs_umap_from_knn.md)
-  : UMAP implementation
+  **\[experimental\]** : UMAP implementation

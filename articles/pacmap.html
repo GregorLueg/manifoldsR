@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,7 +63,7 @@
       <h1>Using PaCMAP</h1>
 
       <p class="author">Gregor Lueg</p>
-      <p class="date">2026-07-03</p>
+      <p class="date">2026-07-04</p>
 
 
       <div class="d-none name"><code></code></div>
@@ -430,9 +430,9 @@
 <span>  times <span class="op">=</span> <span class="fl">3L</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
-<span><span class="co">#&gt;             expr      min       lq     mean   median      uq      max neval</span></span>
-<span><span class="co">#&gt;    manifold_umap 1.611583 1.614202 1.617955 1.616821 1.62114 1.625459     3</span></span>
-<span><span class="co">#&gt;  manifold_pacmap 1.835090 1.856939 1.875437 1.878787 1.89561 1.912432     3</span></span></code></pre></div>
+<span><span class="co">#&gt;             expr      min       lq     mean   median       uq      max neval</span></span>
+<span><span class="co">#&gt;    manifold_umap 1.620288 1.623964 1.626821 1.627640 1.630087 1.632535     3</span></span>
+<span><span class="co">#&gt;  manifold_pacmap 2.367427 2.393058 2.460359 2.418689 2.506825 2.594961     3</span></span></code></pre></div>
 </div>
 <p>PaCMAP is generally slower than UMAP on the same data since it processes all pairs every epoch rather than sampling. The three-phase schedule with 450 epochs (vs UMAP’s 200–500) compounds this. For most datasets up to ~50k samples this is not a concern in practice, but on very large data the difference becomes noticeable.</p>
 </section></section><script id="quarto-html-after-body" type="application/javascript">

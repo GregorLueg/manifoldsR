@@ -1,7 +1,8 @@
 # EVoC clustering from pre-computed kNN
 
-Wrapper function into the Rust interface for EVoC clustering using a
-pre-computed kNN graph.
+**\[experimental\]** Wrapper function into the Rust interface for EVoC
+clustering. This version uses a pre-computed kNN graph, please see
+[`new_nearest_neighbour()`](https://gregorlueg.github.io/manifoldsR/reference/new_nearest_neighbour.md).
 
 ## Usage
 
@@ -41,6 +42,11 @@ rs_evoc_from_knn(
 - seed:
 
   Integer. Seed for reproducibility.
+
+- use_high_precision:
+
+  Optional logical. Controls `fp32` vs `fp64` for. If `NULL` will use
+  sensible default thresholding.
 
 - verbose:
 

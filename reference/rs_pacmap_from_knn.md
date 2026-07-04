@@ -1,7 +1,9 @@
 # PaCMAP implementation with pre-computed kNN
 
-This is the wrapper function into the Rust interface for PaCMAP and can
-use a pre-computed kNN.
+**\[experimental\]** Leverages the PacMAP implementation in
+manifolds-rs - a very fast Rust-based implementation. This version uses
+a pre-computed kNN graph, please see
+[`new_nearest_neighbour()`](https://gregorlueg.github.io/manifoldsR/reference/new_nearest_neighbour.md).
 
 ## Usage
 
@@ -50,10 +52,6 @@ rs_pacmap_from_knn(
 
   Integer. If `0L` -\> silent or `1L` for normal verbosity; `2L` for
   detailed verbosity.
-
-- k:
-
-  Integer. Number of nearest neighbours to consider.
 
 ## Value
 

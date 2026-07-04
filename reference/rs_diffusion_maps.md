@@ -1,6 +1,7 @@
 # Diffusion maps implementation
 
-This is the wrapper function into the Rust interface for diffusion maps.
+**\[experimental\]** Leverages the Diffusion Maps implementation in
+manifolds-rs - a very fast Rust-based implementation.
 
 ## Usage
 

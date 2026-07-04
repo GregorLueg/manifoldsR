@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,7 +63,7 @@
       <h1>Using PHATE</h1>
 
       <p class="author">Gregor Lueg</p>
-      <p class="date">2026-07-03</p>
+      <p class="date">2026-07-04</p>
 
 
       <div class="d-none name"><code></code></div>
@@ -481,11 +481,14 @@
 <span>  <span class="op">}</span>,</span>
 <span>  times <span class="op">=</span> <span class="fl">1L</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt;     SGD-MDS may not have converged: stress changed by -2.3% in final iterations. Consider increasing n_iter or adjusting learning_rate.</span></span>
+<span><span class="co">#&gt;     SGD-MDS may not have converged: stress changed by -1.1% in final iterations. Consider increasing n_iter or adjusting learning_rate.</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
-<span><span class="co">#&gt;            expr      min       lq     mean   median       uq      max neval</span></span>
-<span><span class="co">#&gt;          phateR 9.479463 9.479463 9.479463 9.479463 9.479463 9.479463     1</span></span>
-<span><span class="co">#&gt;  manifold_phate 8.843298 8.843298 8.843298 8.843298 8.843298 8.843298     1</span></span></code></pre></div>
+<span><span class="co">#&gt;            expr       min        lq      mean    median        uq       max</span></span>
+<span><span class="co">#&gt;          phateR 10.768529 10.768529 10.768529 10.768529 10.768529 10.768529</span></span>
+<span><span class="co">#&gt;  manifold_phate  9.551891  9.551891  9.551891  9.551891  9.551891  9.551891</span></span>
+<span><span class="co">#&gt;  neval</span></span>
+<span><span class="co">#&gt;      1</span></span>
+<span><span class="co">#&gt;      1</span></span></code></pre></div>
 </div>
 <p>And on a larger data set with additionally the random landmark version</p>
 <div class="cell">
@@ -528,9 +531,9 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;                     expr      min       lq     mean   median       uq      max</span></span>
-<span><span class="co">#&gt;                   phateR 41.56001 41.56001 41.56001 41.56001 41.56001 41.56001</span></span>
-<span><span class="co">#&gt;  manifold_phate_spectral 29.62614 29.62614 29.62614 29.62614 29.62614 29.62614</span></span>
-<span><span class="co">#&gt;    manifold_phate_random 14.10239 14.10239 14.10239 14.10239 14.10239 14.10239</span></span>
+<span><span class="co">#&gt;                   phateR 48.60314 48.60314 48.60314 48.60314 48.60314 48.60314</span></span>
+<span><span class="co">#&gt;  manifold_phate_spectral 32.88151 32.88151 32.88151 32.88151 32.88151 32.88151</span></span>
+<span><span class="co">#&gt;    manifold_phate_random 16.09040 16.09040 16.09040 16.09040 16.09040 16.09040</span></span>
 <span><span class="co">#&gt;  neval</span></span>
 <span><span class="co">#&gt;      1</span></span>
 <span><span class="co">#&gt;      1</span></span>

@@ -14,7 +14,7 @@ umap(
   k = 15L,
   min_dist = 0.5,
   spread = 1,
-  knn_method = c("kmknn", "balltree", "hnsw", "annoy", "nndescent", "exhaustive"),
+  knn_method = c("kmknn", "balltree", "hnsw", "annoy", "nndescent", "exhaustive", "ivf"),
   nn_params = params_nn(),
   umap_params = params_umap(),
   seed = 42L,

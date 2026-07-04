@@ -1,7 +1,7 @@
 # Generates the SwissRole data
 
-Generates synthetic data, i.e., the Swiss role to test different
-manifold learning techniques
+**\[experimental\]** Generates synthetic data, i.e., the Swiss role to
+test different manifold learning techniques
 
 ## Usage
 

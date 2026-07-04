@@ -1,7 +1,9 @@
 # UMAP implementation
 
-This is the wrapper function into the Rust interface for UMAP and can
-use a pre-computed kNN.
+**\[experimental\]** Leverages the UMAP implementation in manifolds-rs -
+a very fast Rust-based implementation. This version uses a pre-computed
+kNN graph, please see
+[`new_nearest_neighbour()`](https://gregorlueg.github.io/manifoldsR/reference/new_nearest_neighbour.md).
 
 ## Usage
 

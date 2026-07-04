@@ -1,7 +1,7 @@
 # Generates tree-like data with branches
 
-Generates synthetic data that has a tree-like structure to simulate
-evolution/trajectory of data.
+**\[experimental\]** Generates synthetic data that has a tree-like
+structure to simulate evolution/trajectory of data.
 
 ## Usage
 

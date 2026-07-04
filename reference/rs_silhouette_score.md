@@ -1,6 +1,8 @@
 # Calculates the cluster silhouette scores
 
-Uses the squared Euclidean distance under the hood for speed.
+**\[experimental\]** Calculates the Silhouette in Rust given the
+original data and a membership vector. Uses squared Euclidean distance
+under the hood for speed.
 
 ## Usage
 

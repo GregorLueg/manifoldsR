@@ -1,7 +1,9 @@
 # Wrapper around some nearest neighbour searches integrated into manifold-rs
 
-Wrapper around some nearest neighbour searches integrated into
-manifold-rs
+**\[experimental\]** This is an interface into various (approximate)
+nearest neighbour searches implemented in the Rust crate
+`ann-search-rs`. They designed for incredible fast in-memory searches
+for kNN generation.
 
 ## Usage
 

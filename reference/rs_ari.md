@@ -1,6 +1,7 @@
 # Adjusted Rand index
 
-Adjusted Rand index
+**\[experimental\]** Calculates the adjusted Rand index in Rust between
+two membership vectors.
 
 ## Usage
 

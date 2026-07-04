@@ -1,9 +1,7 @@
 # Run PHATE dimensionality reduction
 
-Wrapper function into the Rust interface for PHATE. Constructs a kNN
-graph, computes alpha decay affinities, powers the diffusion operator to
-time `t`, and embeds via MDS on the resulting diffusion potential
-distances.
+**\[experimental\]** Leverages the PHATE implementation in
+manifolds-rs - a very fast Rust-based implementation.
 
 ## Usage
 

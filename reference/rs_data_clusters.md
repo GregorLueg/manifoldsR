@@ -1,6 +1,7 @@
 # Generates clustered data
 
-Generates synthetic data with clear cluster structure.
+**\[experimental\]** Generates synthetic data with clear cluster
+structure.
 
 ## Usage
 
