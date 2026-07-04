@@ -42,7 +42,8 @@ for detailed verbosity.}
 The PHATE embedding as a matrix of shape samples x n_dim.
 }
 \description{
-Wrapper function into the Rust interface for PHATE using a
-precomputed kNN graph. Useful when iterating over diffusion parameters
-without repeating the neighbour search.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+Leverages the PHATE implementation in manifolds-rs - a very fast Rust-based
+implementation. This version uses a pre-computed kNN graph, please see
+\code{\link[=new_nearest_neighbour]{new_nearest_neighbour()}}.
 }

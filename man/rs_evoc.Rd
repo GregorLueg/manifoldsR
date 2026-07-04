@@ -28,6 +28,9 @@ for EVoC clustering.}
 
 \item{seed}{Integer. Seed for reproducibility.}
 
+\item{use_high_precision}{Optional logical. Controls \code{fp32} vs \code{fp64} for.
+If \code{NULL} will use sensible default thresholding.}
+
 \item{verbose}{Integer. If \code{0L} -> silent or \code{1L} for normal verbosity; \code{2L}
 for detailed verbosity.}
 }
@@ -39,5 +42,6 @@ A named list with:
 }
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 Wrapper function into the Rust interface for EVoC clustering.
 }

@@ -30,8 +30,7 @@ for detailed verbosity.}
 The PHATE embedding as a matrix of shape samples x n_dim.
 }
 \description{
-Wrapper function into the Rust interface for PHATE.
-Constructs a kNN graph, computes alpha decay affinities, powers the
-diffusion operator to time \code{t}, and embeds via MDS on the resulting
-diffusion potential distances.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+Leverages the PHATE implementation in manifolds-rs - a very fast Rust-based
+implementation.
 }

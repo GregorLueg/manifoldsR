@@ -143,7 +143,10 @@ fn parse_precision(use_high_precision: Nullable<Rbool>, n: usize) -> FloatingPoi
 
 /// UMAP implementation
 ///
-/// @description This is the wrapper function into the Rust interface for UMAP.
+/// @description
+/// `r lifecycle::badge("experimental")`
+/// Leverages the UMAP implementation in manifolds-rs - a very fast Rust-based
+/// implementation.
 ///
 /// @param embd Numerical matrix. The data to use to generate the embeddings.
 /// Should be of dimensions samples x features.
@@ -228,8 +231,11 @@ fn rs_umap(
 
 /// UMAP implementation
 ///
-/// @description This is the wrapper function into the Rust interface for UMAP
-/// and can use a pre-computed kNN.
+/// @description
+/// `r lifecycle::badge("experimental")`
+/// Leverages the UMAP implementation in manifolds-rs - a very fast Rust-based
+/// implementation. This version uses a pre-computed kNN graph, please see
+/// [new_nearest_neighbour()].
 ///
 /// @param embd Numerical matrix. The data to use to generate the embeddings.
 /// Should be of dimensions samples x features.
@@ -324,10 +330,11 @@ fn rs_umap_from_knn(
 
 /// tSNE implementation
 ///
-/// @description This is the wrapper function into the Rust interface for tSNE.
-/// You have the option to use the Barnes-Hut implemetation or the
-/// FFT-accelerated version to approximate the repulsive forces. Uses `fp64`
-/// path on larger data sets to avoid catastrophic cancelleation.
+/// @description
+/// `r lifecycle::badge("experimental")`
+/// Leverages the tSNE implementation in manifolds-rs - a very fast Rust-based
+/// implementation. You have two optimiser options: `"bh"` which tends to be
+/// faster on smaller datasets and `"fft"` for large data sets.
 ///
 /// @param embd Numerical matrix. The data to use to generate the embeddings.
 /// Should be of dimensions samples x features.
@@ -370,7 +377,7 @@ fn rs_tsne(
 
             let embd = r_matrix_to_faer(&embd);
 
-            let res = tsne_simple(
+            let res = tsne_manifold(
                 embd.as_ref(),
                 None,
                 n_dim,
@@ -390,7 +397,7 @@ fn rs_tsne(
             }
             let embd = r_matrix_to_faer_fp32(&embd);
 
-            let res = tsne_simple(
+            let res = tsne_manifold(
                 embd.as_ref(),
                 None,
                 n_dim,
@@ -409,11 +416,12 @@ fn rs_tsne(
 
 /// tSNE implementation
 ///
-/// @description This is the wrapper function into the Rust interface for tSNE.
-/// You have the option to use the Barnes-Hut implemetation or the
-/// FFT-accelerated version to approximate the repulsive forces. This one
-/// can use a pre-computed kNN. Uses `fp64` path on larger data sets to avoid
-/// catastrophic cancelleation.
+/// @description
+/// `r lifecycle::badge("experimental")`
+/// Leverages the tSNE implementation in manifolds-rs - a very fast Rust-based
+/// implementation. You have two optimiser options: `"bh"` which tends to be
+/// faster on smaller datasets and `"fft"` for large data sets. This version
+/// uses a pre-computed kNN graph, please see [new_nearest_neighbour()].
 ///
 /// @param embd Numerical matrix. The data to use to generate the embeddings.
 /// Should be of dimensions samples x features.
@@ -460,7 +468,7 @@ fn rs_tsne_from_knn(
 
             let knn = nearest_neighbours_to_rust(knn_data);
 
-            let res = tsne_simple(
+            let res = tsne_manifold(
                 embd.as_ref(),
                 knn,
                 n_dim,
@@ -483,7 +491,7 @@ fn rs_tsne_from_knn(
 
             let knn = nearest_neighbours_to_rust(knn_data);
 
-            let res = tsne_simple(
+            let res = tsne_manifold(
                 embd.as_ref(),
                 knn,
                 n_dim,
@@ -506,10 +514,10 @@ fn rs_tsne_from_knn(
 
 /// Run PHATE dimensionality reduction
 ///
-/// @description Wrapper function into the Rust interface for PHATE.
-/// Constructs a kNN graph, computes alpha decay affinities, powers the
-/// diffusion operator to time `t`, and embeds via MDS on the resulting
-/// diffusion potential distances.
+/// @description
+/// `r lifecycle::badge("experimental")`
+/// Leverages the PHATE implementation in manifolds-rs - a very fast Rust-based
+/// implementation.
 ///
 /// @param embd Numerical matrix. The data to embed of shape samples x
 /// features.
@@ -568,9 +576,11 @@ fn rs_phate(
 
 /// Run PHATE dimensionality reduction from a precomputed kNN graph
 ///
-/// @description Wrapper function into the Rust interface for PHATE using a
-/// precomputed kNN graph. Useful when iterating over diffusion parameters
-/// without repeating the neighbour search.
+/// @description
+/// `r lifecycle::badge("experimental")`
+/// Leverages the PHATE implementation in manifolds-rs - a very fast Rust-based
+/// implementation. This version uses a pre-computed kNN graph, please see
+/// [new_nearest_neighbour()].
 ///
 /// @param embd Numerical matrix. The data to embed of shape samples x
 /// features.
@@ -639,8 +649,10 @@ fn rs_phate_from_knn(
 
 /// PaCMAP implementation
 ///
-/// @description This is the wrapper function into the Rust interface for
-/// PaCMAP.
+/// @description
+/// `r lifecycle::badge("experimental")`
+/// Leverages the PacMAP implementation in manifolds-rs - a very fast Rust-based
+/// implementation.
 ///
 /// @param embd Numerical matrix. The data to use to generate the embeddings.
 /// Should be of dimensions samples x features.
@@ -697,8 +709,11 @@ fn rs_pacmap(
 
 /// PaCMAP implementation with pre-computed kNN
 ///
-/// @description This is the wrapper function into the Rust interface for
-/// PaCMAP and can use a pre-computed kNN.
+/// @description
+/// `r lifecycle::badge("experimental")`
+/// Leverages the PacMAP implementation in manifolds-rs - a very fast Rust-based
+/// implementation. This version uses a pre-computed kNN graph, please see
+/// [new_nearest_neighbour()].
 ///
 /// @param embd Numerical matrix. The data to use to generate the embeddings.
 /// Should be of dimensions samples x features.
@@ -763,8 +778,10 @@ fn rs_pacmap_from_knn(
 
 /// Diffusion maps implementation
 ///
-/// @description This is the wrapper function into the Rust interface for
-/// diffusion maps.
+/// @description
+/// `r lifecycle::badge("experimental")`
+/// Leverages the Diffusion Maps implementation in manifolds-rs - a very fast
+/// Rust-based implementation.
 ///
 /// @param embd Numerical matrix. The data to use to generate the embeddings.
 /// Should be of dimensions samples x features.
@@ -823,8 +840,11 @@ fn rs_diffusion_maps(
 
 /// Diffusion maps implementation with pre-computed kNN
 ///
-/// @description This is the wrapper function into the Rust interface for
-/// diffusion maps and can use a pre-computed kNN.
+/// @description
+/// `r lifecycle::badge("experimental")`
+/// Leverages the Diffusion Maps implementation in manifolds-rs - a very fast
+/// Rust-based implementation. This version uses a pre-computed kNN graph, please see
+/// [new_nearest_neighbour()].
 ///
 /// @param embd Numerical matrix. The data to use to generate the embeddings.
 /// Should be of dimensions samples x features.
@@ -891,8 +911,10 @@ fn rs_diffusion_maps_from_knn(
 
 /// Generates the SwissRole data
 ///
-/// @description Generates synthetic data, i.e., the Swiss role to test
-/// different manifold learning techniques
+/// @description
+/// `r lifecycle::badge("experimental")`
+/// Generates synthetic data, i.e., the Swiss role to test different manifold
+/// learning techniques
 ///
 /// @param n_samples Integer. Number of data points to generate.
 /// @param noise Numeric. How much noise to add.
@@ -910,8 +932,10 @@ fn rs_data_swiss_role(n_samples: usize, noise: f64, seed: usize) -> RMatrix<f64>
 
 /// Generates the SwissRole data
 ///
-/// @description Generates synthetic data, i.e., the Swiss role to test
-/// different manifold learning techniques
+/// @description
+/// `r lifecycle::badge("experimental")`
+/// Generates synthetic data, i.e., the Swiss role to test different manifold
+/// learning techniques
 ///
 /// @param n_samples Integer. Number of data points to generate.
 /// @param noise Numeric. How much noise to add.
@@ -932,7 +956,9 @@ fn rs_data_biased_swiss_role(n_samples: usize, noise: f64, bias: f64, seed: usiz
 
 /// Generates clustered data
 ///
-/// @description Generates synthetic data with clear cluster structure.
+/// @description
+/// `r lifecycle::badge("experimental")`
+/// Generates synthetic data with clear cluster structure.
 ///
 /// @param n_samples Integer. Number of data points to generate.
 /// @param dim Integer. Dimensionality of the data
@@ -956,8 +982,10 @@ fn rs_data_clusters(n_samples: usize, dim: usize, n_clusters: usize, seed: usize
 
 /// Generates tree-like data with branches
 ///
-/// @description Generates synthetic data that has a tree-like structure to
-/// simulate evolution/trajectory of data.
+/// @description
+/// `r lifecycle::badge("experimental")`
+/// Generates synthetic data that has a tree-like structure to simulate
+/// evolution/trajectory of data.
 ///
 /// @param n_samples Integer. Number of data points to generate.
 /// @param dim Integer. Dimensionality of the data.
@@ -1002,10 +1030,12 @@ fn rs_data_trajectory(
 
 /// Generate hierarchical cluster data
 ///
-/// @description Generates synthetic data with a two-level cluster hierarchy:
-/// `n_supergroups` top-level groups each containing `n_subclusts` tight
-/// subclusters. Supergroup centres are spread far apart; subcluster centres sit
-/// tightly around their supergroup centre.
+/// @description
+/// `r lifecycle::badge("experimental")`
+/// Generates synthetic data with a two-level cluster hierarchy: `n_supergroups`
+/// top-level groups each containing `n_subclusts` tight subclusters. Supergroup
+/// centres are spread far apart; subcluster centres sit tightly around their
+/// supergroup centre.
 ///
 /// Note that the actual number of samples returned may be slightly less than
 /// `n_samples` if it is not evenly divisible by `n_supergroups * n_subclusts`.
@@ -1066,6 +1096,12 @@ fn rs_data_hierarchical(
 
 /// Wrapper around some nearest neighbour searches integrated into manifold-rs
 ///
+/// @description
+/// `r lifecycle::badge("experimental")`
+/// This is an interface into various (approximate) nearest neighbour searches
+/// implemented in the Rust crate `ann-search-rs`. They designed for incredible
+/// fast in-memory searches for kNN generation.
+///
 /// @param data Numeric matrix. Shape of samples x n_dim for which to get the
 /// (approximate) nearest neighbours
 /// @param k Integer. Number of neighbours to return
@@ -1124,7 +1160,9 @@ fn rs_approx_nearest_neighbours(
 
 /// EVoC clustering
 ///
-/// @description Wrapper function into the Rust interface for EVoC clustering.
+/// @description
+/// `r lifecycle::badge("experimental")`
+/// Wrapper function into the Rust interface for EVoC clustering.
 ///
 /// @param embd Numerical matrix. The data to cluster. Should be of dimensions
 /// samples x features.
@@ -1210,8 +1248,10 @@ fn rs_evoc(
 
 /// EVoC clustering from pre-computed kNN
 ///
-/// @description Wrapper function into the Rust interface for EVoC clustering
-/// using a pre-computed kNN graph.
+/// @description
+/// `r lifecycle::badge("experimental")`
+/// Wrapper function into the Rust interface for EVoC clustering. This version
+/// uses a pre-computed kNN graph, please see [new_nearest_neighbour()].
 ///
 /// @param embd Numerical matrix. The data to cluster. Should be of dimensions
 /// samples x features.
@@ -1288,10 +1328,14 @@ fn rs_evoc_from_knn(
 // k-means //
 /////////////
 
-/// Full k-means clustering
+/// K-means clustering (full)
 ///
-/// @description Rust interface for k-means clustering using Lloyd's algorithm
-/// with SIMD or GEMM acceleration depending on dimensionality.
+/// @description
+/// `r lifecycle::badge("experimental")`
+/// Rust interface for k-means clustering using Lloyd's algorithm with SIMD or
+/// GEMM acceleration depending on dimensionality. It exposes the high
+/// performance k-means clustering code from the Rust crate `ann-search-rs`
+/// for rapid clustering.
 ///
 /// @param data Numerical matrix. The data to cluster, of dimensions
 /// samples x features.
@@ -1345,9 +1389,10 @@ fn rs_k_means(
 
 /// Mini-batch k-means clustering
 ///
-/// @description Rust interface for mini-batch k-means clustering
-/// (Sculley 2010). Uses random mini-batches with a decaying learning rate
-/// for faster convergence on large data sets.
+/// @description
+/// `r lifecycle::badge("experimental")`
+/// Rust interface for mini batch k-means clustering from `bixverse-rs`. This
+/// version can be very useful in cases where you overcluster the data.
 ///
 /// @param data Numerical matrix. The data to cluster, of dimensions
 /// samples x features.
@@ -1405,6 +1450,8 @@ fn rs_k_means_mini_batch(
 /// @return A named list with `within_dists` and `between_dists`.
 ///
 /// @export
+///
+/// @keywords internal
 #[extendr]
 fn rs_check_cluster_separation(embd: RMatrix<f64>, cluster_membership: &[i32]) -> List {
     let nrow = embd.nrows();
@@ -1436,6 +1483,10 @@ fn rs_check_cluster_separation(embd: RMatrix<f64>, cluster_membership: &[i32]) -
 
 /// Adjusted Rand index
 ///
+/// @description
+/// `r lifecycle::badge("experimental")`
+/// Calculates the adjusted Rand index in Rust between two membership vectors.
+///
 /// @param cluster_membership_a Integers. Cluster memberships in group a.
 /// @param cluster_membership_b Integers. Cluster memberships in group b.
 ///
@@ -1452,7 +1503,10 @@ fn rs_ari(cluster_membership_a: &[i32], cluster_membership_b: &[i32]) -> f64 {
 
 /// Calculates the cluster silhouette scores
 ///
-/// @description Uses the squared Euclidean distance under the hood for speed.
+/// @description
+/// `r lifecycle::badge("experimental")`
+/// Calculates the Silhouette in Rust given the original data and a membership
+/// vector. Uses squared Euclidean distance under the hood for speed.
 ///
 /// @param data Numeric matrix. The data in shape of sample x features.
 /// @param cluster_membership Integers. Cluster memberships as integers.
@@ -1480,6 +1534,11 @@ fn rs_silhouette_score(data: RMatrix<f64>, cluster_membership: &[i32]) -> List {
 }
 
 /// Calculates the intertia for k-means clustering
+///
+/// @description
+/// `r lifecycle::badge("experimental")`
+/// Calculates inertia for k-means clustering given the data, centroids and
+/// membership
 ///
 /// @param data Numeric matrix. The data in shape of sample x features.
 /// @param centroids Numeric matrix. The centroid data in shape k x features.

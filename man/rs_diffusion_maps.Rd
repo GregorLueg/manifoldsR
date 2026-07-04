@@ -29,6 +29,7 @@ for detailed verbosity.}
 The diffusion maps embeddings.
 }
 \description{
-This is the wrapper function into the Rust interface for
-diffusion maps.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+Leverages the Diffusion Maps implementation in manifolds-rs - a very fast
+Rust-based implementation.
 }

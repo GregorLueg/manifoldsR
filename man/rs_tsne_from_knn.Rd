@@ -45,9 +45,9 @@ for detailed verbosity.}
 The tSNE embeddings.
 }
 \description{
-This is the wrapper function into the Rust interface for tSNE.
-You have the option to use the Barnes-Hut implemetation or the
-FFT-accelerated version to approximate the repulsive forces. This one
-can use a pre-computed kNN. Uses \code{fp64} path on larger data sets to avoid
-catastrophic cancelleation.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+Leverages the tSNE implementation in manifolds-rs - a very fast Rust-based
+implementation. You have two optimiser options: \code{"bh"} which tends to be
+faster on smaller datasets and \code{"fft"} for large data sets. This version
+uses a pre-computed kNN graph, please see \code{\link[=new_nearest_neighbour]{new_nearest_neighbour()}}.
 }

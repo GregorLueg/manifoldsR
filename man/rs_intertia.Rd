@@ -17,5 +17,7 @@ rs_intertia(data, centroids, cluster_membership)
 The inertia score
 }
 \description{
-Calculates the intertia for k-means clustering
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+Calculates inertia for k-means clustering given the data, centroids and
+membership
 }

@@ -44,10 +44,11 @@ samples x \code{dim}; \code{supergroup}, an integer vector of supergroup labels
 subcluster labels (\verb{0..n_supergroups * n_subclusts}) one per sample.
 }
 \description{
-Generates synthetic data with a two-level cluster hierarchy:
-\code{n_supergroups} top-level groups each containing \code{n_subclusts} tight
-subclusters. Supergroup centres are spread far apart; subcluster centres sit
-tightly around their supergroup centre.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+Generates synthetic data with a two-level cluster hierarchy: \code{n_supergroups}
+top-level groups each containing \code{n_subclusts} tight subclusters. Supergroup
+centres are spread far apart; subcluster centres sit tightly around their
+supergroup centre.
 
 Note that the actual number of samples returned may be slightly less than
 \code{n_samples} if it is not evenly divisible by \code{n_supergroups * n_subclusts}.

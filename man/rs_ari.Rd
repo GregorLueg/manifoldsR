@@ -15,5 +15,6 @@ rs_ari(cluster_membership_a, cluster_membership_b)
 Returns the adjusted Rand index between the two groups.
 }
 \description{
-Adjusted Rand index
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+Calculates the adjusted Rand index in Rust between two membership vectors.
 }

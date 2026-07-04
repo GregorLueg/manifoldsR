@@ -21,6 +21,7 @@ value of \code{2.5} mirrors the trajectory accumulation behaviour.}
 The biased swiss role synthetic data with the desired parameters.
 }
 \description{
-Generates synthetic data, i.e., the Swiss role to test
-different manifold learning techniques
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+Generates synthetic data, i.e., the Swiss role to test different manifold
+learning techniques
 }

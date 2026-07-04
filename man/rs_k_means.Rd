@@ -2,7 +2,7 @@
 % Please edit documentation in R/extendr-wrappers.R
 \name{rs_k_means}
 \alias{rs_k_means}
-\title{Full k-means clustering}
+\title{K-means clustering (full)}
 \usage{
 rs_k_means(data, k, kmeans_params, seed, verbose)
 }
@@ -26,6 +26,9 @@ A named list with:
 }
 }
 \description{
-Rust interface for k-means clustering using Lloyd's algorithm
-with SIMD or GEMM acceleration depending on dimensionality.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+Rust interface for k-means clustering using Lloyd's algorithm with SIMD or
+GEMM acceleration depending on dimensionality. It exposes the high
+performance k-means clustering code from the Rust crate \code{ann-search-rs}
+for rapid clustering.
 }
