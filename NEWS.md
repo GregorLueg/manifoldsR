@@ -1,3 +1,9 @@
+# manifoldsR 0.2.7
+
+## Features
+
+- Updates on `manifolds-rs`, `evoc-rs`, `ann-search-rs` and `bixverse-rs`.
+
 # manifoldsR 0.2.6
 
 ## Features
