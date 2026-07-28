@@ -1,4 +1,5 @@
 url: https://gregorlueg.github.io/manifoldsR/
+
 template:
   bootstrap: 5
   bootswatch: solar
@@ -14,7 +15,7 @@ home:
   description: "Fast(!) manifold embedding learning methods powered by Rust"
 navbar:
   structure:
-    left: [intro, reference, articles]
+    left: [intro, reference, articles, news]
     right: [search, github]
   components:
     github:
