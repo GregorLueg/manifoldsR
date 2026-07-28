@@ -45,6 +45,7 @@
     <li><a class="dropdown-item" href="../articles/clustering.html">Clustering methods in manifoldsR (with emphasis on EVoC)</a></li>
   </ul>
 </li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
 <ul class="navbar-nav">
 <li class="nav-item"><form class="form-inline" role="search">
@@ -63,7 +64,7 @@
       <h1>Using PaCMAP</h1>
 
       <p class="author">Gregor Lueg</p>
-      <p class="date">2026-07-10</p>
+      <p class="date">2026-07-28</p>
 
 
       <div class="d-none name"><code></code></div>
@@ -431,8 +432,8 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;             expr      min       lq     mean   median       uq      max neval</span></span>
-<span><span class="co">#&gt;    manifold_umap 1.511459 1.512269 1.519422 1.513078 1.523403 1.533728     3</span></span>
-<span><span class="co">#&gt;  manifold_pacmap 1.800742 1.810051 1.816062 1.819359 1.823721 1.828083     3</span></span></code></pre></div>
+<span><span class="co">#&gt;    manifold_umap 1.489331 1.490887 1.493980 1.492444 1.496304 1.500165     3</span></span>
+<span><span class="co">#&gt;  manifold_pacmap 1.810216 1.813952 1.821311 1.817689 1.826859 1.836029     3</span></span></code></pre></div>
 </div>
 <p>PaCMAP is generally slower than UMAP on the same data since it processes all pairs every epoch rather than sampling. The three-phase schedule with 450 epochs (vs UMAP’s 200–500) compounds this. For most datasets up to ~50k samples this is not a concern in practice, but on very large data the difference becomes noticeable.</p>
 </section></section><script id="quarto-html-after-body" type="application/javascript">
