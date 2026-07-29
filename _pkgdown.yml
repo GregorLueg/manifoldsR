@@ -4,13 +4,9 @@ template:
   bootstrap: 5
   bootswatch: lux
   light-switch: true
-  # bslib:
-  #   primary: "#268bd2"
-  #   border-radius: 0.4rem
-  #   btn-border-radius: 0.4rem
-  # includes:
-  #   in_header: ""
-  # css: pkgdown/extra.css
+  bslib:
+    # lux uses navbar-padding-y: 1.5rem, so pkgdown's 56px default is too small
+    pkgdown-nav-height: 104px
 home:
   title: "manifoldsR"
   description: 
@@ -21,7 +17,7 @@ home:
 navbar:
   structure:
     left: [intro, reference, news, articles]
-    right: [search, github]
+    right: [search, lightswitch, github]
   components:
     github:
       icon: fab fa-github
