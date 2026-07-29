@@ -8,9 +8,11 @@ MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.or
 
 ![manifoldsR logo](reference/figures/manifoldsR_logo.png)
 
-**Fast(!)** manifold learning methods implemented in Rust with R
-bindings… For the modern-day single-cell Wannebe Pollock. Also, has some
-clustering methods now as part of the package.
+**Rust-accelerated** manifold learning methods with R bindings. For the
+modern-day single-cell Wannebe Pollock. Additionally, provides some
+clustering methods with focus on
+[EVoC](https://github.com/TutteInstitute/evoc) (and k-means clustering
+for comparison purposes).
 
 ## Overview
 
@@ -96,13 +98,16 @@ associated vignettes. Changelog can be found
 For now the package covers the most common embedding versions. Future
 features are likely to include:
 
-- Density-preserving versions of UMAP and tSNE, see [Narayan, et
-  al.](https://www.nature.com/articles/s41587-020-00801-7)
-- ~~PacMap from [Wang et. al.](https://arxiv.org/abs/2012.04456), that
-  should preserve global structure better.~~ (Done with version 0.1.1)
-- GPU-accelerated versions; however, these would more likely live in the
-  [sister package](https://github.com/GregorLueg/bixverse.gpu) which
-  contains everything, anything GPU.
+*PacMap from [Wang et. al.](https://arxiv.org/abs/2012.04456), that
+should preserve global structure better.* (Done with version 0.1.1)
+
+*GPU-accelerated versions*
+[bixverse.gpu](https://github.com/GregorLueg/bixverse.gpu) contains now
+GPU-accelerated kNN searches for the embedding methods and a
+GPU-accelerated Adam optimiser for UMAP.
+
+Density-preserving versions of UMAP and tSNE, see [Narayan, et
+al.](https://www.nature.com/articles/s41587-020-00801-7)
 
 ## License
 

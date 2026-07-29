@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Nearest neighbour searches • manifoldsR</title>
-<script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
@@ -19,7 +19,7 @@
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
-    <nav class="navbar navbar-expand-lg fixed-top bg-dark" data-bs-theme="dark" aria-label="Site navigation"><div class="container">
+    <nav class="navbar navbar-expand-lg fixed-top " aria-label="Site navigation"><div class="container">
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
@@ -33,6 +33,7 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
@@ -45,12 +46,19 @@
     <li><a class="dropdown-item" href="../articles/clustering.html">Clustering methods in manifoldsR (with emphasis on EVoC)</a></li>
   </ul>
 </li>
-<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
 <ul class="navbar-nav">
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-lightswitch" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="Light switch"><span class="fa fa-sun"></span></button>
+  <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-lightswitch">
+<li><button class="dropdown-item" data-bs-theme-value="light"><span class="fa fa-sun"></span> Light</button></li>
+    <li><button class="dropdown-item" data-bs-theme-value="dark"><span class="fa fa-moon"></span> Dark</button></li>
+    <li><button class="dropdown-item" data-bs-theme-value="auto"><span class="fa fa-adjust"></span> Auto</button></li>
+  </ul>
+</li>
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/GregorLueg/manifoldsR" aria-label="GitHub"><span class="fa fab fa-github"></span></a></li>
       </ul>
 </div>
@@ -64,7 +72,7 @@
       <h1>Nearest neighbour searches</h1>
 
       <p class="author">Gregor Lueg</p>
-      <p class="date">2026-07-28</p>
+      <p class="date">2026-07-29</p>
 
 
       <div class="d-none name"><code></code></div>
@@ -272,13 +280,13 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: milliseconds</span></span>
 <span><span class="co">#&gt;        expr       min        lq      mean    median        uq       max neval</span></span>
-<span><span class="co">#&gt;  exhaustive  5.904036  5.904036  5.904036  5.904036  5.904036  5.904036     1</span></span>
-<span><span class="co">#&gt;       kmknn  5.433729  5.433729  5.433729  5.433729  5.433729  5.433729     1</span></span>
-<span><span class="co">#&gt;       annoy 26.633997 26.633997 26.633997 26.633997 26.633997 26.633997     1</span></span>
-<span><span class="co">#&gt;        hnsw 17.697472 17.697472 17.697472 17.697472 17.697472 17.697472     1</span></span>
-<span><span class="co">#&gt;    balltree  3.817867  3.817867  3.817867  3.817867  3.817867  3.817867     1</span></span>
-<span><span class="co">#&gt;   nndescent 43.926492 43.926492 43.926492 43.926492 43.926492 43.926492     1</span></span>
-<span><span class="co">#&gt;         ivf  6.022316  6.022316  6.022316  6.022316  6.022316  6.022316     1</span></span></code></pre></div>
+<span><span class="co">#&gt;  exhaustive  5.917987  5.917987  5.917987  5.917987  5.917987  5.917987     1</span></span>
+<span><span class="co">#&gt;       kmknn  5.685763  5.685763  5.685763  5.685763  5.685763  5.685763     1</span></span>
+<span><span class="co">#&gt;       annoy 27.012877 27.012877 27.012877 27.012877 27.012877 27.012877     1</span></span>
+<span><span class="co">#&gt;        hnsw 17.704463 17.704463 17.704463 17.704463 17.704463 17.704463     1</span></span>
+<span><span class="co">#&gt;    balltree  3.916124  3.916124  3.916124  3.916124  3.916124  3.916124     1</span></span>
+<span><span class="co">#&gt;   nndescent 43.301368 43.301368 43.301368 43.301368 43.301368 43.301368     1</span></span>
+<span><span class="co">#&gt;         ivf  6.122178  6.122178  6.122178  6.122178  6.122178  6.122178     1</span></span></code></pre></div>
 </div>
 <p>On small datasets, the exhaustive search beats everything. We need to build the indices in the other methods, a cost that only makes sense when we have sufficient samples to do this. Otherwise, modern CPUs with SIMD can do the necessary <code>O(N^2)</code> in no time on smaller datasets. What about 50k cells?</p>
 <div class="cell">
@@ -352,13 +360,13 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;        expr       min        lq      mean    median        uq       max neval</span></span>
-<span><span class="co">#&gt;  exhaustive 11.620849 11.620849 11.620849 11.620849 11.620849 11.620849     1</span></span>
-<span><span class="co">#&gt;       kmknn  2.590055  2.590055  2.590055  2.590055  2.590055  2.590055     1</span></span>
-<span><span class="co">#&gt;       annoy  3.197579  3.197579  3.197579  3.197579  3.197579  3.197579     1</span></span>
-<span><span class="co">#&gt;        hnsw  2.473022  2.473022  2.473022  2.473022  2.473022  2.473022     1</span></span>
-<span><span class="co">#&gt;    balltree  1.650115  1.650115  1.650115  1.650115  1.650115  1.650115     1</span></span>
-<span><span class="co">#&gt;   nndescent  2.906874  2.906874  2.906874  2.906874  2.906874  2.906874     1</span></span>
-<span><span class="co">#&gt;         ivf  2.752986  2.752986  2.752986  2.752986  2.752986  2.752986     1</span></span></code></pre></div>
+<span><span class="co">#&gt;  exhaustive 11.624150 11.624150 11.624150 11.624150 11.624150 11.624150     1</span></span>
+<span><span class="co">#&gt;       kmknn  2.593113  2.593113  2.593113  2.593113  2.593113  2.593113     1</span></span>
+<span><span class="co">#&gt;       annoy  3.388961  3.388961  3.388961  3.388961  3.388961  3.388961     1</span></span>
+<span><span class="co">#&gt;        hnsw  2.634895  2.634895  2.634895  2.634895  2.634895  2.634895     1</span></span>
+<span><span class="co">#&gt;    balltree  1.648103  1.648103  1.648103  1.648103  1.648103  1.648103     1</span></span>
+<span><span class="co">#&gt;   nndescent  2.929572  2.929572  2.929572  2.929572  2.929572  2.929572     1</span></span>
+<span><span class="co">#&gt;         ivf  2.785000  2.785000  2.785000  2.785000  2.785000  2.785000     1</span></span></code></pre></div>
 </div>
 <p>We start observing the first pattern, that the approximate nearest neighbour searches are faster than the exhaustive search. The delta becomes more pronounced with more samples:</p>
 <div class="cell">
@@ -433,13 +441,13 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;        expr       min        lq      mean    median        uq       max neval</span></span>
-<span><span class="co">#&gt;  exhaustive 46.762756 46.762756 46.762756 46.762756 46.762756 46.762756     1</span></span>
-<span><span class="co">#&gt;       kmknn  7.679564  7.679564  7.679564  7.679564  7.679564  7.679564     1</span></span>
-<span><span class="co">#&gt;       annoy  8.049877  8.049877  8.049877  8.049877  8.049877  8.049877     1</span></span>
-<span><span class="co">#&gt;        hnsw  6.133054  6.133054  6.133054  6.133054  6.133054  6.133054     1</span></span>
-<span><span class="co">#&gt;    balltree  6.486273  6.486273  6.486273  6.486273  6.486273  6.486273     1</span></span>
-<span><span class="co">#&gt;   nndescent  6.303465  6.303465  6.303465  6.303465  6.303465  6.303465     1</span></span>
-<span><span class="co">#&gt;         ivf 10.780254 10.780254 10.780254 10.780254 10.780254 10.780254     1</span></span></code></pre></div>
+<span><span class="co">#&gt;  exhaustive 46.712418 46.712418 46.712418 46.712418 46.712418 46.712418     1</span></span>
+<span><span class="co">#&gt;       kmknn  7.708205  7.708205  7.708205  7.708205  7.708205  7.708205     1</span></span>
+<span><span class="co">#&gt;       annoy  8.736200  8.736200  8.736200  8.736200  8.736200  8.736200     1</span></span>
+<span><span class="co">#&gt;        hnsw  6.767862  6.767862  6.767862  6.767862  6.767862  6.767862     1</span></span>
+<span><span class="co">#&gt;    balltree  8.055867  8.055867  8.055867  8.055867  8.055867  8.055867     1</span></span>
+<span><span class="co">#&gt;   nndescent  6.899856  6.899856  6.899856  6.899856  6.899856  6.899856     1</span></span>
+<span><span class="co">#&gt;         ivf 10.945916 10.945916 10.945916 10.945916 10.945916 10.945916     1</span></span></code></pre></div>
 </div>
 </section><section class="level3"><h4 id="precision">Precision<a class="anchor" aria-label="anchor" href="#precision"></a>
 </h4>
