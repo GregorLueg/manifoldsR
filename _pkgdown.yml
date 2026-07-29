@@ -2,21 +2,22 @@ url: https://gregorlueg.github.io/manifoldsR/
 
 template:
   bootstrap: 5
-  bootswatch: solar
+  bootswatch: lux
+  light-switch: true
   bslib:
-    primary: "#268bd2"
-    border-radius: 0.4rem
-    btn-border-radius: 0.4rem
-  includes:
-    in_header: ""
-  css: pkgdown/extra.css
+    # lux uses navbar-padding-y: 1.5rem, so pkgdown's 56px default is too small
+    pkgdown-nav-height: 104px
 home:
   title: "manifoldsR"
-  description: "Fast(!) manifold embedding learning methods powered by Rust"
+  description: 
+    "Contains different methods to generate embeddings like UMAP, tSNE, PHATE 
+    and PacMap. Morever, has methods to generate nearest neighbour graphs and 
+    now also some clustering algorithms that are based on embedding methods 
+    (EVoC) and more general clustering methods like k-means."
 navbar:
   structure:
-    left: [intro, reference, articles, news]
-    right: [search, github]
+    left: [intro, reference, news, articles]
+    right: [search, lightswitch, github]
   components:
     github:
       icon: fab fa-github
