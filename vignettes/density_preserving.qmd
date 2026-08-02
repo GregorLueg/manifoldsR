@@ -110,13 +110,13 @@ embedding keeps it.
 umap_clusters <- umap(
   data = cluster_data$data,
   seed = 42L,
-  .verbose = FALSE
+  .verbose = TRUE
 )
 
 densmap_clusters <- densmap(
   data = cluster_data$data,
   seed = 42L,
-  .verbose = FALSE
+  .verbose = TRUE
 )
 ```
 
@@ -154,9 +154,9 @@ with the Spearman correlation between input and embedding radii:
 
 ```{r}
 #| label: cluster data - umap vs densmap correlation
-dens_cor <- function(embd) {
+dens_cor <- function(embd, radii = original_radii) {
   round(
-    cor(original_radii, local_radii(embd), method = "spearman"),
+    cor(radii, local_radii(embd), method = "spearman"),
     3
   )
 }
@@ -193,16 +193,16 @@ Same data, same story, different loss.
 #| label: cluster data - tsne vs densne
 tsne_clusters <- tsne(
   data = cluster_data$data,
-  perplexity = 30,
+  perplexity = 15,
   seed = 42L,
-  .verbose = FALSE
+  .verbose = TRUE
 )
 
 densne_clusters <- densne(
   data = cluster_data$data,
-  perplexity = 30,
+  perplexity = 15,
   seed = 42L,
-  .verbose = FALSE
+  .verbose = TRUE
 )
 ```
 
@@ -328,7 +328,7 @@ densmap_from_knn <- densmap(
   data = cluster_data$data,
   knn = knn,
   seed = 42L,
-  .verbose = FALSE
+  .verbose = TRUE
 )
 
 densne_from_knn <- densne(
@@ -336,7 +336,7 @@ densne_from_knn <- densne(
   knn = knn,
   perplexity = 30,
   seed = 42L,
-  .verbose = FALSE
+  .verbose = TRUE
 )
 
 data.table(
@@ -348,27 +348,56 @@ data.table(
 ## Tuning lambda
 
 The usual framing is that `lambda` trades cluster separation against density
-fidelity. Sweep it and check whether that actually holds here:
+fidelity. Sweep it and check whether that actually holds here. We wil will be
+using a smaller data set to do the sweep.
+
+```{r}
+#| label: smaller data
+cluster_data_small <- manifold_synthetic_data(
+  type = "clusters",
+  n_samples = 2000L,
+  parameters = params_clusters(n_clusters = 8L)
+)
+
+original_radii_small <- local_radii(cluster_data_small$data)
+
+data.table(
+  cluster = as.factor(cluster_data_small$membership),
+  radius = original_radii_small
+)[, .(mean_log_radius = round(mean(radius), 2)), by = cluster][order(cluster)]
+```
+
+```{r}
+#| label: knn of small data
+knn_small <- generate_knn_graph(
+  data = cluster_data_small$data,
+  k = 90L,
+  knn_method = "kmknn",
+  .verbose = FALSE
+)
+```
+
+And now the actual sweep.
 
 ```{r}
 #| label: lambda sweep
 lambda_sweep <- rbindlist(lapply(c(0, 0.5, 2, 5, 10), \(l) {
   embd <- densmap(
-    data = cluster_data$data,
-    knn = knn,
+    data = cluster_data_small$data,
+    knn = knn_small,
     dens_params = params_densmap(lambda = l),
     seed = 42L,
-    .verbose = FALSE
+    .verbose = TRUE
   )
 
   sep <- rs_check_cluster_separation(
     embd = embd,
-    cluster_membership = as.integer(cluster_data$membership)
+    cluster_membership = as.integer(cluster_data_small$membership)
   )
 
   data.table(
     lambda = l,
-    rho = dens_cor(embd),
+    rho = dens_cor(embd, radii = original_radii_small),
     separation = round(mean(sep$between_dists) / mean(sep$within_dists), 2)
   )
 }))
@@ -381,14 +410,18 @@ lambda_sweep
 ggplot(data = lambda_sweep, mapping = aes(x = lambda)) +
   geom_line(mapping = aes(y = rho, colour = "density fidelity (rho)")) +
   geom_point(mapping = aes(y = rho, colour = "density fidelity (rho)")) +
-  geom_line(mapping = aes(
-    y = separation / max(separation),
-    colour = "cluster separation (scaled)"
-  )) +
-  geom_point(mapping = aes(
-    y = separation / max(separation),
-    colour = "cluster separation (scaled)"
-  )) +
+  geom_line(
+    mapping = aes(
+      y = separation / max(separation),
+      colour = "cluster separation (scaled)"
+    )
+  ) +
+  geom_point(
+    mapping = aes(
+      y = separation / max(separation),
+      colour = "cluster separation (scaled)"
+    )
+  ) +
   labs(y = NULL, colour = NULL) +
   theme_bw() +
   theme(legend.position = "bottom") +
@@ -409,5 +442,4 @@ sane starting point precisely because it sits on the flat part of both curves.
 
 The obvious extension is exposing the local radii themselves rather than
 recomputing a proxy in R, so you could colour by what the optimiser actually
-saw. There is also a GPU densMAP in `manifolds-rs` that has not been wired up
-here yet. Watch this space.
+saw.  

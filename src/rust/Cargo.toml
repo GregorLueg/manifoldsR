@@ -1,7 +1,7 @@
 [package]
 name = 'manifoldsr'
 publish = false
-version = '0.2.6'
+version = '0.2.8'
 edition = '2021'
 rust-version = '1.90'
 
@@ -10,8 +10,8 @@ crate-type = ['staticlib', 'rlib']
 name = 'manifoldsR'
 
 [dependencies]
-ann-search-rs = "0.4.4"
-bixverse-rs = "0.3.7"
+ann-search-rs = "0.4.5"
+bixverse-rs = "0.3.11"
 extendr-api = "0.9.0"
 evoc-rs = "0.2.4"
 faer = "0.23.2"
@@ -22,14 +22,9 @@ rayon = "1.11.0"
 rustc-hash = "2.1.2"
 rand_distr = "0.5.1"
 [target.'cfg(not(windows))'.dependencies]
-manifolds-rs = { version = "0.3.9", features = [ "fft_tsne" ] }
+manifolds-rs = { version = "0.3.11", features = [ "fft_tsne" ] }
 [target.'cfg(windows)'.dependencies]
-manifolds-rs = { version = "0.3.9" }
-
-# LOCAL ONLY - remove before release, once manifolds-rs 0.3.10 is on crates.io.
-# Needed for densMAP and den-SNE, which live on the unreleased 0.3.10.
-[patch.crates-io]
-manifolds-rs = { path = "/Users/gregorlueg/repos/shared/manifold-rs" }
+manifolds-rs = { version = "0.3.11" }
 
 [profile.test]
 opt-level = 3
