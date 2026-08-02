@@ -26,6 +26,11 @@ manifolds-rs = { version = "0.3.9", features = [ "fft_tsne" ] }
 [target.'cfg(windows)'.dependencies]
 manifolds-rs = { version = "0.3.9" }
 
+# LOCAL ONLY - remove before release, once manifolds-rs 0.3.10 is on crates.io.
+# Needed for densMAP and den-SNE, which live on the unreleased 0.3.10.
+[patch.crates-io]
+manifolds-rs = { path = "/Users/gregorlueg/repos/shared/manifold-rs" }
+
 [profile.test]
 opt-level = 3
 debug = false

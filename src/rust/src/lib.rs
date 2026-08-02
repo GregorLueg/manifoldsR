@@ -43,6 +43,10 @@ extendr_module! {
     fn rs_umap_from_knn;
     fn rs_tsne;
     fn rs_tsne_from_knn;
+    fn rs_densmap;
+    fn rs_densmap_from_knn;
+    fn rs_densne;
+    fn rs_densne_from_knn;
     fn rs_phate;
     fn rs_phate_from_knn;
     fn rs_pacmap;
@@ -498,6 +502,394 @@ fn rs_tsne_from_knn(
                 &approx_type,
                 perplexity,
                 tsne_params,
+                seed,
+                verbose,
+            )
+            .to_extendr()?;
+
+            Ok(faer_to_r_matrix(res.as_ref()))
+        }
+    }
+}
+
+/////////////
+// densMAP //
+/////////////
+
+/// densMAP implementation
+///
+/// @description
+/// `r lifecycle::badge("experimental")`
+/// Leverages the densMAP implementation in manifolds-rs - a very fast
+/// Rust-based implementation. densMAP is UMAP with an added density-preserving
+/// term, so tight clusters stay tight and diffuse ones stay diffuse. Setting
+/// `lambda` to `0` in the parameters recovers plain UMAP.
+///
+/// @param embd Numerical matrix. The data to use to generate the embeddings.
+/// Should be of dimensions samples x features.
+/// @param n_dim Integer. Number of densMAP dimensions to return.
+/// @param min_dist Numeric. Minimum distance to use.
+/// @param spread Numeric. Spread parameter to use.
+/// @param k Integer. Number of nearest neighbours to consider
+/// @param densmap_params Named list. List that contains all of the key
+/// parameters for the densMAP generation, i.e. the UMAP ones plus `lambda`,
+/// `frac` and `var_shift`.
+/// @param seed Integer. Seed for reproducibility.
+/// @param use_high_precision Optional logical. Controls `fp32` vs `fp64` for.
+/// If `NULL` will use sensible default thresholding.
+/// @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
+/// for detailed verbosity.
+///
+/// @return The densMAP embeddings.
+///
+/// @references Narayan, Berger & Cho, Nature Biotechnology, 2021
+///
+/// @export
+#[extendr]
+#[allow(clippy::too_many_arguments)]
+fn rs_densmap(
+    embd: RMatrix<f64>,
+    n_dim: usize,
+    min_dist: f64,
+    spread: f64,
+    k: usize,
+    densmap_params: List,
+    seed: usize,
+    use_high_precision: Nullable<Rbool>,
+    verbose: usize,
+) -> extendr_api::Result<RMatrix<f64>> {
+    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let precision = parse_precision(use_high_precision, embd.nrows());
+
+    match precision {
+        FloatingPointPrecision::FP32 => {
+            if verbosity.detailed_verbosity() {
+                println!("Lower precision (fp32) path chosen.")
+            }
+
+            let embd = r_matrix_to_faer_fp32(&embd);
+
+            let res = densmap_manifold(
+                embd.as_ref(),
+                None,
+                n_dim,
+                k,
+                min_dist,
+                spread,
+                densmap_params,
+                seed,
+                verbose,
+            )
+            .to_extendr()?;
+
+            Ok(faer_to_r_matrix(res.as_ref()))
+        }
+        FloatingPointPrecision::FP64 => {
+            if verbosity.detailed_verbosity() {
+                println!("Higher precision (fp64) path chosen.")
+            }
+
+            let embd = r_matrix_to_faer(&embd);
+
+            let res = densmap_manifold(
+                embd.as_ref(),
+                None,
+                n_dim,
+                k,
+                min_dist,
+                spread,
+                densmap_params,
+                seed,
+                verbose,
+            )
+            .to_extendr()?;
+
+            Ok(faer_to_r_matrix(res.as_ref()))
+        }
+    }
+}
+
+/// densMAP implementation
+///
+/// @description
+/// `r lifecycle::badge("experimental")`
+/// Leverages the densMAP implementation in manifolds-rs - a very fast
+/// Rust-based implementation. densMAP is UMAP with an added density-preserving
+/// term, so tight clusters stay tight and diffuse ones stay diffuse. This
+/// version uses a pre-computed kNN graph, please see [new_nearest_neighbour()].
+///
+/// @param embd Numerical matrix. The data to use to generate the embeddings.
+/// Should be of dimensions samples x features.
+/// @param knn_data `NearestNeighbours` class from R.
+/// @param n_dim Integer. Number of densMAP dimensions to return.
+/// @param min_dist Numeric. Minimum distance to use.
+/// @param spread Numeric. Spread parameter to use.
+/// @param k Integer. Number of nearest neighbours to consider
+/// @param densmap_params Named list. List that contains all of the key
+/// parameters for the densMAP generation, i.e. the UMAP ones plus `lambda`,
+/// `frac` and `var_shift`.
+/// @param seed Integer. Seed for reproducibility.
+/// @param use_high_precision Optional logical. Controls `fp32` vs `fp64` for.
+/// If `NULL` will use sensible default thresholding.
+/// @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
+/// for detailed verbosity.
+///
+/// @return The densMAP embeddings.
+///
+/// @references Narayan, Berger & Cho, Nature Biotechnology, 2021
+///
+/// @export
+#[extendr]
+#[allow(clippy::too_many_arguments)]
+fn rs_densmap_from_knn(
+    embd: RMatrix<f64>,
+    knn_data: List,
+    n_dim: usize,
+    min_dist: f64,
+    spread: f64,
+    k: usize,
+    densmap_params: List,
+    seed: usize,
+    use_high_precision: Nullable<Rbool>,
+    verbose: usize,
+) -> extendr_api::Result<RMatrix<f64>> {
+    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let precision = parse_precision(use_high_precision, embd.nrows());
+
+    match precision {
+        FloatingPointPrecision::FP32 => {
+            if verbosity.detailed_verbosity() {
+                println!("Lower precision (fp32) path chosen.")
+            }
+
+            let embd = r_matrix_to_faer_fp32(&embd);
+
+            let knn = nearest_neighbours_to_rust(knn_data);
+
+            let res = densmap_manifold(
+                embd.as_ref(),
+                knn,
+                n_dim,
+                k,
+                min_dist,
+                spread,
+                densmap_params,
+                seed,
+                verbose,
+            )
+            .to_extendr()?;
+
+            Ok(faer_to_r_matrix(res.as_ref()))
+        }
+        FloatingPointPrecision::FP64 => {
+            if verbosity.detailed_verbosity() {
+                println!("Higher precision (fp64) path chosen.")
+            }
+
+            let embd = r_matrix_to_faer(&embd);
+
+            let knn = nearest_neighbours_to_rust(knn_data);
+
+            let res = densmap_manifold(
+                embd.as_ref(),
+                knn,
+                n_dim,
+                k,
+                min_dist,
+                spread,
+                densmap_params,
+                seed,
+                verbose,
+            )
+            .to_extendr()?;
+
+            Ok(faer_to_r_matrix(res.as_ref()))
+        }
+    }
+}
+
+////////////
+// denSNE //
+////////////
+
+/// den-SNE implementation
+///
+/// @description
+/// `r lifecycle::badge("experimental")`
+/// Leverages the den-SNE implementation in manifolds-rs - a very fast
+/// Rust-based implementation. den-SNE is tSNE with an added density-preserving
+/// term, so tight clusters stay tight and diffuse ones stay diffuse. Setting
+/// `lambda` to `0` in the parameters recovers plain tSNE.
+///
+/// @param embd Numerical matrix. The data to use to generate the embeddings.
+/// Should be of dimensions samples x features.
+/// @param n_dim Integer. Number of den-SNE dimensions to return. Needs to be
+/// two, others are not supported.
+/// @param perplexity Numeric. The tSNE perplexity parameter.
+/// @param approx_type String. One of `c("fft", "bh")`. Which of the two
+/// approximations to use.
+/// @param densne_params Named list. List that contains all of the key
+/// parameters for the den-SNE generation, i.e. the tSNE ones plus `lambda`,
+/// `frac` and `var_shift`.
+/// @param seed Integer. Seed for reproducibility.
+/// @param use_high_precision Optional logical. Controls `fp32` vs `fp64` for.
+/// If `NULL` will use sensible default thresholding.
+/// @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
+/// for detailed verbosity.
+///
+/// @return The den-SNE embeddings.
+///
+/// @references Narayan, Berger & Cho, Nature Biotechnology, 2021
+///
+/// @export
+#[extendr]
+#[allow(clippy::too_many_arguments)]
+fn rs_densne(
+    embd: RMatrix<f64>,
+    n_dim: usize,
+    perplexity: f64,
+    approx_type: String,
+    densne_params: List,
+    seed: usize,
+    use_high_precision: Nullable<Rbool>,
+    verbose: usize,
+) -> extendr_api::Result<RMatrix<f64>> {
+    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let precision = parse_precision(use_high_precision, embd.nrows());
+
+    match precision {
+        FloatingPointPrecision::FP32 => {
+            if verbosity.detailed_verbosity() {
+                println!("Lower precision (fp32) path chosen.")
+            }
+
+            let embd = r_matrix_to_faer_fp32(&embd);
+
+            let res = densne_manifold(
+                embd.as_ref(),
+                None,
+                n_dim,
+                &approx_type,
+                perplexity as f32,
+                densne_params,
+                seed,
+                verbose,
+            )
+            .to_extendr()?;
+
+            Ok(faer_to_r_matrix(res.as_ref()))
+        }
+        FloatingPointPrecision::FP64 => {
+            if verbosity.detailed_verbosity() {
+                println!("Larger data set. Using high precision floats.")
+            }
+
+            let embd = r_matrix_to_faer(&embd);
+
+            let res = densne_manifold(
+                embd.as_ref(),
+                None,
+                n_dim,
+                &approx_type,
+                perplexity,
+                densne_params,
+                seed,
+                verbose,
+            )
+            .to_extendr()?;
+
+            Ok(faer_to_r_matrix(res.as_ref()))
+        }
+    }
+}
+
+/// den-SNE implementation
+///
+/// @description
+/// `r lifecycle::badge("experimental")`
+/// Leverages the den-SNE implementation in manifolds-rs - a very fast
+/// Rust-based implementation. den-SNE is tSNE with an added density-preserving
+/// term, so tight clusters stay tight and diffuse ones stay diffuse. This
+/// version uses a pre-computed kNN graph, please see [new_nearest_neighbour()].
+///
+/// @param embd Numerical matrix. The data to use to generate the embeddings.
+/// Should be of dimensions samples x features.
+/// @param knn_data `NearestNeighbours` class from R.
+/// @param n_dim Integer. Number of den-SNE dimensions to return. Needs to be
+/// two, others are not supported.
+/// @param perplexity Numeric. The tSNE perplexity parameter.
+/// @param approx_type String. One of `c("fft", "bh")`. Which of the two
+/// approximations to use.
+/// @param densne_params Named list. List that contains all of the key
+/// parameters for the den-SNE generation, i.e. the tSNE ones plus `lambda`,
+/// `frac` and `var_shift`.
+/// @param seed Integer. Seed for reproducibility.
+/// @param use_high_precision Optional logical. Controls `fp32` vs `fp64` for.
+/// If `NULL` will use sensible default thresholding.
+/// @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
+/// for detailed verbosity.
+///
+/// @return The den-SNE embeddings.
+///
+/// @references Narayan, Berger & Cho, Nature Biotechnology, 2021
+///
+/// @export
+#[extendr]
+#[allow(clippy::too_many_arguments)]
+fn rs_densne_from_knn(
+    embd: RMatrix<f64>,
+    knn_data: List,
+    n_dim: usize,
+    perplexity: f64,
+    approx_type: String,
+    densne_params: List,
+    seed: usize,
+    use_high_precision: Nullable<Rbool>,
+    verbose: usize,
+) -> extendr_api::Result<RMatrix<f64>> {
+    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let precision = parse_precision(use_high_precision, embd.nrows());
+
+    match precision {
+        FloatingPointPrecision::FP32 => {
+            if verbosity.detailed_verbosity() {
+                println!("Lower precision (fp32) path chosen.")
+            }
+
+            let embd = r_matrix_to_faer_fp32(&embd);
+
+            let knn = nearest_neighbours_to_rust(knn_data);
+
+            let res = densne_manifold(
+                embd.as_ref(),
+                knn,
+                n_dim,
+                &approx_type,
+                perplexity as f32,
+                densne_params,
+                seed,
+                verbose,
+            )
+            .to_extendr()?;
+
+            Ok(faer_to_r_matrix(res.as_ref()))
+        }
+        FloatingPointPrecision::FP64 => {
+            if verbosity.detailed_verbosity() {
+                println!("Larger data set. Using high precision floats.")
+            }
+
+            let embd = r_matrix_to_faer(&embd);
+
+            let knn = nearest_neighbours_to_rust(knn_data);
+
+            let res = densne_manifold(
+                embd.as_ref(),
+                knn,
+                n_dim,
+                &approx_type,
+                perplexity,
+                densne_params,
                 seed,
                 verbose,
             )

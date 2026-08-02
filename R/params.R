@@ -215,6 +215,86 @@ params_tsne <- function(
   )
 }
 
+## density-preserving ----------------------------------------------------------
+
+#' Wrapper function to generate densMAP parameters
+#'
+#' @description
+#' The density-preservation knobs on top of the usual UMAP parameters. densMAP
+#' adds `-lambda * Corr(log Ro, log Re)` to the UMAP loss, where `Ro` is the
+#' local radius in the input space and `Re` the matching radius in the
+#' embedding. Setting `lambda` to `0` recovers plain UMAP.
+#'
+#' @param lambda Numeric. Weight of the density term. `0` disables it. Defaults
+#' to `2.0`, the densMAP reference value.
+#' @param frac Numeric between 0 and 1. Fraction of the total epochs, at the
+#' end of the run, over which the density term is active. Defaults to `0.3`.
+#' @param var_shift Numeric. Additive shift on the variance of the embedding
+#' log-radii. Defaults to `0.1`.
+#'
+#' @returns A list with the density-preservation parameters.
+#'
+#' @export
+#'
+#' @references Narayan, Berger & Cho, Nat. Biotechnol., 2021
+params_densmap <- function(
+  lambda = 2.0,
+  frac = 0.3,
+  var_shift = 0.1
+) {
+  # checks
+  checkmate::qassert(lambda, "N1[0,)")
+  checkmate::qassert(frac, "N1[0,1]")
+  checkmate::qassert(var_shift, "N1[0,)")
+
+  # return
+  list(
+    lambda = lambda,
+    frac = frac,
+    var_shift = var_shift
+  )
+}
+
+#' Wrapper function to generate den-SNE parameters
+#'
+#' @description
+#' The density-preservation knobs on top of the usual t-SNE parameters. den-SNE
+#' adds `-lambda * Corr(log Ro, log Re)` to the t-SNE loss, where `Ro` is the
+#' local radius in the input space and `Re` the matching radius in the
+#' embedding. Setting `lambda` to `0` recovers plain t-SNE. The default weight
+#' is twenty times smaller than the densMAP one, matching the reference
+#' implementations.
+#'
+#' @param lambda Numeric. Weight of the density term. `0` disables it. Defaults
+#' to `0.1`, the den-SNE reference value.
+#' @param frac Numeric between 0 and 1. Fraction of the total epochs, at the
+#' end of the run, over which the density term is active. Defaults to `0.3`.
+#' @param var_shift Numeric. Additive shift on the variance of the embedding
+#' log-radii. Defaults to `0.1`.
+#'
+#' @returns A list with the density-preservation parameters.
+#'
+#' @export
+#'
+#' @references Narayan, Berger & Cho, Nat. Biotechnol., 2021
+params_densne <- function(
+  lambda = 0.1,
+  frac = 0.3,
+  var_shift = 0.1
+) {
+  # checks
+  checkmate::qassert(lambda, "N1[0,)")
+  checkmate::qassert(frac, "N1[0,1]")
+  checkmate::qassert(var_shift, "N1[0,)")
+
+  # return
+  list(
+    lambda = lambda,
+    frac = frac,
+    var_shift = var_shift
+  )
+}
+
 ## phate -----------------------------------------------------------------------
 
 #' Wrapper function to generate PHATE parameters

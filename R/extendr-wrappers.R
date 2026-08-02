@@ -117,6 +117,134 @@ rs_tsne <- function(embd, n_dim, perplexity, approx_type, tsne_params, seed, use
 #' @export
 rs_tsne_from_knn <- function(embd, knn_data, n_dim, perplexity, approx_type, tsne_params, seed, use_high_precision, verbose) .Call(wrap__rs_tsne_from_knn, embd, knn_data, n_dim, perplexity, approx_type, tsne_params, seed, use_high_precision, verbose)
 
+#' densMAP implementation
+#'
+#' @description
+#' `r lifecycle::badge("experimental")`
+#' Leverages the densMAP implementation in manifolds-rs - a very fast
+#' Rust-based implementation. densMAP is UMAP with an added density-preserving
+#' term, so tight clusters stay tight and diffuse ones stay diffuse. Setting
+#' `lambda` to `0` in the parameters recovers plain UMAP.
+#'
+#' @param embd Numerical matrix. The data to use to generate the embeddings.
+#' Should be of dimensions samples x features.
+#' @param n_dim Integer. Number of densMAP dimensions to return.
+#' @param min_dist Numeric. Minimum distance to use.
+#' @param spread Numeric. Spread parameter to use.
+#' @param k Integer. Number of nearest neighbours to consider
+#' @param densmap_params Named list. List that contains all of the key
+#' parameters for the densMAP generation, i.e. the UMAP ones plus `lambda`,
+#' `frac` and `var_shift`.
+#' @param seed Integer. Seed for reproducibility.
+#' @param use_high_precision Optional logical. Controls `fp32` vs `fp64` for.
+#' If `NULL` will use sensible default thresholding.
+#' @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
+#' for detailed verbosity.
+#'
+#' @return The densMAP embeddings.
+#'
+#' @references Narayan, Berger & Cho, Nature Biotechnology, 2021
+#'
+#' @export
+rs_densmap <- function(embd, n_dim, min_dist, spread, k, densmap_params, seed, use_high_precision, verbose) .Call(wrap__rs_densmap, embd, n_dim, min_dist, spread, k, densmap_params, seed, use_high_precision, verbose)
+
+#' densMAP implementation
+#'
+#' @description
+#' `r lifecycle::badge("experimental")`
+#' Leverages the densMAP implementation in manifolds-rs - a very fast
+#' Rust-based implementation. densMAP is UMAP with an added density-preserving
+#' term, so tight clusters stay tight and diffuse ones stay diffuse. This
+#' version uses a pre-computed kNN graph, please see [new_nearest_neighbour()].
+#'
+#' @param embd Numerical matrix. The data to use to generate the embeddings.
+#' Should be of dimensions samples x features.
+#' @param knn_data `NearestNeighbours` class from R.
+#' @param n_dim Integer. Number of densMAP dimensions to return.
+#' @param min_dist Numeric. Minimum distance to use.
+#' @param spread Numeric. Spread parameter to use.
+#' @param k Integer. Number of nearest neighbours to consider
+#' @param densmap_params Named list. List that contains all of the key
+#' parameters for the densMAP generation, i.e. the UMAP ones plus `lambda`,
+#' `frac` and `var_shift`.
+#' @param seed Integer. Seed for reproducibility.
+#' @param use_high_precision Optional logical. Controls `fp32` vs `fp64` for.
+#' If `NULL` will use sensible default thresholding.
+#' @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
+#' for detailed verbosity.
+#'
+#' @return The densMAP embeddings.
+#'
+#' @references Narayan, Berger & Cho, Nature Biotechnology, 2021
+#'
+#' @export
+rs_densmap_from_knn <- function(embd, knn_data, n_dim, min_dist, spread, k, densmap_params, seed, use_high_precision, verbose) .Call(wrap__rs_densmap_from_knn, embd, knn_data, n_dim, min_dist, spread, k, densmap_params, seed, use_high_precision, verbose)
+
+#' den-SNE implementation
+#'
+#' @description
+#' `r lifecycle::badge("experimental")`
+#' Leverages the den-SNE implementation in manifolds-rs - a very fast
+#' Rust-based implementation. den-SNE is tSNE with an added density-preserving
+#' term, so tight clusters stay tight and diffuse ones stay diffuse. Setting
+#' `lambda` to `0` in the parameters recovers plain tSNE.
+#'
+#' @param embd Numerical matrix. The data to use to generate the embeddings.
+#' Should be of dimensions samples x features.
+#' @param n_dim Integer. Number of den-SNE dimensions to return. Needs to be
+#' two, others are not supported.
+#' @param perplexity Numeric. The tSNE perplexity parameter.
+#' @param approx_type String. One of `c("fft", "bh")`. Which of the two
+#' approximations to use.
+#' @param densne_params Named list. List that contains all of the key
+#' parameters for the den-SNE generation, i.e. the tSNE ones plus `lambda`,
+#' `frac` and `var_shift`.
+#' @param seed Integer. Seed for reproducibility.
+#' @param use_high_precision Optional logical. Controls `fp32` vs `fp64` for.
+#' If `NULL` will use sensible default thresholding.
+#' @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
+#' for detailed verbosity.
+#'
+#' @return The den-SNE embeddings.
+#'
+#' @references Narayan, Berger & Cho, Nature Biotechnology, 2021
+#'
+#' @export
+rs_densne <- function(embd, n_dim, perplexity, approx_type, densne_params, seed, use_high_precision, verbose) .Call(wrap__rs_densne, embd, n_dim, perplexity, approx_type, densne_params, seed, use_high_precision, verbose)
+
+#' den-SNE implementation
+#'
+#' @description
+#' `r lifecycle::badge("experimental")`
+#' Leverages the den-SNE implementation in manifolds-rs - a very fast
+#' Rust-based implementation. den-SNE is tSNE with an added density-preserving
+#' term, so tight clusters stay tight and diffuse ones stay diffuse. This
+#' version uses a pre-computed kNN graph, please see [new_nearest_neighbour()].
+#'
+#' @param embd Numerical matrix. The data to use to generate the embeddings.
+#' Should be of dimensions samples x features.
+#' @param knn_data `NearestNeighbours` class from R.
+#' @param n_dim Integer. Number of den-SNE dimensions to return. Needs to be
+#' two, others are not supported.
+#' @param perplexity Numeric. The tSNE perplexity parameter.
+#' @param approx_type String. One of `c("fft", "bh")`. Which of the two
+#' approximations to use.
+#' @param densne_params Named list. List that contains all of the key
+#' parameters for the den-SNE generation, i.e. the tSNE ones plus `lambda`,
+#' `frac` and `var_shift`.
+#' @param seed Integer. Seed for reproducibility.
+#' @param use_high_precision Optional logical. Controls `fp32` vs `fp64` for.
+#' If `NULL` will use sensible default thresholding.
+#' @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
+#' for detailed verbosity.
+#'
+#' @return The den-SNE embeddings.
+#'
+#' @references Narayan, Berger & Cho, Nature Biotechnology, 2021
+#'
+#' @export
+rs_densne_from_knn <- function(embd, knn_data, n_dim, perplexity, approx_type, densne_params, seed, use_high_precision, verbose) .Call(wrap__rs_densne_from_knn, embd, knn_data, n_dim, perplexity, approx_type, densne_params, seed, use_high_precision, verbose)
+
 #' Run PHATE dimensionality reduction
 #'
 #' @description
