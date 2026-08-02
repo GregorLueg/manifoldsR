@@ -351,6 +351,68 @@ checkTsneParams <- function(x) {
 #' @keywords internal
 assertTsneParams <- checkmate::makeAssertionFunction(checkTsneParams)
 
+## density-preserving ----------------------------------------------------------
+
+#' Check density-preservation parameters
+#'
+#' @description Checkmate extension for checking the density-preservation
+#' parameters. Shared by densMAP and den-SNE, which take the same three knobs
+#' and differ only in the default `lambda`.
+#'
+#' @param x The list to check.
+#'
+#' @return `TRUE` if the check was successful, otherwise an error message.
+#'
+#' @keywords internal
+checkDensParams <- function(x) {
+  res <- checkmate::checkList(x)
+  if (!isTRUE(res)) {
+    return(res)
+  }
+  res <- checkmate::checkNames(
+    names(x),
+    must.include = c("lambda", "frac", "var_shift")
+  )
+  if (!isTRUE(res)) {
+    return(res)
+  }
+  rules <- list(
+    "lambda" = "N1[0,)",
+    "frac" = "N1[0,1]",
+    "var_shift" = "N1[0,)"
+  )
+  res <- purrr::imap_lgl(x, \(val, name) checkmate::qtest(val, rules[[name]]))
+  if (!isTRUE(all(res))) {
+    broken_elem <- names(res)[which(!res)][1]
+    return(sprintf(
+      paste(
+        "Element `%s` in density params does not conform.",
+        "lambda and var_shift must be non-negative numerics,",
+        "and frac must be between 0 and 1."
+      ),
+      broken_elem
+    ))
+  }
+  return(TRUE)
+}
+
+#' Assert density-preservation parameters
+#'
+#' @description Checkmate extension for asserting the density-preservation
+#' parameters.
+#'
+#' @inheritParams checkDensParams
+#'
+#' @param .var.name Name of the checked object to print in assertions. Defaults
+#' to the heuristic implemented in checkmate.
+#' @param add Collection to store assertion messages. See
+#' [checkmate::makeAssertCollection()].
+#'
+#' @return Invisibly returns the checked object if the assertion is successful.
+#'
+#' @keywords internal
+assertDensParams <- checkmate::makeAssertionFunction(checkDensParams)
+
 ## phate -----------------------------------------------------------------------
 
 #' Check PHATE parameters

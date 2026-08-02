@@ -108,6 +108,45 @@ where
     })
 }
 
+////////////////////////
+// Density parameters //
+////////////////////////
+
+/// Helper function to generate the density-preservation parameters
+///
+/// Shared by densMAP and den-SNE. A missing key falls through to the default
+/// in `manifolds-rs`, which is `lambda = 2.0` (the densMAP weight) - den-SNE
+/// wants `0.1`, so the R layer always supplies all three.
+///
+/// ### Params
+///
+/// * `r_list` - The list that has the density-preservation parameters.
+///
+/// ### Returns
+///
+/// The `DensParams` with sensible defaults if not found in the list.
+pub fn get_params_dens<T>(r_list: List) -> Result<DensParams<T>>
+where
+    T: ManifoldsFloat,
+{
+    let dens_params: HashMap<&str, Robj> = r_list.try_into()?;
+
+    let lambda = dens_params
+        .get("lambda")
+        .and_then(|v| v.as_real())
+        .map(|v| T::from_f64(v).unwrap());
+    let frac = dens_params
+        .get("frac")
+        .and_then(|v| v.as_real())
+        .map(|v| T::from_f64(v).unwrap());
+    let var_shift = dens_params
+        .get("var_shift")
+        .and_then(|v| v.as_real())
+        .map(|v| T::from_f64(v).unwrap());
+
+    Ok(DensParams::new(lambda, frac, var_shift))
+}
+
 /// Parse the nearest neighbours to a Rust function
 ///
 /// ### Params

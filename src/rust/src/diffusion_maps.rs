@@ -3,7 +3,8 @@
 #![warn(missing_docs)]
 
 use ann_search_rs::cpu::hnsw::{HnswIndex, HnswState};
-use ann_search_rs::cpu::nndescent::{ApplySortedUpdates, NNDescent, NNDescentQuery};
+use ann_search_rs::cpu::nndescent::{NNDescent, NNDescentQuery};
+use ann_search_rs::utils::nndescent_utils::ApplySortedUpdates;
 use bixverse_rs::prelude::IntoExtendrErr;
 use extendr_api::*;
 use faer::{Mat, MatRef};

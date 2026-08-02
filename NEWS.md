@@ -1,3 +1,10 @@
+# manifoldsR 0.2.8
+
+## Features
+
+- Implementations of dens-map and dens-sne, density-preserving versions of
+  UMAP and tSNE, see [Narayan et al.](https://www.nature.com/articles/s41587-020-00801-7)
+
 # manifoldsR 0.2.7
 
 ## Features

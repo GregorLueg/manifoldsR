@@ -3,7 +3,8 @@
 #![warn(missing_docs)]
 
 use ann_search_rs::cpu::hnsw::{HnswIndex, HnswState};
-use ann_search_rs::cpu::nndescent::{ApplySortedUpdates, NNDescent, NNDescentQuery};
+use ann_search_rs::cpu::nndescent::{NNDescent, NNDescentQuery};
+use ann_search_rs::utils::nndescent_utils::ApplySortedUpdates;
 use bixverse_rs::prelude::IntoExtendrErr;
 use extendr_api::{List, Robj};
 use faer::{Mat, MatRef};
@@ -15,7 +16,7 @@ use manifolds_rs::*;
 use rand_distr::{Distribution, StandardNormal};
 use std::collections::HashMap;
 
-use crate::utils::get_params_nn_manifolds;
+use crate::utils::{get_params_dens, get_params_nn_manifolds};
 
 ////////////
 // Params //
@@ -152,6 +153,43 @@ where
     })
 }
 
+/// Helper function to assemble the `TsneParams` from an R list
+///
+/// Shared by `tsne_manifold` and `densne_manifold`, which build the exact same
+/// t-SNE configuration and only differ in whether the density term is switched
+/// on afterwards.
+///
+/// ### Params
+///
+/// * `tsne_params` - Named R list with all t-SNE parameters.
+/// * `n_dim` - Number of dimensions to reduce to (needs to be two).
+/// * `perplexity` - Perplexity parameter (typical: 5-50).
+///
+/// ### Returns
+///
+/// The assembled `TsneParams`.
+fn build_tsne_params<T>(
+    tsne_params: List,
+    n_dim: usize,
+    perplexity: T,
+) -> Result<TsneParams<T>, extendr_api::Error>
+where
+    T: ManifoldsFloat,
+{
+    let internal = InternalTsneParams::from_r_list(tsne_params)?;
+
+    Ok(TsneParams {
+        n_dim,
+        perplexity,
+        ann_type: internal.knn_method,
+        initialisation: internal.init,
+        nn_params: internal.param_knn,
+        optim_params: internal.param_optimiser,
+        randomised_init: internal.randomised,
+        init_range: Some(T::from_f64(1e-2).unwrap()),
+    })
+}
+
 //////////
 // tSNE //
 //////////
@@ -200,18 +238,7 @@ where
         "At the moment, this tSNE implementation only supports n_dim = 2"
     );
 
-    let tsne_params_internal = InternalTsneParams::from_r_list(tsne_params)?;
-
-    let tsne_params = TsneParams {
-        n_dim,
-        perplexity,
-        ann_type: tsne_params_internal.knn_method,
-        initialisation: tsne_params_internal.init,
-        nn_params: tsne_params_internal.param_knn,
-        optim_params: tsne_params_internal.param_optimiser,
-        randomised_init: tsne_params_internal.randomised,
-        init_range: Some(T::from_f64(1e-2).unwrap()),
-    };
+    let tsne_params = build_tsne_params(tsne_params, n_dim, perplexity)?;
 
     let res = tsne(
         data,
@@ -273,23 +300,159 @@ where
         "At the moment, this tSNE implementation only supports n_dim = 2"
     );
 
-    let tsne_params_internal = InternalTsneParams::from_r_list(tsne_params)?;
-
-    let tsne_params = TsneParams {
-        n_dim,
-        perplexity,
-        ann_type: tsne_params_internal.knn_method,
-        initialisation: tsne_params_internal.init,
-        nn_params: tsne_params_internal.param_knn,
-        optim_params: tsne_params_internal.param_optimiser,
-        randomised_init: tsne_params_internal.randomised,
-        init_range: Some(T::from_f64(1e-2).unwrap()),
-    };
+    let tsne_params = build_tsne_params(tsne_params, n_dim, perplexity)?;
 
     let res = tsne(
         data,
         pre_computed_knn,
         &tsne_params,
+        approx_type,
+        seed,
+        verbose,
+    )
+    .to_extendr()?;
+
+    let ncol = res.len();
+    let nrow = res[0].len();
+
+    Ok(Mat::from_fn(nrow, ncol, |i, j| res[j][i]))
+}
+
+///////////
+// denSNE //
+///////////
+
+/// Wrapper function into the den-SNE implementation in `manifolds-rs`
+///
+/// den-SNE is t-SNE plus a density-preservation term, so the t-SNE
+/// configuration is assembled exactly as for `tsne_manifold` and the three
+/// density knobs are read from the same flat list. A `lambda` of `0` recovers
+/// plain t-SNE.
+///
+/// ### Params
+///
+/// * `data` - Input data matrix for den-SNE
+/// * `pre_computed_knn` - Optional pre-computed kNN to be used.
+/// * `n_dim` - Number of dimensions to reduce to (needs to be two)
+/// * `approx_type` - String. One of `"bh"` for the Barnes Hut approximation
+///   or `"fft"` for the Fast Fourier Transformation-accelerated one.
+/// * `perplexity` - Perplexity parameter (typical: 5-50)
+/// * `densne_params` - Named R list with all t-SNE and density parameters
+/// * `seed` - Random seed for reproducibility
+/// * `verbose` - If `0` -> silent or `1` for normal verbosity, `2` for detailed
+///   verbosity.
+///
+/// ### Returns
+///
+/// den-SNE embeddings as matrix
+///
+/// ### References
+///
+/// Narayan, Berger & Cho, Nature Biotechnology, 2021
+#[allow(clippy::too_many_arguments)]
+#[cfg(not(target_os = "windows"))]
+pub fn densne_manifold<T>(
+    data: MatRef<T>,
+    pre_computed_knn: PreComputedKnn<T>,
+    n_dim: usize,
+    approx_type: &str,
+    perplexity: T,
+    densne_params: List,
+    seed: usize,
+    verbose: usize,
+) -> Result<Mat<T>, extendr_api::Error>
+where
+    T: ManifoldsFloat + FftwFloat,
+    HnswIndex<T>: HnswState<T>,
+    StandardNormal: Distribution<T>,
+    NNDescent<T>: ApplySortedUpdates<T> + NNDescentQuery<T>,
+{
+    assert!(
+        n_dim == 2,
+        "At the moment, this den-SNE implementation only supports n_dim = 2"
+    );
+
+    let dens_params = get_params_dens(densne_params.clone())?;
+    let tsne_params = build_tsne_params(densne_params, n_dim, perplexity)?;
+
+    let densne_params = DensneParams::new(tsne_params, dens_params);
+
+    let res = densne(
+        data,
+        pre_computed_knn,
+        &densne_params,
+        approx_type,
+        seed,
+        verbose,
+    )
+    .to_extendr()?;
+
+    let ncol = res.len();
+    let nrow = res[0].len();
+
+    Ok(Mat::from_fn(nrow, ncol, |i, j| res[j][i]))
+}
+
+/// Wrapper function into the den-SNE implementation in `manifolds-rs`
+///
+/// den-SNE is t-SNE plus a density-preservation term, so the t-SNE
+/// configuration is assembled exactly as for `tsne_manifold` and the three
+/// density knobs are read from the same flat list. A `lambda` of `0` recovers
+/// plain t-SNE.
+///
+/// ### Params
+///
+/// * `data` - Input data matrix for den-SNE
+/// * `pre_computed_knn` - Optional pre-computed kNN to be used.
+/// * `n_dim` - Number of dimensions to reduce to (needs to be two)
+/// * `approx_type` - String. One of `"bh"` for the Barnes Hut approximation
+///   or `"fft"` for the Fast Fourier Transformation-accelerated one. The
+///   latter is not available on Windows.
+/// * `perplexity` - Perplexity parameter (typical: 5-50)
+/// * `densne_params` - Named R list with all t-SNE and density parameters
+/// * `seed` - Random seed for reproducibility
+/// * `verbose` - If `0` -> silent or `1` for normal verbosity, `2` for detailed
+///   verbosity.
+///
+/// ### Returns
+///
+/// den-SNE embeddings as matrix
+///
+/// ### References
+///
+/// Narayan, Berger & Cho, Nature Biotechnology, 2021
+#[allow(clippy::too_many_arguments)]
+#[cfg(target_os = "windows")]
+pub fn densne_manifold<T>(
+    data: MatRef<T>,
+    pre_computed_knn: PreComputedKnn<T>,
+    n_dim: usize,
+    approx_type: &str,
+    perplexity: T,
+    densne_params: List,
+    seed: usize,
+    verbose: usize,
+) -> Result<Mat<T>, extendr_api::Error>
+where
+    T: ManifoldsFloat,
+    HnswIndex<T>: HnswState<T>,
+    StandardNormal: Distribution<T>,
+    NNDescent<T>: ApplySortedUpdates<T> + NNDescentQuery<T>,
+{
+    assert!(
+        n_dim == 2,
+        "At the moment, this den-SNE implementation only supports n_dim = 2"
+    );
+
+    let dens_params = get_params_dens(densne_params.clone())?;
+    let tsne_params = build_tsne_params(densne_params, n_dim, perplexity)?;
+
+    let densne_params = DensneParams::new(tsne_params, dens_params);
+
+    let res = densne(
+        data,
+        pre_computed_knn,
+        &densne_params,
         approx_type,
         seed,
         verbose,

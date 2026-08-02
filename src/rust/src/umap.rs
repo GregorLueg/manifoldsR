@@ -3,7 +3,8 @@
 #![warn(missing_docs)]
 
 use ann_search_rs::cpu::hnsw::{HnswIndex, HnswState};
-use ann_search_rs::cpu::nndescent::{ApplySortedUpdates, NNDescent, NNDescentQuery};
+use ann_search_rs::cpu::nndescent::{NNDescent, NNDescentQuery};
+use ann_search_rs::utils::nndescent_utils::ApplySortedUpdates;
 use bixverse_rs::prelude::IntoExtendrErr;
 use extendr_api::{List, Robj};
 use faer::{Mat, MatRef};
@@ -12,7 +13,7 @@ use manifolds_rs::*;
 use rand_distr::{Distribution, StandardNormal};
 use std::collections::HashMap;
 
-use crate::utils::get_params_nn_manifolds;
+use crate::utils::{get_params_dens, get_params_nn_manifolds};
 
 ////////////
 // Params //
@@ -209,6 +210,55 @@ where
     ))
 }
 
+/// Helper function to assemble the `UmapParams` from an R list
+///
+/// Shared by [`umap_manifold`] and [`densmap_manifold`], which build the exact
+/// same UMAP configuration and only differ in whether the density term is
+/// switched on afterwards.
+///
+/// ### Params
+///
+/// * `umap_params` - Named R list that has all of the various UMAP parameters.
+/// * `n_dim` - The number of dimension to use.
+/// * `k` - Number of neighbours to use.
+/// * `min_dist` - Minimum distance parameter.
+/// * `spread` - Spread parameter.
+///
+/// ### Returns
+///
+/// The assembled `UmapParams`.
+fn build_umap_params<T>(
+    umap_params: List,
+    n_dim: usize,
+    k: usize,
+    min_dist: f64,
+    spread: f64,
+) -> Result<UmapParams<T>, extendr_api::Error>
+where
+    T: ManifoldsFloat,
+{
+    let internal = InternalUmapParams::from_r_list(umap_params, min_dist, spread)?;
+
+    let init_range = if internal.init == "pca" {
+        Some(T::from_f64(1.0).unwrap())
+    } else {
+        None
+    };
+
+    Ok(UmapParams::new(
+        n_dim,
+        k,
+        internal.optimiser,
+        internal.knn_method,
+        internal.init,
+        init_range,
+        internal.param_knn,
+        internal.param_optimiser,
+        internal.umap_graph,
+        internal.randomised,
+    ))
+}
+
 /////////////////
 // Normal UMAP //
 /////////////////
@@ -252,28 +302,71 @@ where
     NNDescent<T>: ApplySortedUpdates<T> + NNDescentQuery<T>,
     StandardNormal: Distribution<T>,
 {
-    let internal = InternalUmapParams::from_r_list(umap_params, min_dist, spread)?;
-
-    let init_range = if internal.init == "pca" {
-        Some(T::from_f64(1.0).unwrap())
-    } else {
-        None
-    };
-
-    let umap_params = UmapParams::new(
-        n_dim,
-        k,
-        internal.optimiser,
-        internal.knn_method,
-        internal.init,
-        init_range,
-        internal.param_knn,
-        internal.param_optimiser,
-        internal.umap_graph,
-        internal.randomised,
-    );
+    let umap_params = build_umap_params(umap_params, n_dim, k, min_dist, spread)?;
 
     let res = umap(data, pre_computed_knn, &umap_params, seed, verbose).to_extendr()?;
+
+    let ncol = res.len();
+    let nrow = res[0].len();
+
+    Ok(Mat::from_fn(nrow, ncol, |i, j| res[j][i]))
+}
+
+//////////////
+// densMAP //
+//////////////
+
+/// Wrapper function into the densMAP implementation in `manifolds-rs`
+///
+/// densMAP is UMAP plus a density-preservation term, so the UMAP configuration
+/// is assembled exactly as for [`umap_manifold`] and the three density knobs
+/// are read from the same flat list. A `lambda` of `0` recovers plain UMAP.
+///
+/// ### Params
+///
+/// * `data` - The data to use for the generation of the densMAP.
+/// * `pre_computed_knn` - Optional pre-computed kNN to be used.
+/// * `n_dim` - The number of dimension to use.
+/// * `k` - Number of neighbors to use
+/// * `min_dist` - Minimum distance parameter
+/// * `spread` - Spread parameter
+/// * `densmap_params` - Named R list that has all of the various UMAP and
+///   density parameters.
+/// * `seed` - For reproducibility
+/// * `verbose` - If `0` -> silent or `1` for normal verbosity, `2` for detailed
+///   verbosity.
+///
+/// ### Returns
+///
+/// Returns the densMAP embeddings as matrix.
+///
+/// ### References
+///
+/// Narayan, Berger & Cho, Nature Biotechnology, 2021
+#[allow(clippy::too_many_arguments)]
+pub fn densmap_manifold<T>(
+    data: MatRef<T>,
+    pre_computed_knn: PreComputedKnn<T>,
+    n_dim: usize,
+    k: usize,
+    min_dist: f64,
+    spread: f64,
+    densmap_params: List,
+    seed: usize,
+    verbose: usize,
+) -> Result<Mat<T>, extendr_api::Error>
+where
+    T: ManifoldsFloat,
+    HnswIndex<T>: HnswState<T>,
+    NNDescent<T>: ApplySortedUpdates<T> + NNDescentQuery<T>,
+    StandardNormal: Distribution<T>,
+{
+    let dens_params = get_params_dens(densmap_params.clone())?;
+    let umap_params = build_umap_params(densmap_params, n_dim, k, min_dist, spread)?;
+
+    let densmap_params = DensmapParams::new(umap_params, dens_params);
+
+    let res = densmap(data, pre_computed_knn, &densmap_params, seed, verbose).to_extendr()?;
 
     let ncol = res.len();
     let nrow = res[0].len();

@@ -10,10 +10,10 @@ template:
 home:
   title: "manifoldsR"
   description: 
-    "Contains different methods to generate embeddings like UMAP, tSNE, PHATE 
-    and PacMap. Morever, has methods to generate nearest neighbour graphs and 
-    now also some clustering algorithms that are based on embedding methods 
-    (EVoC) and more general clustering methods like k-means."
+    "Contains different methods to generate embeddings like UMAP, tSNE, PHATE, 
+    PacMap and diffusion maps. Morever, has methods to generate nearest 
+    neighbour graphs and now also some clustering algorithms that are based on 
+    embedding methods (EVoC) and more general clustering methods like k-means."
 navbar:
   structure:
     left: [intro, reference, news, articles]
@@ -31,6 +31,7 @@ articles:
       - knn_searches
       - umap
       - tsne
+      - density_preserving
       - phate
       - pacmap
       - diffusion_map
@@ -42,6 +43,8 @@ reference:
     contents:
       - tsne
       - umap
+      - densmap
+      - densne
       - phate
       - pacmap
       - diffusion_maps
@@ -74,6 +77,8 @@ reference:
     desc: "Wrapper functions around core parameters"
     contents:
       - params_clusters
+      - params_densmap
+      - params_densne
       - params_evoc
       - params_hierarchical
       - params_kmeans
@@ -96,6 +101,10 @@ reference:
       - rs_data_swiss_role
       - rs_data_trajectory
       - rs_data_hierarchical
+      - rs_densmap
+      - rs_densmap_from_knn
+      - rs_densne
+      - rs_densne_from_knn
       - rs_diffusion_maps
       - rs_diffusion_maps_from_knn
       - rs_evoc
