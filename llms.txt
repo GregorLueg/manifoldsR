@@ -1,6 +1,6 @@
 # manifoldsR
 
-![r_package](https://img.shields.io/badge/R_package-0.2.7-orange)[![CI](https://github.com/GregorLueg/genewalkR/actions/workflows/R-cmd-check.yml/badge.svg)](https://github.com/GregorLueg/genewalkR/actions/workflows/R-cmd-check.yml)
+![r_package](https://img.shields.io/badge/R_package-0.2.8-orange)[![CI](https://github.com/GregorLueg/manifoldsR/actions/workflows/R-cmd-check.yml/badge.svg)](https://github.com/GregorLueg/manifoldsR/actions/workflows/R-cmd-check.yml)
 [![License:
 MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![pkgdown](https://img.shields.io/badge/pkgdown-website-1b5e9f?logo=github)](https://gregorlueg.github.io/manifoldsR/)
@@ -9,10 +9,9 @@ MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.or
 ![manifoldsR logo](reference/figures/manifoldsR_logo.png)
 
 **Rust-accelerated** manifold learning methods with R bindings. For the
-modern-day single-cell Wannebe Pollock. Additionally, provides some
-clustering methods with focus on
-[EVoC](https://github.com/TutteInstitute/evoc) (and k-means clustering
-for comparison purposes).
+modern-day single-cell Pollock. Additionally, provides some clustering
+methods with focus on [EVoC](https://github.com/TutteInstitute/evoc)
+(and k-means clustering for comparison purposes).
 
 ## Overview
 
@@ -29,6 +28,7 @@ dimensionality reduction techniques:
   Embedding)
 - **PaCMAP** (Pairwise Controlled Manifold Approximation)
 - **Diffusion map** (A classical method of Manifold learning)
+- **Density-preserving versions of UMAP and tSNE**
 
 The core algorithms are implemented purely in Rust without any kernel
 switching for speed while providing user-friendly R interfaces. The
@@ -107,7 +107,8 @@ GPU-accelerated kNN searches for the embedding methods and a
 GPU-accelerated Adam optimiser for UMAP.
 
 Density-preserving versions of UMAP and tSNE, see [Narayan, et
-al.](https://www.nature.com/articles/s41587-020-00801-7)
+al.](https://www.nature.com/articles/s41587-020-00801-7). **Included
+now.**
 
 ## License
 
@@ -142,6 +143,10 @@ The core functions to generate the 2D embeddings
   : Rust-based t-SNE
 - [`umap()`](https://gregorlueg.github.io/manifoldsR/reference/umap.md)
   : Rust-based UMAP
+- [`densmap()`](https://gregorlueg.github.io/manifoldsR/reference/densmap.md)
+  : Rust-based densMAP
+- [`densne()`](https://gregorlueg.github.io/manifoldsR/reference/densne.md)
+  : Rust-based den-SNE
 - [`phate()`](https://gregorlueg.github.io/manifoldsR/reference/phate.md)
   : Rust-based PHATE
 - [`pacmap()`](https://gregorlueg.github.io/manifoldsR/reference/pacmap.md)
@@ -203,6 +208,10 @@ Wrapper functions around core parameters
 
 - [`params_clusters()`](https://gregorlueg.github.io/manifoldsR/reference/params_clusters.md)
   : Parameters for clustered data generation
+- [`params_densmap()`](https://gregorlueg.github.io/manifoldsR/reference/params_densmap.md)
+  : Wrapper function to generate densMAP parameters
+- [`params_densne()`](https://gregorlueg.github.io/manifoldsR/reference/params_densne.md)
+  : Wrapper function to generate den-SNE parameters
 - [`params_evoc()`](https://gregorlueg.github.io/manifoldsR/reference/params_evoc.md)
   : Wrapper function to generate EVoC parameters
 - [`params_hierarchical()`](https://gregorlueg.github.io/manifoldsR/reference/params_hierarchical.md)
@@ -247,6 +256,14 @@ Everything rusty - only use this if you know what you are doing…
   **\[experimental\]** : Generates tree-like data with branches
 - [`rs_data_hierarchical()`](https://gregorlueg.github.io/manifoldsR/reference/rs_data_hierarchical.md)
   **\[experimental\]** : Generate hierarchical cluster data
+- [`rs_densmap()`](https://gregorlueg.github.io/manifoldsR/reference/rs_densmap.md)
+  **\[experimental\]** : densMAP implementation
+- [`rs_densmap_from_knn()`](https://gregorlueg.github.io/manifoldsR/reference/rs_densmap_from_knn.md)
+  **\[experimental\]** : densMAP implementation
+- [`rs_densne()`](https://gregorlueg.github.io/manifoldsR/reference/rs_densne.md)
+  **\[experimental\]** : den-SNE implementation
+- [`rs_densne_from_knn()`](https://gregorlueg.github.io/manifoldsR/reference/rs_densne_from_knn.md)
+  **\[experimental\]** : den-SNE implementation
 - [`rs_diffusion_maps()`](https://gregorlueg.github.io/manifoldsR/reference/rs_diffusion_maps.md)
   **\[experimental\]** : Diffusion maps implementation
 - [`rs_diffusion_maps_from_knn()`](https://gregorlueg.github.io/manifoldsR/reference/rs_diffusion_maps_from_knn.md)
@@ -292,6 +309,8 @@ Everything rusty - only use this if you know what you are doing…
   UMAP](https://gregorlueg.github.io/manifoldsR/articles/umap.md):
 - [Using
   t-SNE](https://gregorlueg.github.io/manifoldsR/articles/tsne.md):
+- [Density-preserving
+  embeddings](https://gregorlueg.github.io/manifoldsR/articles/density_preserving.md):
 - [Using
   PHATE](https://gregorlueg.github.io/manifoldsR/articles/phate.md):
 - [Using

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.8</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -22,6 +22,7 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/knn_searches.html">Nearest neighbour searches</a></li>
     <li><a class="dropdown-item" href="../articles/umap.html">Using UMAP</a></li>
     <li><a class="dropdown-item" href="../articles/tsne.html">Using t-SNE</a></li>
+    <li><a class="dropdown-item" href="../articles/density_preserving.html">Density-preserving embeddings</a></li>
     <li><a class="dropdown-item" href="../articles/phate.html">Using PHATE</a></li>
     <li><a class="dropdown-item" href="../articles/pacmap.html">Using PaCMAP</a></li>
     <li><a class="dropdown-item" href="../articles/diffusion_map.html">Using diffusion maps</a></li>
@@ -70,6 +71,20 @@
 
         </dt>
         <dd>Rust-based UMAP</dd>
+
+        <dt>
+
+          <code><a href="densmap.html">densmap()</a></code>
+
+        </dt>
+        <dd>Rust-based densMAP</dd>
+
+        <dt>
+
+          <code><a href="densne.html">densne()</a></code>
+
+        </dt>
+        <dd>Rust-based den-SNE</dd>
 
         <dt>
 
@@ -256,6 +271,20 @@
 
         <dt>
 
+          <code><a href="params_densmap.html">params_densmap()</a></code>
+
+        </dt>
+        <dd>Wrapper function to generate densMAP parameters</dd>
+
+        <dt>
+
+          <code><a href="params_densne.html">params_densne()</a></code>
+
+        </dt>
+        <dd>Wrapper function to generate den-SNE parameters</dd>
+
+        <dt>
+
           <code><a href="params_evoc.html">params_evoc()</a></code>
 
         </dt>
@@ -395,6 +424,34 @@
           <span class="badge lifecycle lifecycle-experimental">experimental</span>
         </dt>
         <dd>Generate hierarchical cluster data</dd>
+
+        <dt>
+
+          <code><a href="rs_densmap.html">rs_densmap()</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd>densMAP implementation</dd>
+
+        <dt>
+
+          <code><a href="rs_densmap_from_knn.html">rs_densmap_from_knn()</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd>densMAP implementation</dd>
+
+        <dt>
+
+          <code><a href="rs_densne.html">rs_densne()</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd>den-SNE implementation</dd>
+
+        <dt>
+
+          <code><a href="rs_densne_from_knn.html">rs_densne_from_knn()</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd>den-SNE implementation</dd>
 
         <dt>
 

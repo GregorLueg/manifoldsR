@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.8</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,6 +40,7 @@
 <li><a class="dropdown-item" href="../articles/knn_searches.html">Nearest neighbour searches</a></li>
     <li><a class="dropdown-item" href="../articles/umap.html">Using UMAP</a></li>
     <li><a class="dropdown-item" href="../articles/tsne.html">Using t-SNE</a></li>
+    <li><a class="dropdown-item" href="../articles/density_preserving.html">Density-preserving embeddings</a></li>
     <li><a class="dropdown-item" href="../articles/phate.html">Using PHATE</a></li>
     <li><a class="dropdown-item" href="../articles/pacmap.html">Using PaCMAP</a></li>
     <li><a class="dropdown-item" href="../articles/diffusion_map.html">Using diffusion maps</a></li>
@@ -72,7 +73,7 @@
       <h1>Using PaCMAP</h1>
 
       <p class="author">Gregor Lueg</p>
-      <p class="date">2026-07-29</p>
+      <p class="date">2026-08-02</p>
 
 
       <div class="d-none name"><code></code></div>
@@ -440,8 +441,8 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;             expr      min       lq     mean   median       uq      max neval</span></span>
-<span><span class="co">#&gt;    manifold_umap 1.510376 1.510638 1.512360 1.510901 1.513352 1.515803     3</span></span>
-<span><span class="co">#&gt;  manifold_pacmap 1.932482 1.958481 1.974704 1.984480 1.995815 2.007150     3</span></span></code></pre></div>
+<span><span class="co">#&gt;    manifold_umap 2.920461 2.927262 2.931105 2.934063 2.936427 2.938791     3</span></span>
+<span><span class="co">#&gt;  manifold_pacmap 1.608688 1.620587 1.628028 1.632486 1.637697 1.642909     3</span></span></code></pre></div>
 </div>
 <p>PaCMAP is generally slower than UMAP on the same data since it processes all pairs every epoch rather than sampling. The three-phase schedule with 450 epochs (vs UMAP’s 200–500) compounds this. For most datasets up to ~50k samples this is not a concern in practice, but on very large data the difference becomes noticeable.</p>
 </section></section><script id="quarto-html-after-body" type="application/javascript">

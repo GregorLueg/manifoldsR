@@ -1,6 +1,6 @@
 # manifoldsR
 
-![r_package](https://img.shields.io/badge/R_package-0.2.7-orange)[![CI](https://github.com/GregorLueg/genewalkR/actions/workflows/R-cmd-check.yml/badge.svg)](https://github.com/GregorLueg/genewalkR/actions/workflows/R-cmd-check.yml)
+![r_package](https://img.shields.io/badge/R_package-0.2.8-orange)[![CI](https://github.com/GregorLueg/manifoldsR/actions/workflows/R-cmd-check.yml/badge.svg)](https://github.com/GregorLueg/manifoldsR/actions/workflows/R-cmd-check.yml)
 [![License:
 MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![pkgdown](https://img.shields.io/badge/pkgdown-website-1b5e9f?logo=github)](https://gregorlueg.github.io/manifoldsR/)
@@ -9,10 +9,9 @@ MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.or
 ![manifoldsR logo](reference/figures/manifoldsR_logo.png)
 
 **Rust-accelerated** manifold learning methods with R bindings. For the
-modern-day single-cell Wannebe Pollock. Additionally, provides some
-clustering methods with focus on
-[EVoC](https://github.com/TutteInstitute/evoc) (and k-means clustering
-for comparison purposes).
+modern-day single-cell Pollock. Additionally, provides some clustering
+methods with focus on [EVoC](https://github.com/TutteInstitute/evoc)
+(and k-means clustering for comparison purposes).
 
 ## Overview
 
@@ -29,6 +28,7 @@ dimensionality reduction techniques:
   Embedding)
 - **PaCMAP** (Pairwise Controlled Manifold Approximation)
 - **Diffusion map** (A classical method of Manifold learning)
+- **Density-preserving versions of UMAP and tSNE**
 
 The core algorithms are implemented purely in Rust without any kernel
 switching for speed while providing user-friendly R interfaces. The
@@ -107,7 +107,8 @@ GPU-accelerated kNN searches for the embedding methods and a
 GPU-accelerated Adam optimiser for UMAP.
 
 Density-preserving versions of UMAP and tSNE, see [Narayan, et
-al.](https://www.nature.com/articles/s41587-020-00801-7)
+al.](https://www.nature.com/articles/s41587-020-00801-7). **Included
+now.**
 
 ## License
 
