@@ -14,7 +14,7 @@ params_umap(
   gamma = 1,
   optimiser = c("adam_parallel", "sgd", "adam"),
   init = c("spectral", "pca", "random"),
-  randomised = FALSE
+  randomised = TRUE
 )
 }
 \arguments{
@@ -44,7 +44,7 @@ sample. Defaults to \code{5L}.}
 \code{"pca"}, or \code{"random"}. Defaults to \code{"spectral"}.}
 
 \item{randomised}{Logical. Use randomised SVD for PCA initialisation.
-Defaults to \code{FALSE}.}
+Defaults to \code{TRUE}.}
 }
 \value{
 A list with the UMAP parameters.

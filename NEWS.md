@@ -1,3 +1,9 @@
+# manifoldsR 0.2.9
+
+## Features
+
+- Faster spectral initialisation from `manifolds-rs`.
+
 # manifoldsR 0.2.8
 
 ## Features

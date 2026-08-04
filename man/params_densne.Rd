@@ -4,11 +4,11 @@
 \alias{params_densne}
 \title{Wrapper function to generate den-SNE parameters}
 \usage{
-params_densne(lambda = 0.1, frac = 0.3, var_shift = 0.1)
+params_densne(lambda = 0.5, frac = 0.3, var_shift = 0.1)
 }
 \arguments{
 \item{lambda}{Numeric. Weight of the density term. \code{0} disables it. Defaults
-to \code{0.1}, the den-SNE reference value.}
+to \code{0.5}, higher than the den-SNE reference value (original: \code{0.1}).}
 
 \item{frac}{Numeric between 0 and 1. Fraction of the total epochs, at the
 end of the run, over which the density term is active. Defaults to \code{0.3}.}
