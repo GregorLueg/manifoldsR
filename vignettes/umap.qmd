@@ -367,7 +367,6 @@ umap_clustered_df <- as.data.table(umap_clusters) %>%
   `colnames<-`(c("UMAP1", "UMAP2")) %>%
   .[, cluster := as.factor(cluster_data$membership)]
 
-
 ggplot(
   data = umap_clustered_df,
   mapping = aes(x = UMAP1, y = UMAP2)

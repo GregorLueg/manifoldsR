@@ -49,9 +49,8 @@ untouched: same graph, same repulsion, same optimisers.
 Three knobs, set via `params_densmap()` and `params_densne()`:
 
 - `lambda`. Weight of the density term. `0` gets you plain UMAP or t-SNE back,
-  bit for bit. Defaults are `2.0` for densMAP and `0.1` for den-SNE, matching
-  the reference implementations. The twenty-fold gap is not a typo, the two
-  losses live on very different scales.
+  bit for bit. Defaults are `2.0` for densMAP and `0.5` for den-SNE, higher than
+  the reference implementations which defaults to `0.1`. 
 - `frac`. Fraction of the epochs, at the end of the run, over which the term is
   active. Defaults to `0.3`. Switching it on from epoch zero fights the
   initialisation.
@@ -235,7 +234,7 @@ data.table(
 t-SNE starts from a marginally better place than UMAP, since the exaggeration
 schedule leaves a little size variation intact, but it is still close to
 nothing. den-SNE pulls well clear of it, though it does not reach densMAP.
-That gap is real and expected: the default `lambda` is twenty times smaller,
+That gap is real and expected: the default `lambda` is four times smaller,
 and the t-SNE repulsion fights the density term harder.
 
 **Note:** den-SNE inherits every t-SNE constraint. Two dimensions only, and if

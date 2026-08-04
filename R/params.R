@@ -101,7 +101,7 @@ params_nn <- function(
 #' @param init Character. Embedding initialisation method. One of `"spectral"`,
 #' `"pca"`, or `"random"`. Defaults to `"spectral"`.
 #' @param randomised Logical. Use randomised SVD for PCA initialisation.
-#' Defaults to `FALSE`.
+#' Defaults to `TRUE`.
 #'
 #' @returns A list with the UMAP parameters.
 #'
@@ -116,7 +116,7 @@ params_umap <- function(
   gamma = 1.0,
   optimiser = c("adam_parallel", "sgd", "adam"),
   init = c("spectral", "pca", "random"),
-  randomised = FALSE
+  randomised = TRUE
 ) {
   optimiser <- match.arg(optimiser)
   init <- match.arg(init)
@@ -266,7 +266,7 @@ params_densmap <- function(
 #' implementations.
 #'
 #' @param lambda Numeric. Weight of the density term. `0` disables it. Defaults
-#' to `0.1`, the den-SNE reference value.
+#' to `0.5`, higher than the den-SNE reference value (original: `0.1`).
 #' @param frac Numeric between 0 and 1. Fraction of the total epochs, at the
 #' end of the run, over which the density term is active. Defaults to `0.3`.
 #' @param var_shift Numeric. Additive shift on the variance of the embedding
@@ -278,7 +278,7 @@ params_densmap <- function(
 #'
 #' @references Narayan, Berger & Cho, Nat. Biotechnol., 2021
 params_densne <- function(
-  lambda = 0.1,
+  lambda = 0.5,
   frac = 0.3,
   var_shift = 0.1
 ) {
