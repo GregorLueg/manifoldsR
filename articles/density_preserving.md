@@ -46,9 +46,9 @@ and
 [`params_densne()`](https://gregorlueg.github.io/manifoldsR/reference/params_densne.md):
 
 - `lambda`. Weight of the density term. `0` gets you plain UMAP or t-SNE
-  back, bit for bit. Defaults are `2.0` for densMAP and `0.1` for
-  den-SNE, matching the reference implementations. The twenty-fold gap
-  is not a typo, the two losses live on very different scales.
+  back, bit for bit. Defaults are `2.0` for densMAP and `0.5` for
+  den-SNE, higher than the reference implementations which defaults to
+  `0.1`.
 - `frac`. Fraction of the epochs, at the end of the run, over which the
   term is active. Defaults to `0.3`. Switching it on from epoch zero
   fights the initialisation.
@@ -265,14 +265,14 @@ data.table(
 #>     method   rho
 #>     <char> <num>
 #> 1:   t-SNE 0.080
-#> 2: den-SNE 0.502
+#> 2: den-SNE 0.765
 ```
 
 t-SNE starts from a marginally better place than UMAP, since the
 exaggeration schedule leaves a little size variation intact, but it is
 still close to nothing. den-SNE pulls well clear of it, though it does
 not reach densMAP. That gap is real and expected: the default `lambda`
-is twenty times smaller, and the t-SNE repulsion fights the density term
+is four times smaller, and the t-SNE repulsion fights the density term
 harder.
 
 **Note:** den-SNE inherits every t-SNE constraint. Two dimensions only,
@@ -400,7 +400,7 @@ data.table(
 #>           method   rho
 #>           <char> <num>
 #> 1: densMAP (kNN) 0.925
-#> 2: den-SNE (kNN) 0.632
+#> 2: den-SNE (kNN) 0.871
 ```
 
 ### Tuning lambda

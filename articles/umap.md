@@ -389,7 +389,6 @@ umap_clustered_df <- as.data.table(umap_clusters) %>%
   `colnames<-`(c("UMAP1", "UMAP2")) %>%
   .[, cluster := as.factor(cluster_data$membership)]
 
-
 ggplot(
   data = umap_clustered_df,
   mapping = aes(x = UMAP1, y = UMAP2)
@@ -491,17 +490,17 @@ microbenchmark::microbenchmark(
 )
 #> Unit: milliseconds
 #>             expr        min         lq       mean     median         uq
-#>             umap 15531.3103 15531.3103 15531.3103 15531.3103 15531.3103
-#>  umap_reticulate 13109.3903 13109.3903 13109.3903 13109.3903 13109.3903
-#>             uwot  3945.7283  3945.7283  3945.7283  3945.7283  3945.7283
-#>          uwot_v2  2574.9780  2574.9780  2574.9780  2574.9780  2574.9780
-#>    manifold_umap   509.8353   509.8353   509.8353   509.8353   509.8353
+#>             umap 19607.8240 19607.8240 19607.8240 19607.8240 19607.8240
+#>  umap_reticulate 16480.6109 16480.6109 16480.6109 16480.6109 16480.6109
+#>             uwot  4606.0532  4606.0532  4606.0532  4606.0532  4606.0532
+#>          uwot_v2  4264.0801  4264.0801  4264.0801  4264.0801  4264.0801
+#>    manifold_umap   572.8079   572.8079   572.8079   572.8079   572.8079
 #>         max neval
-#>  15531.3103     1
-#>  13109.3903     1
-#>   3945.7283     1
-#>   2574.9780     1
-#>    509.8353     1
+#>  19607.8240     1
+#>  16480.6109     1
+#>   4606.0532     1
+#>   4264.0801     1
+#>    572.8079     1
 ```
 
 We can appreciate that the standard R version is slow (as expected). If
@@ -534,8 +533,8 @@ microbenchmark::microbenchmark(
 )
 #> Unit: seconds
 #>           expr       min        lq      mean    median        uq       max
-#>        uwot_v2 18.855841 18.855841 18.855841 18.855841 18.855841 18.855841
-#>  manifold_umap  6.442159  6.442159  6.442159  6.442159  6.442159  6.442159
+#>        uwot_v2 21.949968 21.949968 21.949968 21.949968 21.949968 21.949968
+#>  manifold_umap  7.860736  7.860736  7.860736  7.860736  7.860736  7.860736
 #>  neval
 #>      1
 #>      1

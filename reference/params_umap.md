@@ -15,7 +15,7 @@ params_umap(
   gamma = 1,
   optimiser = c("adam_parallel", "sgd", "adam"),
   init = c("spectral", "pca", "random"),
-  randomised = FALSE
+  randomised = TRUE
 )
 ```
 
@@ -67,7 +67,7 @@ params_umap(
 - randomised:
 
   Logical. Use randomised SVD for PCA initialisation. Defaults to
-  `FALSE`.
+  `TRUE`.
 
 ## Value
 

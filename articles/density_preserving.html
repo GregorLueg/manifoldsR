@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.8</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.9</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,7 +73,7 @@
       <h1>Density-preserving embeddings</h1>
 
       <p class="author">Gregor Lueg</p>
-      <p class="date">2026-08-02</p>
+      <p class="date">2026-08-04</p>
 
 
       <div class="d-none name"><code></code></div>
@@ -108,7 +108,7 @@
 <p>Three knobs, set via <code><a href="../reference/params_densmap.html">params_densmap()</a></code> and <code><a href="../reference/params_densne.html">params_densne()</a></code>:</p>
 <ul>
 <li>
-<code>lambda</code>. Weight of the density term. <code>0</code> gets you plain UMAP or t-SNE back, bit for bit. Defaults are <code>2.0</code> for densMAP and <code>0.1</code> for den-SNE, matching the reference implementations. The twenty-fold gap is not a typo, the two losses live on very different scales.</li>
+<code>lambda</code>. Weight of the density term. <code>0</code> gets you plain UMAP or t-SNE back, bit for bit. Defaults are <code>2.0</code> for densMAP and <code>0.5</code> for den-SNE, higher than the reference implementations which defaults to <code>0.1</code>.</li>
 <li>
 <code>frac</code>. Fraction of the epochs, at the end of the run, over which the term is active. Defaults to <code>0.3</code>. Switching it on from epoch zero fights the initialisation.</li>
 <li>
@@ -305,9 +305,9 @@
 <span><span class="co">#&gt;     method   rho</span></span>
 <span><span class="co">#&gt;     &lt;char&gt; &lt;num&gt;</span></span>
 <span><span class="co">#&gt; 1:   t-SNE 0.080</span></span>
-<span><span class="co">#&gt; 2: den-SNE 0.502</span></span></code></pre></div>
+<span><span class="co">#&gt; 2: den-SNE 0.765</span></span></code></pre></div>
 </div>
-<p>t-SNE starts from a marginally better place than UMAP, since the exaggeration schedule leaves a little size variation intact, but it is still close to nothing. den-SNE pulls well clear of it, though it does not reach densMAP. That gap is real and expected: the default <code>lambda</code> is twenty times smaller, and the t-SNE repulsion fights the density term harder.</p>
+<p>t-SNE starts from a marginally better place than UMAP, since the exaggeration schedule leaves a little size variation intact, but it is still close to nothing. den-SNE pulls well clear of it, though it does not reach densMAP. That gap is real and expected: the default <code>lambda</code> is four times smaller, and the t-SNE repulsion fights the density term harder.</p>
 <p><strong>Note:</strong> den-SNE inherits every t-SNE constraint. Two dimensions only, and if you hand it a pre-computed kNN graph the <code>k</code> has to exceed the perplexity.</p>
 </section><section class="level2"><h3 id="varying-density-along-a-manifold">Varying density along a manifold<a class="anchor" aria-label="anchor" href="#varying-density-along-a-manifold"></a>
 </h3>
@@ -426,7 +426,7 @@
 <span><span class="co">#&gt;           method   rho</span></span>
 <span><span class="co">#&gt;           &lt;char&gt; &lt;num&gt;</span></span>
 <span><span class="co">#&gt; 1: densMAP (kNN) 0.925</span></span>
-<span><span class="co">#&gt; 2: den-SNE (kNN) 0.632</span></span></code></pre></div>
+<span><span class="co">#&gt; 2: den-SNE (kNN) 0.871</span></span></code></pre></div>
 </div>
 </section><section class="level2"><h3 id="tuning-lambda">Tuning lambda<a class="anchor" aria-label="anchor" href="#tuning-lambda"></a>
 </h3>

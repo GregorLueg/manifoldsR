@@ -17,7 +17,7 @@ implementations."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.8</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.9</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,7 +71,7 @@ implementations.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">params_densne</span><span class="op">(</span>lambda <span class="op">=</span> <span class="fl">0.1</span>, frac <span class="op">=</span> <span class="fl">0.3</span>, var_shift <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">params_densne</span><span class="op">(</span>lambda <span class="op">=</span> <span class="fl">0.5</span>, frac <span class="op">=</span> <span class="fl">0.3</span>, var_shift <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -80,7 +80,7 @@ implementations.</p>
 
 <dl><dt id="arg-lambda">lambda<a class="anchor" aria-label="anchor" href="#arg-lambda"></a></dt>
 <dd><p>Numeric. Weight of the density term. <code>0</code> disables it. Defaults
-to <code>0.1</code>, the den-SNE reference value.</p></dd>
+to <code>0.5</code>, higher than the den-SNE reference value (original: <code>0.1</code>).</p></dd>
 
 
 <dt id="arg-frac">frac<a class="anchor" aria-label="anchor" href="#arg-frac"></a></dt>

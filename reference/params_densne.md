@@ -10,7 +10,7 @@ the reference implementations.
 ## Usage
 
 ``` r
-params_densne(lambda = 0.1, frac = 0.3, var_shift = 0.1)
+params_densne(lambda = 0.5, frac = 0.3, var_shift = 0.1)
 ```
 
 ## Arguments
@@ -18,7 +18,7 @@ params_densne(lambda = 0.1, frac = 0.3, var_shift = 0.1)
 - lambda:
 
   Numeric. Weight of the density term. `0` disables it. Defaults to
-  `0.1`, the den-SNE reference value.
+  `0.5`, higher than the den-SNE reference value (original: `0.1`).
 
 - frac:
 
