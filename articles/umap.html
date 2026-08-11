@@ -73,7 +73,7 @@
       <h1>Using UMAP</h1>
 
       <p class="author">Gregor Lueg</p>
-      <p class="date">2026-08-04</p>
+      <p class="date">2026-08-11</p>
 
 
       <div class="d-none name"><code></code></div>
@@ -538,17 +538,17 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: milliseconds</span></span>
 <span><span class="co">#&gt;             expr        min         lq       mean     median         uq</span></span>
-<span><span class="co">#&gt;             umap 19607.8240 19607.8240 19607.8240 19607.8240 19607.8240</span></span>
-<span><span class="co">#&gt;  umap_reticulate 16480.6109 16480.6109 16480.6109 16480.6109 16480.6109</span></span>
-<span><span class="co">#&gt;             uwot  4606.0532  4606.0532  4606.0532  4606.0532  4606.0532</span></span>
-<span><span class="co">#&gt;          uwot_v2  4264.0801  4264.0801  4264.0801  4264.0801  4264.0801</span></span>
-<span><span class="co">#&gt;    manifold_umap   572.8079   572.8079   572.8079   572.8079   572.8079</span></span>
+<span><span class="co">#&gt;             umap 21265.0651 21265.0651 21265.0651 21265.0651 21265.0651</span></span>
+<span><span class="co">#&gt;  umap_reticulate 19309.3070 19309.3070 19309.3070 19309.3070 19309.3070</span></span>
+<span><span class="co">#&gt;             uwot  4979.3010  4979.3010  4979.3010  4979.3010  4979.3010</span></span>
+<span><span class="co">#&gt;          uwot_v2  3284.3795  3284.3795  3284.3795  3284.3795  3284.3795</span></span>
+<span><span class="co">#&gt;    manifold_umap   674.0108   674.0108   674.0108   674.0108   674.0108</span></span>
 <span><span class="co">#&gt;         max neval</span></span>
-<span><span class="co">#&gt;  19607.8240     1</span></span>
-<span><span class="co">#&gt;  16480.6109     1</span></span>
-<span><span class="co">#&gt;   4606.0532     1</span></span>
-<span><span class="co">#&gt;   4264.0801     1</span></span>
-<span><span class="co">#&gt;    572.8079     1</span></span></code></pre></div>
+<span><span class="co">#&gt;  21265.0651     1</span></span>
+<span><span class="co">#&gt;  19309.3070     1</span></span>
+<span><span class="co">#&gt;   4979.3010     1</span></span>
+<span><span class="co">#&gt;   3284.3795     1</span></span>
+<span><span class="co">#&gt;    674.0108     1</span></span></code></pre></div>
 </div>
 <p>We can appreciate that the standard R version is slow (as expected). If we leverage the Python version (with numba behind the scences) via the reticulate, we can get some speed ups (we need to however first JIT compile the numba parts). However, the uwot v2 version and the manifold are the fastest here. Let’s pit them together against each other in a larger data set.</p>
 <div class="cell">
@@ -574,8 +574,8 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;           expr       min        lq      mean    median        uq       max</span></span>
-<span><span class="co">#&gt;        uwot_v2 21.949968 21.949968 21.949968 21.949968 21.949968 21.949968</span></span>
-<span><span class="co">#&gt;  manifold_umap  7.860736  7.860736  7.860736  7.860736  7.860736  7.860736</span></span>
+<span><span class="co">#&gt;        uwot_v2 26.125875 26.125875 26.125875 26.125875 26.125875 26.125875</span></span>
+<span><span class="co">#&gt;  manifold_umap  9.414507  9.414507  9.414507  9.414507  9.414507  9.414507</span></span>
 <span><span class="co">#&gt;  neval</span></span>
 <span><span class="co">#&gt;      1</span></span>
 <span><span class="co">#&gt;      1</span></span></code></pre></div>
