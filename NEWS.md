@@ -1,3 +1,10 @@
+# manifoldsR 0.2.10
+
+## Fix
+
+- Register the extendr panic hook. A panic in the Rust code now surfaces as an R
+  error instead of taking down the R session.
+
 # manifoldsR 0.2.9
 
 ## Features
