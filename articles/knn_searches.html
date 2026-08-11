@@ -281,13 +281,13 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: milliseconds</span></span>
 <span><span class="co">#&gt;        expr       min        lq      mean    median        uq       max neval</span></span>
-<span><span class="co">#&gt;  exhaustive  6.157864  6.157864  6.157864  6.157864  6.157864  6.157864     1</span></span>
-<span><span class="co">#&gt;       kmknn  5.779677  5.779677  5.779677  5.779677  5.779677  5.779677     1</span></span>
-<span><span class="co">#&gt;       annoy 27.200064 27.200064 27.200064 27.200064 27.200064 27.200064     1</span></span>
-<span><span class="co">#&gt;        hnsw 18.089754 18.089754 18.089754 18.089754 18.089754 18.089754     1</span></span>
-<span><span class="co">#&gt;    balltree  4.248206  4.248206  4.248206  4.248206  4.248206  4.248206     1</span></span>
-<span><span class="co">#&gt;   nndescent 35.317272 35.317272 35.317272 35.317272 35.317272 35.317272     1</span></span>
-<span><span class="co">#&gt;         ivf  5.635207  5.635207  5.635207  5.635207  5.635207  5.635207     1</span></span></code></pre></div>
+<span><span class="co">#&gt;  exhaustive  6.801415  6.801415  6.801415  6.801415  6.801415  6.801415     1</span></span>
+<span><span class="co">#&gt;       kmknn  5.926732  5.926732  5.926732  5.926732  5.926732  5.926732     1</span></span>
+<span><span class="co">#&gt;       annoy 29.116422 29.116422 29.116422 29.116422 29.116422 29.116422     1</span></span>
+<span><span class="co">#&gt;        hnsw 20.466857 20.466857 20.466857 20.466857 20.466857 20.466857     1</span></span>
+<span><span class="co">#&gt;    balltree  4.213580  4.213580  4.213580  4.213580  4.213580  4.213580     1</span></span>
+<span><span class="co">#&gt;   nndescent 38.881183 38.881183 38.881183 38.881183 38.881183 38.881183     1</span></span>
+<span><span class="co">#&gt;         ivf  5.705825  5.705825  5.705825  5.705825  5.705825  5.705825     1</span></span></code></pre></div>
 </div>
 <p>On small datasets, the exhaustive search beats everything. We need to build the indices in the other methods, a cost that only makes sense when we have sufficient samples to do this. Otherwise, modern CPUs with SIMD can do the necessary <code>O(N^2)</code> in no time on smaller datasets. What about 50k cells?</p>
 <div class="cell">
@@ -361,13 +361,13 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;        expr       min        lq      mean    median        uq       max neval</span></span>
-<span><span class="co">#&gt;  exhaustive 11.836662 11.836662 11.836662 11.836662 11.836662 11.836662     1</span></span>
-<span><span class="co">#&gt;       kmknn  2.714552  2.714552  2.714552  2.714552  2.714552  2.714552     1</span></span>
-<span><span class="co">#&gt;       annoy  3.213448  3.213448  3.213448  3.213448  3.213448  3.213448     1</span></span>
-<span><span class="co">#&gt;        hnsw  2.466544  2.466544  2.466544  2.466544  2.466544  2.466544     1</span></span>
-<span><span class="co">#&gt;    balltree  1.685116  1.685116  1.685116  1.685116  1.685116  1.685116     1</span></span>
-<span><span class="co">#&gt;   nndescent  2.523657  2.523657  2.523657  2.523657  2.523657  2.523657     1</span></span>
-<span><span class="co">#&gt;         ivf  2.580762  2.580762  2.580762  2.580762  2.580762  2.580762     1</span></span></code></pre></div>
+<span><span class="co">#&gt;  exhaustive 10.867192 10.867192 10.867192 10.867192 10.867192 10.867192     1</span></span>
+<span><span class="co">#&gt;       kmknn  2.734871  2.734871  2.734871  2.734871  2.734871  2.734871     1</span></span>
+<span><span class="co">#&gt;       annoy  3.540007  3.540007  3.540007  3.540007  3.540007  3.540007     1</span></span>
+<span><span class="co">#&gt;        hnsw  2.659300  2.659300  2.659300  2.659300  2.659300  2.659300     1</span></span>
+<span><span class="co">#&gt;    balltree  1.619074  1.619074  1.619074  1.619074  1.619074  1.619074     1</span></span>
+<span><span class="co">#&gt;   nndescent  2.507253  2.507253  2.507253  2.507253  2.507253  2.507253     1</span></span>
+<span><span class="co">#&gt;         ivf  2.553887  2.553887  2.553887  2.553887  2.553887  2.553887     1</span></span></code></pre></div>
 </div>
 <p>We start observing the first pattern, that the approximate nearest neighbour searches are faster than the exhaustive search. The delta becomes more pronounced with more samples:</p>
 <div class="cell">
@@ -442,13 +442,13 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;        expr       min        lq      mean    median        uq       max neval</span></span>
-<span><span class="co">#&gt;  exhaustive 47.333421 47.333421 47.333421 47.333421 47.333421 47.333421     1</span></span>
-<span><span class="co">#&gt;       kmknn  7.920731  7.920731  7.920731  7.920731  7.920731  7.920731     1</span></span>
-<span><span class="co">#&gt;       annoy  8.567940  8.567940  8.567940  8.567940  8.567940  8.567940     1</span></span>
-<span><span class="co">#&gt;        hnsw  6.232090  6.232090  6.232090  6.232090  6.232090  6.232090     1</span></span>
-<span><span class="co">#&gt;    balltree  6.542138  6.542138  6.542138  6.542138  6.542138  6.542138     1</span></span>
-<span><span class="co">#&gt;   nndescent  5.946242  5.946242  5.946242  5.946242  5.946242  5.946242     1</span></span>
-<span><span class="co">#&gt;         ivf  9.976600  9.976600  9.976600  9.976600  9.976600  9.976600     1</span></span></code></pre></div>
+<span><span class="co">#&gt;  exhaustive 43.304396 43.304396 43.304396 43.304396 43.304396 43.304396     1</span></span>
+<span><span class="co">#&gt;       kmknn  8.112035  8.112035  8.112035  8.112035  8.112035  8.112035     1</span></span>
+<span><span class="co">#&gt;       annoy  8.586984  8.586984  8.586984  8.586984  8.586984  8.586984     1</span></span>
+<span><span class="co">#&gt;        hnsw  6.708806  6.708806  6.708806  6.708806  6.708806  6.708806     1</span></span>
+<span><span class="co">#&gt;    balltree  6.550867  6.550867  6.550867  6.550867  6.550867  6.550867     1</span></span>
+<span><span class="co">#&gt;   nndescent  6.014181  6.014181  6.014181  6.014181  6.014181  6.014181     1</span></span>
+<span><span class="co">#&gt;         ivf  9.914751  9.914751  9.914751  9.914751  9.914751  9.914751     1</span></span></code></pre></div>
 </div>
 </section><section class="level3"><h4 id="precision">Precision<a class="anchor" aria-label="anchor" href="#precision"></a>
 </h4>
