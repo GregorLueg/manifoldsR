@@ -470,11 +470,11 @@ microbenchmark::microbenchmark(
   },
   times = 1L
 )
-#>     SGD-MDS may not have converged: stress changed by 2.2% in final iterations. Consider increasing n_iter or adjusting learning_rate.
+#>     SGD-MDS may not have converged: stress changed by 1.5% in final iterations. Consider increasing n_iter or adjusting learning_rate.
 #> Unit: seconds
 #>            expr       min        lq      mean    median        uq       max
-#>          phateR 13.358468 13.358468 13.358468 13.358468 13.358468 13.358468
-#>  manifold_phate  8.420909  8.420909  8.420909  8.420909  8.420909  8.420909
+#>          phateR 12.465245 12.465245 12.465245 12.465245 12.465245 12.465245
+#>  manifold_phate  9.042363  9.042363  9.042363  9.042363  9.042363  9.042363
 #>  neval
 #>      1
 #>      1
@@ -520,12 +520,12 @@ microbenchmark::microbenchmark(
   },
   times = 1L
 )
-#>     SGD-MDS may not have converged: stress changed by 1.9% in final iterations. Consider increasing n_iter or adjusting learning_rate.
+#>     SGD-MDS may not have converged: stress changed by 2.8% in final iterations. Consider increasing n_iter or adjusting learning_rate.
 #> Unit: seconds
 #>                     expr      min       lq     mean   median       uq      max
-#>                   phateR 54.74909 54.74909 54.74909 54.74909 54.74909 54.74909
-#>  manifold_phate_spectral 32.06608 32.06608 32.06608 32.06608 32.06608 32.06608
-#>    manifold_phate_random 13.99946 13.99946 13.99946 13.99946 13.99946 13.99946
+#>                   phateR 57.37854 57.37854 57.37854 57.37854 57.37854 57.37854
+#>  manifold_phate_spectral 33.54865 33.54865 33.54865 33.54865 33.54865 33.54865
+#>    manifold_phate_random 15.05423 15.05423 15.05423 15.05423 15.05423 15.05423
 #>  neval
 #>      1
 #>      1
