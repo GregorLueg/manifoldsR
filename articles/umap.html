@@ -538,17 +538,17 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: milliseconds</span></span>
 <span><span class="co">#&gt;             expr        min         lq       mean     median         uq</span></span>
-<span><span class="co">#&gt;             umap 19879.6768 19879.6768 19879.6768 19879.6768 19879.6768</span></span>
-<span><span class="co">#&gt;  umap_reticulate 16128.8131 16128.8131 16128.8131 16128.8131 16128.8131</span></span>
-<span><span class="co">#&gt;             uwot  5224.0394  5224.0394  5224.0394  5224.0394  5224.0394</span></span>
-<span><span class="co">#&gt;          uwot_v2  2735.5097  2735.5097  2735.5097  2735.5097  2735.5097</span></span>
-<span><span class="co">#&gt;    manifold_umap   581.0951   581.0951   581.0951   581.0951   581.0951</span></span>
+<span><span class="co">#&gt;             umap 22033.9425 22033.9425 22033.9425 22033.9425 22033.9425</span></span>
+<span><span class="co">#&gt;  umap_reticulate 18816.2788 18816.2788 18816.2788 18816.2788 18816.2788</span></span>
+<span><span class="co">#&gt;             uwot  5950.2682  5950.2682  5950.2682  5950.2682  5950.2682</span></span>
+<span><span class="co">#&gt;          uwot_v2  3000.6719  3000.6719  3000.6719  3000.6719  3000.6719</span></span>
+<span><span class="co">#&gt;    manifold_umap   701.8084   701.8084   701.8084   701.8084   701.8084</span></span>
 <span><span class="co">#&gt;         max neval</span></span>
-<span><span class="co">#&gt;  19879.6768     1</span></span>
-<span><span class="co">#&gt;  16128.8131     1</span></span>
-<span><span class="co">#&gt;   5224.0394     1</span></span>
-<span><span class="co">#&gt;   2735.5097     1</span></span>
-<span><span class="co">#&gt;    581.0951     1</span></span></code></pre></div>
+<span><span class="co">#&gt;  22033.9425     1</span></span>
+<span><span class="co">#&gt;  18816.2788     1</span></span>
+<span><span class="co">#&gt;   5950.2682     1</span></span>
+<span><span class="co">#&gt;   3000.6719     1</span></span>
+<span><span class="co">#&gt;    701.8084     1</span></span></code></pre></div>
 </div>
 <p>We can appreciate that the standard R version is slow (as expected). If we leverage the Python version (with numba behind the scences) via the reticulate, we can get some speed ups (we need to however first JIT compile the numba parts). However, the uwot v2 version and the manifold are the fastest here. Let’s pit them together against each other in a larger data set.</p>
 <div class="cell">
@@ -573,12 +573,9 @@
 <span>  times <span class="op">=</span> <span class="fl">1L</span> <span class="co"># single comparison for speed</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
-<span><span class="co">#&gt;           expr       min        lq      mean    median        uq       max</span></span>
-<span><span class="co">#&gt;        uwot_v2 21.122582 21.122582 21.122582 21.122582 21.122582 21.122582</span></span>
-<span><span class="co">#&gt;  manifold_umap  7.731309  7.731309  7.731309  7.731309  7.731309  7.731309</span></span>
-<span><span class="co">#&gt;  neval</span></span>
-<span><span class="co">#&gt;      1</span></span>
-<span><span class="co">#&gt;      1</span></span></code></pre></div>
+<span><span class="co">#&gt;           expr      min       lq     mean   median       uq      max neval</span></span>
+<span><span class="co">#&gt;        uwot_v2 26.30819 26.30819 26.30819 26.30819 26.30819 26.30819     1</span></span>
+<span><span class="co">#&gt;  manifold_umap  9.10508  9.10508  9.10508  9.10508  9.10508  9.10508     1</span></span></code></pre></div>
 </div>
 <p>Due to optimised memory layouts, aggressive in-lining, heavy parallelism, leveragig look-up tables (LUTs), this version is <strong>fast</strong> and is likely(?) the fastest UMAP available in R, while keeping memory usage minimal due to leveraging Rust from the point that data is moved into the Rust kernel, until the embedding has been fitted. No round tripping through R, just highly optimised and compiled code throughout. The different nearest neighbour search algorithms give additional flexibility.</p>
 </section></section><script id="quarto-html-after-body" type="application/javascript">
