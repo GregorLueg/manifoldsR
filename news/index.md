@@ -1,5 +1,12 @@
 # Changelog
 
+## manifoldsR 0.2.11
+
+### Features
+
+- Faster graph generations for PHATE, UMAP and tSNE from `manifolds-rs`.
+- Various updates on the Rust backend.
+
 ## manifoldsR 0.2.10
 
 ### Fix

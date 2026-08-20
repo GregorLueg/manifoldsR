@@ -186,8 +186,8 @@ data.table(
 )
 #>     method   rho
 #>     <char> <num>
-#> 1:    UMAP 0.010
-#> 2: densMAP 0.919
+#> 1:    UMAP 0.008
+#> 2: densMAP 0.918
 ```
 
 Set `lambda = 0` and you are back to plain UMAP, which is a handy sanity
@@ -264,8 +264,8 @@ data.table(
 )
 #>     method   rho
 #>     <char> <num>
-#> 1:   t-SNE 0.080
-#> 2: den-SNE 0.765
+#> 1:   t-SNE 0.071
+#> 2: den-SNE 0.805
 ```
 
 t-SNE starts from a marginally better place than UMAP, since the
@@ -356,8 +356,8 @@ data.table(
 )
 #>     method    rho
 #>     <char>  <num>
-#> 1:    UMAP -0.045
-#> 2: densMAP  0.647
+#> 1:    UMAP -0.040
+#> 2: densMAP  0.623
 ```
 
 ### Using pre-computed kNN graphs
@@ -399,8 +399,8 @@ data.table(
 )
 #>           method   rho
 #>           <char> <num>
-#> 1: densMAP (kNN) 0.925
-#> 2: den-SNE (kNN) 0.871
+#> 1: densMAP (kNN) 0.924
+#> 2: den-SNE (kNN) 0.891
 ```
 
 ### Tuning lambda
@@ -483,11 +483,11 @@ lambda_sweep <- rbindlist(lapply(c(0, 0.5, 2, 5, 10), \(l) {
 lambda_sweep
 #>    lambda    rho separation
 #>     <num>  <num>      <num>
-#> 1:    0.0 -0.002      15.14
-#> 2:    0.5  0.919      26.91
-#> 3:    2.0  0.939      26.87
-#> 4:    5.0  0.943      24.01
-#> 5:   10.0  0.946      21.31
+#> 1:    0.0 -0.003      16.94
+#> 2:    0.5  0.917      29.98
+#> 3:    2.0  0.938      29.81
+#> 4:    5.0  0.944      26.37
+#> 5:   10.0  0.953      23.14
 ```
 
 ``` r
