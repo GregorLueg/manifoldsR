@@ -45,9 +45,9 @@ checksum = "4b46cbb362ab8752921c97e041f5e366ee6297bd428a31275b9fcf1e380f7299"
 
 [[package]]
 name = "ann-search-rs"
-version = "0.4.5"
+version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "91d8f6404a7d43a08eeac9b8338fbf01285ba0666d857ab594044dcf34ee87ac"
+checksum = "88a7154255eea2dcf4c15fa213c324e41257233953c3276f938e9a7b5b7c0307"
 dependencies = [
  "approx",
  "clap",
@@ -167,9 +167,9 @@ checksum = "c4512299f36f043ab09a583e57bceb5a5aab7a73db1805848e8fef3c9e8c78b3"
 
 [[package]]
 name = "bixverse-rs"
-version = "0.3.11"
+version = "0.4.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2cc165c21cb4da5dfd72f779561f4ba5e94978aa5d971055c0043540acb928a7"
+checksum = "8cd77ae7aa5046186d22a82a6fc80bc04a7e90626a858affa99c06178e89cb21"
 dependencies = [
  "ann-search-rs",
  "approx",
@@ -666,9 +666,9 @@ checksum = "877a4ace8713b0bcf2a4e7eec82529c029f1d0619886d18145fea96c3ffe5c0f"
 
 [[package]]
 name = "evoc-rs"
-version = "0.2.5"
+version = "0.2.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "79b9ead20f1d9559d181a51277d7bd49aea8d92b50047b5778db0f7d2ff9ddb8"
+checksum = "3030a6c5a2333a4da205c03229ecb8f76458711fcc63e5a22b468b4d2e7cbbda"
 dependencies = [
  "ann-search-rs",
  "approx",
@@ -1292,9 +1292,9 @@ dependencies = [
 
 [[package]]
 name = "manifolds-rs"
-version = "0.3.12"
+version = "0.3.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "eb1e88bc835ab2959cca5e40bf7bd45ea09afc82521539f354ee1068ff68923a"
+checksum = "5eae664bbf3f29e47154c140b54eb3044d70a38cfb5318f922f9d4c6447193f3"
 dependencies = [
  "ann-search-rs",
  "approx",
@@ -1312,7 +1312,7 @@ dependencies = [
 
 [[package]]
 name = "manifoldsr"
-version = "0.2.10"
+version = "0.2.11"
 dependencies = [
  "ann-search-rs",
  "bixverse-rs",
