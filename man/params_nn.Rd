@@ -14,6 +14,7 @@ params_nn(
   diversify_prob = 0,
   delta = 0.001,
   ef_budget = NULL,
+  extract_knn = TRUE,
   bt_budget = 0.1,
   n_list = NULL,
   n_probes = NULL
@@ -42,7 +43,12 @@ Defaults to \code{0.0}.}
 \item{delta}{Float. Precision parameter for NN descent. Defaults to \code{0.001}.}
 
 \item{ef_budget}{Integer or \code{NULL}. Effort budget for NN descent. Defaults
-to \code{NULL}.}
+to \code{NULL}. Ignored when \code{extract_knn} is \code{TRUE}, as no search runs.}
+
+\item{extract_knn}{Boolean. Only affects the \code{"nndescent"} backend. If
+\code{TRUE}, the descent hands back the graph it just built instead of running a
+beam search over it. Faster, at a recall of roughly \code{0.98} rather than
+\code{0.99}-\code{1.00}. Defaults to \code{TRUE}.}
 
 \item{bt_budget}{Float. Budget for ball tree search. Defaults to \code{0.1}.}
 

@@ -1,7 +1,6 @@
 //! Implementation of the mini batch k-means leveraging infrastructure from
 //! `ann-search-rs`.
 
-use ann_search_rs::utils::dist::*;
 use extendr_api::*;
 use std::collections::HashMap;
 
@@ -90,13 +89,5 @@ impl InternalKmeansParams {
             use_gemm,
             init,
         })
-    }
-
-    /// Convert the metric string to the internal `Dist` enum.
-    pub fn dist(&self) -> Dist {
-        match self.metric.as_str() {
-            "cosine" => Dist::Cosine,
-            _ => Dist::SquaredEuclidean,
-        }
     }
 }

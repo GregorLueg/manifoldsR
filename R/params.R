@@ -18,7 +18,11 @@
 #' Defaults to `0.0`.
 #' @param delta Float. Precision parameter for NN descent. Defaults to `0.001`.
 #' @param ef_budget Integer or `NULL`. Effort budget for NN descent. Defaults
-#' to `NULL`.
+#' to `NULL`. Ignored when `extract_knn` is `TRUE`, as no search runs.
+#' @param extract_knn Boolean. Only affects the `"nndescent"` backend. If
+#' `TRUE`, the descent hands back the graph it just built instead of running a
+#' beam search over it. Faster, at a recall of roughly `0.98` rather than
+#' `0.99`-`1.00`. Defaults to `TRUE`.
 #' @param bt_budget Float. Budget for ball tree search. Defaults to `0.1`.
 #' @param n_list Optional integer. Number of clusters to use for IVF. If `NULL`,
 #' will default to `sqrt(n)`.
@@ -40,6 +44,7 @@ params_nn <- function(
   diversify_prob = 0.0,
   delta = 0.001,
   ef_budget = NULL,
+  extract_knn = TRUE,
   bt_budget = 0.1,
   n_list = NULL,
   n_probes = NULL
@@ -59,6 +64,7 @@ params_nn <- function(
   checkmate::qassert(diversify_prob, "N1")
   checkmate::qassert(delta, "N1")
   checkmate::qassert(ef_budget, c("I1", "0"))
+  checkmate::qassert(extract_knn, "B1")
   checkmate::qassert(bt_budget, "N1")
   checkmate::qassert(n_list, c("I1", "0"))
   checkmate::qassert(n_probes, c("I1", "0"))
@@ -74,6 +80,7 @@ params_nn <- function(
     diversify_prob = diversify_prob,
     delta = delta,
     ef_budget = ef_budget,
+    extract_knn = extract_knn,
     bt_budget = bt_budget,
     n_list = n_list,
     n_probes = n_probes

@@ -33,7 +33,9 @@ algorithm-specific parameters.}
 }
 \value{
 A nearest neighbours class object with 1-indexed neighbour indices
-and distances.
+and distances. Distances are on the scale of the metric they are named
+after, so \code{dist_metric = "euclidean"} returns Euclidean distance, not the
+squared Euclidean the backends sort on internally.
 }
 \description{
 This function generates a kNN graph based on a given numeric matrix. Seven

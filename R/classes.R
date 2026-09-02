@@ -7,7 +7,8 @@
 #' @param indices Integer. Nearest neigbours in flat storage format. Need to
 #' be sorted!
 #' @param dist Numeric. Nearest neighbour distances in flat storarge format.
-#' Need to be sorted!
+#' Need to be sorted! On the scale of the metric they were generated with,
+#' i.e. Euclidean rather than squared Euclidean.
 #' @param k Integer. Number of k-neighbours per sample.
 #' @param n Integer. Number of samples.
 #'

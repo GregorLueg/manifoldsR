@@ -99,6 +99,7 @@ checkNnParams <- function(x) {
       "diversify_prob",
       "delta",
       "ef_budget",
+      "extract_knn",
       "bt_budget",
       "n_list",
       "n_probes"
@@ -117,6 +118,7 @@ checkNnParams <- function(x) {
     "diversify_prob" = list(type = "fixed", rule = "N1"),
     "delta" = list(type = "fixed", rule = "N1"),
     "ef_budget" = list(type = "nullable_int"),
+    "extract_knn" = list(type = "fixed", rule = "B1"),
     "bt_budget" = list(type = "fixed", rule = "N1"),
     "n_list" = list(type = "nullable_int"),
     "n_probes" = list(type = "nullable_int")
@@ -137,11 +139,12 @@ checkNnParams <- function(x) {
       sprintf(
         paste(
           "The following element `%s` in nearest neighbour params does not",
-          "dist_metric must be one of 'cosine' or 'euclidean',",
-          "conform to the expected format. dist_metric must be a string,",
+          "conform to the expected format. dist_metric must be one of",
+          "'cosine' or 'euclidean',",
           "n_tree/m/ef_construction/ef_search must be integers,",
           "search_budget/ef_budget/n_list/n_probes must be integers or NULL,",
-          "and diversify_prob/delta/bt_budget must be numerics."
+          "diversify_prob/delta/bt_budget must be numerics,",
+          "and extract_knn must be a boolean."
         ),
         broken_elem
       )

@@ -21,5 +21,11 @@ A list with the following items
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 Calculates the Silhouette in Rust given the original data and a membership
-vector. Uses squared Euclidean distance under the hood for speed.
+vector. \code{a(i)} and \code{b(i)} are mean \strong{squared} Euclidean distances, which
+keeps the whole thing closed-form and avoids materialising any pairwise
+distance. The trade-off is that the scores are not the numbers a
+plain-Euclidean silhouette gives: squaring inflates \code{b} more than \code{a}, so
+the values run higher. The sign is unaffected, so which points sit in the
+wrong cluster is the same call, but do not compare the magnitudes against
+implementations that use plain Euclidean.
 }

@@ -4,6 +4,7 @@
 
 use ann_search_rs::cpu::hnsw::{HnswIndex, HnswState};
 use ann_search_rs::cpu::nndescent::{NNDescent, NNDescentQuery};
+use ann_search_rs::prelude::AnnSearchFloat;
 use ann_search_rs::utils::nndescent_utils::ApplySortedUpdates;
 use bixverse_rs::prelude::IntoExtendrErr;
 use bixverse_rs::utils::vec_utils::flatten_vector;
@@ -99,6 +100,11 @@ where
         .and_then(|v| v.as_integer())
         .map(|v| v as usize);
 
+    let extract_knn = nn_params
+        .get("extract_knn")
+        .and_then(|v| v.as_bool())
+        .unwrap_or(true);
+
     // balltree
     let bt_budget = nn_params
         .get("bt_budget")
@@ -127,6 +133,7 @@ where
         ef_search,
         diversify_prob,
         delta,
+        extract_knn,
         bt_budget,
         n_list,
         n_probes,
@@ -297,7 +304,7 @@ pub fn evoc_cluster<T>(
     verbose: usize,
 ) -> EvocResults
 where
-    T: EvocFloat,
+    T: EvocFloat + AnnSearchFloat,
     HnswIndex<T>: HnswState<T>,
     NNDescent<T>: ApplySortedUpdates<T> + NNDescentQuery<T>,
     std::vec::Vec<T>: std::iter::FromIterator<T>,
