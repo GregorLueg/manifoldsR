@@ -7,7 +7,6 @@
 [![pkgdown](https://img.shields.io/badge/pkgdown-website-1b5e9f?logo=github)](https://gregorlueg.github.io/manifoldsR/)
 [![extendr](https://img.shields.io/badge/extendr-^0.9.0-276DC2)](https://extendr.github.io/extendr/extendr_api/)
 
-
 <img src="man/figures/manifoldsR_logo.png" width="128" height="128" alt="manifoldsR logo">
 
 **Rust-accelerated** manifold learning methods with R bindings. For the 
