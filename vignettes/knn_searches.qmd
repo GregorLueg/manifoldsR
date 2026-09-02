@@ -184,6 +184,7 @@ microbenchmark::microbenchmark(
       data = cluster_data$data,
       k = k,
       knn_method = "nndescent",
+      nn_params = params_nn(extract_knn = TRUE),
       .verbose = FALSE
     )
   },
@@ -192,9 +193,7 @@ microbenchmark::microbenchmark(
       data = cluster_data$data,
       k = k,
       knn_method = "ivf",
-      nn_params = params_nn(
-        n_list = 25L
-      ),
+      nn_params = params_nn(),
       .verbose = FALSE
     )
   },
@@ -268,9 +267,7 @@ microbenchmark::microbenchmark(
       data = benchmark_data$data,
       k = k,
       knn_method = "ivf",
-      nn_params = params_nn(
-        n_list = 25L
-      ),
+      nn_params = params_nn(n_probe = 25L),
       .verbose = FALSE
     )
   },
@@ -336,6 +333,7 @@ microbenchmark::microbenchmark(
       data = benchmark_data$data,
       k = k,
       knn_method = "nndescent",
+      nn_params = params_nn(extract_knn = TRUE),
       .verbose = FALSE
     )
   },
@@ -344,9 +342,7 @@ microbenchmark::microbenchmark(
       data = benchmark_data$data,
       k = k,
       knn_method = "ivf",
-      nn_params = params_nn(
-        n_list = 25L
-      ),
+      nn_params = params_nn(n_probe = 25L),
       .verbose = FALSE
     )
   },
@@ -381,7 +377,7 @@ for (idx in indices) {
   idx_i <- generate_knn_graph(
     data = benchmark_data$data,
     k = k,
-    nn_params = params_nn(n_list = 25L),
+    nn_params = params_nn(extract_knn = TRUE, n_probe = 25L),
     knn_method = idx,
     .verbose = FALSE
   )
