@@ -1,3 +1,16 @@
+# 0.3.0
+
+Major release
+
+## Features
+
+- A lot of the backend code in Rust changed. This gives in parts substantially
+  faster kNN searches from [ann-search-rs](https://crates.io/crates/ann-search-rs)
+  (`"v0.8.1"`).
+- The kNN searches not always return Euclidean distance and not squared 
+  Euclidean distance to simplify.
+
+
 # manifoldsR 0.2.11
 
 ## Features

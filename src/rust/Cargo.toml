@@ -26,10 +26,6 @@ manifolds-rs = { version = "0.4.0", features = [ "fft_tsne" ] }
 [target.'cfg(windows)'.dependencies]
 manifolds-rs = { version = "0.4.0" }
 
-# bixverse-rs 0.5.0 is not on crates.io yet. Drop this once it is published.
-[patch.crates-io]
-bixverse-rs = { git = "https://github.com/GregorLueg/bixverse-rs", branch = "release-0.5.0" }
-
 [profile.test]
 opt-level = 3
 debug = false
