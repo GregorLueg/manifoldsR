@@ -73,4 +73,6 @@ generate_knn_graph(
 ## Value
 
 A nearest neighbours class object with 1-indexed neighbour indices and
-distances.
+distances. Distances are on the scale of the metric they are named
+after, so `dist_metric = "euclidean"` returns Euclidean distance, not
+the squared Euclidean the backends sort on internally.

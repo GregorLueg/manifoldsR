@@ -490,17 +490,17 @@ microbenchmark::microbenchmark(
 )
 #> Unit: milliseconds
 #>             expr        min         lq       mean     median         uq
-#>             umap 22033.9425 22033.9425 22033.9425 22033.9425 22033.9425
-#>  umap_reticulate 18816.2788 18816.2788 18816.2788 18816.2788 18816.2788
-#>             uwot  5950.2682  5950.2682  5950.2682  5950.2682  5950.2682
-#>          uwot_v2  3000.6719  3000.6719  3000.6719  3000.6719  3000.6719
-#>    manifold_umap   701.8084   701.8084   701.8084   701.8084   701.8084
+#>             umap 22513.8841 22513.8841 22513.8841 22513.8841 22513.8841
+#>  umap_reticulate 18909.7387 18909.7387 18909.7387 18909.7387 18909.7387
+#>             uwot  5484.4079  5484.4079  5484.4079  5484.4079  5484.4079
+#>          uwot_v2  3300.7597  3300.7597  3300.7597  3300.7597  3300.7597
+#>    manifold_umap   697.9296   697.9296   697.9296   697.9296   697.9296
 #>         max neval
-#>  22033.9425     1
-#>  18816.2788     1
-#>   5950.2682     1
-#>   3000.6719     1
-#>    701.8084     1
+#>  22513.8841     1
+#>  18909.7387     1
+#>   5484.4079     1
+#>   3300.7597     1
+#>    697.9296     1
 ```
 
 We can appreciate that the standard R version is slow (as expected). If
@@ -532,9 +532,12 @@ microbenchmark::microbenchmark(
   times = 1L # single comparison for speed
 )
 #> Unit: seconds
-#>           expr      min       lq     mean   median       uq      max neval
-#>        uwot_v2 26.30819 26.30819 26.30819 26.30819 26.30819 26.30819     1
-#>  manifold_umap  9.10508  9.10508  9.10508  9.10508  9.10508  9.10508     1
+#>           expr       min        lq      mean    median        uq       max
+#>        uwot_v2 24.231685 24.231685 24.231685 24.231685 24.231685 24.231685
+#>  manifold_umap  9.107491  9.107491  9.107491  9.107491  9.107491  9.107491
+#>  neval
+#>      1
+#>      1
 ```
 
 Due to optimised memory layouts, aggressive in-lining, heavy

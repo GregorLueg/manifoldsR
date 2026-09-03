@@ -6,6 +6,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Using PaCMAP • manifoldsR</title>
+<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
+<link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" sizes="any" href="../favicon.ico">
+<link rel="manifest" href="../site.webmanifest">
 <script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
@@ -14,6 +19,7 @@
 <link href="pacmap_files/libs/quarto-html/light-border.css" rel="stylesheet">
 <!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
 <meta property="og:title" content="Using PaCMAP">
+<meta property="og:image" content="https://gregorlueg.github.io/manifoldsR/logo.png">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -23,7 +29,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.11</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,11 +75,10 @@
 </nav><div class="container template-quarto">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-
-      <h1>Using PaCMAP</h1>
+      <img src="../logo.png" class="logo" alt=""><h1>Using PaCMAP</h1>
 
       <p class="author">Gregor Lueg</p>
-      <p class="date">2026-08-20</p>
+      <p class="date">2026-09-03</p>
 
 
       <div class="d-none name"><code></code></div>
@@ -441,8 +446,8 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;             expr      min       lq     mean   median       uq      max neval</span></span>
-<span><span class="co">#&gt;    manifold_umap 1.469991 1.471355 1.472439 1.472720 1.473663 1.474607     3</span></span>
-<span><span class="co">#&gt;  manifold_pacmap 2.347519 2.347851 2.355685 2.348184 2.359768 2.371352     3</span></span></code></pre></div>
+<span><span class="co">#&gt;    manifold_umap 1.497025 1.497472 1.499355 1.497920 1.500521 1.503122     3</span></span>
+<span><span class="co">#&gt;  manifold_pacmap 2.352398 2.378118 2.393383 2.403837 2.413875 2.423913     3</span></span></code></pre></div>
 </div>
 <p>PaCMAP is generally slower than UMAP on the same data since it processes all pairs every epoch rather than sampling. The three-phase schedule with 450 epochs (vs UMAP’s 200–500) compounds this. For most datasets up to ~50k samples this is not a concern in practice, but on very large data the difference becomes noticeable.</p>
 </section></section><script id="quarto-html-after-body" type="application/javascript">

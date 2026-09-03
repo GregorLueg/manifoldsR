@@ -6,6 +6,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Nearest neighbour searches • manifoldsR</title>
+<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
+<link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" sizes="any" href="../favicon.ico">
+<link rel="manifest" href="../site.webmanifest">
 <script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
@@ -14,6 +19,7 @@
 <link href="knn_searches_files/libs/quarto-html/light-border.css" rel="stylesheet">
 <!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
 <meta property="og:title" content="Nearest neighbour searches">
+<meta property="og:image" content="https://gregorlueg.github.io/manifoldsR/logo.png">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -23,7 +29,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.11</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,11 +75,10 @@
 </nav><div class="container template-quarto">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-
-      <h1>Nearest neighbour searches</h1>
+      <img src="../logo.png" class="logo" alt=""><h1>Nearest neighbour searches</h1>
 
       <p class="author">Gregor Lueg</p>
-      <p class="date">2026-08-20</p>
+      <p class="date">2026-09-03</p>
 
 
       <div class="d-none name"><code></code></div>
@@ -263,6 +268,7 @@
 <span>      data <span class="op">=</span> <span class="va">cluster_data</span><span class="op">$</span><span class="va">data</span>,</span>
 <span>      k <span class="op">=</span> <span class="va">k</span>,</span>
 <span>      knn_method <span class="op">=</span> <span class="st">"nndescent"</span>,</span>
+<span>      nn_params <span class="op">=</span> <span class="fu"><a href="../reference/params_nn.html">params_nn</a></span><span class="op">(</span>extract_knn <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>      .verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span>    <span class="op">)</span></span>
 <span>  <span class="op">}</span>,</span>
@@ -271,9 +277,7 @@
 <span>      data <span class="op">=</span> <span class="va">cluster_data</span><span class="op">$</span><span class="va">data</span>,</span>
 <span>      k <span class="op">=</span> <span class="va">k</span>,</span>
 <span>      knn_method <span class="op">=</span> <span class="st">"ivf"</span>,</span>
-<span>      nn_params <span class="op">=</span> <span class="fu"><a href="../reference/params_nn.html">params_nn</a></span><span class="op">(</span></span>
-<span>        n_list <span class="op">=</span> <span class="fl">25L</span></span>
-<span>      <span class="op">)</span>,</span>
+<span>      nn_params <span class="op">=</span> <span class="fu"><a href="../reference/params_nn.html">params_nn</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>      .verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span>    <span class="op">)</span></span>
 <span>  <span class="op">}</span>,</span>
@@ -281,13 +285,13 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: milliseconds</span></span>
 <span><span class="co">#&gt;        expr       min        lq      mean    median        uq       max neval</span></span>
-<span><span class="co">#&gt;  exhaustive  6.213928  6.213928  6.213928  6.213928  6.213928  6.213928     1</span></span>
-<span><span class="co">#&gt;       kmknn  6.211384  6.211384  6.211384  6.211384  6.211384  6.211384     1</span></span>
-<span><span class="co">#&gt;       annoy 29.548063 29.548063 29.548063 29.548063 29.548063 29.548063     1</span></span>
-<span><span class="co">#&gt;        hnsw 19.837488 19.837488 19.837488 19.837488 19.837488 19.837488     1</span></span>
-<span><span class="co">#&gt;    balltree  4.151840  4.151840  4.151840  4.151840  4.151840  4.151840     1</span></span>
-<span><span class="co">#&gt;   nndescent 36.512605 36.512605 36.512605 36.512605 36.512605 36.512605     1</span></span>
-<span><span class="co">#&gt;         ivf  5.759854  5.759854  5.759854  5.759854  5.759854  5.759854     1</span></span></code></pre></div>
+<span><span class="co">#&gt;  exhaustive  3.757634  3.757634  3.757634  3.757634  3.757634  3.757634     1</span></span>
+<span><span class="co">#&gt;       kmknn  6.097980  6.097980  6.097980  6.097980  6.097980  6.097980     1</span></span>
+<span><span class="co">#&gt;       annoy 29.488588 29.488588 29.488588 29.488588 29.488588 29.488588     1</span></span>
+<span><span class="co">#&gt;        hnsw 19.025613 19.025613 19.025613 19.025613 19.025613 19.025613     1</span></span>
+<span><span class="co">#&gt;    balltree  3.953454  3.953454  3.953454  3.953454  3.953454  3.953454     1</span></span>
+<span><span class="co">#&gt;   nndescent 37.073149 37.073149 37.073149 37.073149 37.073149 37.073149     1</span></span>
+<span><span class="co">#&gt;         ivf  6.227692  6.227692  6.227692  6.227692  6.227692  6.227692     1</span></span></code></pre></div>
 </div>
 <p>On small datasets, the exhaustive search beats everything. We need to build the indices in the other methods, a cost that only makes sense when we have sufficient samples to do this. Otherwise, modern CPUs with SIMD can do the necessary <code>O(N^2)</code> in no time on smaller datasets. What about 50k cells?</p>
 <div class="cell">
@@ -351,23 +355,21 @@
 <span>      data <span class="op">=</span> <span class="va">benchmark_data</span><span class="op">$</span><span class="va">data</span>,</span>
 <span>      k <span class="op">=</span> <span class="va">k</span>,</span>
 <span>      knn_method <span class="op">=</span> <span class="st">"ivf"</span>,</span>
-<span>      nn_params <span class="op">=</span> <span class="fu"><a href="../reference/params_nn.html">params_nn</a></span><span class="op">(</span></span>
-<span>        n_list <span class="op">=</span> <span class="fl">25L</span></span>
-<span>      <span class="op">)</span>,</span>
+<span>      nn_params <span class="op">=</span> <span class="fu"><a href="../reference/params_nn.html">params_nn</a></span><span class="op">(</span>n_probe <span class="op">=</span> <span class="fl">25L</span><span class="op">)</span>,</span>
 <span>      .verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span>    <span class="op">)</span></span>
 <span>  <span class="op">}</span>,</span>
 <span>  times <span class="op">=</span> <span class="fl">1L</span> <span class="co"># single comparison for speed</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
-<span><span class="co">#&gt;        expr       min        lq      mean    median        uq       max neval</span></span>
-<span><span class="co">#&gt;  exhaustive 10.842806 10.842806 10.842806 10.842806 10.842806 10.842806     1</span></span>
-<span><span class="co">#&gt;       kmknn  2.741843  2.741843  2.741843  2.741843  2.741843  2.741843     1</span></span>
-<span><span class="co">#&gt;       annoy  3.337490  3.337490  3.337490  3.337490  3.337490  3.337490     1</span></span>
-<span><span class="co">#&gt;        hnsw  2.518474  2.518474  2.518474  2.518474  2.518474  2.518474     1</span></span>
-<span><span class="co">#&gt;    balltree  1.664248  1.664248  1.664248  1.664248  1.664248  1.664248     1</span></span>
-<span><span class="co">#&gt;   nndescent  2.528483  2.528483  2.528483  2.528483  2.528483  2.528483     1</span></span>
-<span><span class="co">#&gt;         ivf  2.543921  2.543921  2.543921  2.543921  2.543921  2.543921     1</span></span></code></pre></div>
+<span><span class="co">#&gt;        expr      min       lq     mean   median       uq      max neval</span></span>
+<span><span class="co">#&gt;  exhaustive 3.853691 3.853691 3.853691 3.853691 3.853691 3.853691     1</span></span>
+<span><span class="co">#&gt;       kmknn 2.593765 2.593765 2.593765 2.593765 2.593765 2.593765     1</span></span>
+<span><span class="co">#&gt;       annoy 3.414586 3.414586 3.414586 3.414586 3.414586 3.414586     1</span></span>
+<span><span class="co">#&gt;        hnsw 2.295630 2.295630 2.295630 2.295630 2.295630 2.295630     1</span></span>
+<span><span class="co">#&gt;    balltree 1.735178 1.735178 1.735178 1.735178 1.735178 1.735178     1</span></span>
+<span><span class="co">#&gt;   nndescent 1.926493 1.926493 1.926493 1.926493 1.926493 1.926493     1</span></span>
+<span><span class="co">#&gt;         ivf 2.461231 2.461231 2.461231 2.461231 2.461231 2.461231     1</span></span></code></pre></div>
 </div>
 <p>We start observing the first pattern, that the approximate nearest neighbour searches are faster than the exhaustive search. The delta becomes more pronounced with more samples:</p>
 <div class="cell">
@@ -424,6 +426,7 @@
 <span>      data <span class="op">=</span> <span class="va">benchmark_data</span><span class="op">$</span><span class="va">data</span>,</span>
 <span>      k <span class="op">=</span> <span class="va">k</span>,</span>
 <span>      knn_method <span class="op">=</span> <span class="st">"nndescent"</span>,</span>
+<span>      nn_params <span class="op">=</span> <span class="fu"><a href="../reference/params_nn.html">params_nn</a></span><span class="op">(</span>extract_knn <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>      .verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span>    <span class="op">)</span></span>
 <span>  <span class="op">}</span>,</span>
@@ -432,9 +435,7 @@
 <span>      data <span class="op">=</span> <span class="va">benchmark_data</span><span class="op">$</span><span class="va">data</span>,</span>
 <span>      k <span class="op">=</span> <span class="va">k</span>,</span>
 <span>      knn_method <span class="op">=</span> <span class="st">"ivf"</span>,</span>
-<span>      nn_params <span class="op">=</span> <span class="fu"><a href="../reference/params_nn.html">params_nn</a></span><span class="op">(</span></span>
-<span>        n_list <span class="op">=</span> <span class="fl">25L</span></span>
-<span>      <span class="op">)</span>,</span>
+<span>      nn_params <span class="op">=</span> <span class="fu"><a href="../reference/params_nn.html">params_nn</a></span><span class="op">(</span>n_probe <span class="op">=</span> <span class="fl">25L</span><span class="op">)</span>,</span>
 <span>      .verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span>    <span class="op">)</span></span>
 <span>  <span class="op">}</span>,</span>
@@ -442,13 +443,13 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;        expr       min        lq      mean    median        uq       max neval</span></span>
-<span><span class="co">#&gt;  exhaustive 43.138099 43.138099 43.138099 43.138099 43.138099 43.138099     1</span></span>
-<span><span class="co">#&gt;       kmknn  8.074865  8.074865  8.074865  8.074865  8.074865  8.074865     1</span></span>
-<span><span class="co">#&gt;       annoy  9.495500  9.495500  9.495500  9.495500  9.495500  9.495500     1</span></span>
-<span><span class="co">#&gt;        hnsw  5.871250  5.871250  5.871250  5.871250  5.871250  5.871250     1</span></span>
-<span><span class="co">#&gt;    balltree  5.691132  5.691132  5.691132  5.691132  5.691132  5.691132     1</span></span>
-<span><span class="co">#&gt;   nndescent  6.213560  6.213560  6.213560  6.213560  6.213560  6.213560     1</span></span>
-<span><span class="co">#&gt;         ivf  9.886037  9.886037  9.886037  9.886037  9.886037  9.886037     1</span></span></code></pre></div>
+<span><span class="co">#&gt;  exhaustive 14.971551 14.971551 14.971551 14.971551 14.971551 14.971551     1</span></span>
+<span><span class="co">#&gt;       kmknn  7.693674  7.693674  7.693674  7.693674  7.693674  7.693674     1</span></span>
+<span><span class="co">#&gt;       annoy  8.853331  8.853331  8.853331  8.853331  8.853331  8.853331     1</span></span>
+<span><span class="co">#&gt;        hnsw  5.497430  5.497430  5.497430  5.497430  5.497430  5.497430     1</span></span>
+<span><span class="co">#&gt;    balltree  7.043120  7.043120  7.043120  7.043120  7.043120  7.043120     1</span></span>
+<span><span class="co">#&gt;   nndescent  4.180256  4.180256  4.180256  4.180256  4.180256  4.180256     1</span></span>
+<span><span class="co">#&gt;         ivf  6.183785  6.183785  6.183785  6.183785  6.183785  6.183785     1</span></span></code></pre></div>
 </div>
 </section><section class="level3"><h4 id="precision">Precision<a class="anchor" aria-label="anchor" href="#precision"></a>
 </h4>
@@ -474,7 +475,7 @@
 <span>  <span class="va">idx_i</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_knn_graph.html">generate_knn_graph</a></span><span class="op">(</span></span>
 <span>    data <span class="op">=</span> <span class="va">benchmark_data</span><span class="op">$</span><span class="va">data</span>,</span>
 <span>    k <span class="op">=</span> <span class="va">k</span>,</span>
-<span>    nn_params <span class="op">=</span> <span class="fu"><a href="../reference/params_nn.html">params_nn</a></span><span class="op">(</span>n_list <span class="op">=</span> <span class="fl">25L</span><span class="op">)</span>,</span>
+<span>    nn_params <span class="op">=</span> <span class="fu"><a href="../reference/params_nn.html">params_nn</a></span><span class="op">(</span>extract_knn <span class="op">=</span> <span class="cn">TRUE</span>, n_probe <span class="op">=</span> <span class="fl">25L</span><span class="op">)</span>,</span>
 <span>    knn_method <span class="op">=</span> <span class="va">idx</span>,</span>
 <span>    .verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span>  <span class="op">)</span></span>
@@ -486,11 +487,11 @@
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"ANN method %s achieves a Recall of %.3f."</span>, <span class="va">idx</span>, <span class="va">recall_i</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span></span>
-<span><span class="co">#&gt; [1] "ANN method hnsw achieves a Recall of 0.998."</span></span>
+<span><span class="co">#&gt; [1] "ANN method hnsw achieves a Recall of 0.999."</span></span>
 <span><span class="co">#&gt; [1] "ANN method annoy achieves a Recall of 1.000."</span></span>
 <span><span class="co">#&gt; [1] "ANN method nndescent achieves a Recall of 1.000."</span></span>
 <span><span class="co">#&gt; [1] "ANN method balltree achieves a Recall of 0.982."</span></span>
-<span><span class="co">#&gt; [1] "ANN method ivf achieves a Recall of 1.000."</span></span>
+<span><span class="co">#&gt; [1] "ANN method ivf achieves a Recall of 0.967."</span></span>
 <span><span class="co">#&gt; [1] "ANN method kmknn achieves a Recall of 1.000."</span></span></code></pre></div>
 </div>
 <p>As you can see, all of these methods are able to (mostly) identify the right neighbours (in the right order!). If you wish to understand more how these methods work, how they compare, etc., please check this <a href="https://github.com/GregorLueg/ann-search-rs" class="external-link">out</a>.</p>

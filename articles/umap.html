@@ -6,6 +6,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Using UMAP • manifoldsR</title>
+<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
+<link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" sizes="any" href="../favicon.ico">
+<link rel="manifest" href="../site.webmanifest">
 <script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
@@ -14,6 +19,7 @@
 <link href="umap_files/libs/quarto-html/light-border.css" rel="stylesheet">
 <!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
 <meta property="og:title" content="Using UMAP">
+<meta property="og:image" content="https://gregorlueg.github.io/manifoldsR/logo.png">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -23,7 +29,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.11</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,11 +75,10 @@
 </nav><div class="container template-quarto">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-
-      <h1>Using UMAP</h1>
+      <img src="../logo.png" class="logo" alt=""><h1>Using UMAP</h1>
 
       <p class="author">Gregor Lueg</p>
-      <p class="date">2026-08-20</p>
+      <p class="date">2026-09-03</p>
 
 
       <div class="d-none name"><code></code></div>
@@ -538,17 +543,17 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: milliseconds</span></span>
 <span><span class="co">#&gt;             expr        min         lq       mean     median         uq</span></span>
-<span><span class="co">#&gt;             umap 22033.9425 22033.9425 22033.9425 22033.9425 22033.9425</span></span>
-<span><span class="co">#&gt;  umap_reticulate 18816.2788 18816.2788 18816.2788 18816.2788 18816.2788</span></span>
-<span><span class="co">#&gt;             uwot  5950.2682  5950.2682  5950.2682  5950.2682  5950.2682</span></span>
-<span><span class="co">#&gt;          uwot_v2  3000.6719  3000.6719  3000.6719  3000.6719  3000.6719</span></span>
-<span><span class="co">#&gt;    manifold_umap   701.8084   701.8084   701.8084   701.8084   701.8084</span></span>
+<span><span class="co">#&gt;             umap 22513.8841 22513.8841 22513.8841 22513.8841 22513.8841</span></span>
+<span><span class="co">#&gt;  umap_reticulate 18909.7387 18909.7387 18909.7387 18909.7387 18909.7387</span></span>
+<span><span class="co">#&gt;             uwot  5484.4079  5484.4079  5484.4079  5484.4079  5484.4079</span></span>
+<span><span class="co">#&gt;          uwot_v2  3300.7597  3300.7597  3300.7597  3300.7597  3300.7597</span></span>
+<span><span class="co">#&gt;    manifold_umap   697.9296   697.9296   697.9296   697.9296   697.9296</span></span>
 <span><span class="co">#&gt;         max neval</span></span>
-<span><span class="co">#&gt;  22033.9425     1</span></span>
-<span><span class="co">#&gt;  18816.2788     1</span></span>
-<span><span class="co">#&gt;   5950.2682     1</span></span>
-<span><span class="co">#&gt;   3000.6719     1</span></span>
-<span><span class="co">#&gt;    701.8084     1</span></span></code></pre></div>
+<span><span class="co">#&gt;  22513.8841     1</span></span>
+<span><span class="co">#&gt;  18909.7387     1</span></span>
+<span><span class="co">#&gt;   5484.4079     1</span></span>
+<span><span class="co">#&gt;   3300.7597     1</span></span>
+<span><span class="co">#&gt;    697.9296     1</span></span></code></pre></div>
 </div>
 <p>We can appreciate that the standard R version is slow (as expected). If we leverage the Python version (with numba behind the scences) via the reticulate, we can get some speed ups (we need to however first JIT compile the numba parts). However, the uwot v2 version and the manifold are the fastest here. Let’s pit them together against each other in a larger data set.</p>
 <div class="cell">
@@ -573,9 +578,12 @@
 <span>  times <span class="op">=</span> <span class="fl">1L</span> <span class="co"># single comparison for speed</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
-<span><span class="co">#&gt;           expr      min       lq     mean   median       uq      max neval</span></span>
-<span><span class="co">#&gt;        uwot_v2 26.30819 26.30819 26.30819 26.30819 26.30819 26.30819     1</span></span>
-<span><span class="co">#&gt;  manifold_umap  9.10508  9.10508  9.10508  9.10508  9.10508  9.10508     1</span></span></code></pre></div>
+<span><span class="co">#&gt;           expr       min        lq      mean    median        uq       max</span></span>
+<span><span class="co">#&gt;        uwot_v2 24.231685 24.231685 24.231685 24.231685 24.231685 24.231685</span></span>
+<span><span class="co">#&gt;  manifold_umap  9.107491  9.107491  9.107491  9.107491  9.107491  9.107491</span></span>
+<span><span class="co">#&gt;  neval</span></span>
+<span><span class="co">#&gt;      1</span></span>
+<span><span class="co">#&gt;      1</span></span></code></pre></div>
 </div>
 <p>Due to optimised memory layouts, aggressive in-lining, heavy parallelism, leveragig look-up tables (LUTs), this version is <strong>fast</strong> and is likely(?) the fastest UMAP available in R, while keeping memory usage minimal due to leveraging Rust from the point that data is moved into the Rust kernel, until the embedding has been fitted. No round tripping through R, just highly optimised and compiled code throughout. The different nearest neighbour search algorithms give additional flexibility.</p>
 </section></section><script id="quarto-html-after-body" type="application/javascript">

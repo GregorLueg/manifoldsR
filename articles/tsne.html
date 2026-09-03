@@ -6,6 +6,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Using t-SNE • manifoldsR</title>
+<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
+<link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" sizes="any" href="../favicon.ico">
+<link rel="manifest" href="../site.webmanifest">
 <script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
@@ -14,6 +19,7 @@
 <link href="tsne_files/libs/quarto-html/light-border.css" rel="stylesheet">
 <!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
 <meta property="og:title" content="Using t-SNE">
+<meta property="og:image" content="https://gregorlueg.github.io/manifoldsR/logo.png">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -23,7 +29,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.11</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,11 +75,10 @@
 </nav><div class="container template-quarto">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-
-      <h1>Using t-SNE</h1>
+      <img src="../logo.png" class="logo" alt=""><h1>Using t-SNE</h1>
 
       <p class="author">Gregor Lueg</p>
-      <p class="date">2026-08-20</p>
+      <p class="date">2026-09-03</p>
 
 
       <div class="d-none name"><code></code></div>
@@ -450,8 +455,8 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;         expr       min        lq      mean    median        uq       max neval</span></span>
-<span><span class="co">#&gt;        Rtsne 12.722745 12.722745 12.722745 12.722745 12.722745 12.722745     1</span></span>
-<span><span class="co">#&gt;  manifold_bh  3.974893  3.974893  3.974893  3.974893  3.974893  3.974893     1</span></span></code></pre></div>
+<span><span class="co">#&gt;        Rtsne 13.147713 13.147713 13.147713 13.147713 13.147713 13.147713     1</span></span>
+<span><span class="co">#&gt;  manifold_bh  3.972849  3.972849  3.972849  3.972849  3.972849  3.972849     1</span></span></code></pre></div>
 </div>
 <p>The impact here is massive already. Let’s see what happens with BH and FFT? (To note, FFT’s advantage becomes larger the bigger the data set due to its <code>O(N)</code> complexity.)</p>
 <div class="cell">
@@ -484,8 +489,8 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;          expr      min       lq     mean   median       uq      max neval</span></span>
-<span><span class="co">#&gt;   manifold_bh 97.25117 97.25117 97.25117 97.25117 97.25117 97.25117     1</span></span>
-<span><span class="co">#&gt;  manifold_fft 41.68746 41.68746 41.68746 41.68746 41.68746 41.68746     1</span></span></code></pre></div>
+<span><span class="co">#&gt;   manifold_bh 99.65585 99.65585 99.65585 99.65585 99.65585 99.65585     1</span></span>
+<span><span class="co">#&gt;  manifold_fft 41.28596 41.28596 41.28596 41.28596 41.28596 41.28596     1</span></span></code></pre></div>
 </div>
 <p>The speed advantage of the Rust implementation comes from a combination of optimised memory layout, aggressive inlining, and the fact that the entire pipeline — kNN construction, probability computation, and gradient descent — runs within the Rust kernel without round-tripping through R. If you like tSNE, but thought it’s too slow… we got you.</p>
 </section></section><script id="quarto-html-after-body" type="application/javascript">

@@ -98,14 +98,14 @@ data.table(
 )[, .(mean_log_radius = round(mean(radius), 2)), by = cluster][order(cluster)]
 #>    cluster mean_log_radius
 #>     <fctr>           <num>
-#> 1:       0           10.38
-#> 2:       1            7.55
-#> 3:       2           10.33
-#> 4:       3            5.83
-#> 5:       4            8.48
-#> 6:       5           10.56
-#> 7:       6            5.09
-#> 8:       7            5.98
+#> 1:       0            5.19
+#> 2:       1            3.77
+#> 3:       2            5.16
+#> 4:       3            2.91
+#> 5:       4            4.24
+#> 6:       5            5.28
+#> 7:       6            2.54
+#> 8:       7            2.99
 ```
 
 A spread of a couple of log units across clusters. Now the question is
@@ -186,8 +186,8 @@ data.table(
 )
 #>     method   rho
 #>     <char> <num>
-#> 1:    UMAP 0.008
-#> 2: densMAP 0.918
+#> 1:    UMAP 0.004
+#> 2: densMAP 0.917
 ```
 
 Set `lambda = 0` and you are back to plain UMAP, which is a handy sanity
@@ -264,8 +264,8 @@ data.table(
 )
 #>     method   rho
 #>     <char> <num>
-#> 1:   t-SNE 0.071
-#> 2: den-SNE 0.805
+#> 1:   t-SNE 0.080
+#> 2: den-SNE 0.831
 ```
 
 t-SNE starts from a marginally better place than UMAP, since the
@@ -354,10 +354,10 @@ data.table(
     round(cor(swiss_radii, local_radii(swiss_densmap), method = "spearman"), 3)
   )
 )
-#>     method    rho
-#>     <char>  <num>
-#> 1:    UMAP -0.040
-#> 2: densMAP  0.623
+#>     method   rho
+#>     <char> <num>
+#> 1:    UMAP 0.232
+#> 2: densMAP 0.795
 ```
 
 ### Using pre-computed kNN graphs
@@ -399,8 +399,8 @@ data.table(
 )
 #>           method   rho
 #>           <char> <num>
-#> 1: densMAP (kNN) 0.924
-#> 2: den-SNE (kNN) 0.891
+#> 1: densMAP (kNN) 0.923
+#> 2: den-SNE (kNN) 0.889
 ```
 
 ### Tuning lambda
@@ -425,14 +425,14 @@ data.table(
 )[, .(mean_log_radius = round(mean(radius), 2)), by = cluster][order(cluster)]
 #>    cluster mean_log_radius
 #>     <fctr>           <num>
-#> 1:       0           10.72
-#> 2:       1            7.90
-#> 3:       2           10.73
-#> 4:       3            6.18
-#> 5:       4            8.76
-#> 6:       5           10.93
-#> 7:       6            5.38
-#> 8:       7            6.37
+#> 1:       0            5.35
+#> 2:       1            3.95
+#> 3:       2            5.36
+#> 4:       3            3.09
+#> 5:       4            4.38
+#> 6:       5            5.46
+#> 7:       6            2.68
+#> 8:       7            3.18
 ```
 
 ``` r
@@ -483,11 +483,11 @@ lambda_sweep <- rbindlist(lapply(c(0, 0.5, 2, 5, 10), \(l) {
 lambda_sweep
 #>    lambda    rho separation
 #>     <num>  <num>      <num>
-#> 1:    0.0 -0.003      16.94
-#> 2:    0.5  0.917      29.98
-#> 3:    2.0  0.938      29.81
-#> 4:    5.0  0.944      26.37
-#> 5:   10.0  0.953      23.14
+#> 1:    0.0 -0.015      15.80
+#> 2:    0.5  0.921      29.28
+#> 3:    2.0  0.934      28.14
+#> 4:    5.0  0.939      25.16
+#> 5:   10.0  0.950      21.66
 ```
 
 ``` r

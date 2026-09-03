@@ -19,7 +19,8 @@ generate_nearest_neigbours_class(indices, dist, k, n)
 - dist:
 
   Numeric. Nearest neighbour distances in flat storarge format. Need to
-  be sorted!
+  be sorted! On the scale of the metric they were generated with, i.e.
+  Euclidean rather than squared Euclidean.
 
 - k:
 

@@ -15,6 +15,7 @@ params_nn(
   diversify_prob = 0,
   delta = 0.001,
   ef_budget = NULL,
+  extract_knn = TRUE,
   bt_budget = 0.1,
   n_list = NULL,
   n_probes = NULL
@@ -60,6 +61,14 @@ params_nn(
 - ef_budget:
 
   Integer or `NULL`. Effort budget for NN descent. Defaults to `NULL`.
+  Ignored when `extract_knn` is `TRUE`, as no search runs.
+
+- extract_knn:
+
+  Boolean. Only affects the `"nndescent"` backend. If `TRUE`, the
+  descent hands back the graph it just built instead of running a beam
+  search over it. Faster, at a recall of roughly `0.98` rather than
+  `0.99`-`1.00`. Defaults to `TRUE`.
 
 - bt_budget:
 

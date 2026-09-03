@@ -180,6 +180,7 @@ microbenchmark::microbenchmark(
       data = cluster_data$data,
       k = k,
       knn_method = "nndescent",
+      nn_params = params_nn(extract_knn = TRUE),
       .verbose = FALSE
     )
   },
@@ -188,9 +189,7 @@ microbenchmark::microbenchmark(
       data = cluster_data$data,
       k = k,
       knn_method = "ivf",
-      nn_params = params_nn(
-        n_list = 25L
-      ),
+      nn_params = params_nn(),
       .verbose = FALSE
     )
   },
@@ -198,13 +197,13 @@ microbenchmark::microbenchmark(
 )
 #> Unit: milliseconds
 #>        expr       min        lq      mean    median        uq       max neval
-#>  exhaustive  6.213928  6.213928  6.213928  6.213928  6.213928  6.213928     1
-#>       kmknn  6.211384  6.211384  6.211384  6.211384  6.211384  6.211384     1
-#>       annoy 29.548063 29.548063 29.548063 29.548063 29.548063 29.548063     1
-#>        hnsw 19.837488 19.837488 19.837488 19.837488 19.837488 19.837488     1
-#>    balltree  4.151840  4.151840  4.151840  4.151840  4.151840  4.151840     1
-#>   nndescent 36.512605 36.512605 36.512605 36.512605 36.512605 36.512605     1
-#>         ivf  5.759854  5.759854  5.759854  5.759854  5.759854  5.759854     1
+#>  exhaustive  3.757634  3.757634  3.757634  3.757634  3.757634  3.757634     1
+#>       kmknn  6.097980  6.097980  6.097980  6.097980  6.097980  6.097980     1
+#>       annoy 29.488588 29.488588 29.488588 29.488588 29.488588 29.488588     1
+#>        hnsw 19.025613 19.025613 19.025613 19.025613 19.025613 19.025613     1
+#>    balltree  3.953454  3.953454  3.953454  3.953454  3.953454  3.953454     1
+#>   nndescent 37.073149 37.073149 37.073149 37.073149 37.073149 37.073149     1
+#>         ivf  6.227692  6.227692  6.227692  6.227692  6.227692  6.227692     1
 ```
 
 On small datasets, the exhaustive search beats everything. We need to
@@ -274,23 +273,21 @@ microbenchmark::microbenchmark(
       data = benchmark_data$data,
       k = k,
       knn_method = "ivf",
-      nn_params = params_nn(
-        n_list = 25L
-      ),
+      nn_params = params_nn(n_probe = 25L),
       .verbose = FALSE
     )
   },
   times = 1L # single comparison for speed
 )
 #> Unit: seconds
-#>        expr       min        lq      mean    median        uq       max neval
-#>  exhaustive 10.842806 10.842806 10.842806 10.842806 10.842806 10.842806     1
-#>       kmknn  2.741843  2.741843  2.741843  2.741843  2.741843  2.741843     1
-#>       annoy  3.337490  3.337490  3.337490  3.337490  3.337490  3.337490     1
-#>        hnsw  2.518474  2.518474  2.518474  2.518474  2.518474  2.518474     1
-#>    balltree  1.664248  1.664248  1.664248  1.664248  1.664248  1.664248     1
-#>   nndescent  2.528483  2.528483  2.528483  2.528483  2.528483  2.528483     1
-#>         ivf  2.543921  2.543921  2.543921  2.543921  2.543921  2.543921     1
+#>        expr      min       lq     mean   median       uq      max neval
+#>  exhaustive 3.853691 3.853691 3.853691 3.853691 3.853691 3.853691     1
+#>       kmknn 2.593765 2.593765 2.593765 2.593765 2.593765 2.593765     1
+#>       annoy 3.414586 3.414586 3.414586 3.414586 3.414586 3.414586     1
+#>        hnsw 2.295630 2.295630 2.295630 2.295630 2.295630 2.295630     1
+#>    balltree 1.735178 1.735178 1.735178 1.735178 1.735178 1.735178     1
+#>   nndescent 1.926493 1.926493 1.926493 1.926493 1.926493 1.926493     1
+#>         ivf 2.461231 2.461231 2.461231 2.461231 2.461231 2.461231     1
 ```
 
 We start observing the first pattern, that the approximate nearest
@@ -351,6 +348,7 @@ microbenchmark::microbenchmark(
       data = benchmark_data$data,
       k = k,
       knn_method = "nndescent",
+      nn_params = params_nn(extract_knn = TRUE),
       .verbose = FALSE
     )
   },
@@ -359,9 +357,7 @@ microbenchmark::microbenchmark(
       data = benchmark_data$data,
       k = k,
       knn_method = "ivf",
-      nn_params = params_nn(
-        n_list = 25L
-      ),
+      nn_params = params_nn(n_probe = 25L),
       .verbose = FALSE
     )
   },
@@ -369,13 +365,13 @@ microbenchmark::microbenchmark(
 )
 #> Unit: seconds
 #>        expr       min        lq      mean    median        uq       max neval
-#>  exhaustive 43.138099 43.138099 43.138099 43.138099 43.138099 43.138099     1
-#>       kmknn  8.074865  8.074865  8.074865  8.074865  8.074865  8.074865     1
-#>       annoy  9.495500  9.495500  9.495500  9.495500  9.495500  9.495500     1
-#>        hnsw  5.871250  5.871250  5.871250  5.871250  5.871250  5.871250     1
-#>    balltree  5.691132  5.691132  5.691132  5.691132  5.691132  5.691132     1
-#>   nndescent  6.213560  6.213560  6.213560  6.213560  6.213560  6.213560     1
-#>         ivf  9.886037  9.886037  9.886037  9.886037  9.886037  9.886037     1
+#>  exhaustive 14.971551 14.971551 14.971551 14.971551 14.971551 14.971551     1
+#>       kmknn  7.693674  7.693674  7.693674  7.693674  7.693674  7.693674     1
+#>       annoy  8.853331  8.853331  8.853331  8.853331  8.853331  8.853331     1
+#>        hnsw  5.497430  5.497430  5.497430  5.497430  5.497430  5.497430     1
+#>    balltree  7.043120  7.043120  7.043120  7.043120  7.043120  7.043120     1
+#>   nndescent  4.180256  4.180256  4.180256  4.180256  4.180256  4.180256     1
+#>         ivf  6.183785  6.183785  6.183785  6.183785  6.183785  6.183785     1
 ```
 
 #### Precision
@@ -406,7 +402,7 @@ for (idx in indices) {
   idx_i <- generate_knn_graph(
     data = benchmark_data$data,
     k = k,
-    nn_params = params_nn(n_list = 25L),
+    nn_params = params_nn(extract_knn = TRUE, n_probe = 25L),
     knn_method = idx,
     .verbose = FALSE
   )
@@ -418,11 +414,11 @@ for (idx in indices) {
     sprintf("ANN method %s achieves a Recall of %.3f.", idx, recall_i)
   )
 }
-#> [1] "ANN method hnsw achieves a Recall of 0.998."
+#> [1] "ANN method hnsw achieves a Recall of 0.999."
 #> [1] "ANN method annoy achieves a Recall of 1.000."
 #> [1] "ANN method nndescent achieves a Recall of 1.000."
 #> [1] "ANN method balltree achieves a Recall of 0.982."
-#> [1] "ANN method ivf achieves a Recall of 1.000."
+#> [1] "ANN method ivf achieves a Recall of 0.967."
 #> [1] "ANN method kmknn achieves a Recall of 1.000."
 ```
 
