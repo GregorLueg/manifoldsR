@@ -1,4 +1,4 @@
-# 0.3.0
+# manifoldsR 0.3.0
 
 Major release
 
