@@ -7,8 +7,12 @@ Major release
 - A lot of the backend code in Rust changed. This gives in parts substantially
   faster kNN searches from [ann-search-rs](https://crates.io/crates/ann-search-rs)
   (`"v0.8.1"`).
+
+## Breaking change
+
 - The kNN searches not always return Euclidean distance and not squared 
-  Euclidean distance to simplify.
+  Euclidean distance to simplify. Be aware that this is a *breaking change* if
+  you have old kNN graphs that used the Euclidean distance!
 
 
 # manifoldsR 0.2.11
