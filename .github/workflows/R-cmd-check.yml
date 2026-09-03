@@ -12,10 +12,11 @@ concurrency:
 
 jobs:
   R-CMD-check:
-    uses: GregorLueg/personal-actions/.github/workflows/r-cmd-check.yml@v1
+    uses: GregorLueg/personal-actions/.github/workflows/r-cmd-check.yml@v1.10.0
     with:
       rust: true
       gpu: false
       windows: true
+      macos-x86: true
       linux-runner: ubuntu-latest
     secrets: inherit

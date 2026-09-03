@@ -36,7 +36,9 @@
 #' @param .verbose Boolean. Controls verbosity.
 #'
 #' @return A nearest neighbours class object with 1-indexed neighbour indices
-#' and distances.
+#' and distances. Distances are on the scale of the metric they are named
+#' after, so `dist_metric = "euclidean"` returns Euclidean distance, not the
+#' squared Euclidean the backends sort on internally.
 #'
 #' @export
 generate_knn_graph <- function(

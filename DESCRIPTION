@@ -1,6 +1,6 @@
 Package: manifoldsR
 Title: Package for 2D embeddings
-Version: 0.2.11
+Version: 0.3.0
 Authors@R: 
     c(
         person(
@@ -35,7 +35,7 @@ Imports:
     rextendr,
     zeallot
 Config/rextendr/version: 0.5.0
-SystemRequirements: Cargo (Rust's package manager), rustc >= 1.65.0, xz
+SystemRequirements: Cargo (Rust's package manager), rustc >= 1.90, xz
 Depends: 
     R (>= 4.2)
 Suggests: 
@@ -51,4 +51,4 @@ Suggests:
     uwot
 VignetteBuilder: quarto
 URL: https://gregorlueg.github.io/manifoldsR/
-Config/roxygen2/version: 8.0.0
+Config/roxygen2/version: 8.1.0

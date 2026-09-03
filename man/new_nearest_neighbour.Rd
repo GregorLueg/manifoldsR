@@ -14,7 +14,8 @@ generate_nearest_neigbours_class(indices, dist, k, n)
 be sorted!}
 
 \item{dist}{Numeric. Nearest neighbour distances in flat storarge format.
-Need to be sorted!}
+Need to be sorted! On the scale of the metric they were generated with,
+i.e. Euclidean rather than squared Euclidean.}
 
 \item{k}{Integer. Number of k-neighbours per sample.}
 

@@ -9,12 +9,24 @@ use rayon::prelude::*;
 // Clustering metrics //
 ////////////////////////
 
-/// Mean silhouette score
+/// Mean silhouette score over squared Euclidean distance
 ///
-/// Computes per-point silhouette coefficients and returns both the
-/// mean score and the per-point values. Uses SIMD-accelerated squared
-/// Euclidean distance internally. Points in singleton clusters receive
-/// a silhouette of 0.
+/// Computes per-point silhouette coefficients and returns both the mean score
+/// and the per-point values. Points in singleton clusters receive a silhouette
+/// of 0.
+///
+/// `a(i)` and `b(i)` are mean **squared** distances, which lets both fall out
+/// of `|c| * ||x_i||^2 - 2 * x_i . sum_c + sq_norm_sum_c` in `O(n * k * dim)`
+/// without ever materialising a pair. Plain Euclidean would need every pair
+/// individually, since `mean(sqrt(d^2)) != sqrt(mean(d^2))`.
+///
+/// The scores are therefore not the same numbers a plain-Euclidean silhouette
+/// would give. Squaring is applied per pair before the mean, so `a` and `b`
+/// shift by different factors, and since `b > a` for a well-assigned point the
+/// score is pushed up: mean own-cluster distance 1 against mean other-cluster
+/// distance 2 scores 0.5 plain and roughly 0.75 here. The sign is preserved,
+/// as `b > a` iff `b^2 > a^2`, so the "right cluster or not" call is identical.
+/// Do not compare the magnitudes against implementations using plain Euclidean.
 ///
 /// ### Params
 ///

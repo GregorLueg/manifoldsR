@@ -1,12 +1,11 @@
-# manifoldsR
+# manifoldsR <img src="man/figures/logo.png" align="right" height="138" alt="manifoldsR logo" />
 
-![r_package](https://img.shields.io/badge/R_package-0.2.11-orange) 
+[![r_package](https://img.shields.io/github/r-package/v/GregorLueg/manifoldsR?label=R_package&color=orange)](https://github.com/GregorLueg/manifoldsR/blob/main/DESCRIPTION)
+[![manifoldsR status badge](https://gregorlueg.r-universe.dev/manifoldsR/badges/version)](https://gregorlueg.r-universe.dev/manifoldsR)
 [![CI](https://github.com/GregorLueg/manifoldsR/actions/workflows/R-cmd-check.yml/badge.svg)](https://github.com/GregorLueg/manifoldsR/actions/workflows/R-cmd-check.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![pkgdown](https://img.shields.io/badge/pkgdown-website-1b5e9f?logo=github)](https://gregorlueg.github.io/manifoldsR/)
 [![extendr](https://img.shields.io/badge/extendr-^0.9.0-276DC2)](https://extendr.github.io/extendr/extendr_api/)
-
-<img src="man/figures/manifoldsR_logo.png" width="128" height="128" alt="manifoldsR logo">
 
 **Rust-accelerated** manifold learning methods with R bindings. For the 
 modern-day single-cell Pollock. Additionally, provides some clustering
@@ -75,6 +74,19 @@ rustc --version
 ```
 
 ### Install manifoldsR
+
+You can install the package from [r-universe.dev](https://r-universe.dev/search)
+as a pre-compiled binary.
+
+```r
+# Install from r-universe (pre-compiled)
+install.packages(
+  'manifoldsR', 
+  repos = c('https://gregorlueg.r-universe.dev', 'https://cloud.r-project.org')
+)
+```
+
+Or install from source. That will compile all of the Rust crates from scratch.
 
 ```r
 # Install from source

@@ -78,6 +78,10 @@ where
         .get("ef_budget")
         .and_then(|v| v.as_integer())
         .map(|v| v as usize);
+    let extract_knn = nn_params
+        .get("extract_knn")
+        .and_then(|v| v.as_bool())
+        .unwrap_or(true);
     let bt_budget = nn_params
         .get("bt_budget")
         .and_then(|v| v.as_real())
@@ -102,6 +106,7 @@ where
         ef_search,
         diversify_prob,
         delta,
+        extract_knn,
         bt_budget,
         n_list,
         n_probes,
