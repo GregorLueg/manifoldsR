@@ -1,3 +1,10 @@
+# manifoldsR 0.3.1
+
+## Features
+
+- Version updates on the backend to enable avx2 and avx512 instructions by 
+  default.
+
 # manifoldsR 0.3.0
 
 Major release
