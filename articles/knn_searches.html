@@ -29,7 +29,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -78,7 +78,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Nearest neighbour searches</h1>
 
       <p class="author">Gregor Lueg</p>
-      <p class="date">2026-09-03</p>
+      <p class="date">2026-09-10</p>
 
 
       <div class="d-none name"><code></code></div>
@@ -285,13 +285,13 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: milliseconds</span></span>
 <span><span class="co">#&gt;        expr       min        lq      mean    median        uq       max neval</span></span>
-<span><span class="co">#&gt;  exhaustive  3.757634  3.757634  3.757634  3.757634  3.757634  3.757634     1</span></span>
-<span><span class="co">#&gt;       kmknn  6.097980  6.097980  6.097980  6.097980  6.097980  6.097980     1</span></span>
-<span><span class="co">#&gt;       annoy 29.488588 29.488588 29.488588 29.488588 29.488588 29.488588     1</span></span>
-<span><span class="co">#&gt;        hnsw 19.025613 19.025613 19.025613 19.025613 19.025613 19.025613     1</span></span>
-<span><span class="co">#&gt;    balltree  3.953454  3.953454  3.953454  3.953454  3.953454  3.953454     1</span></span>
-<span><span class="co">#&gt;   nndescent 37.073149 37.073149 37.073149 37.073149 37.073149 37.073149     1</span></span>
-<span><span class="co">#&gt;         ivf  6.227692  6.227692  6.227692  6.227692  6.227692  6.227692     1</span></span></code></pre></div>
+<span><span class="co">#&gt;  exhaustive  3.587159  3.587159  3.587159  3.587159  3.587159  3.587159     1</span></span>
+<span><span class="co">#&gt;       kmknn  4.804291  4.804291  4.804291  4.804291  4.804291  4.804291     1</span></span>
+<span><span class="co">#&gt;       annoy 26.220942 26.220942 26.220942 26.220942 26.220942 26.220942     1</span></span>
+<span><span class="co">#&gt;        hnsw 17.982682 17.982682 17.982682 17.982682 17.982682 17.982682     1</span></span>
+<span><span class="co">#&gt;    balltree  4.230680  4.230680  4.230680  4.230680  4.230680  4.230680     1</span></span>
+<span><span class="co">#&gt;   nndescent 34.169393 34.169393 34.169393 34.169393 34.169393 34.169393     1</span></span>
+<span><span class="co">#&gt;         ivf  4.556658  4.556658  4.556658  4.556658  4.556658  4.556658     1</span></span></code></pre></div>
 </div>
 <p>On small datasets, the exhaustive search beats everything. We need to build the indices in the other methods, a cost that only makes sense when we have sufficient samples to do this. Otherwise, modern CPUs with SIMD can do the necessary <code>O(N^2)</code> in no time on smaller datasets. What about 50k cells?</p>
 <div class="cell">
@@ -363,13 +363,13 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;        expr      min       lq     mean   median       uq      max neval</span></span>
-<span><span class="co">#&gt;  exhaustive 3.853691 3.853691 3.853691 3.853691 3.853691 3.853691     1</span></span>
-<span><span class="co">#&gt;       kmknn 2.593765 2.593765 2.593765 2.593765 2.593765 2.593765     1</span></span>
-<span><span class="co">#&gt;       annoy 3.414586 3.414586 3.414586 3.414586 3.414586 3.414586     1</span></span>
-<span><span class="co">#&gt;        hnsw 2.295630 2.295630 2.295630 2.295630 2.295630 2.295630     1</span></span>
-<span><span class="co">#&gt;    balltree 1.735178 1.735178 1.735178 1.735178 1.735178 1.735178     1</span></span>
-<span><span class="co">#&gt;   nndescent 1.926493 1.926493 1.926493 1.926493 1.926493 1.926493     1</span></span>
-<span><span class="co">#&gt;         ivf 2.461231 2.461231 2.461231 2.461231 2.461231 2.461231     1</span></span></code></pre></div>
+<span><span class="co">#&gt;  exhaustive 3.848899 3.848899 3.848899 3.848899 3.848899 3.848899     1</span></span>
+<span><span class="co">#&gt;       kmknn 2.026154 2.026154 2.026154 2.026154 2.026154 2.026154     1</span></span>
+<span><span class="co">#&gt;       annoy 2.872148 2.872148 2.872148 2.872148 2.872148 2.872148     1</span></span>
+<span><span class="co">#&gt;        hnsw 2.129482 2.129482 2.129482 2.129482 2.129482 2.129482     1</span></span>
+<span><span class="co">#&gt;    balltree 1.347845 1.347845 1.347845 1.347845 1.347845 1.347845     1</span></span>
+<span><span class="co">#&gt;   nndescent 1.598439 1.598439 1.598439 1.598439 1.598439 1.598439     1</span></span>
+<span><span class="co">#&gt;         ivf 1.779863 1.779863 1.779863 1.779863 1.779863 1.779863     1</span></span></code></pre></div>
 </div>
 <p>We start observing the first pattern, that the approximate nearest neighbour searches are faster than the exhaustive search. The delta becomes more pronounced with more samples:</p>
 <div class="cell">
@@ -443,13 +443,13 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;        expr       min        lq      mean    median        uq       max neval</span></span>
-<span><span class="co">#&gt;  exhaustive 14.971551 14.971551 14.971551 14.971551 14.971551 14.971551     1</span></span>
-<span><span class="co">#&gt;       kmknn  7.693674  7.693674  7.693674  7.693674  7.693674  7.693674     1</span></span>
-<span><span class="co">#&gt;       annoy  8.853331  8.853331  8.853331  8.853331  8.853331  8.853331     1</span></span>
-<span><span class="co">#&gt;        hnsw  5.497430  5.497430  5.497430  5.497430  5.497430  5.497430     1</span></span>
-<span><span class="co">#&gt;    balltree  7.043120  7.043120  7.043120  7.043120  7.043120  7.043120     1</span></span>
-<span><span class="co">#&gt;   nndescent  4.180256  4.180256  4.180256  4.180256  4.180256  4.180256     1</span></span>
-<span><span class="co">#&gt;         ivf  6.183785  6.183785  6.183785  6.183785  6.183785  6.183785     1</span></span></code></pre></div>
+<span><span class="co">#&gt;  exhaustive 15.106538 15.106538 15.106538 15.106538 15.106538 15.106538     1</span></span>
+<span><span class="co">#&gt;       kmknn  5.960742  5.960742  5.960742  5.960742  5.960742  5.960742     1</span></span>
+<span><span class="co">#&gt;       annoy  7.682229  7.682229  7.682229  7.682229  7.682229  7.682229     1</span></span>
+<span><span class="co">#&gt;        hnsw  5.108157  5.108157  5.108157  5.108157  5.108157  5.108157     1</span></span>
+<span><span class="co">#&gt;    balltree  5.691898  5.691898  5.691898  5.691898  5.691898  5.691898     1</span></span>
+<span><span class="co">#&gt;   nndescent  3.480603  3.480603  3.480603  3.480603  3.480603  3.480603     1</span></span>
+<span><span class="co">#&gt;         ivf  4.441536  4.441536  4.441536  4.441536  4.441536  4.441536     1</span></span></code></pre></div>
 </div>
 </section><section class="level3"><h4 id="precision">Precision<a class="anchor" aria-label="anchor" href="#precision"></a>
 </h4>
@@ -490,8 +490,8 @@
 <span><span class="co">#&gt; [1] "ANN method hnsw achieves a Recall of 0.999."</span></span>
 <span><span class="co">#&gt; [1] "ANN method annoy achieves a Recall of 1.000."</span></span>
 <span><span class="co">#&gt; [1] "ANN method nndescent achieves a Recall of 1.000."</span></span>
-<span><span class="co">#&gt; [1] "ANN method balltree achieves a Recall of 0.982."</span></span>
-<span><span class="co">#&gt; [1] "ANN method ivf achieves a Recall of 0.967."</span></span>
+<span><span class="co">#&gt; [1] "ANN method balltree achieves a Recall of 0.979."</span></span>
+<span><span class="co">#&gt; [1] "ANN method ivf achieves a Recall of 0.966."</span></span>
 <span><span class="co">#&gt; [1] "ANN method kmknn achieves a Recall of 1.000."</span></span></code></pre></div>
 </div>
 <p>As you can see, all of these methods are able to (mostly) identify the right neighbours (in the right order!). If you wish to understand more how these methods work, how they compare, etc., please check this <a href="https://github.com/GregorLueg/ann-search-rs" class="external-link">out</a>.</p>

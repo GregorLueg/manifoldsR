@@ -355,7 +355,7 @@ evoc_res
 #> Evoc
 #>   layers:               3 
 #>   best layer:           3 
-#>   best persistence:     2655.326 
+#>   best persistence:     2687.141 
 #>   knn:                  not stored
 ```
 
@@ -366,7 +366,7 @@ evoc_best <- best_membership(evoc_res)
 cat("Selected layer:", evoc_best$layer, "\n")
 #> Selected layer: 3
 cat("Persistence score:", round(evoc_best$persistence, 4), "\n")
-#> Persistence score: 2655.326
+#> Persistence score: 2687.141
 cat(
   "Clusters found:",
   length(unique(evoc_best$labels[evoc_best$labels != -1L])),
