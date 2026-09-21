@@ -60,22 +60,14 @@ manifold_synthetic_data <- function(
     )
   }
 
-  checkmate::assertList(parameters, names = "named")
-  required_names <- switch(
+  switch(
     type,
-    swiss_role = c("noise"),
-    biased_swiss_role = c("bias", "noise"),
-    clusters = c("n_clusters"),
-    trajectory = c("topology", "cell_trajectories", "noise"),
-    hierarchical = c(
-      "n_supergroups",
-      "n_subclusts",
-      "supergroup_spread",
-      "subcluster_spread",
-      "point_std"
-    )
+    swiss_role = assertSwissRoleParams(parameters),
+    biased_swiss_role = assertSwissRoleBiasedParams(parameters),
+    clusters = assertClustersParams(parameters),
+    trajectory = assertTrajectoryParams(parameters),
+    hierarchical = assertHierarchicalParams(parameters)
   )
-  checkmate::assertNames(names(parameters), must.include = required_names)
 
   switch(
     type,
