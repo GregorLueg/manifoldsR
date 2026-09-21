@@ -135,37 +135,23 @@ pacmap <- function(
     if (.verbose) {
       message("Using provided kNN graph.")
     }
-    tryCatch(
-      {
-        rs_pacmap_from_knn(
-          embd = data,
-          knn_data = knn,
-          n_dim = n_dim,
-          pacmap_params = final_pacmap_params,
-          seed = seed,
-          use_high_precision = use_high_precision,
-          verbose = parse_verbosity(.verbose)
-        )
-      },
-      error = function(e) {
-        stop("PaCMAP computation failed: ", e$message, call. = FALSE)
-      }
+    rs_pacmap_from_knn(
+      embd = data,
+      knn_data = knn,
+      n_dim = n_dim,
+      pacmap_params = final_pacmap_params,
+      seed = seed,
+      use_high_precision = use_high_precision,
+      verbose = parse_verbosity(.verbose)
     )
   } else {
-    tryCatch(
-      {
-        rs_pacmap(
-          embd = data,
-          n_dim = n_dim,
-          pacmap_params = final_pacmap_params,
-          seed = seed,
-          use_high_precision = use_high_precision,
-          verbose = parse_verbosity(.verbose)
-        )
-      },
-      error = function(e) {
-        stop("PaCMAP computation failed: ", e$message, call. = FALSE)
-      }
+    rs_pacmap(
+      embd = data,
+      n_dim = n_dim,
+      pacmap_params = final_pacmap_params,
+      seed = seed,
+      use_high_precision = use_high_precision,
+      verbose = parse_verbosity(.verbose)
     )
   }
 

@@ -185,43 +185,29 @@ umap <- function(
     if (.verbose) {
       message("Using provided kNN graph.")
     }
-    tryCatch(
-      {
-        rs_umap_from_knn(
-          embd = data,
-          knn_data = knn,
-          n_dim = n_dim,
-          min_dist = min_dist,
-          spread = spread,
-          k = k,
-          umap_params = final_umap_params,
-          seed = seed,
-          use_high_precision = use_high_precision,
-          verbose = parse_verbosity(.verbose)
-        )
-      },
-      error = function(e) {
-        stop("UMAP computation failed: ", e$message, call. = FALSE)
-      }
+    rs_umap_from_knn(
+      embd = data,
+      knn_data = knn,
+      n_dim = n_dim,
+      min_dist = min_dist,
+      spread = spread,
+      k = k,
+      umap_params = final_umap_params,
+      seed = seed,
+      use_high_precision = use_high_precision,
+      verbose = parse_verbosity(.verbose)
     )
   } else {
-    tryCatch(
-      {
-        rs_umap(
-          embd = data,
-          n_dim = n_dim,
-          min_dist = min_dist,
-          spread = spread,
-          k = k,
-          umap_params = final_umap_params,
-          seed = seed,
-          use_high_precision = use_high_precision,
-          verbose = parse_verbosity(.verbose)
-        )
-      },
-      error = function(e) {
-        stop("UMAP computation failed: ", e$message, call. = FALSE)
-      }
+    rs_umap(
+      embd = data,
+      n_dim = n_dim,
+      min_dist = min_dist,
+      spread = spread,
+      k = k,
+      umap_params = final_umap_params,
+      seed = seed,
+      use_high_precision = use_high_precision,
+      verbose = parse_verbosity(.verbose)
     )
   }
 

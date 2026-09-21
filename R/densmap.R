@@ -164,43 +164,29 @@ densmap <- function(
     if (.verbose) {
       message("Using provided kNN graph.")
     }
-    tryCatch(
-      {
-        rs_densmap_from_knn(
-          embd = data,
-          knn_data = knn,
-          n_dim = n_dim,
-          min_dist = min_dist,
-          spread = spread,
-          k = k,
-          densmap_params = final_densmap_params,
-          seed = seed,
-          use_high_precision = use_high_precision,
-          verbose = parse_verbosity(.verbose)
-        )
-      },
-      error = function(e) {
-        stop("densMAP computation failed: ", e$message, call. = FALSE)
-      }
+    rs_densmap_from_knn(
+      embd = data,
+      knn_data = knn,
+      n_dim = n_dim,
+      min_dist = min_dist,
+      spread = spread,
+      k = k,
+      densmap_params = final_densmap_params,
+      seed = seed,
+      use_high_precision = use_high_precision,
+      verbose = parse_verbosity(.verbose)
     )
   } else {
-    tryCatch(
-      {
-        rs_densmap(
-          embd = data,
-          n_dim = n_dim,
-          min_dist = min_dist,
-          spread = spread,
-          k = k,
-          densmap_params = final_densmap_params,
-          seed = seed,
-          use_high_precision = use_high_precision,
-          verbose = parse_verbosity(.verbose)
-        )
-      },
-      error = function(e) {
-        stop("densMAP computation failed: ", e$message, call. = FALSE)
-      }
+    rs_densmap(
+      embd = data,
+      n_dim = n_dim,
+      min_dist = min_dist,
+      spread = spread,
+      k = k,
+      densmap_params = final_densmap_params,
+      seed = seed,
+      use_high_precision = use_high_precision,
+      verbose = parse_verbosity(.verbose)
     )
   }
 

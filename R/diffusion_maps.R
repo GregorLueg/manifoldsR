@@ -124,47 +124,25 @@ diffusion_maps <- function(
     if (.verbose) {
       message("Using provided kNN graph.")
     }
-    tryCatch(
-      {
-        rs_diffusion_maps_from_knn(
-          embd = data,
-          knn_data = knn,
-          n_dim = n_dim,
-          k = k,
-          dm_params = final_dm_params,
-          seed = seed,
-          use_high_precision = use_high_precision,
-          verbose = parse_verbosity(.verbose)
-        )
-      },
-      error = function(e) {
-        stop(
-          "Diffusion maps computation failed: ",
-          e$message,
-          call. = FALSE
-        )
-      }
+    rs_diffusion_maps_from_knn(
+      embd = data,
+      knn_data = knn,
+      n_dim = n_dim,
+      k = k,
+      dm_params = final_dm_params,
+      seed = seed,
+      use_high_precision = use_high_precision,
+      verbose = parse_verbosity(.verbose)
     )
   } else {
-    tryCatch(
-      {
-        rs_diffusion_maps(
-          embd = data,
-          n_dim = n_dim,
-          k = k,
-          dm_params = final_dm_params,
-          seed = seed,
-          use_high_precision = use_high_precision,
-          verbose = parse_verbosity(.verbose)
-        )
-      },
-      error = function(e) {
-        stop(
-          "Diffusion maps computation failed: ",
-          e$message,
-          call. = FALSE
-        )
-      }
+    rs_diffusion_maps(
+      embd = data,
+      n_dim = n_dim,
+      k = k,
+      dm_params = final_dm_params,
+      seed = seed,
+      use_high_precision = use_high_precision,
+      verbose = parse_verbosity(.verbose)
     )
   }
 
