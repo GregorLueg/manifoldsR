@@ -1,3 +1,9 @@
+# manifoldsR 0.3.2
+
+## Features
+
+- Parameters all wrapped via [devforge](https://github.com/GregorLueg/devforge).
+
 # manifoldsR 0.3.1
 
 ## Features

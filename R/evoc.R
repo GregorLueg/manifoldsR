@@ -122,36 +122,26 @@ evoc <- function(
     if (.verbose) {
       message("Using provided kNN graph.")
     }
-    raw <- tryCatch(
-      rs_evoc_from_knn(
-        embd = data,
-        knn_data = knn,
-        n_neighbours = n_neighbours,
-        evoc_params = final_params,
-        seed = seed,
-        use_high_precision = use_high_precision,
-        verbose = parse_verbosity(.verbose)
-      ),
-      error = function(e) {
-        stop("EVoC clustering failed: ", e$message, call. = FALSE)
-      }
+    raw <- rs_evoc_from_knn(
+      embd = data,
+      knn_data = knn,
+      n_neighbours = n_neighbours,
+      evoc_params = final_params,
+      seed = seed,
+      use_high_precision = use_high_precision,
+      verbose = parse_verbosity(.verbose)
     )
 
     knn_out <- if (return_knn) knn else NULL
   } else {
-    raw <- tryCatch(
-      rs_evoc(
-        embd = data,
-        n_neighbours = n_neighbours,
-        evoc_params = final_params,
-        return_knn = return_knn,
-        seed = seed,
-        use_high_precision = use_high_precision,
-        verbose = parse_verbosity(.verbose)
-      ),
-      error = function(e) {
-        stop("EVoC clustering failed: ", e$message, call. = FALSE)
-      }
+    raw <- rs_evoc(
+      embd = data,
+      n_neighbours = n_neighbours,
+      evoc_params = final_params,
+      return_knn = return_knn,
+      seed = seed,
+      use_high_precision = use_high_precision,
+      verbose = parse_verbosity(.verbose)
     )
 
     knn_out <- if (return_knn && !is.null(raw$knn)) {

@@ -51,49 +51,42 @@ kmeans_cluster <- function(
 
   k <- as.integer(k)
 
-  res <- tryCatch(
-    {
-      if (method == "minibatch") {
-        if (.verbose) {
-          message(
-            sprintf(
-              "Running mini-batch k-means (k=%d, batch_size=%d, metric=%s)",
-              k,
-              kmeans_params$batch_size,
-              kmeans_params$metric
-            )
-          )
-        }
-        rs_k_means_mini_batch(
-          data = data,
-          k = k,
-          kmeans_params = kmeans_params,
-          seed = seed,
-          verbose = .verbose
+  res <- if (method == "minibatch") {
+    if (.verbose) {
+      message(
+        sprintf(
+          "Running mini-batch k-means (k=%d, batch_size=%d, metric=%s)",
+          k,
+          kmeans_params$batch_size,
+          kmeans_params$metric
         )
-      } else {
-        if (.verbose) {
-          message(
-            sprintf(
-              "Running full k-means (k=%d, metric=%s)",
-              k,
-              kmeans_params$metric
-            )
-          )
-        }
-        rs_k_means(
-          data = data,
-          k = k,
-          kmeans_params = kmeans_params,
-          seed = seed,
-          verbose = .verbose
-        )
-      }
-    },
-    error = function(e) {
-      stop("K-means clustering failed: ", e$message, call. = FALSE)
+      )
     }
-  )
+    rs_k_means_mini_batch(
+      data = data,
+      k = k,
+      kmeans_params = kmeans_params,
+      seed = seed,
+      verbose = .verbose
+    )
+  } else {
+    if (.verbose) {
+      message(
+        sprintf(
+          "Running full k-means (k=%d, metric=%s)",
+          k,
+          kmeans_params$metric
+        )
+      )
+    }
+    rs_k_means(
+      data = data,
+      k = k,
+      kmeans_params = kmeans_params,
+      seed = seed,
+      verbose = .verbose
+    )
+  }
 
   new_kmeans_cluster(
     centroids = res$centroids,

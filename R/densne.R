@@ -160,41 +160,27 @@ densne <- function(
     if (.verbose) {
       message("Using provided kNN graph.")
     }
-    tryCatch(
-      {
-        rs_densne_from_knn(
-          embd = data,
-          knn_data = knn,
-          n_dim = as.integer(n_dim),
-          perplexity = perplexity,
-          approx_type = approx_type,
-          densne_params = final_densne_params,
-          seed = seed,
-          use_high_precision = use_high_precision,
-          verbose = parse_verbosity(.verbose)
-        )
-      },
-      error = function(e) {
-        stop("den-SNE computation failed: ", e$message, call. = FALSE)
-      }
+    rs_densne_from_knn(
+      embd = data,
+      knn_data = knn,
+      n_dim = as.integer(n_dim),
+      perplexity = perplexity,
+      approx_type = approx_type,
+      densne_params = final_densne_params,
+      seed = seed,
+      use_high_precision = use_high_precision,
+      verbose = parse_verbosity(.verbose)
     )
   } else {
-    tryCatch(
-      {
-        rs_densne(
-          embd = data,
-          n_dim = as.integer(n_dim),
-          perplexity = perplexity,
-          approx_type = approx_type,
-          densne_params = final_densne_params,
-          seed = seed,
-          use_high_precision = use_high_precision,
-          verbose = parse_verbosity(.verbose)
-        )
-      },
-      error = function(e) {
-        stop("den-SNE computation failed: ", e$message, call. = FALSE)
-      }
+    rs_densne(
+      embd = data,
+      n_dim = as.integer(n_dim),
+      perplexity = perplexity,
+      approx_type = approx_type,
+      densne_params = final_densne_params,
+      seed = seed,
+      use_high_precision = use_high_precision,
+      verbose = parse_verbosity(.verbose)
     )
   }
 

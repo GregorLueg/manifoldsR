@@ -143,39 +143,25 @@ phate <- function(
     if (.verbose) {
       message("Using provided kNN graph.")
     }
-    tryCatch(
-      {
-        rs_phate_from_knn(
-          embd = data,
-          knn_data = knn,
-          n_dim = as.integer(n_dim),
-          k = as.integer(k),
-          phate_params = final_phate_params,
-          seed = seed,
-          use_high_precision = use_high_precision,
-          verbose = parse_verbosity(.verbose)
-        )
-      },
-      error = function(e) {
-        stop("PHATE computation failed: ", e$message, call. = FALSE)
-      }
+    rs_phate_from_knn(
+      embd = data,
+      knn_data = knn,
+      n_dim = as.integer(n_dim),
+      k = as.integer(k),
+      phate_params = final_phate_params,
+      seed = seed,
+      use_high_precision = use_high_precision,
+      verbose = parse_verbosity(.verbose)
     )
   } else {
-    tryCatch(
-      {
-        rs_phate(
-          embd = data,
-          n_dim = as.integer(n_dim),
-          k = as.integer(k),
-          phate_params = final_phate_params,
-          seed = seed,
-          use_high_precision = use_high_precision,
-          verbose = parse_verbosity(.verbose)
-        )
-      },
-      error = function(e) {
-        stop("PHATE computation failed: ", e$message, call. = FALSE)
-      }
+    rs_phate(
+      embd = data,
+      n_dim = as.integer(n_dim),
+      k = as.integer(k),
+      phate_params = final_phate_params,
+      seed = seed,
+      use_high_precision = use_high_precision,
+      verbose = parse_verbosity(.verbose)
     )
   }
 
