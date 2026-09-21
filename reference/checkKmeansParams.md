@@ -1,6 +1,7 @@
-# Check k-means parameters
+# Check k-means params
 
-Checkmate extension for checking the k-means parameters.
+Checkmate extension for the output of
+[`params_kmeans()`](https://gregorlueg.github.io/manifoldsR/reference/params_kmeans.md).
 
 ## Usage
 
@@ -12,8 +13,9 @@ checkKmeansParams(x)
 
 - x:
 
-  The list to check.
+  The object to check.
 
 ## Value
 
-`TRUE` if the check was successful, otherwise an error message.
+`TRUE` if the check was successful, otherwise a checkmate-style error
+string.

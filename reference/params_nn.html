@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -77,8 +77,7 @@
 
 
 <dl><dt id="arg-dist-metric">dist_metric<a class="anchor" aria-label="anchor" href="#arg-dist-metric"></a></dt>
-<dd><p>Character. The distance metric to use. Defaults to
-<code>"euclidean"</code>.</p></dd>
+<dd><p>String. The distance metric to use. One of <code>c("euclidean", "cosine")</code>. Defaults to <code>"euclidean"</code>.</p></dd>
 
 
 <dt id="arg-n-tree">n_tree<a class="anchor" aria-label="anchor" href="#arg-n-tree"></a></dt>
@@ -86,8 +85,8 @@
 
 
 <dt id="arg-search-budget">search_budget<a class="anchor" aria-label="anchor" href="#arg-search-budget"></a></dt>
-<dd><p>Integer or <code>NULL</code>. Search budget for Annoy. Defaults
-to <code>NULL</code>.</p></dd>
+<dd><p>Integer or <code>NULL</code>. Search budget for Annoy. Defaults to
+<code>NULL</code>.</p></dd>
 
 
 <dt id="arg-m">m<a class="anchor" aria-label="anchor" href="#arg-m"></a></dt>
@@ -105,17 +104,18 @@ search. Defaults to <code>100L</code>.</p></dd>
 
 
 <dt id="arg-diversify-prob">diversify_prob<a class="anchor" aria-label="anchor" href="#arg-diversify-prob"></a></dt>
-<dd><p>Float. Diversification probability for NN descent.
+<dd><p>Numeric. Diversification probability for NN descent.
 Defaults to <code>0.0</code>.</p></dd>
 
 
 <dt id="arg-delta">delta<a class="anchor" aria-label="anchor" href="#arg-delta"></a></dt>
-<dd><p>Float. Precision parameter for NN descent. Defaults to <code>0.001</code>.</p></dd>
+<dd><p>Numeric. Precision parameter for NN descent. Defaults to
+<code>0.001</code>.</p></dd>
 
 
 <dt id="arg-ef-budget">ef_budget<a class="anchor" aria-label="anchor" href="#arg-ef-budget"></a></dt>
-<dd><p>Integer or <code>NULL</code>. Effort budget for NN descent. Defaults
-to <code>NULL</code>. Ignored when <code>extract_knn</code> is <code>TRUE</code>, as no search runs.</p></dd>
+<dd><p>Integer or <code>NULL</code>. Effort budget for NN descent. Ignored
+when <code>extract_knn</code> is <code>TRUE</code>, as no search runs. Defaults to <code>NULL</code>.</p></dd>
 
 
 <dt id="arg-extract-knn">extract_knn<a class="anchor" aria-label="anchor" href="#arg-extract-knn"></a></dt>
@@ -126,23 +126,48 @@ beam search over it. Faster, at a recall of roughly <code>0.98</code> rather tha
 
 
 <dt id="arg-bt-budget">bt_budget<a class="anchor" aria-label="anchor" href="#arg-bt-budget"></a></dt>
-<dd><p>Float. Budget for ball tree search. Defaults to <code>0.1</code>.</p></dd>
+<dd><p>Numeric. Budget for ball tree search. Defaults to <code>0.1</code>.</p></dd>
 
 
 <dt id="arg-n-list">n_list<a class="anchor" aria-label="anchor" href="#arg-n-list"></a></dt>
-<dd><p>Optional integer. Number of clusters to use for IVF. If <code>NULL</code>,
-will default to <code>sqrt(n)</code>.</p></dd>
+<dd><p>Integer or <code>NULL</code>. Number of clusters to use for IVF. If
+<code>NULL</code>, uses <code>sqrt(n)</code>. Defaults to <code>NULL</code>.</p></dd>
 
 
 <dt id="arg-n-probes">n_probes<a class="anchor" aria-label="anchor" href="#arg-n-probes"></a></dt>
-<dd><p>Optional integer. Number of clusters to probe for IVF. If
-<code>NULL</code>, will default to <code>sqrt(n_list)</code>.</p></dd>
+<dd><p>Integer or <code>NULL</code>. Number of clusters to probe for IVF. If
+<code>NULL</code>, uses <code>sqrt(n_list)</code>. Defaults to <code>NULL</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A list with the nearest neighbour parameters.</p>
-    </div>
+    <p>A named list with the following elements:</p><ul><li><p>dist_metric - String. The distance metric to use. One of
+<code>c("euclidean", "cosine")</code>. Defaults to <code>"euclidean"</code>.</p></li>
+<li><p>n_tree - Integer. Number of trees for Annoy. Defaults to <code>50L</code>.</p></li>
+<li><p>search_budget - Integer or <code>NULL</code>. Search budget for Annoy. Defaults
+to <code>NULL</code>.</p></li>
+<li><p>m - Integer. Number of bidirectional links for HNSW. Defaults to
+<code>16L</code>.</p></li>
+<li><p>ef_construction - Integer. Size of the dynamic candidate list during
+HNSW construction. Defaults to <code>100L</code>.</p></li>
+<li><p>ef_search - Integer. Size of the dynamic candidate list during HNSW
+search. Defaults to <code>100L</code>.</p></li>
+<li><p>diversify_prob - Numeric. Diversification probability for NN descent.
+Defaults to <code>0.0</code>.</p></li>
+<li><p>delta - Numeric. Precision parameter for NN descent. Defaults to
+<code>0.001</code>.</p></li>
+<li><p>ef_budget - Integer or <code>NULL</code>. Effort budget for NN descent. Ignored
+when <code>extract_knn</code> is <code>TRUE</code>, as no search runs. Defaults to <code>NULL</code>.</p></li>
+<li><p>extract_knn - Boolean. Only affects the <code>"nndescent"</code> backend. If
+<code>TRUE</code>, the descent hands back the graph it just built instead of running a
+beam search over it. Faster, at a recall of roughly <code>0.98</code> rather than
+<code>0.99</code>-<code>1.00</code>. Defaults to <code>TRUE</code>.</p></li>
+<li><p>bt_budget - Numeric. Budget for ball tree search. Defaults to <code>0.1</code>.</p></li>
+<li><p>n_list - Integer or <code>NULL</code>. Number of clusters to use for IVF. If
+<code>NULL</code>, uses <code>sqrt(n)</code>. Defaults to <code>NULL</code>.</p></li>
+<li><p>n_probes - Integer or <code>NULL</code>. Number of clusters to probe for IVF. If
+<code>NULL</code>, uses <code>sqrt(n_list)</code>. Defaults to <code>NULL</code>.</p></li>
+</ul></div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

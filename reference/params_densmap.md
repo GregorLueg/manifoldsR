@@ -15,13 +15,13 @@ params_densmap(lambda = 2, frac = 0.3, var_shift = 0.1)
 
 - lambda:
 
-  Numeric. Weight of the density term. `0` disables it. Defaults to
-  `2.0`, the densMAP reference value.
+  Numeric. Weight of the density term. `0` disables it. The default is
+  the densMAP reference value. Defaults to `2.0`.
 
 - frac:
 
-  Numeric between 0 and 1. Fraction of the total epochs, at the end of
-  the run, over which the density term is active. Defaults to `0.3`.
+  Numeric. Fraction of the total epochs, at the end of the run, over
+  which the density term is active. Defaults to `0.3`.
 
 - var_shift:
 
@@ -30,7 +30,16 @@ params_densmap(lambda = 2, frac = 0.3, var_shift = 0.1)
 
 ## Value
 
-A list with the density-preservation parameters.
+A named list with the following elements:
+
+- lambda - Numeric. Weight of the density term. `0` disables it. The
+  default is the densMAP reference value. Defaults to `2.0`.
+
+- frac - Numeric. Fraction of the total epochs, at the end of the run,
+  over which the density term is active. Defaults to `0.3`.
+
+- var_shift - Numeric. Additive shift on the variance of the embedding
+  log-radii. Defaults to `0.1`.
 
 ## References
 

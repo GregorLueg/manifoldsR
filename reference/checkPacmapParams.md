@@ -1,6 +1,7 @@
-# Check PaCMAP parameters
+# Check PaCMAP params
 
-Checkmate extension for checking the PaCMAP parameters.
+Checkmate extension for the output of
+[`params_pacmap()`](https://gregorlueg.github.io/manifoldsR/reference/params_pacmap.md).
 
 ## Usage
 
@@ -12,8 +13,9 @@ checkPacmapParams(x)
 
 - x:
 
-  The list to check.
+  The object to check.
 
 ## Value
 
-`TRUE` if the check was successful, otherwise an error message.
+`TRUE` if the check was successful, otherwise a checkmate-style error
+string.

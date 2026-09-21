@@ -1,6 +1,6 @@
-# Assert k-means parameters
+# Assert k-means params
 
-Checkmate extension for asserting the k-means parameters.
+Assert k-means params
 
 ## Usage
 
@@ -12,12 +12,11 @@ assertKmeansParams(x, .var.name = checkmate::vname(x), add = NULL)
 
 - x:
 
-  The list to check.
+  The object to check.
 
 - .var.name:
 
-  Name of the checked object to print in assertions. Defaults to the
-  heuristic implemented in checkmate.
+  Name of the checked object to print in assertions.
 
 - add:
 

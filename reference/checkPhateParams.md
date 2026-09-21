@@ -1,6 +1,7 @@
-# Check PHATE parameters
+# Check PHATE params
 
-Checkmate extension for checking the PHATE parameters.
+Checkmate extension for the output of
+[`params_phate()`](https://gregorlueg.github.io/manifoldsR/reference/params_phate.md).
 
 ## Usage
 
@@ -12,8 +13,9 @@ checkPhateParams(x)
 
 - x:
 
-  The list to check.
+  The object to check.
 
 ## Value
 
-`TRUE` if the check was successful, otherwise an error message.
+`TRUE` if the check was successful, otherwise a checkmate-style error
+string.

@@ -248,7 +248,7 @@ Wrapper functions around core parameters
 - [`params_swiss_role()`](https://gregorlueg.github.io/manifoldsR/reference/params_swiss_role.md)
   : Parameters for swiss roll data generation
 - [`params_swiss_role_biased()`](https://gregorlueg.github.io/manifoldsR/reference/params_swiss_role_biased.md)
-  : Parameters for swiss roll data generation
+  : Parameters for biased swiss roll data generation
 - [`params_trajectory()`](https://gregorlueg.github.io/manifoldsR/reference/params_trajectory.md)
   : Parameters for trajectory data generation
 - [`params_tsne()`](https://gregorlueg.github.io/manifoldsR/reference/params_tsne.md)

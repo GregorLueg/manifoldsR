@@ -29,7 +29,7 @@ params_umap(
 - bandwidth:
 
   Numeric. Convergence tolerance for smooth kNN distance binary search.
-  Defaults to `1e-5`.
+  Defaults to `1e-05`.
 
 - mix_weight:
 
@@ -42,8 +42,8 @@ params_umap(
 
 - n_epochs:
 
-  Integer or `NULL`. Number of optimisation epochs. Defaults to `NULL`,
-  resolved downstream based on data size.
+  Integer or `NULL`. Number of optimisation epochs. If `NULL`, resolved
+  downstream based on data size. Defaults to `NULL`.
 
 - neg_sample_rate:
 
@@ -56,19 +56,47 @@ params_umap(
 
 - optimiser:
 
-  Character. One of `"sgd"`, `"adam"`, or `"adam_parallel"`. Defaults to
-  `"adam_parallel"`.
+  String. The optimiser. One of `c("adam_parallel", "sgd", "adam")`.
+  Defaults to `"adam_parallel"`.
 
 - init:
 
-  Character. Embedding initialisation method. One of `"spectral"`,
-  `"pca"`, or `"random"`. Defaults to `"spectral"`.
+  String. Embedding initialisation method. One of
+  `c("spectral", "pca", "random")`. Defaults to `"spectral"`.
 
 - randomised:
 
-  Logical. Use randomised SVD for PCA initialisation. Defaults to
+  Boolean. Use randomised SVD for PCA initialisation. Defaults to
   `TRUE`.
 
 ## Value
 
-A list with the UMAP parameters.
+A named list with the following elements:
+
+- local_connectivity - Numeric. Number of nearest neighbours assumed to
+  be at distance zero. Defaults to `1.0`.
+
+- bandwidth - Numeric. Convergence tolerance for smooth kNN distance
+  binary search. Defaults to `1e-05`.
+
+- mix_weight - Numeric. Balance between fuzzy union and directed graph
+  during symmetrisation. Defaults to `1.0`.
+
+- lr - Numeric. Learning rate. Defaults to `1.0`.
+
+- n_epochs - Integer or `NULL`. Number of optimisation epochs. If
+  `NULL`, resolved downstream based on data size. Defaults to `NULL`.
+
+- neg_sample_rate - Integer. Number of negative samples per positive
+  sample. Defaults to `5L`.
+
+- gamma - Numeric. Repulsion strength. Defaults to `1.0`.
+
+- optimiser - String. The optimiser. One of
+  `c("adam_parallel", "sgd", "adam")`. Defaults to `"adam_parallel"`.
+
+- init - String. Embedding initialisation method. One of
+  `c("spectral", "pca", "random")`. Defaults to `"spectral"`.
+
+- randomised - Boolean. Use randomised SVD for PCA initialisation.
+  Defaults to `TRUE`.

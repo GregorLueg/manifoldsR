@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,13 +74,13 @@
 
 
 <dl><dt id="arg-local-connectivity">local_connectivity<a class="anchor" aria-label="anchor" href="#arg-local-connectivity"></a></dt>
-<dd><p>Numeric. Number of nearest neighbours assumed to
-be at distance zero. Defaults to <code>1.0</code>.</p></dd>
+<dd><p>Numeric. Number of nearest neighbours assumed to be
+at distance zero. Defaults to <code>1.0</code>.</p></dd>
 
 
 <dt id="arg-bandwidth">bandwidth<a class="anchor" aria-label="anchor" href="#arg-bandwidth"></a></dt>
 <dd><p>Numeric. Convergence tolerance for smooth kNN distance
-binary search. Defaults to <code>1e-5</code>.</p></dd>
+binary search. Defaults to <code>1e-05</code>.</p></dd>
 
 
 <dt id="arg-mix-weight">mix_weight<a class="anchor" aria-label="anchor" href="#arg-mix-weight"></a></dt>
@@ -93,8 +93,8 @@ during symmetrisation. Defaults to <code>1.0</code>.</p></dd>
 
 
 <dt id="arg-n-epochs">n_epochs<a class="anchor" aria-label="anchor" href="#arg-n-epochs"></a></dt>
-<dd><p>Integer or <code>NULL</code>. Number of optimisation epochs. Defaults
-to <code>NULL</code>, resolved downstream based on data size.</p></dd>
+<dd><p>Integer or <code>NULL</code>. Number of optimisation epochs. If <code>NULL</code>,
+resolved downstream based on data size. Defaults to <code>NULL</code>.</p></dd>
 
 
 <dt id="arg-neg-sample-rate">neg_sample_rate<a class="anchor" aria-label="anchor" href="#arg-neg-sample-rate"></a></dt>
@@ -107,24 +107,37 @@ sample. Defaults to <code>5L</code>.</p></dd>
 
 
 <dt id="arg-optimiser">optimiser<a class="anchor" aria-label="anchor" href="#arg-optimiser"></a></dt>
-<dd><p>Character. One of <code>"sgd"</code>, <code>"adam"</code>, or
-<code>"adam_parallel"</code>. Defaults to <code>"adam_parallel"</code>.</p></dd>
+<dd><p>String. The optimiser. One of <code>c("adam_parallel", "sgd", "adam")</code>. Defaults to <code>"adam_parallel"</code>.</p></dd>
 
 
 <dt id="arg-init">init<a class="anchor" aria-label="anchor" href="#arg-init"></a></dt>
-<dd><p>Character. Embedding initialisation method. One of <code>"spectral"</code>,
-<code>"pca"</code>, or <code>"random"</code>. Defaults to <code>"spectral"</code>.</p></dd>
+<dd><p>String. Embedding initialisation method. One of <code>c("spectral", "pca", "random")</code>. Defaults to <code>"spectral"</code>.</p></dd>
 
 
 <dt id="arg-randomised">randomised<a class="anchor" aria-label="anchor" href="#arg-randomised"></a></dt>
-<dd><p>Logical. Use randomised SVD for PCA initialisation.
+<dd><p>Boolean. Use randomised SVD for PCA initialisation.
 Defaults to <code>TRUE</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A list with the UMAP parameters.</p>
-    </div>
+    <p>A named list with the following elements:</p><ul><li><p>local_connectivity - Numeric. Number of nearest neighbours assumed to
+be at distance zero. Defaults to <code>1.0</code>.</p></li>
+<li><p>bandwidth - Numeric. Convergence tolerance for smooth kNN distance
+binary search. Defaults to <code>1e-05</code>.</p></li>
+<li><p>mix_weight - Numeric. Balance between fuzzy union and directed graph
+during symmetrisation. Defaults to <code>1.0</code>.</p></li>
+<li><p>lr - Numeric. Learning rate. Defaults to <code>1.0</code>.</p></li>
+<li><p>n_epochs - Integer or <code>NULL</code>. Number of optimisation epochs. If
+<code>NULL</code>, resolved downstream based on data size. Defaults to <code>NULL</code>.</p></li>
+<li><p>neg_sample_rate - Integer. Number of negative samples per positive
+sample. Defaults to <code>5L</code>.</p></li>
+<li><p>gamma - Numeric. Repulsion strength. Defaults to <code>1.0</code>.</p></li>
+<li><p>optimiser - String. The optimiser. One of <code>c("adam_parallel", "sgd", "adam")</code>. Defaults to <code>"adam_parallel"</code>.</p></li>
+<li><p>init - String. Embedding initialisation method. One of <code>c("spectral", "pca", "random")</code>. Defaults to <code>"spectral"</code>.</p></li>
+<li><p>randomised - Boolean. Use randomised SVD for PCA initialisation.
+Defaults to <code>TRUE</code>.</p></li>
+</ul></div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

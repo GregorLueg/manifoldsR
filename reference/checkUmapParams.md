@@ -1,6 +1,7 @@
-# Check UMAP parameters
+# Check UMAP params
 
-Checkmate extension for checking the UMAP parameters.
+Checkmate extension for the output of
+[`params_umap()`](https://gregorlueg.github.io/manifoldsR/reference/params_umap.md).
 
 ## Usage
 
@@ -12,8 +13,9 @@ checkUmapParams(x)
 
 - x:
 
-  The list to check.
+  The object to check.
 
 ## Value
 
-`TRUE` if the check was successful, otherwise an error message.
+`TRUE` if the check was successful, otherwise a checkmate-style error
+string.

@@ -26,7 +26,8 @@ params_nn(
 
 - dist_metric:
 
-  Character. The distance metric to use. Defaults to `"euclidean"`.
+  String. The distance metric to use. One of `c("euclidean", "cosine")`.
+  Defaults to `"euclidean"`.
 
 - n_tree:
 
@@ -52,16 +53,17 @@ params_nn(
 
 - diversify_prob:
 
-  Float. Diversification probability for NN descent. Defaults to `0.0`.
+  Numeric. Diversification probability for NN descent. Defaults to
+  `0.0`.
 
 - delta:
 
-  Float. Precision parameter for NN descent. Defaults to `0.001`.
+  Numeric. Precision parameter for NN descent. Defaults to `0.001`.
 
 - ef_budget:
 
-  Integer or `NULL`. Effort budget for NN descent. Defaults to `NULL`.
-  Ignored when `extract_knn` is `TRUE`, as no search runs.
+  Integer or `NULL`. Effort budget for NN descent. Ignored when
+  `extract_knn` is `TRUE`, as no search runs. Defaults to `NULL`.
 
 - extract_knn:
 
@@ -72,18 +74,57 @@ params_nn(
 
 - bt_budget:
 
-  Float. Budget for ball tree search. Defaults to `0.1`.
+  Numeric. Budget for ball tree search. Defaults to `0.1`.
 
 - n_list:
 
-  Optional integer. Number of clusters to use for IVF. If `NULL`, will
-  default to `sqrt(n)`.
+  Integer or `NULL`. Number of clusters to use for IVF. If `NULL`, uses
+  `sqrt(n)`. Defaults to `NULL`.
 
 - n_probes:
 
-  Optional integer. Number of clusters to probe for IVF. If `NULL`, will
-  default to `sqrt(n_list)`.
+  Integer or `NULL`. Number of clusters to probe for IVF. If `NULL`,
+  uses `sqrt(n_list)`. Defaults to `NULL`.
 
 ## Value
 
-A list with the nearest neighbour parameters.
+A named list with the following elements:
+
+- dist_metric - String. The distance metric to use. One of
+  `c("euclidean", "cosine")`. Defaults to `"euclidean"`.
+
+- n_tree - Integer. Number of trees for Annoy. Defaults to `50L`.
+
+- search_budget - Integer or `NULL`. Search budget for Annoy. Defaults
+  to `NULL`.
+
+- m - Integer. Number of bidirectional links for HNSW. Defaults to
+  `16L`.
+
+- ef_construction - Integer. Size of the dynamic candidate list during
+  HNSW construction. Defaults to `100L`.
+
+- ef_search - Integer. Size of the dynamic candidate list during HNSW
+  search. Defaults to `100L`.
+
+- diversify_prob - Numeric. Diversification probability for NN descent.
+  Defaults to `0.0`.
+
+- delta - Numeric. Precision parameter for NN descent. Defaults to
+  `0.001`.
+
+- ef_budget - Integer or `NULL`. Effort budget for NN descent. Ignored
+  when `extract_knn` is `TRUE`, as no search runs. Defaults to `NULL`.
+
+- extract_knn - Boolean. Only affects the `"nndescent"` backend. If
+  `TRUE`, the descent hands back the graph it just built instead of
+  running a beam search over it. Faster, at a recall of roughly `0.98`
+  rather than `0.99`-`1.00`. Defaults to `TRUE`.
+
+- bt_budget - Numeric. Budget for ball tree search. Defaults to `0.1`.
+
+- n_list - Integer or `NULL`. Number of clusters to use for IVF. If
+  `NULL`, uses `sqrt(n)`. Defaults to `NULL`.
+
+- n_probes - Integer or `NULL`. Number of clusters to probe for IVF. If
+  `NULL`, uses `sqrt(n_list)`. Defaults to `NULL`.

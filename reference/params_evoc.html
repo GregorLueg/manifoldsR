@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,33 +74,33 @@
 
 
 <dl><dt id="arg-noise-level">noise_level<a class="anchor" aria-label="anchor" href="#arg-noise-level"></a></dt>
-<dd><p>Numeric. Noise level for the embedding gradient.
-<code>0.0</code> = aggressive, <code>1.0</code> = conservative. Defaults to <code>0.5</code>.</p></dd>
+<dd><p>Numeric. Noise level for the embedding gradient. <code>0.0</code> =
+aggressive, <code>1.0</code> = conservative. Defaults to <code>0.5</code>.</p></dd>
 
 
 <dt id="arg-n-epochs">n_epochs<a class="anchor" aria-label="anchor" href="#arg-n-epochs"></a></dt>
-<dd><p>Integer. Number of embedding optimisation epochs. Defaults
-to <code>50L</code>.</p></dd>
+<dd><p>Integer. Number of embedding optimisation epochs. Defaults to
+<code>50L</code>.</p></dd>
 
 
 <dt id="arg-embedding-dim">embedding_dim<a class="anchor" aria-label="anchor" href="#arg-embedding-dim"></a></dt>
 <dd><p>Integer or <code>NULL</code>. Embedding dimensionality. If <code>NULL</code>,
-defaults to <code>min(max(n_neighbours / 4, 4), 16)</code>. Defaults to <code>NULL</code>.</p></dd>
+uses <code>min(max(n_neighbours / 4, 4), 16)</code>. Defaults to <code>NULL</code>.</p></dd>
 
 
 <dt id="arg-neighbour-scale">neighbour_scale<a class="anchor" aria-label="anchor" href="#arg-neighbour-scale"></a></dt>
-<dd><p>Numeric. Multiplier on effective neighbours for
-fuzzy graph construction. Defaults to <code>1.0</code>.</p></dd>
+<dd><p>Numeric. Multiplier on effective neighbours for fuzzy
+graph construction. Defaults to <code>1.0</code>.</p></dd>
 
 
 <dt id="arg-symmetrise">symmetrise<a class="anchor" aria-label="anchor" href="#arg-symmetrise"></a></dt>
-<dd><p>Logical. Whether to symmetrise the fuzzy graph. Defaults
-to <code>TRUE</code>.</p></dd>
+<dd><p>Boolean. Whether to symmetrise the fuzzy graph. Defaults to
+<code>TRUE</code>.</p></dd>
 
 
 <dt id="arg-min-samples">min_samples<a class="anchor" aria-label="anchor" href="#arg-min-samples"></a></dt>
-<dd><p>Integer. Minimum samples for core distance in MST
-density estimation. Defaults to <code>5L</code>.</p></dd>
+<dd><p>Integer. Minimum samples for core distance in MST density
+estimation. Defaults to <code>5L</code>.</p></dd>
 
 
 <dt id="arg-base-min-cluster-size">base_min_cluster_size<a class="anchor" aria-label="anchor" href="#arg-base-min-cluster-size"></a></dt>
@@ -125,8 +125,27 @@ Defaults to <code>10L</code>.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A list with the EVoC parameters.</p>
-    </div>
+    <p>A named list with the following elements:</p><ul><li><p>noise_level - Numeric. Noise level for the embedding gradient. <code>0.0</code> =
+aggressive, <code>1.0</code> = conservative. Defaults to <code>0.5</code>.</p></li>
+<li><p>n_epochs - Integer. Number of embedding optimisation epochs. Defaults
+to <code>50L</code>.</p></li>
+<li><p>embedding_dim - Integer or <code>NULL</code>. Embedding dimensionality. If
+<code>NULL</code>, uses <code>min(max(n_neighbours / 4, 4), 16)</code>. Defaults to <code>NULL</code>.</p></li>
+<li><p>neighbour_scale - Numeric. Multiplier on effective neighbours for
+fuzzy graph construction. Defaults to <code>1.0</code>.</p></li>
+<li><p>symmetrise - Boolean. Whether to symmetrise the fuzzy graph. Defaults
+to <code>TRUE</code>.</p></li>
+<li><p>min_samples - Integer. Minimum samples for core distance in MST
+density estimation. Defaults to <code>5L</code>.</p></li>
+<li><p>base_min_cluster_size - Integer. Base minimum cluster size for the
+finest layer. Defaults to <code>5L</code>.</p></li>
+<li><p>approx_n_clusters - Integer or <code>NULL</code>. If set, binary-searches for
+approximately this many clusters (single layer output). Defaults to <code>NULL</code>.</p></li>
+<li><p>min_similarity_threshold - Numeric. Jaccard similarity threshold for
+filtering redundant layers. Defaults to <code>0.2</code>.</p></li>
+<li><p>max_layers - Integer. Maximum number of cluster layers to return.
+Defaults to <code>10L</code>.</p></li>
+</ul></div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

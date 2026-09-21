@@ -1,6 +1,6 @@
-# Assert UMAP parameters
+# Assert UMAP params
 
-Checkmate extension for asserting the UMAP parameters.
+Assert UMAP params
 
 ## Usage
 
@@ -12,12 +12,11 @@ assertUmapParams(x, .var.name = checkmate::vname(x), add = NULL)
 
 - x:
 
-  The list to check.
+  The object to check.
 
 - .var.name:
 
-  Name of the checked object to print in assertions. Defaults to the
-  heuristic implemented in checkmate.
+  Name of the checked object to print in assertions.
 
 - add:
 

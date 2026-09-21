@@ -1,6 +1,6 @@
-# Assert PaCMAP parameters
+# Assert PaCMAP params
 
-Checkmate extension for asserting the PaCMAP parameters.
+Assert PaCMAP params
 
 ## Usage
 
@@ -12,12 +12,11 @@ assertPacmapParams(x, .var.name = checkmate::vname(x), add = NULL)
 
 - x:
 
-  The list to check.
+  The object to check.
 
 - .var.name:
 
-  Name of the checked object to print in assertions. Defaults to the
-  heuristic implemented in checkmate.
+  Name of the checked object to print in assertions.
 
 - add:
 

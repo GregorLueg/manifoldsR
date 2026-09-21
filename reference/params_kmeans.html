@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -72,8 +72,7 @@
 
 
 <dl><dt id="arg-metric">metric<a class="anchor" aria-label="anchor" href="#arg-metric"></a></dt>
-<dd><p>Character. Distance metric to use. One of <code>"euclidean"</code> or
-<code>"cosine"</code>. Defaults to <code>"euclidean"</code>.</p></dd>
+<dd><p>String. Distance metric to use. One of <code>c("euclidean", "cosine")</code>. Defaults to <code>"euclidean"</code>.</p></dd>
 
 
 <dt id="arg-max-iters">max_iters<a class="anchor" aria-label="anchor" href="#arg-max-iters"></a></dt>
@@ -81,40 +80,55 @@
 
 
 <dt id="arg-batch-size">batch_size<a class="anchor" aria-label="anchor" href="#arg-batch-size"></a></dt>
-<dd><p>Integer. Mini-batch size. Only used when
-<code>method = "minibatch"</code>. Defaults to <code>4096L</code>.</p></dd>
+<dd><p>Integer. Mini-batch size. Only used when <code>method = "minibatch"</code>. Defaults to <code>4096L</code>.</p></dd>
 
 
 <dt id="arg-drift-threshold">drift_threshold<a class="anchor" aria-label="anchor" href="#arg-drift-threshold"></a></dt>
-<dd><p>Float. Below which centroid drift the mini-batch
-k-means is considered converged. Defaults to <code>1e-4</code>. Only used when
-<code>method = "minibatch"</code></p></dd>
+<dd><p>Numeric. Below which centroid drift the mini-batch
+k-means is considered converged. Only used when <code>method = "minibatch"</code>.
+Defaults to <code>1e-04</code>.</p></dd>
 
 
 <dt id="arg-lr-alpha">lr_alpha<a class="anchor" aria-label="anchor" href="#arg-lr-alpha"></a></dt>
-<dd><p>Float. Learning rate decay for the mini-batch k-means.
-Original paper uses <code>1.0</code>.</p></dd>
+<dd><p>Numeric. Learning rate decay for the mini-batch k-means.
+Original paper uses <code>1.0</code>. Defaults to <code>1.0</code>.</p></dd>
 
 
 <dt id="arg-init">init<a class="anchor" aria-label="anchor" href="#arg-init"></a></dt>
-<dd><p>String. One of <code>c("parallel", "random")</code>. The initialisation of
-the centroids.</p></dd>
+<dd><p>String. The initialisation of the centroids. One of
+<code>c("parallel", "random")</code>. Defaults to <code>"parallel"</code>.</p></dd>
 
 
 <dt id="arg-use-hamerly">use_hamerly<a class="anchor" aria-label="anchor" href="#arg-use-hamerly"></a></dt>
-<dd><p>Optional boolean. Shall Hamerly's method be used (only
-available if <code>metric == "euclidean"</code>).</p></dd>
+<dd><p>Boolean or <code>NULL</code>. Shall Hamerly's method be used (only if
+<code>metric == "euclidean"</code>). Defaults to <code>NULL</code>.</p></dd>
 
 
 <dt id="arg-use-gemm">use_gemm<a class="anchor" aria-label="anchor" href="#arg-use-gemm"></a></dt>
-<dd><p>Optional boolean. Shall the GEMM path be used. Useful on
-high dimensional data. If <code>NULL</code>, choice will be based on heuristics.</p></dd>
+<dd><p>Boolean or <code>NULL</code>. Shall the GEMM path be used. Useful on
+high dimensional data. If <code>NULL</code>, choice will be based on heuristics.
+Defaults to <code>NULL</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A named list with the k-means parameters.</p>
-    </div>
+    <p>A named list with the following elements:</p><ul><li><p>metric - String. Distance metric to use. One of <code>c("euclidean", "cosine")</code>. Defaults to <code>"euclidean"</code>.</p></li>
+<li><p>max_iters - Integer. Maximum number of iterations. Defaults to
+<code>1000L</code>.</p></li>
+<li><p>batch_size - Integer. Mini-batch size. Only used when <code>method = "minibatch"</code>. Defaults to <code>4096L</code>.</p></li>
+<li><p>drift_threshold - Numeric. Below which centroid drift the mini-batch
+k-means is considered converged. Only used when <code>method = "minibatch"</code>.
+Defaults to <code>1e-04</code>.</p></li>
+<li><p>lr_alpha - Numeric. Learning rate decay for the mini-batch k-means.
+Original paper uses <code>1.0</code>. Defaults to <code>1.0</code>.</p></li>
+<li><p>init - String. The initialisation of the centroids. One of
+<code>c("parallel", "random")</code>. Defaults to <code>"parallel"</code>.</p></li>
+<li><p>use_hamerly - Boolean or <code>NULL</code>. Shall Hamerly's method be used (only
+if <code>metric == "euclidean"</code>). Defaults to <code>NULL</code>.</p></li>
+<li><p>use_gemm - Boolean or <code>NULL</code>. Shall the GEMM path be used. Useful on
+high dimensional data. If <code>NULL</code>, choice will be based on heuristics.
+Defaults to <code>NULL</code>.</p></li>
+</ul></div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

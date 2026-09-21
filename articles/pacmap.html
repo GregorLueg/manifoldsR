@@ -29,7 +29,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -78,7 +78,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Using PaCMAP</h1>
 
       <p class="author">Gregor Lueg</p>
-      <p class="date">2026-09-10</p>
+      <p class="date">2026-09-21</p>
 
 
       <div class="d-none name"><code></code></div>
@@ -446,8 +446,8 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;             expr      min       lq     mean   median       uq      max neval</span></span>
-<span><span class="co">#&gt;    manifold_umap 1.410281 1.411608 1.414630 1.412935 1.416805 1.420674     3</span></span>
-<span><span class="co">#&gt;  manifold_pacmap 1.871423 1.887028 1.893499 1.902632 1.904537 1.906443     3</span></span></code></pre></div>
+<span><span class="co">#&gt;    manifold_umap 1.425103 1.425459 1.427911 1.425815 1.429316 1.432816     3</span></span>
+<span><span class="co">#&gt;  manifold_pacmap 1.850638 1.852825 1.863314 1.855011 1.869652 1.884293     3</span></span></code></pre></div>
 </div>
 <p>PaCMAP is generally slower than UMAP on the same data since it processes all pairs every epoch rather than sampling. The three-phase schedule with 450 epochs (vs UMAP’s 200–500) compounds this. For most datasets up to ~50k samples this is not a concern in practice, but on very large data the difference becomes noticeable.</p>
 </section></section><script id="quarto-html-after-body" type="application/javascript">

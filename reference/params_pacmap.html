@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,8 +61,8 @@
 <span>  n_further <span class="op">=</span> <span class="fl">20L</span>,</span>
 <span>  mn_candidate_start <span class="op">=</span> <span class="fl">4L</span>,</span>
 <span>  mn_candidate_end <span class="op">=</span> <span class="fl">50L</span>,</span>
-<span>  init <span class="op">=</span> <span class="st">"pca"</span>,</span>
-<span>  optimiser <span class="op">=</span> <span class="st">"adam_parallel"</span>,</span>
+<span>  init <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"pca"</span>, <span class="st">"random"</span><span class="op">)</span>,</span>
+<span>  optimiser <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"adam_parallel"</span>, <span class="st">"adam"</span><span class="op">)</span>,</span>
 <span>  lr <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  n_epochs <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  beta1 <span class="op">=</span> <span class="fl">0.9</span>,</span>
@@ -101,13 +101,13 @@ candidate window. Also determines the kNN search size. Defaults to <code>50L</co
 
 
 <dt id="arg-init">init<a class="anchor" aria-label="anchor" href="#arg-init"></a></dt>
-<dd><p>Character. Embedding initialisation. One of <code>"pca"</code> or
-<code>"random"</code>. Defaults to <code>"pca"</code>.</p></dd>
+<dd><p>String. Embedding initialisation. One of <code>c("pca", "random")</code>.
+Defaults to <code>"pca"</code>.</p></dd>
 
 
 <dt id="arg-optimiser">optimiser<a class="anchor" aria-label="anchor" href="#arg-optimiser"></a></dt>
-<dd><p>Character. One of <code>"adam"</code> or <code>"adam_parallel"</code>. Defaults
-to <code>"adam_parallel"</code>.</p></dd>
+<dd><p>String. The optimiser. One of <code>c("adam_parallel", "adam")</code>.
+Defaults to <code>"adam_parallel"</code>.</p></dd>
 
 
 <dt id="arg-lr">lr<a class="anchor" aria-label="anchor" href="#arg-lr"></a></dt>
@@ -115,8 +115,8 @@ to <code>"adam_parallel"</code>.</p></dd>
 
 
 <dt id="arg-n-epochs">n_epochs<a class="anchor" aria-label="anchor" href="#arg-n-epochs"></a></dt>
-<dd><p>Integer or <code>NULL</code>. Total optimisation epochs. Defaults to
-<code>NULL</code>, resolved downstream to <code>450</code>.</p></dd>
+<dd><p>Integer or <code>NULL</code>. Total optimisation epochs. If <code>NULL</code>,
+resolved downstream to <code>450</code>. Defaults to <code>NULL</code>.</p></dd>
 
 
 <dt id="arg-beta-">beta1<a class="anchor" aria-label="anchor" href="#arg-beta-"></a></dt>
@@ -128,23 +128,44 @@ to <code>"adam_parallel"</code>.</p></dd>
 
 
 <dt id="arg-eps">eps<a class="anchor" aria-label="anchor" href="#arg-eps"></a></dt>
-<dd><p>Numeric. Adam numerical stability constant. Defaults to <code>1e-7</code>.</p></dd>
+<dd><p>Numeric. Adam numerical stability constant. Defaults to <code>1e-07</code>.</p></dd>
 
 
 <dt id="arg-phase-end">phase1_end<a class="anchor" aria-label="anchor" href="#arg-phase-end"></a></dt>
-<dd><p>Integer or <code>NULL</code>. Epoch at which phase 1 ends. Defaults
-to <code>NULL</code>, resolved downstream to <code>100</code>.</p></dd>
+<dd><p>Integer or <code>NULL</code>. Epoch at which phase 1 ends. If <code>NULL</code>,
+resolved downstream to <code>100</code>. Defaults to <code>NULL</code>.</p></dd>
 
 
 <dt id="arg-phase-end">phase2_end<a class="anchor" aria-label="anchor" href="#arg-phase-end"></a></dt>
-<dd><p>Integer or <code>NULL</code>. Epoch at which phase 2 ends. Defaults
-to <code>NULL</code>, resolved downstream to <code>200</code>.</p></dd>
+<dd><p>Integer or <code>NULL</code>. Epoch at which phase 2 ends. If <code>NULL</code>,
+resolved downstream to <code>200</code>. Defaults to <code>NULL</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A list with the PaCMAP parameters.</p>
-    </div>
+    <p>A named list with the following elements:</p><ul><li><p>n_near - Integer. Near pairs per point (attractive). Defaults to
+<code>10L</code>.</p></li>
+<li><p>n_mid_near - Integer. Mid-near pairs per point. Defaults to <code>5L</code>.</p></li>
+<li><p>n_further - Integer. Further (random) pairs per point. Defaults to
+<code>20L</code>.</p></li>
+<li><p>mn_candidate_start - Integer. Start index into kNN list for mid-near
+candidate window. Defaults to <code>4L</code>.</p></li>
+<li><p>mn_candidate_end - Integer. End index into kNN list for mid-near
+candidate window. Also determines the kNN search size. Defaults to <code>50L</code>.</p></li>
+<li><p>init - String. Embedding initialisation. One of <code>c("pca", "random")</code>.
+Defaults to <code>"pca"</code>.</p></li>
+<li><p>optimiser - String. The optimiser. One of <code>c("adam_parallel", "adam")</code>. Defaults to <code>"adam_parallel"</code>.</p></li>
+<li><p>lr - Numeric. Adam learning rate. Defaults to <code>1.0</code>.</p></li>
+<li><p>n_epochs - Integer or <code>NULL</code>. Total optimisation epochs. If <code>NULL</code>,
+resolved downstream to <code>450</code>. Defaults to <code>NULL</code>.</p></li>
+<li><p>beta1 - Numeric. Adam first moment decay. Defaults to <code>0.9</code>.</p></li>
+<li><p>beta2 - Numeric. Adam second moment decay. Defaults to <code>0.999</code>.</p></li>
+<li><p>eps - Numeric. Adam numerical stability constant. Defaults to <code>1e-07</code>.</p></li>
+<li><p>phase1_end - Integer or <code>NULL</code>. Epoch at which phase 1 ends. If
+<code>NULL</code>, resolved downstream to <code>100</code>. Defaults to <code>NULL</code>.</p></li>
+<li><p>phase2_end - Integer or <code>NULL</code>. Epoch at which phase 2 ends. If
+<code>NULL</code>, resolved downstream to <code>200</code>. Defaults to <code>NULL</code>.</p></li>
+</ul></div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

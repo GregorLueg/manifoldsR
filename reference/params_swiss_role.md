@@ -1,6 +1,7 @@
 # Parameters for swiss roll data generation
 
-Parameters for swiss roll data generation
+For use with
+[`manifold_synthetic_data()`](https://gregorlueg.github.io/manifoldsR/reference/manifold_synthetic_data.md).
 
 ## Usage
 
@@ -12,10 +13,10 @@ params_swiss_role(noise = 0.1)
 
 - noise:
 
-  Numeric. Amount of noise to add. Must be a positive non-zero value.
-  Defaults to `0.1`.
+  Numeric. Amount of noise to add. Defaults to `0.1`.
 
 ## Value
 
-A list of parameters for use with
-[`manifold_synthetic_data()`](https://gregorlueg.github.io/manifoldsR/reference/manifold_synthetic_data.md).
+A named list with the following elements:
+
+- noise - Numeric. Amount of noise to add. Defaults to `0.1`.

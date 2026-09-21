@@ -1,6 +1,7 @@
 # Parameters for trajectory data generation
 
-Parameters for trajectory data generation
+For use with
+[`manifold_synthetic_data()`](https://gregorlueg.github.io/manifoldsR/reference/manifold_synthetic_data.md).
 
 ## Usage
 
@@ -16,12 +17,13 @@ params_trajectory(
 
 - topology:
 
-  Character. One of `c("bifurcation", "linear", "combination")`. Ignored
-  if `cell_trajectories` is not `NULL`. Defaults to `"bifurcation"`.
+  String. Ignored if `cell_trajectories` is not `NULL`. One of
+  `c("bifurcation", "linear", "combination")`. Defaults to
+  `"bifurcation"`.
 
 - cell_trajectories:
 
-  Optional list. Named list with three equal-length vectors: `parent`
+  Any. Optional named list with three equal-length vectors: `parent`
   (integer, `NA` for root, zero-indexed), `split_at` (numeric, fraction
   along parent where branch starts), and `length` (numeric, length of
   the branch). If `NULL`, `topology` is used instead. Defaults to
@@ -29,10 +31,20 @@ params_trajectory(
 
 - noise:
 
-  Numeric. Amount of noise to add. Must be a positive non-zero value.
-  Defaults to `0.1`.
+  Numeric. Amount of noise to add. Defaults to `0.1`.
 
 ## Value
 
-A list of parameters for use with
-[`manifold_synthetic_data()`](https://gregorlueg.github.io/manifoldsR/reference/manifold_synthetic_data.md).
+A named list with the following elements:
+
+- topology - String. Ignored if `cell_trajectories` is not `NULL`. One
+  of `c("bifurcation", "linear", "combination")`. Defaults to
+  `"bifurcation"`.
+
+- cell_trajectories - Any. Optional named list with three equal-length
+  vectors: `parent` (integer, `NA` for root, zero-indexed), `split_at`
+  (numeric, fraction along parent where branch starts), and `length`
+  (numeric, length of the branch). If `NULL`, `topology` is used
+  instead. Defaults to `NULL`.
+
+- noise - Numeric. Amount of noise to add. Defaults to `0.1`.
