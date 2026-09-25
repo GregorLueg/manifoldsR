@@ -301,6 +301,121 @@ params_evoc <- function(
   )
 }
 
+#' Wrapper function to generate ForceAtlas2 parameters
+#'
+#' @description The graph, initialisation and optimisation knobs for
+#' ForceAtlas2. `local_connectivity`, `bandwidth`, `init` and `randomised` only
+#' apply when the graph is built from the data via [forceatlas2()];
+#' [forceatlas2_from_graph()] ignores them.
+#'
+#' @param local_connectivity Numeric. Number of nearest neighbours assumed to be
+#' at distance zero. Defaults to `1.0`.
+#' @param bandwidth Numeric. Convergence tolerance for smooth kNN distance
+#' binary search. Defaults to `1e-05`.
+#' @param n_epochs Integer. Number of optimisation epochs. Defaults to `500L`.
+#' @param scaling_ratio Numeric. Repulsion strength. Larger values spread the
+#' layout. Defaults to `2.0`.
+#' @param gravity Numeric. Pull towards the origin. Keeps disconnected
+#' components from drifting off. Defaults to `1.0`.
+#' @param strong_gravity Boolean. Distance-independent gravity, scaled by
+#' `scaling_ratio`. Defaults to `FALSE`.
+#' @param lin_log Boolean. Logarithmic attraction (LinLog). Gives tighter
+#' communities. Defaults to `FALSE`.
+#' @param dissuade_hubs Boolean. Divide the attraction by the node mass. Pushes
+#' hubs to the periphery. Defaults to `FALSE`.
+#' @param edge_weight_influence Numeric. Exponent applied to the edge weights.
+#' `0` ignores the weights. Defaults to `1.0`.
+#' @param jitter_tolerance Numeric. Tolerated swinging. Larger is faster but
+#' less precise. Defaults to `1.0`.
+#' @param theta Numeric. Barnes-Hut opening parameter on Gephi's scale. `0`
+#' gives the exact repulsion. Defaults to `1.2`.
+#' @param init String. Embedding initialisation method. One of `c("spectral",
+#' "pca", "random")`. Defaults to `"spectral"`.
+#' @param randomised Boolean. Use randomised SVD for PCA initialisation.
+#' Defaults to `FALSE`.
+#'
+#' @returns A named list with the following elements:
+#' \itemize{
+#'  \item local_connectivity - Numeric. Number of nearest neighbours assumed to
+#'  be at distance zero. Defaults to `1.0`.
+#'  \item bandwidth - Numeric. Convergence tolerance for smooth kNN distance
+#'  binary search. Defaults to `1e-05`.
+#'  \item n_epochs - Integer. Number of optimisation epochs. Defaults to `500L`.
+#'  \item scaling_ratio - Numeric. Repulsion strength. Larger values spread the
+#'  layout. Defaults to `2.0`.
+#'  \item gravity - Numeric. Pull towards the origin. Keeps disconnected
+#'  components from drifting off. Defaults to `1.0`.
+#'  \item strong_gravity - Boolean. Distance-independent gravity, scaled by
+#'  `scaling_ratio`. Defaults to `FALSE`.
+#'  \item lin_log - Boolean. Logarithmic attraction (LinLog). Gives tighter
+#'  communities. Defaults to `FALSE`.
+#'  \item dissuade_hubs - Boolean. Divide the attraction by the node mass.
+#'  Pushes hubs to the periphery. Defaults to `FALSE`.
+#'  \item edge_weight_influence - Numeric. Exponent applied to the edge weights.
+#'  `0` ignores the weights. Defaults to `1.0`.
+#'  \item jitter_tolerance - Numeric. Tolerated swinging. Larger is faster but
+#'  less precise. Defaults to `1.0`.
+#'  \item theta - Numeric. Barnes-Hut opening parameter on Gephi's scale. `0`
+#'  gives the exact repulsion. Defaults to `1.2`.
+#'  \item init - String. Embedding initialisation method. One of `c("spectral",
+#'  "pca", "random")`. Defaults to `"spectral"`.
+#'  \item randomised - Boolean. Use randomised SVD for PCA initialisation.
+#'  Defaults to `FALSE`.
+#' }
+#'
+#' @references Jacomy, et al., PLoS ONE, 2014
+#'
+#' @export
+params_fa2 <- function(
+  local_connectivity = 1.0,
+  bandwidth = 1e-05,
+  n_epochs = 500L,
+  scaling_ratio = 2.0,
+  gravity = 1.0,
+  strong_gravity = FALSE,
+  lin_log = FALSE,
+  dissuade_hubs = FALSE,
+  edge_weight_influence = 1.0,
+  jitter_tolerance = 1.0,
+  theta = 1.2,
+  init = c("spectral", "pca", "random"),
+  randomised = FALSE
+) {
+  init <- match.arg(init)
+
+  # Checks
+  checkmate::qassert(local_connectivity, "N1")
+  checkmate::qassert(bandwidth, "N1")
+  checkmate::qassert(n_epochs, "I1[1,)")
+  checkmate::qassert(scaling_ratio, "N1(0,)")
+  checkmate::qassert(gravity, "N1[0,)")
+  checkmate::qassert(strong_gravity, "B1")
+  checkmate::qassert(lin_log, "B1")
+  checkmate::qassert(dissuade_hubs, "B1")
+  checkmate::qassert(edge_weight_influence, "N1[0,)")
+  checkmate::qassert(jitter_tolerance, "N1(0,)")
+  checkmate::qassert(theta, "N1[0,)")
+  checkmate::assertChoice(init, c("spectral", "pca", "random"))
+  checkmate::qassert(randomised, "B1")
+
+  # Return
+  list(
+    local_connectivity = local_connectivity,
+    bandwidth = bandwidth,
+    n_epochs = n_epochs,
+    scaling_ratio = scaling_ratio,
+    gravity = gravity,
+    strong_gravity = strong_gravity,
+    lin_log = lin_log,
+    dissuade_hubs = dissuade_hubs,
+    edge_weight_influence = edge_weight_influence,
+    jitter_tolerance = jitter_tolerance,
+    theta = theta,
+    init = init,
+    randomised = randomised
+  )
+}
+
 #' Parameters for hierarchical cluster data generation
 #'
 #' @description For use with [manifold_synthetic_data()].

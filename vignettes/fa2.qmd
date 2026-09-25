@@ -1,0 +1,283 @@
+---
+title: "Using ForceAtlas2"
+date: last-modified
+date-format: YYYY-MM-DD
+vignette: >
+  %\VignetteIndexEntry{Using ForceAtlas2}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
+knitr:
+  opts_chunk:
+    collapse: true
+    comment: '#>'
+author:
+  - name: Gregor Lueg
+---
+
+# ForceAtlas2 in manifoldsR
+
+`manifoldsR` ships a Rust implementation of
+[ForceAtlas2](https://doi.org/10.1371/journal.pone.0098679) (FA2), the force
+directed layout from Gephi. Single cell folks know it from scanpy's
+`draw_graph` and from PAGA initialised layouts.
+
+```{r}
+#| label: setup
+library(manifoldsR)
+library(magrittr)
+library(ggplot2)
+library(data.table)
+```
+
+## Intro
+
+FA2 treats the kNN graph as a physical system. Every node pushes every other
+node away with a force of `1/d`, scaled by the node masses (`1 + degree`, so
+hubs push harder). Every edge pulls its two ends together, linearly with
+distance, or logarithmically with `lin_log = TRUE`. Gravity pulls everything
+towards the origin so disconnected components don't drift off. Step sizes
+follow Gephi's adaptive speed: nodes that swing back and forth slow down, nodes
+that move steadily speed up. The all-pairs repulsion runs on a Barnes-Hut tree.
+
+How is that different from UMAP? UMAP samples edges and negative pairs
+stochastically and optimises a cross-entropy loss. FA2 visits every edge every
+epoch and has no loss at all, just forces. There's also no `min_dist` or
+`spread`: the scale of the layout comes out of the balance between
+`scaling_ratio` (repulsion) and the edge weights (attraction).
+
+There are two entry points:
+
+- `forceatlas2()` takes the data (or a `NearestNeighbours` object), builds the
+  UMAP fuzzy union graph like scanpy does and lays it out.
+- `forceatlas2_from_graph()` takes any undirected `igraph` object, e.g. an SNN
+  graph, a graph from another package or one you built by hand.
+
+FA2 needs a symmetric graph, since each edge pulls both of its ends equally.
+The first entry point guarantees that by construction. For the second, an
+undirected igraph object is symmetric by definition, so directed graphs are
+rejected.
+
+## Running ForceAtlas2
+
+We use the same synthetic data as in the UMAP vignette.
+
+```{r}
+#| label: synthetic data
+cluster_data <- manifold_synthetic_data(
+  type = "cluster",
+  n_samples = 25000L
+)
+
+trajectory_data <- manifold_synthetic_data(
+  type = "trajectory",
+  n_samples = 25000L
+)
+```
+
+### Clustered data
+
+```{r}
+#| label: clustered data - fa2
+fa2_clusters <- forceatlas2(
+  data = cluster_data$data,
+  k = 15L
+)
+
+fa2_clusters_df <- as.data.table(fa2_clusters) %>%
+  `colnames<-`(c("FA1", "FA2")) %>%
+  .[, cluster := as.factor(cluster_data$membership)]
+
+ggplot(
+  data = fa2_clusters_df,
+  mapping = aes(x = FA1, y = FA2)
+) +
+  geom_point(mapping = aes(colour = cluster), size = 0.75, alpha = 0.5) +
+  theme_bw() +
+  ggtitle("ForceAtlas2 on clustered data")
+```
+
+And UMAP on the same data for comparison:
+
+```{r}
+#| label: clustered data - umap
+umap_clusters <- umap(
+  data = cluster_data$data,
+  k = 15L
+)
+
+umap_clusters_df <- as.data.table(umap_clusters) %>%
+  `colnames<-`(c("UMAP1", "UMAP2")) %>%
+  .[, cluster := as.factor(cluster_data$membership)]
+
+ggplot(
+  data = umap_clusters_df,
+  mapping = aes(x = UMAP1, y = UMAP2)
+) +
+  geom_point(mapping = aes(colour = cluster), size = 0.75, alpha = 0.5) +
+  theme_bw() +
+  ggtitle("UMAP on clustered data")
+```
+
+Both separate all 15 clusters, and the global arrangement is near identical,
+since both start from the same spectral initialisation. The difference is
+inside the clusters: with linear attraction and a dense within-cluster graph,
+FA2 pulls each cluster into a tight blob. Also note the axes. FA2 coordinates
+live on Gephi's scale, so tens of thousands are normal. Only the relative
+positions carry meaning.
+
+### Trajectory
+
+Trajectories are where force directed layouts get used most in single cell
+work. Let's see how FA2 handles the branching data.
+
+```{r}
+#| label: trajectory data - fa2
+fa2_trajectory <- forceatlas2(
+  data = trajectory_data$data,
+  k = 15L
+)
+
+fa2_trajectory_df <- as.data.table(fa2_trajectory) %>%
+  `colnames<-`(c("FA1", "FA2")) %>%
+  .[, branch := trajectory_data$membership]
+
+# shuffle the rows to not over-plot the later branches
+ggplot(
+  data = fa2_trajectory_df[sample(.N)],
+  mapping = aes(x = FA1, y = FA2)
+) +
+  geom_point(mapping = aes(colour = branch), size = 0.75, alpha = 0.5) +
+  theme_bw() +
+  ggtitle("ForceAtlas2 on trajectory data")
+```
+
+The branching structure survives: every branch stays attached to its parent
+and the whole thing reads as one connected tree rather than a set of islands.
+
+## The knobs
+
+All knobs live in `params_fa2()`. The ones that matter:
+
+- `scaling_ratio`: repulsion strength. Bigger values spread everything out.
+- `gravity`: pull towards the origin. Crank it up if small components float
+  away, lower it if everything gets squashed into a ball.
+- `lin_log`: logarithmic attraction. Gives tighter communities.
+- `dissuade_hubs`: divides the attraction by the node mass, so hubs get pushed
+  to the edge of their community.
+- `n_epochs`: FA2 has no learning rate schedule to anneal, so more epochs mean
+  a more settled layout. The default is `500`.
+
+`theta` controls the Barnes-Hut approximation (`0` gives the exact repulsion)
+and `jitter_tolerance` how much swinging the adaptive speed tolerates. Leave
+them alone unless you know why you're touching them.
+
+Here's LinLog mode on the clustered data:
+
+```{r}
+#| label: clustered data - linlog
+fa2_linlog <- forceatlas2(
+  data = cluster_data$data,
+  k = 15L,
+  fa2_params = params_fa2(lin_log = TRUE)
+)
+
+fa2_linlog_df <- as.data.table(fa2_linlog) %>%
+  `colnames<-`(c("FA1", "FA2")) %>%
+  .[, cluster := as.factor(cluster_data$membership)]
+
+ggplot(
+  data = fa2_linlog_df,
+  mapping = aes(x = FA1, y = FA2)
+) +
+  geom_point(mapping = aes(colour = cluster), size = 0.75, alpha = 0.5) +
+  theme_bw() +
+  ggtitle("ForceAtlas2 (LinLog) on clustered data")
+```
+
+Same arrangement as before, but the clusters open up and you can see their
+internal spread again. The logarithmic attraction grows much slower with
+distance, so the within-cluster pull no longer crushes everything into a
+point.
+
+## Bring your own graph
+
+Already have a graph? Hand it to `forceatlas2_from_graph()`. Here we build a
+plain unweighted kNN graph in igraph from a `NearestNeighbours` object.
+`igraph::simplify()` merges the mutual neighbours (A in B's list and B in A's)
+into one edge and drops self-loops.
+
+```{r}
+#| label: own graph - build
+knn <- generate_knn_graph(
+  data = trajectory_data$data,
+  k = 15L
+)
+
+knn_idx <- get_idx_mat(knn)
+
+knn_graph <- igraph::graph_from_edgelist(
+  cbind(rep(seq_len(nrow(knn_idx)), ncol(knn_idx)), as.vector(knn_idx)),
+  directed = FALSE
+) %>%
+  igraph::simplify()
+
+knn_graph
+```
+
+If the graph has a `weight` edge attribute, FA2 uses it (raised to the power
+`edge_weight_influence`). This one doesn't, so every edge weighs `1`. Without
+`init`, the layout starts from random positions:
+
+```{r}
+#| label: own graph - random init
+fa2_graph <- forceatlas2_from_graph(graph = knn_graph)
+
+fa2_graph_df <- as.data.table(fa2_graph) %>%
+  `colnames<-`(c("FA1", "FA2")) %>%
+  .[, branch := trajectory_data$membership]
+
+ggplot(
+  data = fa2_graph_df[sample(.N)],
+  mapping = aes(x = FA1, y = FA2)
+) +
+  geom_point(mapping = aes(colour = branch), size = 0.75, alpha = 0.5) +
+  theme_bw() +
+  ggtitle("ForceAtlas2 on an unweighted kNN graph (random init)")
+```
+
+You can also start from an existing layout. Any `n x 2` matrix works; here we use
+a UMAP of the same data, reusing the kNN search:
+
+```{r}
+#| label: own graph - umap init
+umap_init <- umap(
+  data = trajectory_data$data,
+  knn = knn,
+  k = 15L
+)
+
+fa2_graph_warm <- forceatlas2_from_graph(
+  graph = knn_graph,
+  init = umap_init
+)
+
+fa2_graph_warm_df <- as.data.table(fa2_graph_warm) %>%
+  `colnames<-`(c("FA1", "FA2")) %>%
+  .[, branch := trajectory_data$membership]
+
+ggplot(
+  data = fa2_graph_warm_df[sample(.N)],
+  mapping = aes(x = FA1, y = FA2)
+) +
+  geom_point(mapping = aes(colour = branch), size = 0.75, alpha = 0.5) +
+  theme_bw() +
+  ggtitle("ForceAtlas2 on an unweighted kNN graph (UMAP init)")
+```
+
+Both starts end in the same tree, just rotated and mirrored. The unweighted
+kNN graph carries enough structure on its own here; the init mostly decides
+the orientation.
+
+Only the optimisation parameters in `params_fa2()` apply here. The graph
+building and initialisation ones (`local_connectivity`, `bandwidth`, `init`,
+`randomised`) belong to `forceatlas2()`.

@@ -36,6 +36,7 @@ articles:
       - density_preserving
       - phate
       - pacmap
+      - fa2
       - diffusion_map
       - clustering
 
@@ -45,6 +46,8 @@ reference:
     contents:
       - tsne
       - umap
+      - forceatlas2
+      - forceatlas2_from_graph
       - densmap
       - densne
       - phate
@@ -82,6 +85,7 @@ reference:
       - params_densmap
       - params_densne
       - params_evoc
+      - params_fa2
       - params_hierarchical
       - params_kmeans
       - params_nn
@@ -111,6 +115,9 @@ reference:
       - rs_diffusion_maps_from_knn
       - rs_evoc
       - rs_evoc_from_knn
+      - rs_forceatlas2
+      - rs_forceatlas2_from_graph
+      - rs_forceatlas2_from_knn
       - rs_intertia
       - rs_k_means
       - rs_k_means_mini_batch

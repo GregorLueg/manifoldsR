@@ -118,6 +118,91 @@ spec_umap <- param_spec(
   )
 )
 
+# forceatlas2 ------------------------------------------------------------------
+
+spec_fa2 <- param_spec(
+  name = "fa2",
+  title = "Wrapper function to generate ForceAtlas2 parameters",
+  description = paste(
+    "The graph, initialisation and optimisation knobs for ForceAtlas2.",
+    "`local_connectivity`, `bandwidth`, `init` and `randomised` only apply",
+    "when the graph is built from the data via [forceatlas2()];",
+    "[forceatlas2_from_graph()] ignores them."
+  ),
+  label = "ForceAtlas2 params",
+  references = "Jacomy, et al., PLoS ONE, 2014",
+  fields = list(
+    local_connectivity = p_dbl(
+      1.0,
+      doc = "Number of nearest neighbours assumed to be at distance zero."
+    ),
+    bandwidth = p_dbl(
+      1e-5,
+      doc = "Convergence tolerance for smooth kNN distance binary search."
+    ),
+    n_epochs = p_int(
+      500L,
+      range = "[1,)",
+      doc = "Number of optimisation epochs."
+    ),
+    scaling_ratio = p_dbl(
+      2.0,
+      range = "(0,)",
+      doc = "Repulsion strength. Larger values spread the layout."
+    ),
+    gravity = p_dbl(
+      1.0,
+      range = "[0,)",
+      doc = paste(
+        "Pull towards the origin. Keeps disconnected components from",
+        "drifting off."
+      )
+    ),
+    strong_gravity = p_lgl(
+      FALSE,
+      doc = "Distance-independent gravity, scaled by `scaling_ratio`."
+    ),
+    lin_log = p_lgl(
+      FALSE,
+      doc = "Logarithmic attraction (LinLog). Gives tighter communities."
+    ),
+    dissuade_hubs = p_lgl(
+      FALSE,
+      doc = paste(
+        "Divide the attraction by the node mass. Pushes hubs to the",
+        "periphery."
+      )
+    ),
+    edge_weight_influence = p_dbl(
+      1.0,
+      range = "[0,)",
+      doc = "Exponent applied to the edge weights. `0` ignores the weights."
+    ),
+    jitter_tolerance = p_dbl(
+      1.0,
+      range = "(0,)",
+      doc = "Tolerated swinging. Larger is faster but less precise."
+    ),
+    theta = p_dbl(
+      1.2,
+      range = "[0,)",
+      doc = paste(
+        "Barnes-Hut opening parameter on Gephi's scale. `0` gives the exact",
+        "repulsion."
+      )
+    ),
+    init = p_choice(
+      "spectral",
+      c("spectral", "pca", "random"),
+      doc = "Embedding initialisation method."
+    ),
+    randomised = p_lgl(
+      FALSE,
+      doc = "Use randomised SVD for PCA initialisation."
+    )
+  )
+)
+
 # tsne -------------------------------------------------------------------------
 
 spec_tsne <- param_spec(

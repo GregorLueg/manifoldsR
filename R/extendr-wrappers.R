@@ -59,6 +59,80 @@ rs_umap <- function(embd, n_dim, min_dist, spread, k, umap_params, seed, use_hig
 #' @export
 rs_umap_from_knn <- function(embd, knn_data, n_dim, min_dist, spread, k, umap_params, seed, use_high_precision, verbose) .Call(wrap__rs_umap_from_knn, embd, knn_data, n_dim, min_dist, spread, k, umap_params, seed, use_high_precision, verbose)
 
+#' ForceAtlas2 implementation
+#'
+#' @description
+#' `r lifecycle::badge("experimental")`
+#' Leverages the ForceAtlas2 implementation in manifolds-rs. Builds the UMAP
+#' fuzzy union graph from the data and lays it out with ForceAtlas2.
+#'
+#' @param embd Numerical matrix. The data to use to generate the embeddings.
+#' Should be of dimensions samples x features.
+#' @param k Integer. Number of nearest neighbours to consider.
+#' @param fa2_params Named list. List that contains all of the key parameters
+#' for the kNN search, graph generation and ForceAtlas2 optimisation.
+#' @param seed Integer. Seed for reproducibility.
+#' @param use_high_precision Optional logical. Controls `fp32` vs `fp64`.
+#' If `NULL` will use sensible default thresholding.
+#' @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
+#' for detailed verbosity.
+#'
+#' @return The ForceAtlas2 embedding, samples x 2.
+#'
+#' @export
+rs_forceatlas2 <- function(embd, k, fa2_params, seed, use_high_precision, verbose) .Call(wrap__rs_forceatlas2, embd, k, fa2_params, seed, use_high_precision, verbose)
+
+#' ForceAtlas2 implementation
+#'
+#' @description
+#' `r lifecycle::badge("experimental")`
+#' Leverages the ForceAtlas2 implementation in manifolds-rs. This version uses
+#' a pre-computed kNN graph, please see [new_nearest_neighbour()].
+#'
+#' @param embd Numerical matrix. The data to use to generate the embeddings.
+#' Should be of dimensions samples x features.
+#' @param knn_data `NearestNeighbours` class from R.
+#' @param k Integer. Number of nearest neighbours to consider.
+#' @param fa2_params Named list. List that contains all of the key parameters
+#' for the graph generation and ForceAtlas2 optimisation.
+#' @param seed Integer. Seed for reproducibility.
+#' @param use_high_precision Optional logical. Controls `fp32` vs `fp64`.
+#' If `NULL` will use sensible default thresholding.
+#' @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
+#' for detailed verbosity.
+#'
+#' @return The ForceAtlas2 embedding, samples x 2.
+#'
+#' @export
+rs_forceatlas2_from_knn <- function(embd, knn_data, k, fa2_params, seed, use_high_precision, verbose) .Call(wrap__rs_forceatlas2_from_knn, embd, knn_data, k, fa2_params, seed, use_high_precision, verbose)
+
+#' ForceAtlas2 on a pre-computed graph
+#'
+#' @description
+#' `r lifecycle::badge("experimental")`
+#' Leverages the ForceAtlas2 implementation in manifolds-rs and lays out a
+#' caller-supplied undirected graph. Each edge is passed once; the Rust side
+#' adds the reverse direction.
+#'
+#' @param from Integer vector. 1-based source vertex of each edge.
+#' @param to Integer vector. 1-based target vertex of each edge.
+#' @param weight Numeric vector. Weight of each edge.
+#' @param n Integer. Number of vertices.
+#' @param init Optional numerical matrix of dimensions n x 2. The initial
+#' layout. If `NULL`, a random layout is used.
+#' @param fa2_params Named list. List that contains the ForceAtlas2
+#' optimisation parameters.
+#' @param seed Integer. Seed for reproducibility.
+#' @param use_high_precision Optional logical. Controls `fp32` vs `fp64`.
+#' If `NULL` will use sensible default thresholding.
+#' @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
+#' for detailed verbosity.
+#'
+#' @return The ForceAtlas2 embedding, n x 2.
+#'
+#' @export
+rs_forceatlas2_from_graph <- function(from, to, weight, n, init, fa2_params, seed, use_high_precision, verbose) .Call(wrap__rs_forceatlas2_from_graph, from, to, weight, n, init, fa2_params, seed, use_high_precision, verbose)
+
 #' tSNE implementation
 #'
 #' @description

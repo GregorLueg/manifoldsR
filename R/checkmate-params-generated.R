@@ -234,6 +234,88 @@ checkEvocParams <- function(x) {
 #' @keywords internal
 assertEvocParams <- checkmate::makeAssertionFunction(checkEvocParams)
 
+#' Check ForceAtlas2 params
+#'
+#' @description Checkmate extension for the output of [params_fa2()].
+#'
+#' @param x The object to check.
+#'
+#' @returns `TRUE` if the check was successful, otherwise a
+#' checkmate-style error string.
+#'
+#' @keywords internal
+checkFa2Params <- function(x) {
+  res <- check_list_shape(
+    x,
+    c(
+      "local_connectivity",
+      "bandwidth",
+      "n_epochs",
+      "scaling_ratio",
+      "gravity",
+      "strong_gravity",
+      "lin_log",
+      "dissuade_hubs",
+      "edge_weight_influence",
+      "jitter_tolerance",
+      "theta",
+      "init",
+      "randomised"
+    )
+  )
+  if (!isTRUE(res)) {
+    return(res)
+  }
+
+  res <- apply_qtest_rules(
+    x,
+    list(
+      local_connectivity = "N1",
+      bandwidth = "N1",
+      n_epochs = "I1[1,)",
+      scaling_ratio = "N1(0,)",
+      gravity = "N1[0,)",
+      strong_gravity = "B1",
+      lin_log = "B1",
+      dissuade_hubs = "B1",
+      edge_weight_influence = "N1[0,)",
+      jitter_tolerance = "N1(0,)",
+      theta = "N1[0,)",
+      randomised = "B1"
+    ),
+    label = "ForceAtlas2 params"
+  )
+  if (!isTRUE(res)) {
+    return(res)
+  }
+
+  res <- apply_choice_rules(
+    x,
+    list(
+      init = c("spectral", "pca", "random")
+    ),
+    label = "ForceAtlas2 params"
+  )
+  if (!isTRUE(res)) {
+    return(res)
+  }
+
+  return(TRUE)
+}
+
+#' Assert ForceAtlas2 params
+#'
+#' @inheritParams checkFa2Params
+#' @param .var.name Name of the checked object to print in assertions.
+#' @param add Collection to store assertion messages. See
+#' [checkmate::makeAssertCollection()].
+#'
+#' @returns Invisibly returns the checked object if the assertion is
+#' successful.
+#'
+#' @keywords internal
+assertFa2Params <- checkmate::makeAssertionFunction(checkFa2Params)
+
 #' Check hierarchical cluster params
 #'
 #' @description Checkmate extension for the output of [params_hierarchical()].
