@@ -5,6 +5,7 @@
 
 pub mod diffusion_maps;
 pub mod evoc;
+pub mod fa2;
 pub mod k_means;
 pub mod metrics;
 pub mod pacmap;
@@ -24,6 +25,7 @@ use manifolds_rs::prelude::*;
 
 use crate::diffusion_maps::*;
 use crate::evoc::*;
+use crate::fa2::*;
 use crate::k_means::*;
 use crate::metrics::*;
 use crate::pacmap::*;
@@ -41,6 +43,9 @@ extendr_module! {
     // embeddings
     fn rs_umap;
     fn rs_umap_from_knn;
+    fn rs_forceatlas2;
+    fn rs_forceatlas2_from_knn;
+    fn rs_forceatlas2_from_graph;
     fn rs_tsne;
     fn rs_tsne_from_knn;
     fn rs_densmap;
@@ -320,6 +325,211 @@ fn rs_umap_from_knn(
                 umap_params,
                 seed,
                 verbose,
+            )
+            .to_extendr()?;
+
+            Ok(faer_to_r_matrix(res.as_ref()))
+        }
+    }
+}
+
+/////////////////
+// ForceAtlas2 //
+/////////////////
+
+/// ForceAtlas2 implementation
+///
+/// @description
+/// `r lifecycle::badge("experimental")`
+/// Leverages the ForceAtlas2 implementation in manifolds-rs. Builds the UMAP
+/// fuzzy union graph from the data and lays it out with ForceAtlas2.
+///
+/// @param embd Numerical matrix. The data to use to generate the embeddings.
+/// Should be of dimensions samples x features.
+/// @param k Integer. Number of nearest neighbours to consider.
+/// @param fa2_params Named list. List that contains all of the key parameters
+/// for the kNN search, graph generation and ForceAtlas2 optimisation.
+/// @param seed Integer. Seed for reproducibility.
+/// @param use_high_precision Optional logical. Controls `fp32` vs `fp64`.
+/// If `NULL` will use sensible default thresholding.
+/// @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
+/// for detailed verbosity.
+///
+/// @return The ForceAtlas2 embedding, samples x 2.
+///
+/// @export
+#[extendr]
+fn rs_forceatlas2(
+    embd: RMatrix<f64>,
+    k: usize,
+    fa2_params: List,
+    seed: usize,
+    use_high_precision: Nullable<Rbool>,
+    verbose: usize,
+) -> extendr_api::Result<RMatrix<f64>> {
+    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let precision = parse_precision(use_high_precision, embd.nrows());
+
+    match precision {
+        FloatingPointPrecision::FP32 => {
+            if verbosity.detailed_verbosity() {
+                println!("Lower precision (fp32) path chosen.")
+            }
+
+            let embd = r_matrix_to_faer_fp32(&embd);
+
+            let res = fa2_manifold(embd.as_ref(), None, k, fa2_params, seed, verbose)
+                .to_extendr()?;
+
+            Ok(faer_to_r_matrix(res.as_ref()))
+        }
+        FloatingPointPrecision::FP64 => {
+            if verbosity.detailed_verbosity() {
+                println!("Higher precision (fp64) path chosen.")
+            }
+
+            let embd = r_matrix_to_faer(&embd);
+
+            let res = fa2_manifold(embd.as_ref(), None, k, fa2_params, seed, verbose)
+                .to_extendr()?;
+
+            Ok(faer_to_r_matrix(res.as_ref()))
+        }
+    }
+}
+
+/// ForceAtlas2 implementation
+///
+/// @description
+/// `r lifecycle::badge("experimental")`
+/// Leverages the ForceAtlas2 implementation in manifolds-rs. This version uses
+/// a pre-computed kNN graph, please see [new_nearest_neighbour()].
+///
+/// @param embd Numerical matrix. The data to use to generate the embeddings.
+/// Should be of dimensions samples x features.
+/// @param knn_data `NearestNeighbours` class from R.
+/// @param k Integer. Number of nearest neighbours to consider.
+/// @param fa2_params Named list. List that contains all of the key parameters
+/// for the graph generation and ForceAtlas2 optimisation.
+/// @param seed Integer. Seed for reproducibility.
+/// @param use_high_precision Optional logical. Controls `fp32` vs `fp64`.
+/// If `NULL` will use sensible default thresholding.
+/// @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
+/// for detailed verbosity.
+///
+/// @return The ForceAtlas2 embedding, samples x 2.
+///
+/// @export
+#[extendr]
+#[allow(clippy::too_many_arguments)]
+fn rs_forceatlas2_from_knn(
+    embd: RMatrix<f64>,
+    knn_data: List,
+    k: usize,
+    fa2_params: List,
+    seed: usize,
+    use_high_precision: Nullable<Rbool>,
+    verbose: usize,
+) -> extendr_api::Result<RMatrix<f64>> {
+    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let precision = parse_precision(use_high_precision, embd.nrows());
+
+    match precision {
+        FloatingPointPrecision::FP32 => {
+            if verbosity.detailed_verbosity() {
+                println!("Lower precision (fp32) path chosen.")
+            }
+
+            let embd = r_matrix_to_faer_fp32(&embd);
+
+            let knn = nearest_neighbours_to_rust(knn_data);
+
+            let res =
+                fa2_manifold(embd.as_ref(), knn, k, fa2_params, seed, verbose).to_extendr()?;
+
+            Ok(faer_to_r_matrix(res.as_ref()))
+        }
+        FloatingPointPrecision::FP64 => {
+            if verbosity.detailed_verbosity() {
+                println!("Higher precision (fp64) path chosen.")
+            }
+
+            let embd = r_matrix_to_faer(&embd);
+
+            let knn = nearest_neighbours_to_rust(knn_data);
+
+            let res =
+                fa2_manifold(embd.as_ref(), knn, k, fa2_params, seed, verbose).to_extendr()?;
+
+            Ok(faer_to_r_matrix(res.as_ref()))
+        }
+    }
+}
+
+/// ForceAtlas2 on a pre-computed graph
+///
+/// @description
+/// `r lifecycle::badge("experimental")`
+/// Leverages the ForceAtlas2 implementation in manifolds-rs and lays out a
+/// caller-supplied undirected graph. Each edge is passed once; the Rust side
+/// adds the reverse direction.
+///
+/// @param from Integer vector. 1-based source vertex of each edge.
+/// @param to Integer vector. 1-based target vertex of each edge.
+/// @param weight Numeric vector. Weight of each edge.
+/// @param n Integer. Number of vertices.
+/// @param init Optional numerical matrix of dimensions n x 2. The initial
+/// layout. If `NULL`, a random layout is used.
+/// @param fa2_params Named list. List that contains the ForceAtlas2
+/// optimisation parameters.
+/// @param seed Integer. Seed for reproducibility.
+/// @param use_high_precision Optional logical. Controls `fp32` vs `fp64`.
+/// If `NULL` will use sensible default thresholding.
+/// @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
+/// for detailed verbosity.
+///
+/// @return The ForceAtlas2 embedding, n x 2.
+///
+/// @export
+#[extendr]
+#[allow(clippy::too_many_arguments)]
+fn rs_forceatlas2_from_graph(
+    from: &[i32],
+    to: &[i32],
+    weight: &[f64],
+    n: usize,
+    init: Nullable<RMatrix<f64>>,
+    fa2_params: List,
+    seed: usize,
+    use_high_precision: Nullable<Rbool>,
+    verbose: usize,
+) -> extendr_api::Result<RMatrix<f64>> {
+    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let precision = parse_precision(use_high_precision, n);
+
+    let init = init.into_option();
+    let init = init.as_ref().map(|m| m.data());
+
+    match precision {
+        FloatingPointPrecision::FP32 => {
+            if verbosity.detailed_verbosity() {
+                println!("Lower precision (fp32) path chosen.")
+            }
+
+            let res = fa2_graph_manifold::<f32>(
+                from, to, weight, n, init, fa2_params, seed, verbose,
+            )
+            .to_extendr()?;
+
+            Ok(faer_to_r_matrix(res.as_ref()))
+        }
+        FloatingPointPrecision::FP64 => {
+            if verbosity.detailed_verbosity() {
+                println!("Higher precision (fp64) path chosen.")
+            }
+
+            let res = fa2_graph_manifold::<f64>(
+                from, to, weight, n, init, fa2_params, seed, verbose,
             )
             .to_extendr()?;
 
