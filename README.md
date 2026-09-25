@@ -28,6 +28,7 @@ reduction techniques:
 - **PaCMAP** (Pairwise Controlled Manifold Approximation)
 - **Diffusion map** (A classical method of Manifold learning)
 - **Density-preserving versions of UMAP and tSNE**
+- **ForceAtlas2 (2FA)** (Gephi's force-directed graph layout on the kNN graph)
 
 The core algorithms are implemented purely in Rust without any kernel switching 
 for speed while providing user-friendly R interfaces. The optimisations here
