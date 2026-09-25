@@ -29,7 +29,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,6 +49,7 @@
     <li><a class="dropdown-item" href="../articles/density_preserving.html">Density-preserving embeddings</a></li>
     <li><a class="dropdown-item" href="../articles/phate.html">Using PHATE</a></li>
     <li><a class="dropdown-item" href="../articles/pacmap.html">Using PaCMAP</a></li>
+    <li><a class="dropdown-item" href="../articles/fa2.html">Using ForceAtlas2</a></li>
     <li><a class="dropdown-item" href="../articles/diffusion_map.html">Using diffusion maps</a></li>
     <li><a class="dropdown-item" href="../articles/clustering.html">Clustering methods in manifoldsR (with emphasis on EVoC)</a></li>
   </ul>
@@ -78,7 +79,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Using PHATE</h1>
 
       <p class="author">Gregor Lueg</p>
-      <p class="date">2026-09-21</p>
+      <p class="date">2026-09-25</p>
 
 
       <div class="d-none name"><code></code></div>
@@ -496,13 +497,11 @@
 <span>  <span class="op">}</span>,</span>
 <span>  times <span class="op">=</span> <span class="fl">1L</span></span>
 <span><span class="op">)</span></span>
+<span><span class="co">#&gt;     SGD-MDS may not have converged: stress changed by 5.4% in final iterations. Consider increasing n_iter or adjusting learning_rate.</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
-<span><span class="co">#&gt;            expr       min        lq      mean    median        uq       max</span></span>
-<span><span class="co">#&gt;          phateR 13.037567 13.037567 13.037567 13.037567 13.037567 13.037567</span></span>
-<span><span class="co">#&gt;  manifold_phate  8.838545  8.838545  8.838545  8.838545  8.838545  8.838545</span></span>
-<span><span class="co">#&gt;  neval</span></span>
-<span><span class="co">#&gt;      1</span></span>
-<span><span class="co">#&gt;      1</span></span></code></pre></div>
+<span><span class="co">#&gt;            expr      min       lq     mean   median       uq      max neval</span></span>
+<span><span class="co">#&gt;          phateR 9.821484 9.821484 9.821484 9.821484 9.821484 9.821484     1</span></span>
+<span><span class="co">#&gt;  manifold_phate 8.945871 8.945871 8.945871 8.945871 8.945871 8.945871     1</span></span></code></pre></div>
 </div>
 <p>And on a larger data set with additionally the random landmark version</p>
 <div class="cell">
@@ -543,12 +542,12 @@
 <span>  <span class="op">}</span>,</span>
 <span>  times <span class="op">=</span> <span class="fl">1L</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt;     SGD-MDS may not have converged: stress changed by 2.6% in final iterations. Consider increasing n_iter or adjusting learning_rate.</span></span>
+<span><span class="co">#&gt;     SGD-MDS may not have converged: stress changed by 3.1% in final iterations. Consider increasing n_iter or adjusting learning_rate.</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;                     expr      min       lq     mean   median       uq      max</span></span>
-<span><span class="co">#&gt;                   phateR 54.79472 54.79472 54.79472 54.79472 54.79472 54.79472</span></span>
-<span><span class="co">#&gt;  manifold_phate_spectral 31.38547 31.38547 31.38547 31.38547 31.38547 31.38547</span></span>
-<span><span class="co">#&gt;    manifold_phate_random 12.14139 12.14139 12.14139 12.14139 12.14139 12.14139</span></span>
+<span><span class="co">#&gt;                   phateR 41.51444 41.51444 41.51444 41.51444 41.51444 41.51444</span></span>
+<span><span class="co">#&gt;  manifold_phate_spectral 28.28328 28.28328 28.28328 28.28328 28.28328 28.28328</span></span>
+<span><span class="co">#&gt;    manifold_phate_random 11.68262 11.68262 11.68262 11.68262 11.68262 11.68262</span></span>
 <span><span class="co">#&gt;  neval</span></span>
 <span><span class="co">#&gt;      1</span></span>
 <span><span class="co">#&gt;      1</span></span>

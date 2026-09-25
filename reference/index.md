@@ -8,6 +8,10 @@ The core functions to generate the 2D embeddings
   : Rust-based t-SNE
 - [`umap()`](https://gregorlueg.github.io/manifoldsR/reference/umap.md)
   : Rust-based UMAP
+- [`forceatlas2()`](https://gregorlueg.github.io/manifoldsR/reference/forceatlas2.md)
+  : Rust-based ForceAtlas2
+- [`forceatlas2_from_graph()`](https://gregorlueg.github.io/manifoldsR/reference/forceatlas2_from_graph.md)
+  : Rust-based ForceAtlas2 on a pre-computed graph
 - [`densmap()`](https://gregorlueg.github.io/manifoldsR/reference/densmap.md)
   : Rust-based densMAP
 - [`densne()`](https://gregorlueg.github.io/manifoldsR/reference/densne.md)
@@ -79,6 +83,8 @@ Wrapper functions around core parameters
   : Wrapper function to generate den-SNE parameters
 - [`params_evoc()`](https://gregorlueg.github.io/manifoldsR/reference/params_evoc.md)
   : Wrapper function to generate EVoC parameters
+- [`params_fa2()`](https://gregorlueg.github.io/manifoldsR/reference/params_fa2.md)
+  : Wrapper function to generate ForceAtlas2 parameters
 - [`params_hierarchical()`](https://gregorlueg.github.io/manifoldsR/reference/params_hierarchical.md)
   : Parameters for hierarchical cluster data generation
 - [`params_kmeans()`](https://gregorlueg.github.io/manifoldsR/reference/params_kmeans.md)
@@ -138,6 +144,12 @@ Everything rusty - only use this if you know what you are doing…
   **\[experimental\]** : EVoC clustering
 - [`rs_evoc_from_knn()`](https://gregorlueg.github.io/manifoldsR/reference/rs_evoc_from_knn.md)
   **\[experimental\]** : EVoC clustering from pre-computed kNN
+- [`rs_forceatlas2()`](https://gregorlueg.github.io/manifoldsR/reference/rs_forceatlas2.md)
+  **\[experimental\]** : ForceAtlas2 implementation
+- [`rs_forceatlas2_from_graph()`](https://gregorlueg.github.io/manifoldsR/reference/rs_forceatlas2_from_graph.md)
+  **\[experimental\]** : ForceAtlas2 on a pre-computed graph
+- [`rs_forceatlas2_from_knn()`](https://gregorlueg.github.io/manifoldsR/reference/rs_forceatlas2_from_knn.md)
+  **\[experimental\]** : ForceAtlas2 implementation
 - [`rs_intertia()`](https://gregorlueg.github.io/manifoldsR/reference/rs_intertia.md)
   **\[experimental\]** : Calculates the intertia for k-means clustering
 - [`rs_k_means()`](https://gregorlueg.github.io/manifoldsR/reference/rs_k_means.md)

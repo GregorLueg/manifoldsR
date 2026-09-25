@@ -29,7 +29,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,6 +49,7 @@
     <li><a class="dropdown-item" href="../articles/density_preserving.html">Density-preserving embeddings</a></li>
     <li><a class="dropdown-item" href="../articles/phate.html">Using PHATE</a></li>
     <li><a class="dropdown-item" href="../articles/pacmap.html">Using PaCMAP</a></li>
+    <li><a class="dropdown-item" href="../articles/fa2.html">Using ForceAtlas2</a></li>
     <li><a class="dropdown-item" href="../articles/diffusion_map.html">Using diffusion maps</a></li>
     <li><a class="dropdown-item" href="../articles/clustering.html">Clustering methods in manifoldsR (with emphasis on EVoC)</a></li>
   </ul>
@@ -78,7 +79,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Density-preserving embeddings</h1>
 
       <p class="author">Gregor Lueg</p>
-      <p class="date">2026-09-21</p>
+      <p class="date">2026-09-25</p>
 
 
       <div class="d-none name"><code></code></div>
@@ -231,10 +232,10 @@
 <span>  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"UMAP"</span>, <span class="st">"densMAP"</span><span class="op">)</span>,</span>
 <span>  rho <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu">dens_cor</span><span class="op">(</span><span class="va">umap_clusters</span><span class="op">)</span>, <span class="fu">dens_cor</span><span class="op">(</span><span class="va">densmap_clusters</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt;     method   rho</span></span>
-<span><span class="co">#&gt;     &lt;char&gt; &lt;num&gt;</span></span>
-<span><span class="co">#&gt; 1:    UMAP 0.003</span></span>
-<span><span class="co">#&gt; 2: densMAP 0.920</span></span></code></pre></div>
+<span><span class="co">#&gt;     method    rho</span></span>
+<span><span class="co">#&gt;     &lt;char&gt;  &lt;num&gt;</span></span>
+<span><span class="co">#&gt; 1:    UMAP -0.006</span></span>
+<span><span class="co">#&gt; 2: densMAP  0.919</span></span></code></pre></div>
 </div>
 <p>Set <code>lambda = 0</code> and you are back to plain UMAP, which is a handy sanity check and also the cheapest way to A/B the thing:</p>
 <div class="cell">
@@ -309,8 +310,8 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt;     method   rho</span></span>
 <span><span class="co">#&gt;     &lt;char&gt; &lt;num&gt;</span></span>
-<span><span class="co">#&gt; 1:   t-SNE 0.090</span></span>
-<span><span class="co">#&gt; 2: den-SNE 0.824</span></span></code></pre></div>
+<span><span class="co">#&gt; 1:   t-SNE 0.082</span></span>
+<span><span class="co">#&gt; 2: den-SNE 0.822</span></span></code></pre></div>
 </div>
 <p>t-SNE starts from a marginally better place than UMAP, since the exaggeration schedule leaves a little size variation intact, but it is still close to nothing. den-SNE pulls well clear of it, though it does not reach densMAP. That gap is real and expected: the default <code>lambda</code> is four times smaller, and the t-SNE repulsion fights the density term harder.</p>
 <p><strong>Note:</strong> den-SNE inherits every t-SNE constraint. Two dimensions only, and if you hand it a pre-computed kNN graph the <code>k</code> has to exceed the perplexity.</p>
@@ -431,7 +432,7 @@
 <span><span class="co">#&gt;           method   rho</span></span>
 <span><span class="co">#&gt;           &lt;char&gt; &lt;num&gt;</span></span>
 <span><span class="co">#&gt; 1: densMAP (kNN) 0.922</span></span>
-<span><span class="co">#&gt; 2: den-SNE (kNN) 0.891</span></span></code></pre></div>
+<span><span class="co">#&gt; 2: den-SNE (kNN) 0.890</span></span></code></pre></div>
 </div>
 </section><section class="level2"><h3 id="tuning-lambda">Tuning lambda<a class="anchor" aria-label="anchor" href="#tuning-lambda"></a>
 </h3>
@@ -507,11 +508,11 @@
 <span><span class="va">lambda_sweep</span></span>
 <span><span class="co">#&gt;    lambda    rho separation</span></span>
 <span><span class="co">#&gt;     &lt;num&gt;  &lt;num&gt;      &lt;num&gt;</span></span>
-<span><span class="co">#&gt; 1:    0.0 -0.014      15.62</span></span>
-<span><span class="co">#&gt; 2:    0.5  0.918      28.53</span></span>
-<span><span class="co">#&gt; 3:    2.0  0.931      27.94</span></span>
-<span><span class="co">#&gt; 4:    5.0  0.944      24.46</span></span>
-<span><span class="co">#&gt; 5:   10.0  0.943      21.09</span></span></code></pre></div>
+<span><span class="co">#&gt; 1:    0.0 -0.007      17.94</span></span>
+<span><span class="co">#&gt; 2:    0.5  0.919      31.57</span></span>
+<span><span class="co">#&gt; 3:    2.0  0.929      30.78</span></span>
+<span><span class="co">#&gt; 4:    5.0  0.940      27.39</span></span>
+<span><span class="co">#&gt; 5:   10.0  0.945      23.72</span></span></code></pre></div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb21"><pre class="downlit sourceCode r">

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -25,6 +25,7 @@
     <li><a class="dropdown-item" href="../articles/density_preserving.html">Density-preserving embeddings</a></li>
     <li><a class="dropdown-item" href="../articles/phate.html">Using PHATE</a></li>
     <li><a class="dropdown-item" href="../articles/pacmap.html">Using PaCMAP</a></li>
+    <li><a class="dropdown-item" href="../articles/fa2.html">Using ForceAtlas2</a></li>
     <li><a class="dropdown-item" href="../articles/diffusion_map.html">Using diffusion maps</a></li>
     <li><a class="dropdown-item" href="../articles/clustering.html">Clustering methods in manifoldsR (with emphasis on EVoC)</a></li>
   </ul></li>
@@ -70,6 +71,20 @@
 
         </dt>
         <dd>Rust-based UMAP</dd>
+
+        <dt>
+
+          <code><a href="forceatlas2.html">forceatlas2()</a></code>
+
+        </dt>
+        <dd>Rust-based ForceAtlas2</dd>
+
+        <dt>
+
+          <code><a href="forceatlas2_from_graph.html">forceatlas2_from_graph()</a></code>
+
+        </dt>
+        <dd>Rust-based ForceAtlas2 on a pre-computed graph</dd>
 
         <dt>
 
@@ -291,6 +306,13 @@
 
         <dt>
 
+          <code><a href="params_fa2.html">params_fa2()</a></code>
+
+        </dt>
+        <dd>Wrapper function to generate ForceAtlas2 parameters</dd>
+
+        <dt>
+
           <code><a href="params_hierarchical.html">params_hierarchical()</a></code>
 
         </dt>
@@ -479,6 +501,27 @@
           <span class="badge lifecycle lifecycle-experimental">experimental</span>
         </dt>
         <dd>EVoC clustering from pre-computed kNN</dd>
+
+        <dt>
+
+          <code><a href="rs_forceatlas2.html">rs_forceatlas2()</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd>ForceAtlas2 implementation</dd>
+
+        <dt>
+
+          <code><a href="rs_forceatlas2_from_graph.html">rs_forceatlas2_from_graph()</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd>ForceAtlas2 on a pre-computed graph</dd>
+
+        <dt>
+
+          <code><a href="rs_forceatlas2_from_knn.html">rs_forceatlas2_from_knn()</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd>ForceAtlas2 implementation</dd>
 
         <dt>
 

@@ -29,7 +29,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,6 +49,7 @@
     <li><a class="dropdown-item" href="../articles/density_preserving.html">Density-preserving embeddings</a></li>
     <li><a class="dropdown-item" href="../articles/phate.html">Using PHATE</a></li>
     <li><a class="dropdown-item" href="../articles/pacmap.html">Using PaCMAP</a></li>
+    <li><a class="dropdown-item" href="../articles/fa2.html">Using ForceAtlas2</a></li>
     <li><a class="dropdown-item" href="../articles/diffusion_map.html">Using diffusion maps</a></li>
     <li><a class="dropdown-item" href="../articles/clustering.html">Clustering methods in manifoldsR (with emphasis on EVoC)</a></li>
   </ul>
@@ -78,7 +79,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Clustering methods in manifoldsR (with emphasis on EVoC)</h1>
 
       <p class="author">Gregor Lueg</p>
-      <p class="date">2026-09-21</p>
+      <p class="date">2026-09-25</p>
 
 
       <div class="d-none name"><code></code></div>
@@ -264,7 +265,7 @@
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Full k-means:\n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Full k-means:</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"  ARI:"</span>, <span class="fu"><a href="../reference/calc_ari.html">calc_ari</a></span><span class="op">(</span><span class="va">cluster_data</span><span class="op">$</span><span class="va">membership</span>, <span class="fu"><a href="../reference/membership.html">membership</a></span><span class="op">(</span><span class="va">km_full</span><span class="op">)</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   ARI: 0.7086227</span></span>
+<span><span class="co">#&gt;   ARI: 0.7085234</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"  Effective clusters:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="../reference/membership.html">membership</a></span><span class="op">(</span><span class="va">km_full</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   Effective clusters: 25</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span></span>
@@ -275,7 +276,7 @@
 <span>  <span class="op">)</span><span class="op">$</span><span class="va">mean_silhouette</span>,</span>
 <span>  <span class="st">"\n"</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt;   Silhouette: 0.4140061</span></span>
+<span><span class="co">#&gt;   Silhouette: 0.4139893</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"\nMini-batch k-means:\n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -370,9 +371,9 @@
 <span></span>
 <span><span class="va">evoc_res</span></span>
 <span><span class="co">#&gt; Evoc</span></span>
-<span><span class="co">#&gt;   layers:               3 </span></span>
+<span><span class="co">#&gt;   layers:               4 </span></span>
 <span><span class="co">#&gt;   best layer:           3 </span></span>
-<span><span class="co">#&gt;   best persistence:     2687.141 </span></span>
+<span><span class="co">#&gt;   best persistence:     2646.579 </span></span>
 <span><span class="co">#&gt;   knn:                  not stored</span></span></code></pre></div>
 </div>
 <div class="cell">
@@ -382,7 +383,7 @@
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Selected layer:"</span>, <span class="va">evoc_best</span><span class="op">$</span><span class="va">layer</span>, <span class="st">"\n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Selected layer: 3</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Persistence score:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">evoc_best</span><span class="op">$</span><span class="va">persistence</span>, <span class="fl">4</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Persistence score: 2687.141</span></span>
+<span><span class="co">#&gt; Persistence score: 2646.579</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span></span>
 <span>  <span class="st">"Clusters found:"</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">evoc_best</span><span class="op">$</span><span class="va">labels</span><span class="op">[</span><span class="va">evoc_best</span><span class="op">$</span><span class="va">labels</span> <span class="op">!=</span> <span class="op">-</span><span class="fl">1L</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>,</span>

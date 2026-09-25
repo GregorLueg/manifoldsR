@@ -1,5 +1,12 @@
 # Changelog
 
+## manifoldsR 0.3.3
+
+### Features
+
+- Wired in [ForceAtlas2](https://doi.org/10.1371/journal.pone.0098679)
+  from [manifolds-rs](https://crates.io/crates/manifolds-rs).
+
 ## manifoldsR 0.3.2
 
 ### Features

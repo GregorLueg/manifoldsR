@@ -14,6 +14,8 @@
   PHATE](https://gregorlueg.github.io/manifoldsR/articles/phate.md):
 - [Using
   PaCMAP](https://gregorlueg.github.io/manifoldsR/articles/pacmap.md):
+- [Using
+  ForceAtlas2](https://gregorlueg.github.io/manifoldsR/articles/fa2.md):
 - [Using diffusion
   maps](https://gregorlueg.github.io/manifoldsR/articles/diffusion_map.md):
 - [Clustering methods in manifoldsR (with emphasis on
