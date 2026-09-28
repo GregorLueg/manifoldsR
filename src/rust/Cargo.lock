@@ -1199,9 +1199,9 @@ dependencies = [
 
 [[package]]
 name = "manifolds-rs"
-version = "0.5.1"
+version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c4529bce43264b588da0e38d0b0a00b06dc9fe928e2552ad3844756acdc7f716"
+checksum = "da0652c81367f416f854adc728c783fa6a61fba47616d70ef3c15a929a0bf154"
 dependencies = [
  "ann-search-rs",
  "approx",
@@ -1219,7 +1219,7 @@ dependencies = [
 
 [[package]]
 name = "manifoldsr"
-version = "0.3.3"
+version = "0.3.4"
 dependencies = [
  "ann-search-rs",
  "bixverse-rs",
