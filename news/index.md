@@ -1,5 +1,11 @@
 # Changelog
 
+## manifoldsR 0.3.4
+
+### Features
+
+- Faster FFT-accelerated tSNE from latest `manifolds-rs` release.
+
 ## manifoldsR 0.3.3
 
 ### Features
