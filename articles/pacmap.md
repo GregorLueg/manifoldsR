@@ -414,8 +414,8 @@ microbenchmark::microbenchmark(
 )
 #> Unit: seconds
 #>             expr      min       lq     mean   median       uq      max neval
-#>    manifold_umap 1.084968 1.085175 1.087671 1.085382 1.089022 1.092663     3
-#>  manifold_pacmap 1.753458 1.755127 1.757387 1.756797 1.759351 1.761905     3
+#>    manifold_umap 1.381966 1.386517 1.391598 1.391068 1.396414 1.401760     3
+#>  manifold_pacmap 2.268760 2.280367 2.289308 2.291974 2.299582 2.307191     3
 ```
 
 PaCMAP is generally slower than UMAP on the same data since it processes

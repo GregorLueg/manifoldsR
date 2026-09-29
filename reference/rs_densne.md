@@ -39,8 +39,8 @@ rs_densne(
 
 - approx_type:
 
-  String. One of `c("fft", "bh")`. Which of the two approximations to
-  use.
+  String. One of `c("bh", "fft", "fft_3k")`. Which of the approximations
+  to use.
 
 - densne_params:
 

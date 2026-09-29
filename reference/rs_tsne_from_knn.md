@@ -1,9 +1,10 @@
 # tSNE implementation
 
 **\[experimental\]** Leverages the tSNE implementation in manifolds-rs -
-a very fast Rust-based implementation. You have two optimiser options:
-`"bh"` which tends to be faster on smaller datasets and `"fft"` for
-large data sets. This version uses a pre-computed kNN graph, please see
+a very fast Rust-based implementation. You have three optimiser options:
+`"bh"` which tends to be faster on smaller datasets, and `"fft"` or its
+three-kernel variant `"fft_3k"` for large data sets. This version uses a
+pre-computed kNN graph, please see
 [`new_nearest_neighbour()`](https://gregorlueg.github.io/manifoldsR/reference/new_nearest_neighbour.md).
 
 ## Usage
@@ -44,8 +45,8 @@ rs_tsne_from_knn(
 
 - approx_type:
 
-  String. One of `c("fft", "bh")`. Which of the two approximations to
-  use.
+  String. One of `c("bh", "fft", "fft_3k")`. Which of the approximations
+  to use.
 
 - tsne_params:
 

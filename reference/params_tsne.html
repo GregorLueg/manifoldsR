@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -106,7 +106,7 @@ accuracy at the cost of speed. Defaults to <code>0.5</code>.</p></dd>
 
 <dt id="arg-n-interp-points">n_interp_points<a class="anchor" aria-label="anchor" href="#arg-n-interp-points"></a></dt>
 <dd><p>Integer. Number of interpolation points per grid cell
-for FFT acceleration. Defaults to <code>3L</code>.</p></dd>
+for FFT acceleration (<code>"fft"</code> and <code>"fft_3k"</code>). Defaults to <code>3L</code>.</p></dd>
 
 
 <dt id="arg-init">init<a class="anchor" aria-label="anchor" href="#arg-init"></a></dt>
@@ -135,7 +135,7 @@ wish to use one. Can be useful on large data sets (set it to <code>2.0</code> to
 <li><p>theta - Numeric. Barnes-Hut approximation angle. Lower values increase
 accuracy at the cost of speed. Defaults to <code>0.5</code>.</p></li>
 <li><p>n_interp_points - Integer. Number of interpolation points per grid
-cell for FFT acceleration. Defaults to <code>3L</code>.</p></li>
+cell for FFT acceleration (<code>"fft"</code> and <code>"fft_3k"</code>). Defaults to <code>3L</code>.</p></li>
 <li><p>init - String. Embedding initialisation method. One of <code>c("pca", "spectral", "random")</code>. Defaults to <code>"pca"</code>.</p></li>
 <li><p>randomised - Boolean. Use randomised SVD for PCA initialisation.
 Defaults to <code>TRUE</code>.</p></li>

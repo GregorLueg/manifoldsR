@@ -12,7 +12,7 @@ tsne(
   knn = NULL,
   n_dim = 2L,
   perplexity = 20,
-  approx_type = c("bh", "fft"),
+  approx_type = c("bh", "fft", "fft_3k"),
   knn_method = c("kmknn", "balltree", "hnsw", "annoy", "nndescent", "exhaustive", "ivf"),
   nn_params = params_nn(),
   tsne_params = params_tsne(),
@@ -49,8 +49,10 @@ tsne(
 - approx_type:
 
   Character. Approximation method for computing repulsive forces. One of
-  `"bh"` for Barnes-Hut or `"fft"` for FFT-accelerated interpolation.
-  Defaults to `"bh"`.
+  `"bh"` for Barnes-Hut, `"fft"` for FFT-accelerated interpolation or
+  `"fft_3k"` for the three-kernel variant of the latter (one forward and
+  three inverse FFTs per epoch instead of four each). The FFT options
+  are only available on Unix systems. Defaults to `"bh"`.
 
 - knn_method:
 

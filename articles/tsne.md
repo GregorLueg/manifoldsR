@@ -380,6 +380,46 @@ The embeddings are qualitatively similar to the BH version, with the FFT
 version trading a small amount of precision for a significant speed gain
 on large datasets.
 
+#### Three-kernel FFT
+
+There’s a second FFT flavour, `"fft_3k"`. The original FIt-SNE scheme
+spreads four charges per point onto the grid and reconstructs `Z` and
+the repulsive forces afterwards: four forward and four inverse
+transforms per epoch. The three-kernel version puts a unit charge on the
+grid and convolves it with three kernels (`q`, `q^2 dx` and `q^2 dy`),
+which hands you `Z` and the forces directly. One forward and three
+inverse transforms per epoch. Same grid, same optimiser, same parameters
+(`n_interp_points` applies to both); only the repulsion step differs.
+Same Unix-only restriction as well. It tends to be faster than the
+original version.
+
+``` r
+
+tsne_fft_3k <- tsne(
+  data = cluster_data$data,
+  perplexity = 30,
+  approx_type = "fft_3k",
+  seed = 42L
+)
+
+tsne_fft_3k_df <- as.data.table(tsne_fft_3k) %>%
+  `colnames<-`(c("tSNE1", "tSNE2")) %>%
+  .[, cluster := as.factor(cluster_data$membership)]
+
+ggplot(
+  data = tsne_fft_3k_df,
+  mapping = aes(x = tSNE1, y = tSNE2)
+) +
+  geom_point(mapping = aes(colour = cluster), alpha = 0.5, size = 0.75) +
+  theme_bw() +
+  ggtitle("tSNE (FFT, 3-kernel) on cluster data")
+```
+
+![](tsne_files/figure-html/tsne%20-%20fft%203k-1.png)
+
+Check the benchmark further down for how the two FFT versions compare on
+your machine.
+
 **Important note:** On large data sets (and the effect grows with N) you
 may observe that the clusters do not separate into distinct islands but
 instead relax into a single, gapless disc tiled into Voronoi-like cells,
@@ -427,13 +467,13 @@ microbenchmark::microbenchmark(
 )
 #> Unit: seconds
 #>         expr      min       lq     mean   median       uq      max neval
-#>        Rtsne 9.915719 9.915719 9.915719 9.915719 9.915719 9.915719     1
-#>  manifold_bh 3.886458 3.886458 3.886458 3.886458 3.886458 3.886458     1
+#>        Rtsne 12.46485 12.46485 12.46485 12.46485 12.46485 12.46485     1
+#>  manifold_bh  3.97909  3.97909  3.97909  3.97909  3.97909  3.97909     1
 ```
 
 The impact here is massive already. Let’s see what happens with BH and
-FFT? (To note, FFT’s advantage becomes larger the bigger the data set
-due to its `O(N)` complexity.)
+both FFT versions? (To note, FFT’s advantage becomes larger the bigger
+the data set due to its near `O(N)` complexity.)
 
 ``` r
 
@@ -461,12 +501,26 @@ microbenchmark::microbenchmark(
       .verbose = FALSE
     )
   },
+  manifold_fft_3k = {
+    tsne(
+      data = benchmark_data_large$data,
+      perplexity = 30,
+      approx_type = "fft_3k",
+      seed = 42L,
+      .verbose = FALSE
+    )
+  },
   times = 1L
 )
 #> Unit: seconds
-#>          expr       min        lq      mean    median        uq       max neval
-#>   manifold_bh 114.37034 114.37034 114.37034 114.37034 114.37034 114.37034     1
-#>  manifold_fft  36.21037  36.21037  36.21037  36.21037  36.21037  36.21037     1
+#>             expr       min        lq      mean    median        uq       max
+#>      manifold_bh 101.52542 101.52542 101.52542 101.52542 101.52542 101.52542
+#>     manifold_fft  31.70548  31.70548  31.70548  31.70548  31.70548  31.70548
+#>  manifold_fft_3k  24.98998  24.98998  24.98998  24.98998  24.98998  24.98998
+#>  neval
+#>      1
+#>      1
+#>      1
 ```
 
 The speed advantage of the Rust implementation comes from a combination
