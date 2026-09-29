@@ -9,7 +9,7 @@ tsne(
   knn = NULL,
   n_dim = 2L,
   perplexity = 20,
-  approx_type = c("bh", "fft"),
+  approx_type = c("bh", "fft", "fft_3k"),
   knn_method = c("kmknn", "balltree", "hnsw", "annoy", "nndescent", "exhaustive", "ivf"),
   nn_params = params_nn(),
   tsne_params = params_tsne(),
@@ -34,8 +34,10 @@ nearest neighbours used in manifold learning. Typical values are between
 5 and 50. Defaults to \code{20.0}.}
 
 \item{approx_type}{Character. Approximation method for computing repulsive
-forces. One of \code{"bh"} for Barnes-Hut or \code{"fft"} for FFT-accelerated
-interpolation. Defaults to \code{"bh"}.}
+forces. One of \code{"bh"} for Barnes-Hut, \code{"fft"} for FFT-accelerated
+interpolation or \code{"fft_3k"} for the three-kernel variant of the latter (one
+forward and three inverse FFTs per epoch instead of four each). The FFT
+options are only available on Unix systems. Defaults to \code{"bh"}.}
 
 \item{knn_method}{Character. (Approximate) Nearest neighbour method to use.
 One of \code{"kmknn"}, \code{"hnsw"}, \code{"annoy"}, \code{"nndescent"}, \code{"balltree"}, \code{"ivf"}

@@ -63,8 +63,10 @@
 #' nearest neighbours used in manifold learning. Typical values are between
 #' 5 and 50. Defaults to `20.0`.
 #' @param approx_type Character. Approximation method for computing repulsive
-#' forces. One of `"bh"` for Barnes-Hut or `"fft"` for FFT-accelerated
-#' interpolation. Defaults to `"bh"`.
+#' forces. One of `"bh"` for Barnes-Hut, `"fft"` for FFT-accelerated
+#' interpolation or `"fft_3k"` for the three-kernel variant of the latter (one
+#' forward and three inverse FFTs per epoch instead of four each). The FFT
+#' options are only available on Unix systems. Defaults to `"bh"`.
 #' @param knn_method Character. (Approximate) Nearest neighbour method to use.
 #' One of `"kmknn"`, `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, `"ivf"`
 #' or `"exhaustive"`. Defaults to `"kmknn"`.
@@ -90,7 +92,7 @@ densne <- function(
   knn = NULL,
   n_dim = 2L,
   perplexity = 20.0,
-  approx_type = c("bh", "fft"),
+  approx_type = c("bh", "fft", "fft_3k"),
   knn_method = c(
     "kmknn",
     "balltree",
@@ -128,7 +130,7 @@ densne <- function(
   checkmate::qassert(perplexity, "N1[1,)")
   checkmate::assertChoice(
     approx_type,
-    c("bh", "fft")
+    c("bh", "fft", "fft_3k")
   )
   checkmate::assertChoice(
     knn_method,
@@ -142,7 +144,7 @@ densne <- function(
   checkmate::qassert(.verbose, c("B1", "I1[0, 2]"))
 
   # warning when on windows...
-  if (approx_type == "fft" && .Platform$OS.type != "unix") {
+  if (approx_type != "bh" && .Platform$OS.type != "unix") {
     stop(
       "The FFT approximation is not supported on non-Unix systems.",
       call. = FALSE

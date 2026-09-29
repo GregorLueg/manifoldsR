@@ -27,7 +27,7 @@ two, others are not supported.}
 
 \item{perplexity}{Numeric. The tSNE perplexity parameter.}
 
-\item{approx_type}{String. One of \code{c("fft", "bh")}. Which of the two
+\item{approx_type}{String. One of \code{c("bh", "fft", "fft_3k")}. Which of the
 approximations to use.}
 
 \item{densne_params}{Named list. List that contains all of the key

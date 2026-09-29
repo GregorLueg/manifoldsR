@@ -27,7 +27,7 @@ others are not supported.}
 
 \item{perplexity}{Numeric. The tSNE perplexity parameter.}
 
-\item{approx_type}{String. One of \code{c("fft", "bh")}. Which of the two
+\item{approx_type}{String. One of \code{c("bh", "fft", "fft_3k")}. Which of the
 approximations to use.}
 
 \item{tsne_params}{Named list. List that contains all of the key parameters
@@ -47,7 +47,8 @@ The tSNE embeddings.
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 Leverages the tSNE implementation in manifolds-rs - a very fast Rust-based
-implementation. You have two optimiser options: \code{"bh"} which tends to be
-faster on smaller datasets and \code{"fft"} for large data sets. This version
-uses a pre-computed kNN graph, please see \code{\link[=new_nearest_neighbour]{new_nearest_neighbour()}}.
+implementation. You have three optimiser options: \code{"bh"} which tends to be
+faster on smaller datasets, and \code{"fft"} or its three-kernel variant
+\code{"fft_3k"} for large data sets. This version uses a pre-computed kNN graph,
+please see \code{\link[=new_nearest_neighbour]{new_nearest_neighbour()}}.
 }

@@ -250,7 +250,10 @@ spec_tsne <- param_spec(
     n_interp_points = p_int(
       3L,
       range = "[1,)",
-      doc = "Number of interpolation points per grid cell for FFT acceleration."
+      doc = paste(
+        "Number of interpolation points per grid cell for FFT acceleration",
+        "(`\"fft\"` and `\"fft_3k\"`)."
+      )
     ),
     init = p_choice(
       "pca",
