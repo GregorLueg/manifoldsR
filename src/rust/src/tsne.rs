@@ -204,8 +204,9 @@ where
 /// * `data` - Input data matrix for t-SNE
 /// * `pre_computed_knn` - Optional pre-computed kNN to be used.
 /// * `n_dim` - Number of dimensions to reduce to (typically 2)
-/// * `approximation` - String. One of `"bh"` for the Barnes Hut approximation
-///   or `"fft"` for the Fast Fourier Transformation-accelerated one.
+/// * `approx_type` - String. One of `"bh"` for the Barnes Hut approximation,
+///   `"fft"` for the Fast Fourier Transformation-accelerated one or `"fft_3k"`
+///   for the three-kernel FFT variant.
 /// * `perplexity` - Perplexity parameter (typical: 5-50)
 /// * `tsne_params` - Named R list with all t-SNE parameters
 /// * `seed` - Random seed for reproducibility
@@ -266,8 +267,9 @@ where
 /// * `data` - Input data matrix for t-SNE
 /// * `pre_computed_knn` - Optional pre-computed kNN to be used.
 /// * `n_dim` - Number of dimensions to reduce to (typically 2)
-/// * `approximation` - String. One of `"bh"` for the Barnes Hut approximation
-///   or `"fft"` for the Fast Fourier Transformation-accelerated one.
+/// * `approx_type` - String. One of `"bh"` for the Barnes Hut approximation,
+///   `"fft"` for the Fast Fourier Transformation-accelerated one or `"fft_3k"`
+///   for the three-kernel FFT variant.
 /// * `perplexity` - Perplexity parameter (typical: 5-50)
 /// * `tsne_params` - Named R list with all t-SNE parameters
 /// * `seed` - Random seed for reproducibility
@@ -334,8 +336,9 @@ where
 /// * `data` - Input data matrix for den-SNE
 /// * `pre_computed_knn` - Optional pre-computed kNN to be used.
 /// * `n_dim` - Number of dimensions to reduce to (needs to be two)
-/// * `approx_type` - String. One of `"bh"` for the Barnes Hut approximation
-///   or `"fft"` for the Fast Fourier Transformation-accelerated one.
+/// * `approx_type` - String. One of `"bh"` for the Barnes Hut approximation,
+///   `"fft"` for the Fast Fourier Transformation-accelerated one or `"fft_3k"`
+///   for the three-kernel FFT variant.
 /// * `perplexity` - Perplexity parameter (typical: 5-50)
 /// * `densne_params` - Named R list with all t-SNE and density parameters
 /// * `seed` - Random seed for reproducibility
@@ -405,9 +408,10 @@ where
 /// * `data` - Input data matrix for den-SNE
 /// * `pre_computed_knn` - Optional pre-computed kNN to be used.
 /// * `n_dim` - Number of dimensions to reduce to (needs to be two)
-/// * `approx_type` - String. One of `"bh"` for the Barnes Hut approximation
-///   or `"fft"` for the Fast Fourier Transformation-accelerated one. The
-///   latter is not available on Windows.
+/// * `approx_type` - String. One of `"bh"` for the Barnes Hut approximation,
+///   `"fft"` for the Fast Fourier Transformation-accelerated one or `"fft_3k"`
+///   for the three-kernel FFT variant. The FFT ones are not available on
+///   Windows.
 /// * `perplexity` - Perplexity parameter (typical: 5-50)
 /// * `densne_params` - Named R list with all t-SNE and density parameters
 /// * `seed` - Random seed for reproducibility

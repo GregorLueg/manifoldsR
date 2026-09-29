@@ -168,6 +168,72 @@ if (.Platform$OS.type == "unix") {
   )
 }
 
+### fft_3k approximation -------------------------------------------------------
+
+if (.Platform$OS.type == "unix") {
+  tsne_res_fft_3k <- tsne(
+    data = cluster_data,
+    perplexity = 10,
+    approx_type = "fft_3k",
+    seed = 42L,
+    .verbose = FALSE
+  )
+
+  expect_true(
+    current = checkmate::testMatrix(
+      x = tsne_res_fft_3k,
+      mode = "numeric",
+      any.missing = FALSE,
+      ncols = 2L,
+      nrow = n_samples
+    ),
+    info = "tsne fft_3k approximation correctly returned"
+  )
+
+  tsne_res_fft_3k_tests <- check_cluster_separation(
+    embd = tsne_res_fft_3k,
+    cluster_membership = cluster_membership
+  )
+
+  expect_true(
+    current = mean(tsne_res_fft_3k_tests$within_dists) <
+      mean(tsne_res_fft_3k_tests$between_dists),
+    info = "tsne fft_3k approximation correctly separates clusters"
+  )
+
+  tsne_res_fft_3k_knn <- tsne(
+    data = cluster_data,
+    knn = exhaustive,
+    perplexity = 10,
+    approx_type = "fft_3k",
+    seed = 42L,
+    .verbose = FALSE
+  )
+
+  tsne_res_fft_3k_knn_tests <- check_cluster_separation(
+    embd = tsne_res_fft_3k_knn,
+    cluster_membership = cluster_membership
+  )
+
+  expect_true(
+    current = mean(tsne_res_fft_3k_knn_tests$within_dists) <
+      mean(tsne_res_fft_3k_knn_tests$between_dists),
+    info = "tsne fft_3k from pre-computed knn correctly separates clusters"
+  )
+
+  expect_equal(
+    current = tsne(
+      data = cluster_data,
+      perplexity = 10,
+      approx_type = "fft_3k",
+      seed = 42L,
+      .verbose = FALSE
+    ),
+    target = tsne_res_fft_3k,
+    info = "tsne fft_3k is deterministic for a fixed seed"
+  )
+}
+
 ### fft error on non-unix ------------------------------------------------------
 
 if (.Platform$OS.type != "unix") {
@@ -179,6 +245,15 @@ if (.Platform$OS.type != "unix") {
       .verbose = FALSE
     ),
     info = "tsne fft correctly errors on non-unix systems"
+  )
+  expect_error(
+    tsne(
+      data = cluster_data,
+      perplexity = 10,
+      approx_type = "fft_3k",
+      .verbose = FALSE
+    ),
+    info = "tsne fft_3k correctly errors on non-unix systems"
   )
 }
 

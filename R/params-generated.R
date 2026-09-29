@@ -985,7 +985,7 @@ params_trajectory <- function(
 #' @param theta Numeric. Barnes-Hut approximation angle. Lower values increase
 #' accuracy at the cost of speed. Defaults to `0.5`.
 #' @param n_interp_points Integer. Number of interpolation points per grid cell
-#' for FFT acceleration. Defaults to `3L`.
+#' for FFT acceleration (`"fft"` and `"fft_3k"`). Defaults to `3L`.
 #' @param init String. Embedding initialisation method. One of `c("pca",
 #' "spectral", "random")`. Defaults to `"pca"`.
 #' @param randomised Boolean. Use randomised SVD for PCA initialisation.
@@ -1008,7 +1008,7 @@ params_trajectory <- function(
 #'  \item theta - Numeric. Barnes-Hut approximation angle. Lower values increase
 #'  accuracy at the cost of speed. Defaults to `0.5`.
 #'  \item n_interp_points - Integer. Number of interpolation points per grid
-#'  cell for FFT acceleration. Defaults to `3L`.
+#'  cell for FFT acceleration (`"fft"` and `"fft_3k"`). Defaults to `3L`.
 #'  \item init - String. Embedding initialisation method. One of `c("pca",
 #'  "spectral", "random")`. Defaults to `"pca"`.
 #'  \item randomised - Boolean. Use randomised SVD for PCA initialisation.

@@ -37,7 +37,7 @@ Defaults to \code{NULL}.}
 accuracy at the cost of speed. Defaults to \code{0.5}.}
 
 \item{n_interp_points}{Integer. Number of interpolation points per grid cell
-for FFT acceleration. Defaults to \code{3L}.}
+for FFT acceleration (\code{"fft"} and \code{"fft_3k"}). Defaults to \code{3L}.}
 
 \item{init}{String. Embedding initialisation method. One of \code{c("pca", "spectral", "random")}. Defaults to \code{"pca"}.}
 
@@ -62,7 +62,7 @@ wish to use one. Can be useful on large data sets (set it to \code{2.0} to
 \item theta - Numeric. Barnes-Hut approximation angle. Lower values increase
 accuracy at the cost of speed. Defaults to \code{0.5}.
 \item n_interp_points - Integer. Number of interpolation points per grid
-cell for FFT acceleration. Defaults to \code{3L}.
+cell for FFT acceleration (\code{"fft"} and \code{"fft_3k"}). Defaults to \code{3L}.
 \item init - String. Embedding initialisation method. One of \code{c("pca", "spectral", "random")}. Defaults to \code{"pca"}.
 \item randomised - Boolean. Use randomised SVD for PCA initialisation.
 Defaults to \code{TRUE}.

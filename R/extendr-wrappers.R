@@ -138,15 +138,16 @@ rs_forceatlas2_from_graph <- function(from, to, weight, n, init, fa2_params, see
 #' @description
 #' `r lifecycle::badge("experimental")`
 #' Leverages the tSNE implementation in manifolds-rs - a very fast Rust-based
-#' implementation. You have two optimiser options: `"bh"` which tends to be
-#' faster on smaller datasets and `"fft"` for large data sets.
+#' implementation. You have three optimiser options: `"bh"` which tends to be
+#' faster on smaller datasets, and `"fft"` or its three-kernel variant
+#' `"fft_3k"` for large data sets.
 #'
 #' @param embd Numerical matrix. The data to use to generate the embeddings.
 #' Should be of dimensions samples x features.
 #' @param n_dim Integer. Number of tSNE dimensions to return. Needs to be two,
 #' others are not supported.
 #' @param perplexity Numeric. The tSNE perplexity parameter.
-#' @param approx_type String. One of `c("fft", "bh")`. Which of the two
+#' @param approx_type String. One of `c("bh", "fft", "fft_3k")`. Which of the
 #' approximations to use.
 #' @param tsne_params Named list. List that contains all of the key parameters
 #' for the tSNE generation.
@@ -166,9 +167,10 @@ rs_tsne <- function(embd, n_dim, perplexity, approx_type, tsne_params, seed, use
 #' @description
 #' `r lifecycle::badge("experimental")`
 #' Leverages the tSNE implementation in manifolds-rs - a very fast Rust-based
-#' implementation. You have two optimiser options: `"bh"` which tends to be
-#' faster on smaller datasets and `"fft"` for large data sets. This version
-#' uses a pre-computed kNN graph, please see [new_nearest_neighbour()].
+#' implementation. You have three optimiser options: `"bh"` which tends to be
+#' faster on smaller datasets, and `"fft"` or its three-kernel variant
+#' `"fft_3k"` for large data sets. This version uses a pre-computed kNN graph,
+#' please see [new_nearest_neighbour()].
 #'
 #' @param embd Numerical matrix. The data to use to generate the embeddings.
 #' Should be of dimensions samples x features.
@@ -176,7 +178,7 @@ rs_tsne <- function(embd, n_dim, perplexity, approx_type, tsne_params, seed, use
 #' @param n_dim Integer. Number of tSNE dimensions to return. Needs to be two,
 #' others are not supported.
 #' @param perplexity Numeric. The tSNE perplexity parameter.
-#' @param approx_type String. One of `c("fft", "bh")`. Which of the two
+#' @param approx_type String. One of `c("bh", "fft", "fft_3k")`. Which of the
 #' approximations to use.
 #' @param tsne_params Named list. List that contains all of the key parameters
 #' for the tSNE generation.
@@ -268,7 +270,7 @@ rs_densmap_from_knn <- function(embd, knn_data, n_dim, min_dist, spread, k, dens
 #' @param n_dim Integer. Number of den-SNE dimensions to return. Needs to be
 #' two, others are not supported.
 #' @param perplexity Numeric. The tSNE perplexity parameter.
-#' @param approx_type String. One of `c("fft", "bh")`. Which of the two
+#' @param approx_type String. One of `c("bh", "fft", "fft_3k")`. Which of the
 #' approximations to use.
 #' @param densne_params Named list. List that contains all of the key
 #' parameters for the den-SNE generation, i.e. the tSNE ones plus `lambda`,
@@ -301,7 +303,7 @@ rs_densne <- function(embd, n_dim, perplexity, approx_type, densne_params, seed,
 #' @param n_dim Integer. Number of den-SNE dimensions to return. Needs to be
 #' two, others are not supported.
 #' @param perplexity Numeric. The tSNE perplexity parameter.
-#' @param approx_type String. One of `c("fft", "bh")`. Which of the two
+#' @param approx_type String. One of `c("bh", "fft", "fft_3k")`. Which of the
 #' approximations to use.
 #' @param densne_params Named list. List that contains all of the key
 #' parameters for the den-SNE generation, i.e. the tSNE ones plus `lambda`,
