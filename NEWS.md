@@ -1,3 +1,9 @@
+# manifoldsR 0.3.5
+
+## Features
+
+- The new tSNE optimiser using the FFT 3-kernel interpolation is wired in.
+
 # manifoldsR 0.3.4
 
 ## Features

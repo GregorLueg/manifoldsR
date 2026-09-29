@@ -372,7 +372,8 @@ three-kernel version puts a unit charge on the grid and convolves it with three
 kernels (`q`, `q^2 dx` and `q^2 dy`), which hands you `Z` and the forces
 directly. One forward and three inverse transforms per epoch. Same grid, same
 optimiser, same parameters (`n_interp_points` applies to both); only the
-repulsion step differs. Same Unix-only restriction as well.
+repulsion step differs. Same Unix-only restriction as well. It tends to be 
+faster than the original version.
 
 ```{r}
 #| label: tsne - fft 3k
@@ -448,9 +449,8 @@ microbenchmark::microbenchmark(
 ```
 
 The impact here is massive already. Let's see what happens with BH and both FFT
-versions? (To
-note, FFT's advantage becomes larger the bigger the data set due to its `O(N)`
-complexity.)
+versions? (To note, FFT's advantage becomes larger the bigger the data set due 
+to its near `O(N)` complexity.)
 
 ```{r}
 #| label: benchmark - larger
