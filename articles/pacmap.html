@@ -445,10 +445,13 @@
 <span>  <span class="op">}</span>,</span>
 <span>  times <span class="op">=</span> <span class="fl">3L</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; Unit: seconds</span></span>
-<span><span class="co">#&gt;             expr      min       lq     mean   median       uq      max neval</span></span>
-<span><span class="co">#&gt;    manifold_umap 1.317685 1.321736 1.327338 1.325786 1.332164 1.338541     3</span></span>
-<span><span class="co">#&gt;  manifold_pacmap 2.223615 2.228086 2.230585 2.232556 2.234071 2.235585     3</span></span></code></pre></div>
+<span><span class="co">#&gt; Unit: milliseconds</span></span>
+<span><span class="co">#&gt;             expr       min        lq      mean    median        uq       max</span></span>
+<span><span class="co">#&gt;    manifold_umap  786.3519  788.5043  793.6064  790.6568  797.2337  803.8106</span></span>
+<span><span class="co">#&gt;  manifold_pacmap 1289.4387 1300.6151 1387.7377 1311.7914 1436.8871 1561.9828</span></span>
+<span><span class="co">#&gt;  neval</span></span>
+<span><span class="co">#&gt;      3</span></span>
+<span><span class="co">#&gt;      3</span></span></code></pre></div>
 </div>
 <p>PaCMAP is generally slower than UMAP on the same data since it processes all pairs every epoch rather than sampling. The three-phase schedule with 450 epochs (vs UMAP’s 200–500) compounds this. For most datasets up to ~50k samples this is not a concern in practice, but on very large data the difference becomes noticeable.</p>
 </section></section><script id="quarto-html-after-body" type="application/javascript">
