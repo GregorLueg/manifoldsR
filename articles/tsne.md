@@ -466,9 +466,9 @@ microbenchmark::microbenchmark(
   times = 1L
 )
 #> Unit: seconds
-#>         expr      min       lq     mean   median       uq      max neval
-#>        Rtsne 12.46485 12.46485 12.46485 12.46485 12.46485 12.46485     1
-#>  manifold_bh  3.97909  3.97909  3.97909  3.97909  3.97909  3.97909     1
+#>         expr       min        lq      mean    median        uq       max neval
+#>        Rtsne 12.563937 12.563937 12.563937 12.563937 12.563937 12.563937     1
+#>  manifold_bh  3.869523  3.869523  3.869523  3.869523  3.869523  3.869523     1
 ```
 
 The impact here is massive already. Let’s see what happens with BH and
@@ -513,14 +513,10 @@ microbenchmark::microbenchmark(
   times = 1L
 )
 #> Unit: seconds
-#>             expr       min        lq      mean    median        uq       max
-#>      manifold_bh 101.52542 101.52542 101.52542 101.52542 101.52542 101.52542
-#>     manifold_fft  31.70548  31.70548  31.70548  31.70548  31.70548  31.70548
-#>  manifold_fft_3k  24.98998  24.98998  24.98998  24.98998  24.98998  24.98998
-#>  neval
-#>      1
-#>      1
-#>      1
+#>             expr      min       lq     mean   median       uq      max neval
+#>      manifold_bh 96.32774 96.32774 96.32774 96.32774 96.32774 96.32774     1
+#>     manifold_fft 31.79127 31.79127 31.79127 31.79127 31.79127 31.79127     1
+#>  manifold_fft_3k 26.27992 26.27992 26.27992 26.27992 26.27992 26.27992     1
 ```
 
 The speed advantage of the Rust implementation comes from a combination

@@ -29,7 +29,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -79,7 +79,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Using t-SNE</h1>
 
       <p class="author">Gregor Lueg</p>
-      <p class="date">2026-09-29</p>
+      <p class="date">2026-10-01</p>
 
 
       <div class="d-none name"><code></code></div>
@@ -486,9 +486,9 @@
 <span>  times <span class="op">=</span> <span class="fl">1L</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
-<span><span class="co">#&gt;         expr      min       lq     mean   median       uq      max neval</span></span>
-<span><span class="co">#&gt;        Rtsne 12.46485 12.46485 12.46485 12.46485 12.46485 12.46485     1</span></span>
-<span><span class="co">#&gt;  manifold_bh  3.97909  3.97909  3.97909  3.97909  3.97909  3.97909     1</span></span></code></pre></div>
+<span><span class="co">#&gt;         expr       min        lq      mean    median        uq       max neval</span></span>
+<span><span class="co">#&gt;        Rtsne 12.563937 12.563937 12.563937 12.563937 12.563937 12.563937     1</span></span>
+<span><span class="co">#&gt;  manifold_bh  3.869523  3.869523  3.869523  3.869523  3.869523  3.869523     1</span></span></code></pre></div>
 </div>
 <p>The impact here is massive already. Let’s see what happens with BH and both FFT versions? (To note, FFT’s advantage becomes larger the bigger the data set due to its near <code>O(N)</code> complexity.)</p>
 <div class="cell">
@@ -529,14 +529,10 @@
 <span>  times <span class="op">=</span> <span class="fl">1L</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
-<span><span class="co">#&gt;             expr       min        lq      mean    median        uq       max</span></span>
-<span><span class="co">#&gt;      manifold_bh 101.52542 101.52542 101.52542 101.52542 101.52542 101.52542</span></span>
-<span><span class="co">#&gt;     manifold_fft  31.70548  31.70548  31.70548  31.70548  31.70548  31.70548</span></span>
-<span><span class="co">#&gt;  manifold_fft_3k  24.98998  24.98998  24.98998  24.98998  24.98998  24.98998</span></span>
-<span><span class="co">#&gt;  neval</span></span>
-<span><span class="co">#&gt;      1</span></span>
-<span><span class="co">#&gt;      1</span></span>
-<span><span class="co">#&gt;      1</span></span></code></pre></div>
+<span><span class="co">#&gt;             expr      min       lq     mean   median       uq      max neval</span></span>
+<span><span class="co">#&gt;      manifold_bh 96.32774 96.32774 96.32774 96.32774 96.32774 96.32774     1</span></span>
+<span><span class="co">#&gt;     manifold_fft 31.79127 31.79127 31.79127 31.79127 31.79127 31.79127     1</span></span>
+<span><span class="co">#&gt;  manifold_fft_3k 26.27992 26.27992 26.27992 26.27992 26.27992 26.27992     1</span></span></code></pre></div>
 </div>
 <p>The speed advantage of the Rust implementation comes from a combination of optimised memory layout, aggressive inlining, and the fact that the entire pipeline — kNN construction, probability computation, and gradient descent — runs within the Rust kernel without round-tripping through R. If you like tSNE, but thought it’s too slow… we got you.</p>
 </section></section><script id="quarto-html-after-body" type="application/javascript">

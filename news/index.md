@@ -1,5 +1,12 @@
 # Changelog
 
+## manifoldsR 0.3.6
+
+### Features
+
+- Updates to various Rust packages. `ann-search-rs` enables MacOS
+  accelerate for some of the kNN backends and faster k-means.
+
 ## manifoldsR 0.3.5
 
 ### Features
