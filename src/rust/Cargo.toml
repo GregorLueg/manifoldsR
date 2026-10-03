@@ -22,9 +22,9 @@ rayon = "1.11.0"
 rustc-hash = "2.1.2"
 rand_distr = "0.5.1"
 [target.'cfg(not(windows))'.dependencies]
-manifolds-rs = { git = "https://github.com/GregorLueg/manifolds-rs", branch = "feat-qd-tsne", features = [ "fft_tsne" ] }
+manifolds-rs = { version = "0.6.0", features = [ "fft_tsne" ] }
 [target.'cfg(windows)'.dependencies]
-manifolds-rs = { git = "https://github.com/GregorLueg/manifolds-rs", branch = "feat-qd-tsne" }
+manifolds-rs = { version = "0.6.0" }
 
 [profile.test]
 opt-level = 3
