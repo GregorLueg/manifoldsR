@@ -255,6 +255,15 @@ spec_tsne <- param_spec(
         "(`\"fft\"` and `\"fft_3k\"`)."
       )
     ),
+    max_depth = p_int(
+      7L,
+      range = "[1,)",
+      doc = paste(
+        "Maximum Barnes-Hut tree depth for the quick-and-dirty optimiser",
+        "(`\"bh_qd\"`). Smaller is faster and coarser; qdtsne recommends `7` to",
+        "`10`. No effect on the other optimisers."
+      )
+    ),
     init = p_choice(
       "pca",
       c("pca", "spectral", "random"),
