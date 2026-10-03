@@ -277,7 +277,8 @@ harder.
 
 **Note:** den-SNE inherits every t-SNE constraint. Two dimensions only,
 and if you hand it a pre-computed kNN graph the `k` has to exceed the
-perplexity.
+perplexity. It also takes the same `approx_type` options, including the
+quick-and-dirty Barnes-Hut (`"bh_qd"`) if you want it faster.
 
 ### Varying density along a manifold
 

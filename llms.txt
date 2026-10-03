@@ -23,8 +23,9 @@ dimensionality reduction techniques:
 
 - **UMAP** (Uniform Manifold Approximation and Projection with various
   optimisers which makes this fast.)
-- **t-SNE** (t-Distributed Stochastic Neighbor Embedding - Barnes-Hut
-  and FFT-accelerated Interpolation-based versions)
+- **t-SNE** (t-Distributed Stochastic Neighbor Embedding - Barnes-Hut,
+  quick-and-dirty Barnes-Hut and FFT-accelerated Interpolation-based
+  versions)
 - **PHATE** (Potential of Heat-diffusion for Affinity-based Trajectory
   Embedding)
 - **PaCMAP** (Pairwise Controlled Manifold Approximation)

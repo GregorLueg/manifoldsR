@@ -29,7 +29,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.7</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -79,7 +79,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Using t-SNE</h1>
 
       <p class="author">Gregor Lueg</p>
-      <p class="date">2026-10-01</p>
+      <p class="date">2026-10-03</p>
 
 
       <div class="d-none name"><code></code></div>
@@ -113,7 +113,7 @@
 <li>
 <strong>Better at preserving local structure in continuous manifolds.</strong> Because the loss is symmetric and driven by pairwise probabilities rather than a graph connectivity objective, t-SNE tends to tear continuous structures apart less aggressively than UMAP. That said, it is not immune to this problem, particularly at low perplexity values.</li>
 <li>
-<strong>Slower.</strong> The naive implementation is <code>O(N^2)</code>, which quickly becomes prohibitive. The Barnes-Hut approximation (<code>"bh"</code>) reduces this to <code>O(N log N)</code>, and the FFT-accelerated version (<code>"fft"</code>) further reduces it to <code>O(N)</code> — though the FFT variant is currently only supported on Unix systems due to cross-compilation constraints with FFTW.</li>
+<strong>Slower.</strong> The naive implementation is <code>O(N^2)</code>, which quickly becomes prohibitive. The Barnes-Hut approximation (<code>"bh"</code>) reduces this to <code>O(N log N)</code> (<code>"bh_qd"</code> is a faster, coarser flavour of it), and the FFT-accelerated version (<code>"fft"</code>) further reduces it to <code>O(N)</code> — though the FFT variant is currently only supported on Unix systems due to cross-compilation constraints with FFTW.</li>
 <li>
 <strong>No out-of-sample extension.</strong> Unlike UMAP, t-SNE embeddings cannot trivially be used to project new data points into the learned space. (To be fair, something that is not - yet - support in the package on the UMAP side.)</li>
 <li>
@@ -391,12 +391,42 @@
 </div>
 </div>
 </div>
+</section><section class="level2"><h3 id="quick-and-dirty-barnes-hut">Quick-and-dirty Barnes-Hut<a class="anchor" aria-label="anchor" href="#quick-and-dirty-barnes-hut"></a>
+</h3>
+<p><code>"bh_qd"</code> is the quick-and-dirty Barnes-Hut flavour from <a href="https://github.com/libscran/qdtsne" class="external-link">qdtsne</a>. Two shortcuts: the tree depth is capped at <code>max_depth</code> (see <code><a href="../reference/params_tsne.html">params_tsne()</a></code>, default <code>7L</code>), and the repulsion is computed once per leaf from its centre of mass instead of once per point. Each point then only adds its interactions with the rest of its own leaf. You lose a bit of precision in the repulsive forces, but you get a decent speed-up. On 20k points (pre-computed kNN) it ran in about a third of the plain BH time on my machine. Unlike the FFT versions, it works on all platforms. Smaller <code>max_depth</code> is faster and coarser; qdtsne recommends values between 7 and 10.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">tsne_bh_qd</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tsne.html">tsne</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">cluster_data</span><span class="op">$</span><span class="va">data</span>,</span>
+<span>  perplexity <span class="op">=</span> <span class="fl">30</span>,</span>
+<span>  approx_type <span class="op">=</span> <span class="st">"bh_qd"</span>,</span>
+<span>  seed <span class="op">=</span> <span class="fl">42L</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">tsne_bh_qd_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/as.data.table.html" class="external-link">as.data.table</a></span><span class="op">(</span><span class="va">tsne_bh_qd</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu">`colnames&lt;-`</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"tSNE1"</span>, <span class="st">"tSNE2"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="va">.</span><span class="op">[</span>, <span class="va">cluster</span> <span class="op">:=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">cluster_data</span><span class="op">$</span><span class="va">membership</span><span class="op">)</span><span class="op">]</span></span>
+<span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">tsne_bh_qd_df</span>,</span>
+<span>  mapping <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">tSNE1</span>, y <span class="op">=</span> <span class="va">tSNE2</span><span class="op">)</span></span>
+<span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>mapping <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="va">cluster</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fl">0.5</span>, size <span class="op">=</span> <span class="fl">0.75</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"tSNE (quick-and-dirty BH) on cluster data"</span><span class="op">)</span></span></code></pre></div>
+<div class="cell-output-display">
+<div>
+<figure><p><img src="tsne_files/figure-html/tsne%20-%20bh%20qd-1.png" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
 </section><section class="level2"><h3 id="fft-accelerated-t-sne">FFT-accelerated t-SNE<a class="anchor" aria-label="anchor" href="#fft-accelerated-t-sne"></a>
 </h3>
 <p>For large datasets, the Barnes-Hut approximation <code>O(N log N)</code> can still be slow. The FFT-accelerated variant reduces this to <code>O(N)</code> by interpolating the repulsive forces on a grid, making it substantially faster at scale. The constant however is higher. This version of tSNE becomes interesting in situations of ≥ 100,000 samples and more.</p>
 <p><strong>Note: the FFT variant is only available on Unix-based systems!</strong></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tsne_fft</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tsne.html">tsne</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">cluster_data</span><span class="op">$</span><span class="va">data</span>,</span>
 <span>  perplexity <span class="op">=</span> <span class="fl">30</span>,</span>
@@ -427,7 +457,7 @@
 </h4>
 <p>There’s a second FFT flavour, <code>"fft_3k"</code>. The original FIt-SNE scheme spreads four charges per point onto the grid and reconstructs <code>Z</code> and the repulsive forces afterwards: four forward and four inverse transforms per epoch. The three-kernel version puts a unit charge on the grid and convolves it with three kernels (<code>q</code>, <code>q^2 dx</code> and <code>q^2 dy</code>), which hands you <code>Z</code> and the forces directly. One forward and three inverse transforms per epoch. Same grid, same optimiser, same parameters (<code>n_interp_points</code> applies to both); only the repulsion step differs. Same Unix-only restriction as well. It tends to be faster than the original version.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tsne_fft_3k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tsne.html">tsne</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">cluster_data</span><span class="op">$</span><span class="va">data</span>,</span>
 <span>  perplexity <span class="op">=</span> <span class="fl">30</span>,</span>
@@ -459,7 +489,7 @@
 </h3>
 <p>Let’s compare the BH implementation in <code>manifoldsR</code> against <code>Rtsne</code> (the most widely used t-SNE implementation in R, itself a wrapper around the C++ BH t-SNE code). The <code>tsne</code> package (pure R, naive <code>O(N^2)</code> implementation) is just too slow to be worth comparing here…</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">benchmark_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/manifold_synthetic_data.html">manifold_synthetic_data</a></span><span class="op">(</span></span>
 <span>  type <span class="op">=</span> <span class="st">"cluster"</span>,</span>
 <span>  n_samples <span class="op">=</span> <span class="fl">5000L</span></span>
@@ -483,16 +513,26 @@
 <span>      .verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span>    <span class="op">)</span></span>
 <span>  <span class="op">}</span>,</span>
+<span>  manifold_bh_qd <span class="op">=</span> <span class="op">{</span></span>
+<span>    <span class="fu"><a href="../reference/tsne.html">tsne</a></span><span class="op">(</span></span>
+<span>      data <span class="op">=</span> <span class="va">benchmark_data</span><span class="op">$</span><span class="va">data</span>,</span>
+<span>      perplexity <span class="op">=</span> <span class="fl">30</span>,</span>
+<span>      approx_type <span class="op">=</span> <span class="st">"bh_qd"</span>,</span>
+<span>      seed <span class="op">=</span> <span class="fl">42L</span>,</span>
+<span>      .verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">}</span>,</span>
 <span>  times <span class="op">=</span> <span class="fl">1L</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
-<span><span class="co">#&gt;         expr      min       lq     mean   median       uq      max neval</span></span>
-<span><span class="co">#&gt;        Rtsne 7.239473 7.239473 7.239473 7.239473 7.239473 7.239473     1</span></span>
-<span><span class="co">#&gt;  manifold_bh 2.558720 2.558720 2.558720 2.558720 2.558720 2.558720     1</span></span></code></pre></div>
+<span><span class="co">#&gt;            expr      min       lq     mean   median       uq      max neval</span></span>
+<span><span class="co">#&gt;           Rtsne 9.659435 9.659435 9.659435 9.659435 9.659435 9.659435     1</span></span>
+<span><span class="co">#&gt;     manifold_bh 3.424730 3.424730 3.424730 3.424730 3.424730 3.424730     1</span></span>
+<span><span class="co">#&gt;  manifold_bh_qd 1.438358 1.438358 1.438358 1.438358 1.438358 1.438358     1</span></span></code></pre></div>
 </div>
-<p>The impact here is massive already. Let’s see what happens with BH and both FFT versions? (To note, FFT’s advantage becomes larger the bigger the data set due to its near <code>O(N)</code> complexity.)</p>
+<p>The impact here is massive already. Let’s see what happens with both BH and both FFT versions? (To note, FFT’s advantage becomes larger the bigger the data set due to its near <code>O(N)</code> complexity.)</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">benchmark_data_large</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/manifold_synthetic_data.html">manifold_synthetic_data</a></span><span class="op">(</span></span>
 <span>  type <span class="op">=</span> <span class="st">"cluster"</span>,</span>
 <span>  n_samples <span class="op">=</span> <span class="fl">75000L</span></span>
@@ -504,6 +544,15 @@
 <span>      data <span class="op">=</span> <span class="va">benchmark_data_large</span><span class="op">$</span><span class="va">data</span>,</span>
 <span>      perplexity <span class="op">=</span> <span class="fl">30</span>,</span>
 <span>      approx_type <span class="op">=</span> <span class="st">"bh"</span>,</span>
+<span>      seed <span class="op">=</span> <span class="fl">42L</span>,</span>
+<span>      .verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">}</span>,</span>
+<span>  manifold_bh_qd <span class="op">=</span> <span class="op">{</span></span>
+<span>    <span class="fu"><a href="../reference/tsne.html">tsne</a></span><span class="op">(</span></span>
+<span>      data <span class="op">=</span> <span class="va">benchmark_data_large</span><span class="op">$</span><span class="va">data</span>,</span>
+<span>      perplexity <span class="op">=</span> <span class="fl">30</span>,</span>
+<span>      approx_type <span class="op">=</span> <span class="st">"bh_qd"</span>,</span>
 <span>      seed <span class="op">=</span> <span class="fl">42L</span>,</span>
 <span>      .verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span>    <span class="op">)</span></span>
@@ -530,9 +579,10 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;             expr      min       lq     mean   median       uq      max neval</span></span>
-<span><span class="co">#&gt;      manifold_bh 85.55689 85.55689 85.55689 85.55689 85.55689 85.55689     1</span></span>
-<span><span class="co">#&gt;     manifold_fft 25.73626 25.73626 25.73626 25.73626 25.73626 25.73626     1</span></span>
-<span><span class="co">#&gt;  manifold_fft_3k 22.56817 22.56817 22.56817 22.56817 22.56817 22.56817     1</span></span></code></pre></div>
+<span><span class="co">#&gt;      manifold_bh 83.10493 83.10493 83.10493 83.10493 83.10493 83.10493     1</span></span>
+<span><span class="co">#&gt;   manifold_bh_qd 17.08378 17.08378 17.08378 17.08378 17.08378 17.08378     1</span></span>
+<span><span class="co">#&gt;     manifold_fft 23.21049 23.21049 23.21049 23.21049 23.21049 23.21049     1</span></span>
+<span><span class="co">#&gt;  manifold_fft_3k 19.20154 19.20154 19.20154 19.20154 19.20154 19.20154     1</span></span></code></pre></div>
 </div>
 <p>The speed advantage of the Rust implementation comes from a combination of optimised memory layout, aggressive inlining, and the fact that the entire pipeline — kNN construction, probability computation, and gradient descent — runs within the Rust kernel without round-tripping through R. If you like tSNE, but thought it’s too slow… we got you.</p>
 </section></section><script id="quarto-html-after-body" type="application/javascript">

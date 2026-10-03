@@ -45,8 +45,8 @@ rs_tsne_from_knn(
 
 - approx_type:
 
-  String. One of `c("bh", "fft", "fft_3k")`. Which of the approximations
-  to use.
+  String. One of `c("bh", "bh_qd", "fft", "fft_3k")`. Which of the
+  approximations to use.
 
 - tsne_params:
 

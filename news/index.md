@@ -1,5 +1,20 @@
 # Changelog
 
+## manifoldsR 0.3.7
+
+### Features
+
+- Quick-and-dirty Barnes-Hut t-SNE from `manifolds-rs` 0.6.0, after
+  [qdtsne](https://github.com/libscran/qdtsne). Use
+  `approx_type = "bh_qd"` in
+  [`tsne()`](https://gregorlueg.github.io/manifoldsR/reference/tsne.md)
+  and
+  [`densne()`](https://gregorlueg.github.io/manifoldsR/reference/densne.md).
+  The tree depth is capped via the new `max_depth` parameter in
+  [`params_tsne()`](https://gregorlueg.github.io/manifoldsR/reference/params_tsne.md)
+  (default `7L`). Available on all platforms.
+- `evoc-rs` bumped to 0.4.2 and `ann-search-rs` to 0.9.3.
+
 ## manifoldsR 0.3.6
 
 ### Features

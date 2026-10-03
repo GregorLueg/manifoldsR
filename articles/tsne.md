@@ -45,10 +45,10 @@ mind:
   is not immune to this problem, particularly at low perplexity values.
 - **Slower.** The naive implementation is `O(N^2)`, which quickly
   becomes prohibitive. The Barnes-Hut approximation (`"bh"`) reduces
-  this to `O(N log N)`, and the FFT-accelerated version (`"fft"`)
-  further reduces it to `O(N)` — though the FFT variant is currently
-  only supported on Unix systems due to cross-compilation constraints
-  with FFTW.
+  this to `O(N log N)` (`"bh_qd"` is a faster, coarser flavour of it),
+  and the FFT-accelerated version (`"fft"`) further reduces it to `O(N)`
+  — though the FFT variant is currently only supported on Unix systems
+  due to cross-compilation constraints with FFTW.
 - **No out-of-sample extension.** Unlike UMAP, t-SNE embeddings cannot
   trivially be used to project new data points into the learned space.
   (To be fair, something that is not - yet - support in the package on
@@ -342,6 +342,45 @@ ggplot(
 
 ![](tsne_files/figure-html/tsne%20-%20pre-computed%20kNN,%20different%20params-1.png)
 
+### Quick-and-dirty Barnes-Hut
+
+`"bh_qd"` is the quick-and-dirty Barnes-Hut flavour from
+[qdtsne](https://github.com/libscran/qdtsne). Two shortcuts: the tree
+depth is capped at `max_depth` (see
+[`params_tsne()`](https://gregorlueg.github.io/manifoldsR/reference/params_tsne.md),
+default `7L`), and the repulsion is computed once per leaf from its
+centre of mass instead of once per point. Each point then only adds its
+interactions with the rest of its own leaf. You lose a bit of precision
+in the repulsive forces, but you get a decent speed-up. On 20k points
+(pre-computed kNN) it ran in about a third of the plain BH time on my
+machine. Unlike the FFT versions, it works on all platforms. Smaller
+`max_depth` is faster and coarser; qdtsne recommends values between 7
+and 10.
+
+``` r
+
+tsne_bh_qd <- tsne(
+  data = cluster_data$data,
+  perplexity = 30,
+  approx_type = "bh_qd",
+  seed = 42L
+)
+
+tsne_bh_qd_df <- as.data.table(tsne_bh_qd) %>%
+  `colnames<-`(c("tSNE1", "tSNE2")) %>%
+  .[, cluster := as.factor(cluster_data$membership)]
+
+ggplot(
+  data = tsne_bh_qd_df,
+  mapping = aes(x = tSNE1, y = tSNE2)
+) +
+  geom_point(mapping = aes(colour = cluster), alpha = 0.5, size = 0.75) +
+  theme_bw() +
+  ggtitle("tSNE (quick-and-dirty BH) on cluster data")
+```
+
+![](tsne_files/figure-html/tsne%20-%20bh%20qd-1.png)
+
 ### FFT-accelerated t-SNE
 
 For large datasets, the Barnes-Hut approximation `O(N log N)` can still
@@ -463,17 +502,27 @@ microbenchmark::microbenchmark(
       .verbose = FALSE
     )
   },
+  manifold_bh_qd = {
+    tsne(
+      data = benchmark_data$data,
+      perplexity = 30,
+      approx_type = "bh_qd",
+      seed = 42L,
+      .verbose = FALSE
+    )
+  },
   times = 1L
 )
 #> Unit: seconds
-#>         expr      min       lq     mean   median       uq      max neval
-#>        Rtsne 7.239473 7.239473 7.239473 7.239473 7.239473 7.239473     1
-#>  manifold_bh 2.558720 2.558720 2.558720 2.558720 2.558720 2.558720     1
+#>            expr      min       lq     mean   median       uq      max neval
+#>           Rtsne 9.659435 9.659435 9.659435 9.659435 9.659435 9.659435     1
+#>     manifold_bh 3.424730 3.424730 3.424730 3.424730 3.424730 3.424730     1
+#>  manifold_bh_qd 1.438358 1.438358 1.438358 1.438358 1.438358 1.438358     1
 ```
 
-The impact here is massive already. Let’s see what happens with BH and
-both FFT versions? (To note, FFT’s advantage becomes larger the bigger
-the data set due to its near `O(N)` complexity.)
+The impact here is massive already. Let’s see what happens with both BH
+and both FFT versions? (To note, FFT’s advantage becomes larger the
+bigger the data set due to its near `O(N)` complexity.)
 
 ``` r
 
@@ -488,6 +537,15 @@ microbenchmark::microbenchmark(
       data = benchmark_data_large$data,
       perplexity = 30,
       approx_type = "bh",
+      seed = 42L,
+      .verbose = FALSE
+    )
+  },
+  manifold_bh_qd = {
+    tsne(
+      data = benchmark_data_large$data,
+      perplexity = 30,
+      approx_type = "bh_qd",
       seed = 42L,
       .verbose = FALSE
     )
@@ -514,9 +572,10 @@ microbenchmark::microbenchmark(
 )
 #> Unit: seconds
 #>             expr      min       lq     mean   median       uq      max neval
-#>      manifold_bh 85.55689 85.55689 85.55689 85.55689 85.55689 85.55689     1
-#>     manifold_fft 25.73626 25.73626 25.73626 25.73626 25.73626 25.73626     1
-#>  manifold_fft_3k 22.56817 22.56817 22.56817 22.56817 22.56817 22.56817     1
+#>      manifold_bh 83.10493 83.10493 83.10493 83.10493 83.10493 83.10493     1
+#>   manifold_bh_qd 17.08378 17.08378 17.08378 17.08378 17.08378 17.08378     1
+#>     manifold_fft 23.21049 23.21049 23.21049 23.21049 23.21049 23.21049     1
+#>  manifold_fft_3k 19.20154 19.20154 19.20154 19.20154 19.20154 19.20154     1
 ```
 
 The speed advantage of the Rust implementation comes from a combination

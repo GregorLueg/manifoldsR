@@ -11,7 +11,7 @@ before calling the Rust implementation."><meta property="og:image" content="http
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.7</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,7 +67,7 @@ before calling the Rust implementation.</p>
 <span>  knn <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  n_dim <span class="op">=</span> <span class="fl">2L</span>,</span>
 <span>  perplexity <span class="op">=</span> <span class="fl">20</span>,</span>
-<span>  approx_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"bh"</span>, <span class="st">"fft"</span>, <span class="st">"fft_3k"</span><span class="op">)</span>,</span>
+<span>  approx_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"bh"</span>, <span class="st">"bh_qd"</span>, <span class="st">"fft"</span>, <span class="st">"fft_3k"</span><span class="op">)</span>,</span>
 <span>  knn_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"kmknn"</span>, <span class="st">"balltree"</span>, <span class="st">"hnsw"</span>, <span class="st">"annoy"</span>, <span class="st">"nndescent"</span>, <span class="st">"exhaustive"</span>, <span class="st">"ivf"</span><span class="op">)</span>,</span>
 <span>  nn_params <span class="op">=</span> <span class="fu"><a href="params_nn.html">params_nn</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  tsne_params <span class="op">=</span> <span class="fu"><a href="params_tsne.html">params_tsne</a></span><span class="op">(</span><span class="op">)</span>,</span>
@@ -105,7 +105,9 @@ nearest neighbours used in manifold learning. Typical values are between
 
 <dt id="arg-approx-type">approx_type<a class="anchor" aria-label="anchor" href="#arg-approx-type"></a></dt>
 <dd><p>Character. Approximation method for computing repulsive
-forces. One of <code>"bh"</code> for Barnes-Hut, <code>"fft"</code> for FFT-accelerated
+forces. One of <code>"bh"</code> for Barnes-Hut, <code>"bh_qd"</code> for the quick-and-dirty
+Barnes-Hut of qdtsne (tree depth capped at <code>max_depth</code> in <code><a href="params_tsne.html">params_tsne()</a></code>,
+repulsion computed once per leaf), <code>"fft"</code> for FFT-accelerated
 interpolation or <code>"fft_3k"</code> for the three-kernel variant of the latter (one
 forward and three inverse FFTs per epoch instead of four each). The FFT
 options are only available on Unix systems. Defaults to <code>"bh"</code>.</p></dd>
