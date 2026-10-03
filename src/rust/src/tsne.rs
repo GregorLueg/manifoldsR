@@ -142,6 +142,11 @@ where
         .and_then(|v| v.as_integer())
         .unwrap_or(3) as usize;
 
+    let max_depth = optim_params
+        .get("max_depth")
+        .and_then(|v| v.as_integer())
+        .unwrap_or(7) as usize;
+
     Ok(TsneOptimParams {
         n_epochs,
         lr,
@@ -150,6 +155,7 @@ where
         late_exag_factor,
         theta,
         n_interp_points,
+        max_depth,
     })
 }
 
@@ -205,6 +211,7 @@ where
 /// * `pre_computed_knn` - Optional pre-computed kNN to be used.
 /// * `n_dim` - Number of dimensions to reduce to (typically 2)
 /// * `approx_type` - String. One of `"bh"` for the Barnes Hut approximation,
+///   `"bh_qd"` for the quick-and-dirty Barnes Hut (depth-capped tree),
 ///   `"fft"` for the Fast Fourier Transformation-accelerated one or `"fft_3k"`
 ///   for the three-kernel FFT variant.
 /// * `perplexity` - Perplexity parameter (typical: 5-50)
@@ -268,6 +275,7 @@ where
 /// * `pre_computed_knn` - Optional pre-computed kNN to be used.
 /// * `n_dim` - Number of dimensions to reduce to (typically 2)
 /// * `approx_type` - String. One of `"bh"` for the Barnes Hut approximation,
+///   `"bh_qd"` for the quick-and-dirty Barnes Hut (depth-capped tree),
 ///   `"fft"` for the Fast Fourier Transformation-accelerated one or `"fft_3k"`
 ///   for the three-kernel FFT variant.
 /// * `perplexity` - Perplexity parameter (typical: 5-50)
@@ -337,6 +345,7 @@ where
 /// * `pre_computed_knn` - Optional pre-computed kNN to be used.
 /// * `n_dim` - Number of dimensions to reduce to (needs to be two)
 /// * `approx_type` - String. One of `"bh"` for the Barnes Hut approximation,
+///   `"bh_qd"` for the quick-and-dirty Barnes Hut (depth-capped tree),
 ///   `"fft"` for the Fast Fourier Transformation-accelerated one or `"fft_3k"`
 ///   for the three-kernel FFT variant.
 /// * `perplexity` - Perplexity parameter (typical: 5-50)
@@ -409,6 +418,7 @@ where
 /// * `pre_computed_knn` - Optional pre-computed kNN to be used.
 /// * `n_dim` - Number of dimensions to reduce to (needs to be two)
 /// * `approx_type` - String. One of `"bh"` for the Barnes Hut approximation,
+///   `"bh_qd"` for the quick-and-dirty Barnes Hut (depth-capped tree),
 ///   `"fft"` for the Fast Fourier Transformation-accelerated one or `"fft_3k"`
 ///   for the three-kernel FFT variant. The FFT ones are not available on
 ///   Windows.

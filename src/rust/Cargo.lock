@@ -45,9 +45,9 @@ checksum = "4b46cbb362ab8752921c97e041f5e366ee6297bd428a31275b9fcf1e380f7299"
 
 [[package]]
 name = "ann-search-rs"
-version = "0.9.2"
+version = "0.9.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cb43c0f691cc7a50214b45a08a5f4525d16207a96453f8de23786962f687e3ac"
+checksum = "09c839711394d8f85edba831ca56166fc491d5013b8d5a293f5a3057f0eea34a"
 dependencies = [
  "document-features",
  "faer",
@@ -596,9 +596,9 @@ checksum = "877a4ace8713b0bcf2a4e7eec82529c029f1d0619886d18145fea96c3ffe5c0f"
 
 [[package]]
 name = "evoc-rs"
-version = "0.4.1"
+version = "0.4.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2c50918ed6d1271421ff06da79f7a192bb6b73afd5a59cba868dae9d3126bb71"
+checksum = "8e4ab9673d71668b9d45cae15895e486f704643a80cc3a9bb2cb24e16b57deba"
 dependencies = [
  "ann-search-rs",
  "approx",
@@ -1199,9 +1199,8 @@ dependencies = [
 
 [[package]]
 name = "manifolds-rs"
-version = "0.5.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "446901ff31c81e04a9caad336f12f231bc53778cf8eef983d9ec9d8c9cff785b"
+version = "0.6.0"
+source = "git+https://github.com/GregorLueg/manifolds-rs?branch=feat-qd-tsne#e5b0030a90242efe703081c57d03d48297f4ea15"
 dependencies = [
  "ann-search-rs",
  "approx",
@@ -1219,7 +1218,7 @@ dependencies = [
 
 [[package]]
 name = "manifoldsr"
-version = "0.3.6"
+version = "0.3.7"
 dependencies = [
  "ann-search-rs",
  "bixverse-rs",

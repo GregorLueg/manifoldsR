@@ -52,7 +52,8 @@ Compared to UMAP, t-SNE has a few notable properties worth keeping in mind:
   problem, particularly at low perplexity values.
 - **Slower.** The naive implementation is `O(N^2)`, which quickly becomes
   prohibitive. The Barnes-Hut approximation (`"bh"`) reduces this to
-  `O(N log N)`, and the FFT-accelerated version (`"fft"`) further reduces it
+  `O(N log N)` (`"bh_qd"` is a faster, coarser flavour of it), and the
+  FFT-accelerated version (`"fft"`) further reduces it
   to `O(N)` — though the FFT variant is currently only supported on Unix
   systems due to cross-compilation constraints with FFTW.
 - **No out-of-sample extension.** Unlike UMAP, t-SNE embeddings cannot
@@ -326,6 +327,40 @@ ggplot(
   ggtitle("tSNE on pre-computed kNN (version 2)")
 ```
 
+## Quick-and-dirty Barnes-Hut
+
+`"bh_qd"` is the quick-and-dirty Barnes-Hut flavour from
+[qdtsne](https://github.com/libscran/qdtsne). Two shortcuts: the tree depth is
+capped at `max_depth` (see `params_tsne()`, default `7L`), and the repulsion is
+computed once per leaf from its centre of mass instead of once per point. Each
+point then only adds its interactions with the rest of its own leaf. You lose a
+bit of precision in the repulsive forces, but you get a decent speed-up. On 20k
+points (pre-computed kNN) it ran in about a third of the plain BH time on my
+machine. Unlike the FFT versions, it works on all platforms. Smaller
+`max_depth` is faster and coarser; qdtsne recommends values between 7 and 10.
+
+```{r}
+#| label: tsne - bh qd
+tsne_bh_qd <- tsne(
+  data = cluster_data$data,
+  perplexity = 30,
+  approx_type = "bh_qd",
+  seed = 42L
+)
+
+tsne_bh_qd_df <- as.data.table(tsne_bh_qd) %>%
+  `colnames<-`(c("tSNE1", "tSNE2")) %>%
+  .[, cluster := as.factor(cluster_data$membership)]
+
+ggplot(
+  data = tsne_bh_qd_df,
+  mapping = aes(x = tSNE1, y = tSNE2)
+) +
+  geom_point(mapping = aes(colour = cluster), alpha = 0.5, size = 0.75) +
+  theme_bw() +
+  ggtitle("tSNE (quick-and-dirty BH) on cluster data")
+```
+
 ## FFT-accelerated t-SNE
 
 For large datasets, the Barnes-Hut approximation `O(N log N)` can still be
@@ -444,11 +479,20 @@ microbenchmark::microbenchmark(
       .verbose = FALSE
     )
   },
+  manifold_bh_qd = {
+    tsne(
+      data = benchmark_data$data,
+      perplexity = 30,
+      approx_type = "bh_qd",
+      seed = 42L,
+      .verbose = FALSE
+    )
+  },
   times = 1L
 )
 ```
 
-The impact here is massive already. Let's see what happens with BH and both FFT
+The impact here is massive already. Let's see what happens with both BH and both FFT
 versions? (To note, FFT's advantage becomes larger the bigger the data set due 
 to its near `O(N)` complexity.)
 
@@ -466,6 +510,15 @@ microbenchmark::microbenchmark(
       data = benchmark_data_large$data,
       perplexity = 30,
       approx_type = "bh",
+      seed = 42L,
+      .verbose = FALSE
+    )
+  },
+  manifold_bh_qd = {
+    tsne(
+      data = benchmark_data_large$data,
+      perplexity = 30,
+      approx_type = "bh_qd",
       seed = 42L,
       .verbose = FALSE
     )

@@ -862,6 +862,7 @@ checkTsneParams <- function(x) {
       "late_exag_factor",
       "theta",
       "n_interp_points",
+      "max_depth",
       "init",
       "randomised"
     )
@@ -880,6 +881,7 @@ checkTsneParams <- function(x) {
       late_exag_factor = c("N1", "0"),
       theta = "N1[0,1]",
       n_interp_points = "I1[1,)",
+      max_depth = "I1[1,)",
       randomised = "B1"
     ),
     label = "t-SNE params"

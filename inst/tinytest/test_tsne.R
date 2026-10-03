@@ -135,6 +135,71 @@ expect_true(
   info = "tsne bh approximation correctly separates clusters"
 )
 
+### bh_qd approximation --------------------------------------------------------
+
+tsne_res_bh_qd <- tsne(
+  data = cluster_data,
+  perplexity = 10,
+  approx_type = "bh_qd",
+  seed = 42L,
+  .verbose = FALSE
+)
+
+expect_true(
+  current = checkmate::testMatrix(
+    x = tsne_res_bh_qd,
+    mode = "numeric",
+    any.missing = FALSE,
+    ncols = 2L,
+    nrow = n_samples
+  ),
+  info = "tsne bh_qd approximation correctly returned"
+)
+
+tsne_res_bh_qd_tests <- check_cluster_separation(
+  embd = tsne_res_bh_qd,
+  cluster_membership = cluster_membership
+)
+
+expect_true(
+  current = mean(tsne_res_bh_qd_tests$within_dists) <
+    mean(tsne_res_bh_qd_tests$between_dists),
+  info = "tsne bh_qd approximation correctly separates clusters"
+)
+
+tsne_res_bh_qd_knn <- tsne(
+  data = cluster_data,
+  knn = exhaustive,
+  perplexity = 10,
+  approx_type = "bh_qd",
+  tsne_params = params_tsne(max_depth = 5L),
+  seed = 42L,
+  .verbose = FALSE
+)
+
+tsne_res_bh_qd_knn_tests <- check_cluster_separation(
+  embd = tsne_res_bh_qd_knn,
+  cluster_membership = cluster_membership
+)
+
+expect_true(
+  current = mean(tsne_res_bh_qd_knn_tests$within_dists) <
+    mean(tsne_res_bh_qd_knn_tests$between_dists),
+  info = "tsne bh_qd with max_depth = 5 from pre-computed knn separates clusters"
+)
+
+expect_equal(
+  current = tsne(
+    data = cluster_data,
+    perplexity = 10,
+    approx_type = "bh_qd",
+    seed = 42L,
+    .verbose = FALSE
+  ),
+  target = tsne_res_bh_qd,
+  info = "tsne bh_qd is deterministic for a fixed seed"
+)
+
 ### fft approximation ----------------------------------------------------------
 
 if (.Platform$OS.type == "unix") {
@@ -320,6 +385,7 @@ prep_full <- .prepare_tsne_params(
     early_exag_factor = 6.0,
     theta = 0.3,
     n_interp_points = 5L,
+    max_depth = 9L,
     init = "random",
     randomised = FALSE
   )
@@ -354,6 +420,11 @@ expect_equal(
   current = prep_full$n_interp_points,
   target = 5L,
   info = "n_interp_points override present"
+)
+expect_equal(
+  current = prep_full$max_depth,
+  target = 9L,
+  info = "max_depth override present"
 )
 expect_equal(
   current = prep_full$init,

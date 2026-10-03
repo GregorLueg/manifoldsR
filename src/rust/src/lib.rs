@@ -556,7 +556,7 @@ fn rs_forceatlas2_from_graph(
 /// @param n_dim Integer. Number of tSNE dimensions to return. Needs to be two,
 /// others are not supported.
 /// @param perplexity Numeric. The tSNE perplexity parameter.
-/// @param approx_type String. One of `c("bh", "fft", "fft_3k")`. Which of the
+/// @param approx_type String. One of `c("bh", "bh_qd", "fft", "fft_3k")`. Which of the
 /// approximations to use.
 /// @param tsne_params Named list. List that contains all of the key parameters
 /// for the tSNE generation.
@@ -645,7 +645,7 @@ fn rs_tsne(
 /// @param n_dim Integer. Number of tSNE dimensions to return. Needs to be two,
 /// others are not supported.
 /// @param perplexity Numeric. The tSNE perplexity parameter.
-/// @param approx_type String. One of `c("bh", "fft", "fft_3k")`. Which of the
+/// @param approx_type String. One of `c("bh", "bh_qd", "fft", "fft_3k")`. Which of the
 /// approximations to use.
 /// @param tsne_params Named list. List that contains all of the key parameters
 /// for the tSNE generation.
@@ -938,7 +938,7 @@ fn rs_densmap_from_knn(
 /// @param n_dim Integer. Number of den-SNE dimensions to return. Needs to be
 /// two, others are not supported.
 /// @param perplexity Numeric. The tSNE perplexity parameter.
-/// @param approx_type String. One of `c("bh", "fft", "fft_3k")`. Which of the
+/// @param approx_type String. One of `c("bh", "bh_qd", "fft", "fft_3k")`. Which of the
 /// approximations to use.
 /// @param densne_params Named list. List that contains all of the key
 /// parameters for the den-SNE generation, i.e. the tSNE ones plus `lambda`,
@@ -1030,7 +1030,7 @@ fn rs_densne(
 /// @param n_dim Integer. Number of den-SNE dimensions to return. Needs to be
 /// two, others are not supported.
 /// @param perplexity Numeric. The tSNE perplexity parameter.
-/// @param approx_type String. One of `c("bh", "fft", "fft_3k")`. Which of the
+/// @param approx_type String. One of `c("bh", "bh_qd", "fft", "fft_3k")`. Which of the
 /// approximations to use.
 /// @param densne_params Named list. List that contains all of the key
 /// parameters for the den-SNE generation, i.e. the tSNE ones plus `lambda`,

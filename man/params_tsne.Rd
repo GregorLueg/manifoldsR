@@ -12,6 +12,7 @@ params_tsne(
   late_exag_factor = NULL,
   theta = 0.5,
   n_interp_points = 3L,
+  max_depth = 7L,
   init = c("pca", "spectral", "random"),
   randomised = TRUE
 )
@@ -39,6 +40,10 @@ accuracy at the cost of speed. Defaults to \code{0.5}.}
 \item{n_interp_points}{Integer. Number of interpolation points per grid cell
 for FFT acceleration (\code{"fft"} and \code{"fft_3k"}). Defaults to \code{3L}.}
 
+\item{max_depth}{Integer. Maximum Barnes-Hut tree depth for the
+quick-and-dirty optimiser (\code{"bh_qd"}). Smaller is faster and coarser; qdtsne
+recommends \code{7} to \code{10}. No effect on the other optimisers. Defaults to \code{7L}.}
+
 \item{init}{String. Embedding initialisation method. One of \code{c("pca", "spectral", "random")}. Defaults to \code{"pca"}.}
 
 \item{randomised}{Boolean. Use randomised SVD for PCA initialisation.
@@ -63,6 +68,9 @@ wish to use one. Can be useful on large data sets (set it to \code{2.0} to
 accuracy at the cost of speed. Defaults to \code{0.5}.
 \item n_interp_points - Integer. Number of interpolation points per grid
 cell for FFT acceleration (\code{"fft"} and \code{"fft_3k"}). Defaults to \code{3L}.
+\item max_depth - Integer. Maximum Barnes-Hut tree depth for the
+quick-and-dirty optimiser (\code{"bh_qd"}). Smaller is faster and coarser; qdtsne
+recommends \code{7} to \code{10}. No effect on the other optimisers. Defaults to \code{7L}.
 \item init - String. Embedding initialisation method. One of \code{c("pca", "spectral", "random")}. Defaults to \code{"pca"}.
 \item randomised - Boolean. Use randomised SVD for PCA initialisation.
 Defaults to \code{TRUE}.

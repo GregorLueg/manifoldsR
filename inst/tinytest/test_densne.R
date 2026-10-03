@@ -205,6 +205,51 @@ expect_true(
   info = "densne bh approximation correctly separates clusters"
 )
 
+### bh_qd approximation --------------------------------------------------------
+
+densne_res_bh_qd <- densne(
+  data = cluster_data,
+  perplexity = 10,
+  approx_type = "bh_qd",
+  seed = 42L,
+  .verbose = FALSE
+)
+
+expect_true(
+  current = checkmate::testMatrix(
+    x = densne_res_bh_qd,
+    mode = "numeric",
+    any.missing = FALSE,
+    ncols = 2L,
+    nrow = n_samples
+  ),
+  info = "densne bh_qd approximation correctly returned"
+)
+
+densne_res_bh_qd_tests <- check_cluster_separation(
+  embd = densne_res_bh_qd,
+  cluster_membership = cluster_membership
+)
+
+expect_true(
+  current = mean(densne_res_bh_qd_tests$within_dists) <
+    mean(densne_res_bh_qd_tests$between_dists),
+  info = "densne bh_qd approximation correctly separates clusters"
+)
+
+densne_dens_bh_qd <- densne(
+  data = dens_data,
+  perplexity = 20,
+  approx_type = "bh_qd",
+  seed = 42L,
+  .verbose = FALSE
+)
+
+expect_true(
+  current = density_preservation(dens_data, densne_dens_bh_qd) > 0.5,
+  info = "densne bh_qd local radii correlate with the original ones"
+)
+
 ### fft approximation ----------------------------------------------------------
 
 if (.Platform$OS.type == "unix") {

@@ -24,7 +24,7 @@ others are not supported.}
 
 \item{perplexity}{Numeric. The tSNE perplexity parameter.}
 
-\item{approx_type}{String. One of \code{c("bh", "fft", "fft_3k")}. Which of the
+\item{approx_type}{String. One of \code{c("bh", "bh_qd", "fft", "fft_3k")}. Which of the
 approximations to use.}
 
 \item{tsne_params}{Named list. List that contains all of the key parameters
