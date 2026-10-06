@@ -29,7 +29,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.8</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -79,7 +79,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Using PHATE</h1>
 
       <p class="author">Gregor Lueg</p>
-      <p class="date">2026-10-03</p>
+      <p class="date">2026-10-06</p>
 
 
       <div class="d-none name"><code></code></div>
@@ -497,11 +497,13 @@
 <span>  <span class="op">}</span>,</span>
 <span>  times <span class="op">=</span> <span class="fl">1L</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt;     SGD-MDS may not have converged: stress changed by -2.3% in final iterations. Consider increasing n_iter or adjusting learning_rate.</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
-<span><span class="co">#&gt;            expr      min       lq     mean   median       uq      max neval</span></span>
-<span><span class="co">#&gt;          phateR 8.382112 8.382112 8.382112 8.382112 8.382112 8.382112     1</span></span>
-<span><span class="co">#&gt;  manifold_phate 6.709880 6.709880 6.709880 6.709880 6.709880 6.709880     1</span></span></code></pre></div>
+<span><span class="co">#&gt;            expr       min        lq      mean    median        uq       max</span></span>
+<span><span class="co">#&gt;          phateR 11.466545 11.466545 11.466545 11.466545 11.466545 11.466545</span></span>
+<span><span class="co">#&gt;  manifold_phate  8.289946  8.289946  8.289946  8.289946  8.289946  8.289946</span></span>
+<span><span class="co">#&gt;  neval</span></span>
+<span><span class="co">#&gt;      1</span></span>
+<span><span class="co">#&gt;      1</span></span></code></pre></div>
 </div>
 <p>And on a larger data set with additionally the random landmark version</p>
 <div class="cell">
@@ -542,12 +544,11 @@
 <span>  <span class="op">}</span>,</span>
 <span>  times <span class="op">=</span> <span class="fl">1L</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt;     SGD-MDS may not have converged: stress changed by -1.4% in final iterations. Consider increasing n_iter or adjusting learning_rate.</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;                     expr      min       lq     mean   median       uq      max</span></span>
-<span><span class="co">#&gt;                   phateR 37.33116 37.33116 37.33116 37.33116 37.33116 37.33116</span></span>
-<span><span class="co">#&gt;  manifold_phate_spectral 19.25204 19.25204 19.25204 19.25204 19.25204 19.25204</span></span>
-<span><span class="co">#&gt;    manifold_phate_random 10.32432 10.32432 10.32432 10.32432 10.32432 10.32432</span></span>
+<span><span class="co">#&gt;                   phateR 46.45373 46.45373 46.45373 46.45373 46.45373 46.45373</span></span>
+<span><span class="co">#&gt;  manifold_phate_spectral 22.64651 22.64651 22.64651 22.64651 22.64651 22.64651</span></span>
+<span><span class="co">#&gt;    manifold_phate_random 12.75050 12.75050 12.75050 12.75050 12.75050 12.75050</span></span>
 <span><span class="co">#&gt;  neval</span></span>
 <span><span class="co">#&gt;      1</span></span>
 <span><span class="co">#&gt;      1</span></span>
