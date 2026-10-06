@@ -1,3 +1,10 @@
+# manifoldsR 0.3.8
+
+## Features
+
+- Various version bumps in the backend for faster FFI, improved k-means 
+  clustering.
+
 # manifoldsR 0.3.7
 
 ## Features
