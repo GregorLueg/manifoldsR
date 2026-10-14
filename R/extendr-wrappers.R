@@ -321,6 +321,78 @@ rs_densne <- function(embd, n_dim, perplexity, approx_type, densne_params, seed,
 #' @export
 rs_densne_from_knn <- function(embd, knn_data, n_dim, perplexity, approx_type, densne_params, seed, use_high_precision, verbose) .Call(wrap__rs_densne_from_knn, embd, knn_data, n_dim, perplexity, approx_type, densne_params, seed, use_high_precision, verbose)
 
+#' DREAMS implementation
+#'
+#' @description
+#' `r lifecycle::badge("experimental")`
+#' Leverages the DREAMS implementation in manifolds-rs. DREAMS is tSNE with an
+#' added pull towards a global reference embedding (PCA unless one is
+#' supplied), so you keep the local structure of tSNE and most of the global
+#' layout of the reference. `lambda = 0` is plain tSNE, `lambda = 1` the
+#' reference.
+#'
+#' @param embd Numerical matrix. The data to use to generate the embeddings.
+#' Should be of dimensions samples x features.
+#' @param reference Optional numerical matrix. Global reference embedding of
+#' dimensions samples x 2. If `NULL`, the first two principal components are
+#' used.
+#' @param n_dim Integer. Number of DREAMS dimensions to return. Needs to be
+#' two, others are not supported.
+#' @param perplexity Numeric. The tSNE perplexity parameter.
+#' @param approx_type String. One of `c("bh", "bh_qd", "fft", "fft_3k")`. Which
+#' of the approximations to use.
+#' @param dreams_params Named list. List that contains all of the key
+#' parameters for the DREAMS generation, i.e. the tSNE ones plus `lambda`.
+#' @param seed Integer. Seed for reproducibility.
+#' @param use_high_precision Optional logical. Controls `fp32` vs `fp64` for.
+#' If `NULL` will use sensible default thresholding.
+#' @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
+#' for detailed verbosity.
+#'
+#' @return The DREAMS embeddings.
+#'
+#' @references Kury, Kobak & Damrich, Transactions on Machine Learning
+#' Research, 2026
+#'
+#' @export
+rs_dreams <- function(embd, reference, n_dim, perplexity, approx_type, dreams_params, seed, use_high_precision, verbose) .Call(wrap__rs_dreams, embd, reference, n_dim, perplexity, approx_type, dreams_params, seed, use_high_precision, verbose)
+
+#' DREAMS implementation
+#'
+#' @description
+#' `r lifecycle::badge("experimental")`
+#' Leverages the DREAMS implementation in manifolds-rs. DREAMS is tSNE with an
+#' added pull towards a global reference embedding (PCA unless one is
+#' supplied). This version uses a pre-computed kNN graph, please see
+#' [new_nearest_neighbour()].
+#'
+#' @param embd Numerical matrix. The data to use to generate the embeddings.
+#' Should be of dimensions samples x features.
+#' @param knn_data `NearestNeighbours` class from R.
+#' @param reference Optional numerical matrix. Global reference embedding of
+#' dimensions samples x 2. If `NULL`, the first two principal components are
+#' used.
+#' @param n_dim Integer. Number of DREAMS dimensions to return. Needs to be
+#' two, others are not supported.
+#' @param perplexity Numeric. The tSNE perplexity parameter.
+#' @param approx_type String. One of `c("bh", "bh_qd", "fft", "fft_3k")`. Which
+#' of the approximations to use.
+#' @param dreams_params Named list. List that contains all of the key
+#' parameters for the DREAMS generation, i.e. the tSNE ones plus `lambda`.
+#' @param seed Integer. Seed for reproducibility.
+#' @param use_high_precision Optional logical. Controls `fp32` vs `fp64` for.
+#' If `NULL` will use sensible default thresholding.
+#' @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
+#' for detailed verbosity.
+#'
+#' @return The DREAMS embeddings.
+#'
+#' @references Kury, Kobak & Damrich, Transactions on Machine Learning
+#' Research, 2026
+#'
+#' @export
+rs_dreams_from_knn <- function(embd, knn_data, reference, n_dim, perplexity, approx_type, dreams_params, seed, use_high_precision, verbose) .Call(wrap__rs_dreams_from_knn, embd, knn_data, reference, n_dim, perplexity, approx_type, dreams_params, seed, use_high_precision, verbose)
+
 #' Run PHATE dimensionality reduction
 #'
 #' @description

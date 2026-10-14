@@ -9,9 +9,7 @@ use bixverse_rs::prelude::IntoExtendrErr;
 use extendr_api::{List, Robj};
 use faer::{Mat, MatRef};
 use manifolds_rs::prelude::*;
-// needs to be gated because Windows...
-#[cfg(not(target_os = "windows"))]
-use manifolds_rs::utils::fft::FftwFloat;
+use manifolds_rs::utils::fft::FftFloat;
 use manifolds_rs::*;
 use rand_distr::{Distribution, StandardNormal};
 use std::collections::HashMap;
@@ -174,7 +172,7 @@ where
 /// ### Returns
 ///
 /// The assembled `TsneParams`.
-fn build_tsne_params<T>(
+pub(crate) fn build_tsne_params<T>(
     tsne_params: List,
     n_dim: usize,
     perplexity: T,
@@ -224,7 +222,6 @@ where
 ///
 /// t-SNE embeddings as matrix
 #[allow(clippy::too_many_arguments)]
-#[cfg(not(target_os = "windows"))]
 pub fn tsne_manifold<T>(
     data: MatRef<T>,
     pre_computed_knn: PreComputedKnn<T>,
@@ -236,71 +233,7 @@ pub fn tsne_manifold<T>(
     verbose: usize,
 ) -> Result<Mat<T>, extendr_api::Error>
 where
-    T: ManifoldsFloat + FftwFloat,
-    HnswIndex<T>: HnswState<T>,
-    StandardNormal: Distribution<T>,
-    NNDescent<T>: ApplySortedUpdates<T> + NNDescentQuery<T>,
-{
-    assert!(
-        n_dim == 2,
-        "At the moment, this tSNE implementation only supports n_dim = 2"
-    );
-
-    let tsne_params = build_tsne_params(tsne_params, n_dim, perplexity)?;
-
-    let res = tsne(
-        data,
-        pre_computed_knn,
-        &tsne_params,
-        approx_type,
-        seed,
-        verbose,
-    )
-    .to_extendr()?;
-
-    let ncol = res.len();
-    let nrow = res[0].len();
-
-    Ok(Mat::from_fn(nrow, ncol, |i, j| res[j][i]))
-}
-
-/// Wrapper function into the t-SNE implementation in `manifolds-rs`
-///
-/// This function wraps around the `manifolds-rs` function and exposes it to
-/// R via another function.
-///
-/// ### Params
-///
-/// * `data` - Input data matrix for t-SNE
-/// * `pre_computed_knn` - Optional pre-computed kNN to be used.
-/// * `n_dim` - Number of dimensions to reduce to (typically 2)
-/// * `approx_type` - String. One of `"bh"` for the Barnes Hut approximation,
-///   `"bh_qd"` for the quick-and-dirty Barnes Hut (depth-capped tree),
-///   `"fft"` for the Fast Fourier Transformation-accelerated one or `"fft_3k"`
-///   for the three-kernel FFT variant.
-/// * `perplexity` - Perplexity parameter (typical: 5-50)
-/// * `tsne_params` - Named R list with all t-SNE parameters
-/// * `seed` - Random seed for reproducibility
-/// * `verbose` - If `0` -> silent or `1` for normal verbosity, `2` for detailed
-///   verbosity.
-///
-/// ### Returns
-///
-/// t-SNE embeddings as matrix
-#[allow(clippy::too_many_arguments)]
-#[cfg(target_os = "windows")]
-pub fn tsne_manifold<T>(
-    data: MatRef<T>,
-    pre_computed_knn: PreComputedKnn<T>,
-    n_dim: usize,
-    approx_type: &str,
-    perplexity: T,
-    tsne_params: List,
-    seed: usize,
-    verbose: usize,
-) -> Result<Mat<T>, extendr_api::Error>
-where
-    T: ManifoldsFloat,
+    T: ManifoldsFloat + FftFloat,
     HnswIndex<T>: HnswState<T>,
     StandardNormal: Distribution<T>,
     NNDescent<T>: ApplySortedUpdates<T> + NNDescentQuery<T>,
@@ -362,7 +295,6 @@ where
 ///
 /// Narayan, Berger & Cho, Nature Biotechnology, 2021
 #[allow(clippy::too_many_arguments)]
-#[cfg(not(target_os = "windows"))]
 pub fn densne_manifold<T>(
     data: MatRef<T>,
     pre_computed_knn: PreComputedKnn<T>,
@@ -374,81 +306,7 @@ pub fn densne_manifold<T>(
     verbose: usize,
 ) -> Result<Mat<T>, extendr_api::Error>
 where
-    T: ManifoldsFloat + FftwFloat,
-    HnswIndex<T>: HnswState<T>,
-    StandardNormal: Distribution<T>,
-    NNDescent<T>: ApplySortedUpdates<T> + NNDescentQuery<T>,
-{
-    assert!(
-        n_dim == 2,
-        "At the moment, this den-SNE implementation only supports n_dim = 2"
-    );
-
-    let dens_params = get_params_dens(densne_params.clone())?;
-    let tsne_params = build_tsne_params(densne_params, n_dim, perplexity)?;
-
-    let densne_params = DensneParams::new(tsne_params, dens_params);
-
-    let res = densne(
-        data,
-        pre_computed_knn,
-        &densne_params,
-        approx_type,
-        seed,
-        verbose,
-    )
-    .to_extendr()?;
-
-    let ncol = res.len();
-    let nrow = res[0].len();
-
-    Ok(Mat::from_fn(nrow, ncol, |i, j| res[j][i]))
-}
-
-/// Wrapper function into the den-SNE implementation in `manifolds-rs`
-///
-/// den-SNE is t-SNE plus a density-preservation term, so the t-SNE
-/// configuration is assembled exactly as for `tsne_manifold` and the three
-/// density knobs are read from the same flat list. A `lambda` of `0` recovers
-/// plain t-SNE.
-///
-/// ### Params
-///
-/// * `data` - Input data matrix for den-SNE
-/// * `pre_computed_knn` - Optional pre-computed kNN to be used.
-/// * `n_dim` - Number of dimensions to reduce to (needs to be two)
-/// * `approx_type` - String. One of `"bh"` for the Barnes Hut approximation,
-///   `"bh_qd"` for the quick-and-dirty Barnes Hut (depth-capped tree),
-///   `"fft"` for the Fast Fourier Transformation-accelerated one or `"fft_3k"`
-///   for the three-kernel FFT variant. The FFT ones are not available on
-///   Windows.
-/// * `perplexity` - Perplexity parameter (typical: 5-50)
-/// * `densne_params` - Named R list with all t-SNE and density parameters
-/// * `seed` - Random seed for reproducibility
-/// * `verbose` - If `0` -> silent or `1` for normal verbosity, `2` for detailed
-///   verbosity.
-///
-/// ### Returns
-///
-/// den-SNE embeddings as matrix
-///
-/// ### References
-///
-/// Narayan, Berger & Cho, Nature Biotechnology, 2021
-#[allow(clippy::too_many_arguments)]
-#[cfg(target_os = "windows")]
-pub fn densne_manifold<T>(
-    data: MatRef<T>,
-    pre_computed_knn: PreComputedKnn<T>,
-    n_dim: usize,
-    approx_type: &str,
-    perplexity: T,
-    densne_params: List,
-    seed: usize,
-    verbose: usize,
-) -> Result<Mat<T>, extendr_api::Error>
-where
-    T: ManifoldsFloat,
+    T: ManifoldsFloat + FftFloat,
     HnswIndex<T>: HnswState<T>,
     StandardNormal: Distribution<T>,
     NNDescent<T>: ApplySortedUpdates<T> + NNDescentQuery<T>,

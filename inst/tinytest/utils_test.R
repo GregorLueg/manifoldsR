@@ -86,3 +86,18 @@ check_branch_topology <- function(embd, membership, connected_pairs) {
     preserved = mean(connected_dists) < mean(unconnected_dists)
   )
 }
+
+## global structure ------------------------------------------------------------
+
+#' Spearman correlation of the group centroid distances before and after
+#' embedding
+global_preservation <- function(data, embd, membership) {
+  centroids <- function(x) {
+    do.call(rbind, branch_centroids(x, membership))
+  }
+  stats::cor(
+    as.vector(stats::dist(centroids(data))),
+    as.vector(stats::dist(centroids(embd))),
+    method = "spearman"
+  )
+}

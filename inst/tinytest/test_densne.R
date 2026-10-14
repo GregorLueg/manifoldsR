@@ -252,114 +252,87 @@ expect_true(
 
 ### fft approximation ----------------------------------------------------------
 
-if (.Platform$OS.type == "unix") {
-  densne_res_fft <- densne(
-    data = cluster_data,
-    perplexity = 10,
-    approx_type = "fft",
-    seed = 42L,
-    .verbose = FALSE
-  )
+densne_res_fft <- densne(
+  data = cluster_data,
+  perplexity = 10,
+  approx_type = "fft",
+  seed = 42L,
+  .verbose = FALSE
+)
 
-  expect_true(
-    current = checkmate::testMatrix(
-      x = densne_res_fft,
-      mode = "numeric",
-      ncols = 2L,
-      nrow = n_samples
-    ),
-    info = "densne fft approximation correctly returned"
-  )
+expect_true(
+  current = checkmate::testMatrix(
+    x = densne_res_fft,
+    mode = "numeric",
+    ncols = 2L,
+    nrow = n_samples
+  ),
+  info = "densne fft approximation correctly returned"
+)
 
-  densne_res_fft_tests <- check_cluster_separation(
-    embd = densne_res_fft,
-    cluster_membership = cluster_membership
-  )
+densne_res_fft_tests <- check_cluster_separation(
+  embd = densne_res_fft,
+  cluster_membership = cluster_membership
+)
 
-  expect_true(
-    current = mean(densne_res_fft_tests$within_dists) <
-      mean(densne_res_fft_tests$between_dists),
-    info = "densne fft approximation correctly separates clusters"
-  )
-}
+expect_true(
+  current = mean(densne_res_fft_tests$within_dists) <
+    mean(densne_res_fft_tests$between_dists),
+  info = "densne fft approximation correctly separates clusters"
+)
 
 ### fft_3k approximation -------------------------------------------------------
 
-if (.Platform$OS.type == "unix") {
-  densne_res_fft_3k <- densne(
-    data = cluster_data,
-    perplexity = 10,
-    approx_type = "fft_3k",
-    seed = 42L,
-    .verbose = FALSE
-  )
+densne_res_fft_3k <- densne(
+  data = cluster_data,
+  perplexity = 10,
+  approx_type = "fft_3k",
+  seed = 42L,
+  .verbose = FALSE
+)
 
-  expect_true(
-    current = checkmate::testMatrix(
-      x = densne_res_fft_3k,
-      mode = "numeric",
-      any.missing = FALSE,
-      ncols = 2L,
-      nrow = n_samples
-    ),
-    info = "densne fft_3k approximation correctly returned"
-  )
+expect_true(
+  current = checkmate::testMatrix(
+    x = densne_res_fft_3k,
+    mode = "numeric",
+    any.missing = FALSE,
+    ncols = 2L,
+    nrow = n_samples
+  ),
+  info = "densne fft_3k approximation correctly returned"
+)
 
-  densne_res_fft_3k_tests <- check_cluster_separation(
-    embd = densne_res_fft_3k,
-    cluster_membership = cluster_membership
-  )
+densne_res_fft_3k_tests <- check_cluster_separation(
+  embd = densne_res_fft_3k,
+  cluster_membership = cluster_membership
+)
 
-  expect_true(
-    current = mean(densne_res_fft_3k_tests$within_dists) <
-      mean(densne_res_fft_3k_tests$between_dists),
-    info = "densne fft_3k approximation correctly separates clusters"
-  )
+expect_true(
+  current = mean(densne_res_fft_3k_tests$within_dists) <
+    mean(densne_res_fft_3k_tests$between_dists),
+  info = "densne fft_3k approximation correctly separates clusters"
+)
 
-  tsne_dens_fft_3k <- tsne(
-    data = dens_data,
-    perplexity = 20,
-    approx_type = "fft_3k",
-    seed = 42L,
-    .verbose = FALSE
-  )
-  densne_dens_fft_3k <- densne(
-    data = dens_data,
-    perplexity = 20,
-    approx_type = "fft_3k",
-    seed = 42L,
-    .verbose = FALSE
-  )
+tsne_dens_fft_3k <- tsne(
+  data = dens_data,
+  perplexity = 20,
+  approx_type = "fft_3k",
+  seed = 42L,
+  .verbose = FALSE
+)
+densne_dens_fft_3k <- densne(
+  data = dens_data,
+  perplexity = 20,
+  approx_type = "fft_3k",
+  seed = 42L,
+  .verbose = FALSE
+)
 
-  expect_true(
-    current = density_preservation(dens_data, densne_dens_fft_3k) >
-      density_preservation(dens_data, tsne_dens_fft_3k),
-    info = "densne fft_3k preserves local density better than tsne fft_3k"
-  )
-}
-
-### fft error on non-unix ------------------------------------------------------
-
-if (.Platform$OS.type != "unix") {
-  expect_error(
-    densne(
-      data = cluster_data,
-      perplexity = 10,
-      approx_type = "fft",
-      .verbose = FALSE
-    ),
-    info = "densne fft correctly errors on non-unix systems"
-  )
-  expect_error(
-    densne(
-      data = cluster_data,
-      perplexity = 10,
-      approx_type = "fft_3k",
-      .verbose = FALSE
-    ),
-    info = "densne fft_3k correctly errors on non-unix systems"
-  )
-}
+expect_true(
+  current = density_preservation(dens_data, densne_dens_fft_3k) >
+    density_preservation(dens_data, tsne_dens_fft_3k),
+  info = "densne fft_3k preserves local density better than tsne fft_3k"
+)
 
 ### parameter validation -------------------------------------------------------
 

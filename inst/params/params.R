@@ -352,6 +352,34 @@ spec_densne <- param_spec(
   )
 )
 
+# dreams -----------------------------------------------------------------------
+
+spec_dreams <- param_spec(
+  name = "dreams",
+  title = "Wrapper function to generate DREAMS parameters",
+  description = paste(
+    "The regularisation knob on top of the usual t-SNE parameters. DREAMS",
+    "pulls every t-SNE epoch towards a scaled global reference embedding (PCA",
+    "unless one is supplied). Setting `lambda` to `0` recovers plain t-SNE,",
+    "`1` the reference."
+  ),
+  checker = "Dreams",
+  label = "DREAMS params",
+  references = paste(
+    "Kury, Kobak & Damrich, Transactions on Machine Learning Research, 2026"
+  ),
+  fields = list(
+    lambda = p_dbl(
+      0.15,
+      range = "[0,1]",
+      doc = paste(
+        "Regularisation strength. Larger values pull harder towards the",
+        "reference layout. The default is the DREAMS reference value."
+      )
+    )
+  )
+)
+
 # phate ------------------------------------------------------------------------
 
 spec_phate <- param_spec(

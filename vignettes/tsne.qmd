@@ -54,8 +54,7 @@ Compared to UMAP, t-SNE has a few notable properties worth keeping in mind:
   prohibitive. The Barnes-Hut approximation (`"bh"`) reduces this to
   `O(N log N)` (`"bh_qd"` is a faster, coarser flavour of it), and the
   FFT-accelerated version (`"fft"`) further reduces it
-  to `O(N)` — though the FFT variant is currently only supported on Unix
-  systems due to cross-compilation constraints with FFTW.
+  to `O(N)`.
 - **No out-of-sample extension.** Unlike UMAP, t-SNE embeddings cannot
   trivially be used to project new data points into the learned space. (To be
   fair, something that is not - yet - support in the package on the UMAP side.)
@@ -369,11 +368,8 @@ repulsive forces on a grid, making it substantially faster at scale. The
 constant however is higher. This version of tSNE becomes interesting in
 situations of ≥ 100,000 samples and more.
 
-**Note: the FFT variant is only available on Unix-based systems!**
-
 ```{r}
 #| label: tsne - fft
-#| eval: !expr .Platform$OS.type == "unix"
 tsne_fft <- tsne(
   data = cluster_data$data,
   perplexity = 30,
@@ -407,12 +403,10 @@ three-kernel version puts a unit charge on the grid and convolves it with three
 kernels (`q`, `q^2 dx` and `q^2 dy`), which hands you `Z` and the forces
 directly. One forward and three inverse transforms per epoch. Same grid, same
 optimiser, same parameters (`n_interp_points` applies to both); only the
-repulsion step differs. Same Unix-only restriction as well. It tends to be 
-faster than the original version.
+repulsion step differs. It tends to be faster than the original version.
 
 ```{r}
 #| label: tsne - fft 3k
-#| eval: !expr .Platform$OS.type == "unix"
 tsne_fft_3k <- tsne(
   data = cluster_data$data,
   perplexity = 30,
@@ -498,7 +492,7 @@ to its near `O(N)` complexity.)
 
 ```{r}
 #| label: benchmark - larger
-#| eval: !expr requireNamespace("microbenchmark", quietly = TRUE) && .Platform$OS.type == "unix"
+#| eval: !expr requireNamespace("microbenchmark", quietly = TRUE)
 benchmark_data_large <- manifold_synthetic_data(
   type = "cluster",
   n_samples = 75000L
