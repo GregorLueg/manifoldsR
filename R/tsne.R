@@ -65,8 +65,8 @@
 #' Barnes-Hut of qdtsne (tree depth capped at `max_depth` in [params_tsne()],
 #' repulsion computed once per leaf), `"fft"` for FFT-accelerated
 #' interpolation or `"fft_3k"` for the three-kernel variant of the latter (one
-#' forward and three inverse FFTs per epoch instead of four each). The FFT
-#' options are only available on Unix systems. Defaults to `"bh"`.
+#' forward and three inverse FFTs per epoch instead of four each). Defaults to
+#' `"bh"`.
 #' @param knn_method Character. (Approximate) Nearest neighbour method to use.
 #' One of `"kmknn"`, `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, `"ivf"`
 #' or `"exhaustive"`. Defaults to `"kmknn"`.
@@ -136,14 +136,6 @@ tsne <- function(
   checkmate::qassert(seed, "I1")
   checkmate::qassert(use_high_precision, c("B1", "0"))
   checkmate::qassert(.verbose, c("B1", "I1[0, 2]"))
-
-  # warning when on windows...
-  if (approx_type %in% c("fft", "fft_3k") && .Platform$OS.type != "unix") {
-    stop(
-      "The FFT approximation is not supported on non-Unix systems.",
-      call. = FALSE
-    )
-  }
 
   final_tsne_params <- .prepare_tsne_params(
     knn_method = knn_method,

@@ -38,8 +38,8 @@ forces. One of \code{"bh"} for Barnes-Hut, \code{"bh_qd"} for the quick-and-dirt
 Barnes-Hut of qdtsne (tree depth capped at \code{max_depth} in \code{\link[=params_tsne]{params_tsne()}},
 repulsion computed once per leaf), \code{"fft"} for FFT-accelerated
 interpolation or \code{"fft_3k"} for the three-kernel variant of the latter (one
-forward and three inverse FFTs per epoch instead of four each). The FFT
-options are only available on Unix systems. Defaults to \code{"bh"}.}
+forward and three inverse FFTs per epoch instead of four each). Defaults to
+\code{"bh"}.}
 
 \item{knn_method}{Character. (Approximate) Nearest neighbour method to use.
 One of \code{"kmknn"}, \code{"hnsw"}, \code{"annoy"}, \code{"nndescent"}, \code{"balltree"}, \code{"ivf"}
