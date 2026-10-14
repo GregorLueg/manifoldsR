@@ -123,13 +123,13 @@ pca_res <- prcomp(hierarchical_data$data, rank. = 2)$x
 tsne_res <- tsne(
   data = hierarchical_data$data,
   seed = 42L,
-  .verbose = FALSE
+  .verbose = TRUE
 )
 
 dreams_res <- dreams(
   data = hierarchical_data$data,
   seed = 42L,
-  .verbose = FALSE
+  .verbose = TRUE
 )
 ```
 
@@ -266,13 +266,13 @@ phate_traj <- phate(
   data = trajectory_data$data,
   k = 15L,
   seed = 42L,
-  .verbose = FALSE
+  .verbose = TRUE
 )
 
 tsne_traj <- tsne(
   data = trajectory_data$data,
   seed = 42L,
-  .verbose = FALSE
+  .verbose = TRUE
 )
 
 dreams_traj <- dreams(

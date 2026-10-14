@@ -8,7 +8,7 @@
 \description{
 \if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
 
-Contains different methods to generate embeddings like UMAP, tSNE, PHATE, PacMap and diffusion maps. Morever, has methods to generate nearest neighbour graphs and now also some clustering algorithms that are based on embedding methods (EVoC) and more general clustering methods like k-means.
+Contains different methods to generate embeddings like UMAP, tSNE, DREAMS, PHATE, PacMap and diffusion maps. Morever, has methods to generate nearest neighbour graphs and now also some clustering algorithms that are based on embedding methods (EVoC) and more general clustering methods like k-means.
 }
 \seealso{
 Useful links:
