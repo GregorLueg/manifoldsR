@@ -28,6 +28,8 @@ reduction techniques:
 - **PaCMAP** (Pairwise Controlled Manifold Approximation)
 - **Diffusion map** (A classical method of Manifold learning)
 - **Density-preserving versions of UMAP and tSNE**
+- **DREAMS** (t-SNE regularised towards a global reference embedding, PCA by
+  default, so cluster positions keep their meaning)
 - **ForceAtlas2 (2FA)** (Gephi's force-directed graph layout on the kNN graph)
 
 The core algorithms are implemented purely in Rust without any kernel switching 
@@ -110,6 +112,8 @@ features are likely to include:
   a GPU-accelerated Adam optimiser for UMAP.
 - [x] Density-preserving versions of UMAP and tSNE, see 
   [Narayan, et al.](https://www.nature.com/articles/s41587-020-00801-7). **Included now.**
+- [x] DREAMS from [Kury, Kobak & Damrich](https://arxiv.org/abs/2508.13747),
+  t-SNE with a pull towards a global reference. **Included now.**
 
 ## License
 
