@@ -84,7 +84,8 @@ checksum = "3ded4057c258ba199e2d26386d3af3780957ecaee6c4ef4041c6b4b8b97c0b06"
 [[package]]
 name = "bixverse-rs"
 version = "0.7.0"
-source = "git+https://github.com/GregorLueg/bixverse-rs?branch=release-0.7.0#fbefe9ad4ecff84071150e948bfee2757cb752cf"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "25d52de4570e37c8aec9c3f6a9d004e605a1b8c829d8904fce391fb039dc8cf3"
 dependencies = [
  "ann-search-rs",
  "approx",
@@ -941,7 +942,8 @@ dependencies = [
 [[package]]
 name = "manifolds-rs"
 version = "0.7.0"
-source = "git+https://github.com/GregorLueg/manifolds-rs?branch=feat-dreams#1de33eff12c060afca9b11efb45c197ed7cd3a54"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2f2e7889c18977cbc60b93774c40b0ba74cc9fa5a3aa42999a49ee05c5e3a0ec"
 dependencies = [
  "ann-search-rs",
  "approx",
