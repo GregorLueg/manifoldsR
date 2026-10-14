@@ -6,6 +6,7 @@
 <url><loc>https://gregorlueg.github.io/manifoldsR/articles/clustering.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/articles/density_preserving.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/articles/diffusion_map.html</loc></url>
+<url><loc>https://gregorlueg.github.io/manifoldsR/articles/dreams.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/articles/fa2.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/articles/index.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/articles/knn_searches.html</loc></url>
@@ -22,6 +23,7 @@
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/assertClustersParams.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/assertDensParams.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/assertDiffusionMapsParams.html</loc></url>
+<url><loc>https://gregorlueg.github.io/manifoldsR/reference/assertDreamsParams.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/assertEvocParams.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/assertFa2Params.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/assertHierarchicalParams.html</loc></url>
@@ -42,6 +44,7 @@
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/checkClustersParams.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/checkDensParams.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/checkDiffusionMapsParams.html</loc></url>
+<url><loc>https://gregorlueg.github.io/manifoldsR/reference/checkDreamsParams.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/checkEvocParams.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/checkFa2Params.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/checkHierarchicalParams.html</loc></url>
@@ -62,12 +65,14 @@
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/dot-prepare_densmap_params.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/dot-prepare_densne_params.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/dot-prepare_diffusion_maps_params.html</loc></url>
+<url><loc>https://gregorlueg.github.io/manifoldsR/reference/dot-prepare_dreams_params.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/dot-prepare_evoc_params.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/dot-prepare_fa2_params.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/dot-prepare_pacmap_params.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/dot-prepare_phate_params.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/dot-prepare_tsne_params.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/dot-prepare_umap_params.html</loc></url>
+<url><loc>https://gregorlueg.github.io/manifoldsR/reference/dreams.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/evoc.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/forceatlas2.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/forceatlas2_from_graph.html</loc></url>
@@ -92,6 +97,7 @@
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/params_densmap.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/params_densne.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/params_diffusion_maps.html</loc></url>
+<url><loc>https://gregorlueg.github.io/manifoldsR/reference/params_dreams.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/params_evoc.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/params_fa2.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/params_hierarchical.html</loc></url>
@@ -123,6 +129,8 @@
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/rs_densne_from_knn.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/rs_diffusion_maps.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/rs_diffusion_maps_from_knn.html</loc></url>
+<url><loc>https://gregorlueg.github.io/manifoldsR/reference/rs_dreams.html</loc></url>
+<url><loc>https://gregorlueg.github.io/manifoldsR/reference/rs_dreams_from_knn.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/rs_evoc.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/rs_evoc_from_knn.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/rs_forceatlas2.html</loc></url>

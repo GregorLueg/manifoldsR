@@ -16,6 +16,8 @@ The core functions to generate the 2D embeddings
   : Rust-based densMAP
 - [`densne()`](https://gregorlueg.github.io/manifoldsR/reference/densne.md)
   : Rust-based den-SNE
+- [`dreams()`](https://gregorlueg.github.io/manifoldsR/reference/dreams.md)
+  : Rust-based DREAMS
 - [`phate()`](https://gregorlueg.github.io/manifoldsR/reference/phate.md)
   : Rust-based PHATE
 - [`pacmap()`](https://gregorlueg.github.io/manifoldsR/reference/pacmap.md)
@@ -95,6 +97,8 @@ Wrapper functions around core parameters
   : Wrapper function to generate PaCMAP parameters
 - [`params_diffusion_maps()`](https://gregorlueg.github.io/manifoldsR/reference/params_diffusion_maps.md)
   : Wrapper function to generate diffusion maps parameters
+- [`params_dreams()`](https://gregorlueg.github.io/manifoldsR/reference/params_dreams.md)
+  : Wrapper function to generate DREAMS parameters
 - [`params_phate()`](https://gregorlueg.github.io/manifoldsR/reference/params_phate.md)
   : Wrapper function to generate PHATE parameters
 - [`params_umap()`](https://gregorlueg.github.io/manifoldsR/reference/params_umap.md)
@@ -140,6 +144,10 @@ Everything rusty - only use this if you know what you are doing…
 - [`rs_diffusion_maps_from_knn()`](https://gregorlueg.github.io/manifoldsR/reference/rs_diffusion_maps_from_knn.md)
   **\[experimental\]** : Diffusion maps implementation with pre-computed
   kNN
+- [`rs_dreams()`](https://gregorlueg.github.io/manifoldsR/reference/rs_dreams.md)
+  **\[experimental\]** : DREAMS implementation
+- [`rs_dreams_from_knn()`](https://gregorlueg.github.io/manifoldsR/reference/rs_dreams_from_knn.md)
+  **\[experimental\]** : DREAMS implementation
 - [`rs_evoc()`](https://gregorlueg.github.io/manifoldsR/reference/rs_evoc.md)
   **\[experimental\]** : EVoC clustering
 - [`rs_evoc_from_knn()`](https://gregorlueg.github.io/manifoldsR/reference/rs_evoc_from_knn.md)

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.8</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -23,6 +23,7 @@
     <li><a class="dropdown-item" href="../articles/umap.html">Using UMAP</a></li>
     <li><a class="dropdown-item" href="../articles/tsne.html">Using t-SNE</a></li>
     <li><a class="dropdown-item" href="../articles/density_preserving.html">Density-preserving embeddings</a></li>
+    <li><a class="dropdown-item" href="../articles/dreams.html">DREAMS</a></li>
     <li><a class="dropdown-item" href="../articles/phate.html">Using PHATE</a></li>
     <li><a class="dropdown-item" href="../articles/pacmap.html">Using PaCMAP</a></li>
     <li><a class="dropdown-item" href="../articles/fa2.html">Using ForceAtlas2</a></li>
@@ -49,6 +50,15 @@
 
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.4.0" id="manifoldsr-040">manifoldsR 0.4.0<a class="anchor" aria-label="anchor" href="#manifoldsr-040"></a></h2>
+<div class="section level3">
+<h3 id="features-0-4-0">Features<a class="anchor" aria-label="anchor" href="#features-0-4-0"></a></h3>
+<ul><li>DREAMS from <a href="https://arxiv.org/abs/2508.13747" class="external-link">Kury, Kobak &amp; Damrich</a>: t-SNE with a pull towards a global reference embedding, so cluster positions keep their meaning. Use <code><a href="../reference/dreams.html">dreams()</a></code> with <code><a href="../reference/params_dreams.html">params_dreams()</a></code> (<code>lambda</code>, default <code>0.15</code>). PCA is the default reference; pass your own (e.g. a PHATE result) via <code>reference</code>. New vignette comparing it against PCA and t-SNE.</li>
+<li>The FFT t-SNE variants (<code>approx_type = "fft"</code> and <code>"fft_3k"</code>) now work on Windows too. <code>manifolds-rs</code> 0.7.0 swapped FFTW for a pure Rust FFT, so the Unix-only restriction in <code><a href="../reference/tsne.html">tsne()</a></code> and <code><a href="../reference/densne.html">densne()</a></code> is gone.</li>
+<li>Backend bumps: <code>manifolds-rs</code> 0.7.0, <code>bixverse-rs</code> 0.7.0, <code>ann-search-rs</code> 0.11.0, <code>evoc-rs</code> 0.5.0 and <code>faer</code> 0.24.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.8" id="manifoldsr-038">manifoldsR 0.3.8<a class="anchor" aria-label="anchor" href="#manifoldsr-038"></a></h2>
 <div class="section level3">

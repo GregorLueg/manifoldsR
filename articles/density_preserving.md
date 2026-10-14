@@ -265,7 +265,7 @@ data.table(
 #>     method   rho
 #>     <char> <num>
 #> 1:   t-SNE 0.082
-#> 2: den-SNE 0.822
+#> 2: den-SNE 0.825
 ```
 
 t-SNE starts from a marginally better place than UMAP, since the

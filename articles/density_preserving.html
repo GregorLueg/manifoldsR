@@ -29,7 +29,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.8</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,6 +47,7 @@
     <li><a class="dropdown-item" href="../articles/umap.html">Using UMAP</a></li>
     <li><a class="dropdown-item" href="../articles/tsne.html">Using t-SNE</a></li>
     <li><a class="dropdown-item" href="../articles/density_preserving.html">Density-preserving embeddings</a></li>
+    <li><a class="dropdown-item" href="../articles/dreams.html">DREAMS</a></li>
     <li><a class="dropdown-item" href="../articles/phate.html">Using PHATE</a></li>
     <li><a class="dropdown-item" href="../articles/pacmap.html">Using PaCMAP</a></li>
     <li><a class="dropdown-item" href="../articles/fa2.html">Using ForceAtlas2</a></li>
@@ -79,7 +80,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Density-preserving embeddings</h1>
 
       <p class="author">Gregor Lueg</p>
-      <p class="date">2026-10-06</p>
+      <p class="date">2026-10-14</p>
 
 
       <div class="d-none name"><code></code></div>
@@ -311,7 +312,7 @@
 <span><span class="co">#&gt;     method   rho</span></span>
 <span><span class="co">#&gt;     &lt;char&gt; &lt;num&gt;</span></span>
 <span><span class="co">#&gt; 1:   t-SNE 0.082</span></span>
-<span><span class="co">#&gt; 2: den-SNE 0.822</span></span></code></pre></div>
+<span><span class="co">#&gt; 2: den-SNE 0.825</span></span></code></pre></div>
 </div>
 <p>t-SNE starts from a marginally better place than UMAP, since the exaggeration schedule leaves a little size variation intact, but it is still close to nothing. den-SNE pulls well clear of it, though it does not reach densMAP. That gap is real and expected: the default <code>lambda</code> is four times smaller, and the t-SNE repulsion fights the density term harder.</p>
 <p><strong>Note:</strong> den-SNE inherits every t-SNE constraint. Two dimensions only, and if you hand it a pre-computed kNN graph the <code>k</code> has to exceed the perplexity. It also takes the same <code>approx_type</code> options, including the quick-and-dirty Barnes-Hut (<code>"bh_qd"</code>) if you want it faster.</p>

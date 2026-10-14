@@ -1,5 +1,28 @@
 # Changelog
 
+## manifoldsR 0.4.0
+
+### Features
+
+- DREAMS from [Kury, Kobak & Damrich](https://arxiv.org/abs/2508.13747):
+  t-SNE with a pull towards a global reference embedding, so cluster
+  positions keep their meaning. Use
+  [`dreams()`](https://gregorlueg.github.io/manifoldsR/reference/dreams.md)
+  with
+  [`params_dreams()`](https://gregorlueg.github.io/manifoldsR/reference/params_dreams.md)
+  (`lambda`, default `0.15`). PCA is the default reference; pass your
+  own (e.g. a PHATE result) via `reference`. New vignette comparing it
+  against PCA and t-SNE.
+- The FFT t-SNE variants (`approx_type = "fft"` and `"fft_3k"`) now work
+  on Windows too. `manifolds-rs` 0.7.0 swapped FFTW for a pure Rust FFT,
+  so the Unix-only restriction in
+  [`tsne()`](https://gregorlueg.github.io/manifoldsR/reference/tsne.md)
+  and
+  [`densne()`](https://gregorlueg.github.io/manifoldsR/reference/densne.md)
+  is gone.
+- Backend bumps: `manifolds-rs` 0.7.0, `bixverse-rs` 0.7.0,
+  `ann-search-rs` 0.11.0, `evoc-rs` 0.5.0 and `faer` 0.24.
+
 ## manifoldsR 0.3.8
 
 ### Features

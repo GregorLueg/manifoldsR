@@ -29,7 +29,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.8</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,6 +47,7 @@
     <li><a class="dropdown-item" href="../articles/umap.html">Using UMAP</a></li>
     <li><a class="dropdown-item" href="../articles/tsne.html">Using t-SNE</a></li>
     <li><a class="dropdown-item" href="../articles/density_preserving.html">Density-preserving embeddings</a></li>
+    <li><a class="dropdown-item" href="../articles/dreams.html">DREAMS</a></li>
     <li><a class="dropdown-item" href="../articles/phate.html">Using PHATE</a></li>
     <li><a class="dropdown-item" href="../articles/pacmap.html">Using PaCMAP</a></li>
     <li><a class="dropdown-item" href="../articles/fa2.html">Using ForceAtlas2</a></li>
@@ -79,7 +80,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Using t-SNE</h1>
 
       <p class="author">Gregor Lueg</p>
-      <p class="date">2026-10-06</p>
+      <p class="date">2026-10-14</p>
 
 
       <div class="d-none name"><code></code></div>
@@ -113,7 +114,7 @@
 <li>
 <strong>Better at preserving local structure in continuous manifolds.</strong> Because the loss is symmetric and driven by pairwise probabilities rather than a graph connectivity objective, t-SNE tends to tear continuous structures apart less aggressively than UMAP. That said, it is not immune to this problem, particularly at low perplexity values.</li>
 <li>
-<strong>Slower.</strong> The naive implementation is <code>O(N^2)</code>, which quickly becomes prohibitive. The Barnes-Hut approximation (<code>"bh"</code>) reduces this to <code>O(N log N)</code> (<code>"bh_qd"</code> is a faster, coarser flavour of it), and the FFT-accelerated version (<code>"fft"</code>) further reduces it to <code>O(N)</code> — though the FFT variant is currently only supported on Unix systems due to cross-compilation constraints with FFTW.</li>
+<strong>Slower.</strong> The naive implementation is <code>O(N^2)</code>, which quickly becomes prohibitive. The Barnes-Hut approximation (<code>"bh"</code>) reduces this to <code>O(N log N)</code> (<code>"bh_qd"</code> is a faster, coarser flavour of it), and the FFT-accelerated version (<code>"fft"</code>) further reduces it to <code>O(N)</code>.</li>
 <li>
 <strong>No out-of-sample extension.</strong> Unlike UMAP, t-SNE embeddings cannot trivially be used to project new data points into the learned space. (To be fair, something that is not - yet - support in the package on the UMAP side.)</li>
 <li>
@@ -424,7 +425,6 @@
 </section><section class="level2"><h3 id="fft-accelerated-t-sne">FFT-accelerated t-SNE<a class="anchor" aria-label="anchor" href="#fft-accelerated-t-sne"></a>
 </h3>
 <p>For large datasets, the Barnes-Hut approximation <code>O(N log N)</code> can still be slow. The FFT-accelerated variant reduces this to <code>O(N)</code> by interpolating the repulsive forces on a grid, making it substantially faster at scale. The constant however is higher. This version of tSNE becomes interesting in situations of ≥ 100,000 samples and more.</p>
-<p><strong>Note: the FFT variant is only available on Unix-based systems!</strong></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tsne_fft</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tsne.html">tsne</a></span><span class="op">(</span></span>
@@ -455,7 +455,7 @@
 <p>The embeddings are qualitatively similar to the BH version, with the FFT version trading a small amount of precision for a significant speed gain on large datasets.</p>
 <section class="level3"><h4 id="three-kernel-fft">Three-kernel FFT<a class="anchor" aria-label="anchor" href="#three-kernel-fft"></a>
 </h4>
-<p>There’s a second FFT flavour, <code>"fft_3k"</code>. The original FIt-SNE scheme spreads four charges per point onto the grid and reconstructs <code>Z</code> and the repulsive forces afterwards: four forward and four inverse transforms per epoch. The three-kernel version puts a unit charge on the grid and convolves it with three kernels (<code>q</code>, <code>q^2 dx</code> and <code>q^2 dy</code>), which hands you <code>Z</code> and the forces directly. One forward and three inverse transforms per epoch. Same grid, same optimiser, same parameters (<code>n_interp_points</code> applies to both); only the repulsion step differs. Same Unix-only restriction as well. It tends to be faster than the original version.</p>
+<p>There’s a second FFT flavour, <code>"fft_3k"</code>. The original FIt-SNE scheme spreads four charges per point onto the grid and reconstructs <code>Z</code> and the repulsive forces afterwards: four forward and four inverse transforms per epoch. The three-kernel version puts a unit charge on the grid and convolves it with three kernels (<code>q</code>, <code>q^2 dx</code> and <code>q^2 dy</code>), which hands you <code>Z</code> and the forces directly. One forward and three inverse transforms per epoch. Same grid, same optimiser, same parameters (<code>n_interp_points</code> applies to both); only the repulsion step differs. It tends to be faster than the original version.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tsne_fft_3k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tsne.html">tsne</a></span><span class="op">(</span></span>
@@ -525,14 +525,10 @@
 <span>  times <span class="op">=</span> <span class="fl">1L</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
-<span><span class="co">#&gt;            expr       min        lq      mean    median        uq       max</span></span>
-<span><span class="co">#&gt;           Rtsne 11.392048 11.392048 11.392048 11.392048 11.392048 11.392048</span></span>
-<span><span class="co">#&gt;     manifold_bh  4.137270  4.137270  4.137270  4.137270  4.137270  4.137270</span></span>
-<span><span class="co">#&gt;  manifold_bh_qd  1.729531  1.729531  1.729531  1.729531  1.729531  1.729531</span></span>
-<span><span class="co">#&gt;  neval</span></span>
-<span><span class="co">#&gt;      1</span></span>
-<span><span class="co">#&gt;      1</span></span>
-<span><span class="co">#&gt;      1</span></span></code></pre></div>
+<span><span class="co">#&gt;            expr      min       lq     mean   median       uq      max neval</span></span>
+<span><span class="co">#&gt;           Rtsne 9.982312 9.982312 9.982312 9.982312 9.982312 9.982312     1</span></span>
+<span><span class="co">#&gt;     manifold_bh 3.946556 3.946556 3.946556 3.946556 3.946556 3.946556     1</span></span>
+<span><span class="co">#&gt;  manifold_bh_qd 1.996698 1.996698 1.996698 1.996698 1.996698 1.996698     1</span></span></code></pre></div>
 </div>
 <p>The impact here is massive already. Let’s see what happens with both BH and both FFT versions? (To note, FFT’s advantage becomes larger the bigger the data set due to its near <code>O(N)</code> complexity.)</p>
 <div class="cell">
@@ -583,10 +579,10 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;             expr       min        lq      mean    median        uq       max</span></span>
-<span><span class="co">#&gt;      manifold_bh 100.56560 100.56560 100.56560 100.56560 100.56560 100.56560</span></span>
-<span><span class="co">#&gt;   manifold_bh_qd  21.78373  21.78373  21.78373  21.78373  21.78373  21.78373</span></span>
-<span><span class="co">#&gt;     manifold_fft  28.51072  28.51072  28.51072  28.51072  28.51072  28.51072</span></span>
-<span><span class="co">#&gt;  manifold_fft_3k  23.26813  23.26813  23.26813  23.26813  23.26813  23.26813</span></span>
+<span><span class="co">#&gt;      manifold_bh 114.77497 114.77497 114.77497 114.77497 114.77497 114.77497</span></span>
+<span><span class="co">#&gt;   manifold_bh_qd  28.30272  28.30272  28.30272  28.30272  28.30272  28.30272</span></span>
+<span><span class="co">#&gt;     manifold_fft  22.99754  22.99754  22.99754  22.99754  22.99754  22.99754</span></span>
+<span><span class="co">#&gt;  manifold_fft_3k  20.15574  20.15574  20.15574  20.15574  20.15574  20.15574</span></span>
 <span><span class="co">#&gt;  neval</span></span>
 <span><span class="co">#&gt;      1</span></span>
 <span><span class="co">#&gt;      1</span></span>

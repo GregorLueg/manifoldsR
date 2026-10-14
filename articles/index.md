@@ -10,6 +10,7 @@
   t-SNE](https://gregorlueg.github.io/manifoldsR/articles/tsne.md):
 - [Density-preserving
   embeddings](https://gregorlueg.github.io/manifoldsR/articles/density_preserving.md):
+- [DREAMS](https://gregorlueg.github.io/manifoldsR/articles/dreams.md):
 - [Using
   PHATE](https://gregorlueg.github.io/manifoldsR/articles/phate.md):
 - [Using

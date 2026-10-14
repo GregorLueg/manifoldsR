@@ -55,8 +55,7 @@ tsne(
   repulsion computed once per leaf), `"fft"` for FFT-accelerated
   interpolation or `"fft_3k"` for the three-kernel variant of the latter
   (one forward and three inverse FFTs per epoch instead of four each).
-  The FFT options are only available on Unix systems. Defaults to
-  `"bh"`.
+  Defaults to `"bh"`.
 
 - knn_method:
 

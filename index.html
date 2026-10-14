@@ -29,7 +29,7 @@
 
     <a class="navbar-brand me-2" href="index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.8</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,6 +47,7 @@
     <li><a class="dropdown-item" href="articles/umap.html">Using UMAP</a></li>
     <li><a class="dropdown-item" href="articles/tsne.html">Using t-SNE</a></li>
     <li><a class="dropdown-item" href="articles/density_preserving.html">Density-preserving embeddings</a></li>
+    <li><a class="dropdown-item" href="articles/dreams.html">DREAMS</a></li>
     <li><a class="dropdown-item" href="articles/phate.html">Using PHATE</a></li>
     <li><a class="dropdown-item" href="articles/pacmap.html">Using PaCMAP</a></li>
     <li><a class="dropdown-item" href="articles/fa2.html">Using ForceAtlas2</a></li>
@@ -101,6 +102,8 @@
 <li>
 <strong>Diffusion map</strong> (A classical method of Manifold learning)</li>
 <li><strong>Density-preserving versions of UMAP and tSNE</strong></li>
+<li>
+<strong>DREAMS</strong> (t-SNE regularised towards a global reference embedding, PCA by default, so cluster positions keep their meaning)</li>
 <li>
 <strong>ForceAtlas2 (2FA)</strong> (Gephi’s force-directed graph layout on the kNN graph)</li>
 </ul>
@@ -161,6 +164,7 @@
 <li><label><input type="checkbox" checked><em>PacMap from <a href="https://arxiv.org/abs/2012.04456" class="external-link">Wang et. al.</a>, that should preserve global structure better.</em> (Done with version 0.1.1)</label></li>
 <li><label><input type="checkbox" checked><em>GPU-accelerated versions</em> <a href="https://github.com/GregorLueg/bixverse.gpu" class="external-link">bixverse.gpu</a> contains now GPU-accelerated kNN searches for the embedding methods and a GPU-accelerated Adam optimiser for UMAP.</label></li>
 <li><label><input type="checkbox" checked>Density-preserving versions of UMAP and tSNE, see <a href="https://www.nature.com/articles/s41587-020-00801-7" class="external-link">Narayan, et al.</a>. <strong>Included now.</strong></label></li>
+<li><label><input type="checkbox" checked>DREAMS from <a href="https://arxiv.org/abs/2508.13747" class="external-link">Kury, Kobak &amp; Damrich</a>, t-SNE with a pull towards a global reference. <strong>Included now.</strong></label></li>
 </ul>
 </div>
 <div class="section level2">

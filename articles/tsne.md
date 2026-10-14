@@ -46,9 +46,8 @@ mind:
 - **Slower.** The naive implementation is `O(N^2)`, which quickly
   becomes prohibitive. The Barnes-Hut approximation (`"bh"`) reduces
   this to `O(N log N)` (`"bh_qd"` is a faster, coarser flavour of it),
-  and the FFT-accelerated version (`"fft"`) further reduces it to `O(N)`
-  — though the FFT variant is currently only supported on Unix systems
-  due to cross-compilation constraints with FFTW.
+  and the FFT-accelerated version (`"fft"`) further reduces it to
+  `O(N)`.
 - **No out-of-sample extension.** Unlike UMAP, t-SNE embeddings cannot
   trivially be used to project new data points into the learned space.
   (To be fair, something that is not - yet - support in the package on
@@ -389,8 +388,6 @@ interpolating the repulsive forces on a grid, making it substantially
 faster at scale. The constant however is higher. This version of tSNE
 becomes interesting in situations of ≥ 100,000 samples and more.
 
-**Note: the FFT variant is only available on Unix-based systems!**
-
 ``` r
 
 tsne_fft <- tsne(
@@ -428,9 +425,8 @@ transforms per epoch. The three-kernel version puts a unit charge on the
 grid and convolves it with three kernels (`q`, `q^2 dx` and `q^2 dy`),
 which hands you `Z` and the forces directly. One forward and three
 inverse transforms per epoch. Same grid, same optimiser, same parameters
-(`n_interp_points` applies to both); only the repulsion step differs.
-Same Unix-only restriction as well. It tends to be faster than the
-original version.
+(`n_interp_points` applies to both); only the repulsion step differs. It
+tends to be faster than the original version.
 
 ``` r
 
@@ -514,14 +510,10 @@ microbenchmark::microbenchmark(
   times = 1L
 )
 #> Unit: seconds
-#>            expr       min        lq      mean    median        uq       max
-#>           Rtsne 11.392048 11.392048 11.392048 11.392048 11.392048 11.392048
-#>     manifold_bh  4.137270  4.137270  4.137270  4.137270  4.137270  4.137270
-#>  manifold_bh_qd  1.729531  1.729531  1.729531  1.729531  1.729531  1.729531
-#>  neval
-#>      1
-#>      1
-#>      1
+#>            expr      min       lq     mean   median       uq      max neval
+#>           Rtsne 9.982312 9.982312 9.982312 9.982312 9.982312 9.982312     1
+#>     manifold_bh 3.946556 3.946556 3.946556 3.946556 3.946556 3.946556     1
+#>  manifold_bh_qd 1.996698 1.996698 1.996698 1.996698 1.996698 1.996698     1
 ```
 
 The impact here is massive already. Let’s see what happens with both BH
@@ -576,10 +568,10 @@ microbenchmark::microbenchmark(
 )
 #> Unit: seconds
 #>             expr       min        lq      mean    median        uq       max
-#>      manifold_bh 100.56560 100.56560 100.56560 100.56560 100.56560 100.56560
-#>   manifold_bh_qd  21.78373  21.78373  21.78373  21.78373  21.78373  21.78373
-#>     manifold_fft  28.51072  28.51072  28.51072  28.51072  28.51072  28.51072
-#>  manifold_fft_3k  23.26813  23.26813  23.26813  23.26813  23.26813  23.26813
+#>      manifold_bh 114.77497 114.77497 114.77497 114.77497 114.77497 114.77497
+#>   manifold_bh_qd  28.30272  28.30272  28.30272  28.30272  28.30272  28.30272
+#>     manifold_fft  22.99754  22.99754  22.99754  22.99754  22.99754  22.99754
+#>  manifold_fft_3k  20.15574  20.15574  20.15574  20.15574  20.15574  20.15574
 #>  neval
 #>      1
 #>      1
