@@ -317,8 +317,11 @@ ggplot(
 
 Mixed bag. The branch order along the main stem follows PHATE, where t-SNE
 just piles branches 3 and 5 on top of each other. But the long PHATE tips of
-branches 2 and 5 tear off into separate islands. Long, stretched references
-look like the hard case here.
+branches 2 and 5 tear off into separate islands. That's DREAMS itself, not
+this implementation: the authors' openTSNE fork breaks the same two branches
+into the same number of pieces on this data, with a PCA reference as well. At
+`lambda = 0.05` both branches stay in one piece, so on long trajectories go
+lower than the default.
 
 Already have a `NearestNeighbours` object? Pass it via `knn =` and DREAMS
 skips the search, same as every other method in the package.
