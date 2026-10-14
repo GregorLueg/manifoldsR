@@ -214,6 +214,40 @@ params_diffusion_maps <- function(
   )
 }
 
+#' Wrapper function to generate DREAMS parameters
+#'
+#' @description The regularisation knob on top of the usual t-SNE parameters.
+#' DREAMS pulls every t-SNE epoch towards a scaled global reference embedding
+#' (PCA unless one is supplied). Setting `lambda` to `0` recovers plain t-SNE,
+#' `1` the reference.
+#'
+#' @param lambda Numeric. Regularisation strength. Larger values pull harder
+#' towards the reference layout. The default is the DREAMS reference value.
+#' Defaults to `0.15`.
+#'
+#' @returns A named list with the following elements:
+#' \itemize{
+#'  \item lambda - Numeric. Regularisation strength. Larger values pull harder
+#'  towards the reference layout. The default is the DREAMS reference value.
+#'  Defaults to `0.15`.
+#' }
+#'
+#' @references Kury, Kobak & Damrich, Transactions on Machine Learning Research,
+#' 2026
+#'
+#' @export
+params_dreams <- function(
+  lambda = 0.15
+) {
+  # Checks
+  checkmate::qassert(lambda, "N1[0,1]")
+
+  # Return
+  list(
+    lambda = lambda
+  )
+}
+
 #' Wrapper function to generate EVoC parameters
 #'
 #' @param noise_level Numeric. Noise level for the embedding gradient. `0.0` =

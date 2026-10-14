@@ -168,6 +168,49 @@ assertDiffusionMapsParams <- checkmate::makeAssertionFunction(
   checkDiffusionMapsParams
 )
 
+#' Check DREAMS params
+#'
+#' @description Checkmate extension for the output of [params_dreams()].
+#'
+#' @param x The object to check.
+#'
+#' @returns `TRUE` if the check was successful, otherwise a
+#' checkmate-style error string.
+#'
+#' @keywords internal
+checkDreamsParams <- function(x) {
+  res <- check_list_shape(x, "lambda")
+  if (!isTRUE(res)) {
+    return(res)
+  }
+
+  res <- apply_qtest_rules(
+    x,
+    list(
+      lambda = "N1[0,1]"
+    ),
+    label = "DREAMS params"
+  )
+  if (!isTRUE(res)) {
+    return(res)
+  }
+
+  return(TRUE)
+}
+
+#' Assert DREAMS params
+#'
+#' @inheritParams checkDreamsParams
+#' @param .var.name Name of the checked object to print in assertions.
+#' @param add Collection to store assertion messages. See
+#' [checkmate::makeAssertCollection()].
+#'
+#' @returns Invisibly returns the checked object if the assertion is
+#' successful.
+#'
+#' @keywords internal
+assertDreamsParams <- checkmate::makeAssertionFunction(checkDreamsParams)
+
 #' Check EVoC params
 #'
 #' @description Checkmate extension for the output of [params_evoc()].

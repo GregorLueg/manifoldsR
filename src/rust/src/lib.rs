@@ -4,6 +4,7 @@
 #![allow(clippy::needless_range_loop)]
 
 pub mod diffusion_maps;
+pub mod dreams;
 pub mod evoc;
 pub mod fa2;
 pub mod k_means;
@@ -24,6 +25,7 @@ use manifolds_rs::data::synthetic::*;
 use manifolds_rs::prelude::*;
 
 use crate::diffusion_maps::*;
+use crate::dreams::*;
 use crate::evoc::*;
 use crate::fa2::*;
 use crate::k_means::*;
@@ -52,6 +54,8 @@ extendr_module! {
     fn rs_densmap_from_knn;
     fn rs_densne;
     fn rs_densne_from_knn;
+    fn rs_dreams;
+    fn rs_dreams_from_knn;
     fn rs_phate;
     fn rs_phate_from_knn;
     fn rs_pacmap;
@@ -1102,6 +1106,213 @@ fn rs_densne_from_knn(
                 &approx_type,
                 perplexity,
                 densne_params,
+                seed,
+                verbose,
+            )
+            .to_extendr()?;
+
+            Ok(faer_to_r_matrix(res.as_ref()))
+        }
+    }
+}
+
+////////////
+// DREAMS //
+////////////
+
+/// DREAMS implementation
+///
+/// @description
+/// `r lifecycle::badge("experimental")`
+/// Leverages the DREAMS implementation in manifolds-rs. DREAMS is tSNE with an
+/// added pull towards a global reference embedding (PCA unless one is
+/// supplied), so you keep the local structure of tSNE and most of the global
+/// layout of the reference. `lambda = 0` is plain tSNE, `lambda = 1` the
+/// reference.
+///
+/// @param embd Numerical matrix. The data to use to generate the embeddings.
+/// Should be of dimensions samples x features.
+/// @param reference Optional numerical matrix. Global reference embedding of
+/// dimensions samples x 2. If `NULL`, the first two principal components are
+/// used.
+/// @param n_dim Integer. Number of DREAMS dimensions to return. Needs to be
+/// two, others are not supported.
+/// @param perplexity Numeric. The tSNE perplexity parameter.
+/// @param approx_type String. One of `c("bh", "bh_qd", "fft", "fft_3k")`. Which
+/// of the approximations to use.
+/// @param dreams_params Named list. List that contains all of the key
+/// parameters for the DREAMS generation, i.e. the tSNE ones plus `lambda`.
+/// @param seed Integer. Seed for reproducibility.
+/// @param use_high_precision Optional logical. Controls `fp32` vs `fp64` for.
+/// If `NULL` will use sensible default thresholding.
+/// @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
+/// for detailed verbosity.
+///
+/// @return The DREAMS embeddings.
+///
+/// @references Kury, Kobak & Damrich, Transactions on Machine Learning
+/// Research, 2026
+///
+/// @export
+#[extendr]
+#[allow(clippy::too_many_arguments)]
+fn rs_dreams(
+    embd: RMatrix<f64>,
+    reference: Nullable<RMatrix<f64>>,
+    n_dim: usize,
+    perplexity: f64,
+    approx_type: String,
+    dreams_params: List,
+    seed: usize,
+    use_high_precision: Nullable<Rbool>,
+    verbose: usize,
+) -> extendr_api::Result<RMatrix<f64>> {
+    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let precision = parse_precision(use_high_precision, embd.nrows());
+    let reference = reference.into_option();
+
+    match precision {
+        FloatingPointPrecision::FP32 => {
+            if verbosity.detailed_verbosity() {
+                println!("Lower precision (fp32) path chosen.")
+            }
+
+            let embd = r_matrix_to_faer_fp32(&embd);
+
+            let res = dreams_manifold(
+                embd.as_ref(),
+                None,
+                r_reference_to_rust::<f32>(reference.as_ref()),
+                n_dim,
+                &approx_type,
+                perplexity as f32,
+                dreams_params,
+                seed,
+                verbose,
+            )
+            .to_extendr()?;
+
+            Ok(faer_to_r_matrix(res.as_ref()))
+        }
+        FloatingPointPrecision::FP64 => {
+            if verbosity.detailed_verbosity() {
+                println!("Larger data set. Using high precision floats.")
+            }
+
+            let embd = r_matrix_to_faer(&embd);
+
+            let res = dreams_manifold(
+                embd.as_ref(),
+                None,
+                r_reference_to_rust::<f64>(reference.as_ref()),
+                n_dim,
+                &approx_type,
+                perplexity,
+                dreams_params,
+                seed,
+                verbose,
+            )
+            .to_extendr()?;
+
+            Ok(faer_to_r_matrix(res.as_ref()))
+        }
+    }
+}
+
+/// DREAMS implementation
+///
+/// @description
+/// `r lifecycle::badge("experimental")`
+/// Leverages the DREAMS implementation in manifolds-rs. DREAMS is tSNE with an
+/// added pull towards a global reference embedding (PCA unless one is
+/// supplied). This version uses a pre-computed kNN graph, please see
+/// [new_nearest_neighbour()].
+///
+/// @param embd Numerical matrix. The data to use to generate the embeddings.
+/// Should be of dimensions samples x features.
+/// @param knn_data `NearestNeighbours` class from R.
+/// @param reference Optional numerical matrix. Global reference embedding of
+/// dimensions samples x 2. If `NULL`, the first two principal components are
+/// used.
+/// @param n_dim Integer. Number of DREAMS dimensions to return. Needs to be
+/// two, others are not supported.
+/// @param perplexity Numeric. The tSNE perplexity parameter.
+/// @param approx_type String. One of `c("bh", "bh_qd", "fft", "fft_3k")`. Which
+/// of the approximations to use.
+/// @param dreams_params Named list. List that contains all of the key
+/// parameters for the DREAMS generation, i.e. the tSNE ones plus `lambda`.
+/// @param seed Integer. Seed for reproducibility.
+/// @param use_high_precision Optional logical. Controls `fp32` vs `fp64` for.
+/// If `NULL` will use sensible default thresholding.
+/// @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
+/// for detailed verbosity.
+///
+/// @return The DREAMS embeddings.
+///
+/// @references Kury, Kobak & Damrich, Transactions on Machine Learning
+/// Research, 2026
+///
+/// @export
+#[extendr]
+#[allow(clippy::too_many_arguments)]
+fn rs_dreams_from_knn(
+    embd: RMatrix<f64>,
+    knn_data: List,
+    reference: Nullable<RMatrix<f64>>,
+    n_dim: usize,
+    perplexity: f64,
+    approx_type: String,
+    dreams_params: List,
+    seed: usize,
+    use_high_precision: Nullable<Rbool>,
+    verbose: usize,
+) -> extendr_api::Result<RMatrix<f64>> {
+    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let precision = parse_precision(use_high_precision, embd.nrows());
+    let reference = reference.into_option();
+
+    match precision {
+        FloatingPointPrecision::FP32 => {
+            if verbosity.detailed_verbosity() {
+                println!("Lower precision (fp32) path chosen.")
+            }
+
+            let embd = r_matrix_to_faer_fp32(&embd);
+
+            let knn = nearest_neighbours_to_rust(knn_data);
+
+            let res = dreams_manifold(
+                embd.as_ref(),
+                knn,
+                r_reference_to_rust::<f32>(reference.as_ref()),
+                n_dim,
+                &approx_type,
+                perplexity as f32,
+                dreams_params,
+                seed,
+                verbose,
+            )
+            .to_extendr()?;
+
+            Ok(faer_to_r_matrix(res.as_ref()))
+        }
+        FloatingPointPrecision::FP64 => {
+            if verbosity.detailed_verbosity() {
+                println!("Larger data set. Using high precision floats.")
+            }
+
+            let embd = r_matrix_to_faer(&embd);
+
+            let knn = nearest_neighbours_to_rust(knn_data);
+
+            let res = dreams_manifold(
+                embd.as_ref(),
+                knn,
+                r_reference_to_rust::<f64>(reference.as_ref()),
+                n_dim,
+                &approx_type,
+                perplexity,
+                dreams_params,
                 seed,
                 verbose,
             )
