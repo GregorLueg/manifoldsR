@@ -279,7 +279,7 @@ dreams_traj <- dreams(
   data = trajectory_data$data,
   reference = phate_traj,
   seed = 42L,
-  .verbose = FALSE
+  .verbose = TRUE
 )
 ```
 
