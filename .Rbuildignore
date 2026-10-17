@@ -15,3 +15,14 @@
 ^\.github$
 ^[.]?air[.]toml$
 ^scratch.*\.R$
+^\.claude$
+^CLAUDE\.md$
+^misc$
+^\.copier-answers\.yml$
+^renovate\.json$
+^tools/vendor\.sh$
+^cran-comments\.md$
+^CRAN-SUBMISSION$
+^vignettes/articles$
+^inst/params$
+^\.git$

@@ -1,55 +1,69 @@
 Package: manifoldsR
-Title: Package for 2D embeddings
-Version: 0.4.0
-Authors@R: 
+Title: Fast Low-Dimensional Embeddings and Clustering via 'Rust'
+Version: 0.5.0
+Authors@R:
     c(
         person(
-            given = "Gregor", 
-            family = "Lueg", 
-            email = "gregorlueg@me.com", 
+            given = "Gregor",
+            family = "Lueg",
+            email = "gregorlueg@me.com",
             role = c("aut", "cre")
         ),
         person(
-            given = "Grant", 
-            family = "Neilson", 
+            given = "Grant",
+            family = "Neilson",
             email = "grant.neilson5@gmail.com",
             role = c("aut")
+        ),
+        person(
+            given = "Authors of the dependency Rust crates",
+            role = c("ctb", "cph"),
+            comment = "see inst/AUTHORS file"
         )
     )
-Description: 
-    Contains different methods to generate embeddings like UMAP, tSNE, DREAMS,
-    PHATE, PacMap and diffusion maps. Morever, has methods to generate nearest 
-    neighbour graphs and now also some clustering algorithms that are based on 
-    embedding methods (EVoC) and more general clustering methods like k-means.
+Description:
+    R interface to the Rust crates 'manifolds-rs', 'ann-search-rs' and
+    'evoc-rs'. Builds 2D (or higher) embeddings with UMAP (McInnes et al.,
+    2018) <doi:10.48550/arXiv.1802.03426>, t-SNE (van der Maaten and Hinton,
+    2008) <https://jmlr.org/papers/v9/vandermaaten08a.html>, densMAP and
+    den-SNE (Narayan et al., 2021) <doi:10.1038/s41587-020-00801-7>, PHATE
+    (Moon et al., 2019) <doi:10.1038/s41587-019-0336-3>, PaCMAP (Wang et al.,
+    2021) <https://jmlr.org/papers/v22/20-1061.html>, ForceAtlas2 (Jacomy et
+    al., 2014) <doi:10.1371/journal.pone.0098679>, DREAMS and diffusion maps.
+    Also generates approximate nearest neighbour graphs that every method can
+    reuse, plus EVoC and k-means clustering. Multi-threaded via 'Rayon', with
+    f32 or f64 precision.
 License: MIT + file LICENSE
+Copyright: Rust crate authors and licences are listed in inst/AUTHORS.
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-biocViews:
-Imports: 
+Imports:
     checkmate,
-    data.table,
-    ggplot2,
     lifecycle,
-    magrittr,
-    purrr,
-    rextendr,
-    zeallot
+    purrr
 Config/rextendr/version: 0.5.0
 SystemRequirements: Cargo (Rust's package manager), rustc >= 1.90, xz
-Depends: 
+Depends:
     R (>= 4.2)
-Suggests: 
+Suggests:
+    data.table,
+    ggplot2,
     gridExtra,
     igraph,
     knitr,
+    magrittr,
+    quarto,
+    tinytest,
+    zeallot
+Config/Needs/benchmarks:
+    destiny,
     microbenchmark,
     phateR,
-    quarto,
     reticulate,
     Rtsne,
-    tinytest,
     umap,
     uwot
 VignetteBuilder: quarto
-URL: https://gregorlueg.github.io/manifoldsR/
+URL: https://gregorlueg.github.io/manifoldsR/, https://github.com/GregorLueg/manifoldsR
+BugReports: https://github.com/GregorLueg/manifoldsR/issues
 Config/roxygen2/version: 8.1.0
