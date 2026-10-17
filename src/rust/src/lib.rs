@@ -136,10 +136,19 @@ fn auto_precision(n: usize) -> FloatingPointPrecision {
 /// The determined [FloatingPointPrecision].
 fn parse_precision(use_high_precision: Nullable<Rbool>, n: usize) -> FloatingPointPrecision {
     if use_high_precision != Nullable::Null {
-        let val = use_high_precision.into_option().map(|x| x.to_bool()).unwrap_or_else(|| {
-            println!("[WARNING] - The provided 'use_high_precision' could not be decoded into a boolean. Function will assume 'true'");
-            true
-        });
+        // Rbool::to_bool() maps NA to true, so catch it explicitly. R_tryEval
+        // inside eval() keeps options(warn = 2) from longjmp-ing through Rust.
+        let val = match use_high_precision.into_option() {
+            Some(x) if !x.is_na() => x.to_bool(),
+            _ => {
+                let _ = lang!(
+                    "warning",
+                    "'use_high_precision' is NA. Function will assume 'TRUE'."
+                )
+                .eval();
+                true
+            }
+        };
         if val {
             FloatingPointPrecision::FP64
         } else {
@@ -197,7 +206,7 @@ fn rs_umap(
     match precision {
         FloatingPointPrecision::FP32 => {
             if verbosity.detailed_verbosity() {
-                println!("Lower precision (fp32) path chosen.")
+                rprintln!("Lower precision (fp32) path chosen.");
             }
 
             let embd = r_matrix_to_faer_fp32(&embd);
@@ -219,7 +228,7 @@ fn rs_umap(
         }
         FloatingPointPrecision::FP64 => {
             if verbosity.detailed_verbosity() {
-                println!("Higher precision (fp64) path chosen.")
+                rprintln!("Higher precision (fp64) path chosen.");
             }
 
             let embd = r_matrix_to_faer(&embd);
@@ -288,7 +297,7 @@ fn rs_umap_from_knn(
     match precision {
         FloatingPointPrecision::FP32 => {
             if verbosity.detailed_verbosity() {
-                println!("Lower precision (fp32) path chosen.")
+                rprintln!("Lower precision (fp32) path chosen.");
             }
 
             let embd = r_matrix_to_faer_fp32(&embd);
@@ -312,7 +321,7 @@ fn rs_umap_from_knn(
         }
         FloatingPointPrecision::FP64 => {
             if verbosity.detailed_verbosity() {
-                println!("Higher precision (fp64) path chosen.")
+                rprintln!("Higher precision (fp64) path chosen.");
             }
 
             let embd = r_matrix_to_faer(&embd);
@@ -377,7 +386,7 @@ fn rs_forceatlas2(
     match precision {
         FloatingPointPrecision::FP32 => {
             if verbosity.detailed_verbosity() {
-                println!("Lower precision (fp32) path chosen.")
+                rprintln!("Lower precision (fp32) path chosen.");
             }
 
             let embd = r_matrix_to_faer_fp32(&embd);
@@ -389,7 +398,7 @@ fn rs_forceatlas2(
         }
         FloatingPointPrecision::FP64 => {
             if verbosity.detailed_verbosity() {
-                println!("Higher precision (fp64) path chosen.")
+                rprintln!("Higher precision (fp64) path chosen.");
             }
 
             let embd = r_matrix_to_faer(&embd);
@@ -441,7 +450,7 @@ fn rs_forceatlas2_from_knn(
     match precision {
         FloatingPointPrecision::FP32 => {
             if verbosity.detailed_verbosity() {
-                println!("Lower precision (fp32) path chosen.")
+                rprintln!("Lower precision (fp32) path chosen.");
             }
 
             let embd = r_matrix_to_faer_fp32(&embd);
@@ -455,7 +464,7 @@ fn rs_forceatlas2_from_knn(
         }
         FloatingPointPrecision::FP64 => {
             if verbosity.detailed_verbosity() {
-                println!("Higher precision (fp64) path chosen.")
+                rprintln!("Higher precision (fp64) path chosen.");
             }
 
             let embd = r_matrix_to_faer(&embd);
@@ -517,7 +526,7 @@ fn rs_forceatlas2_from_graph(
     match precision {
         FloatingPointPrecision::FP32 => {
             if verbosity.detailed_verbosity() {
-                println!("Lower precision (fp32) path chosen.")
+                rprintln!("Lower precision (fp32) path chosen.");
             }
 
             let res = fa2_graph_manifold::<f32>(
@@ -529,7 +538,7 @@ fn rs_forceatlas2_from_graph(
         }
         FloatingPointPrecision::FP64 => {
             if verbosity.detailed_verbosity() {
-                println!("Higher precision (fp64) path chosen.")
+                rprintln!("Higher precision (fp64) path chosen.");
             }
 
             let res = fa2_graph_manifold::<f64>(
@@ -591,7 +600,7 @@ fn rs_tsne(
     match precision {
         FloatingPointPrecision::FP64 => {
             if verbosity.detailed_verbosity() {
-                println!("Larger data set. Using high precision floats.")
+                rprintln!("Larger data set. Using high precision floats.");
             }
 
             let embd = r_matrix_to_faer(&embd);
@@ -612,7 +621,7 @@ fn rs_tsne(
         }
         FloatingPointPrecision::FP32 => {
             if verbosity.detailed_verbosity() {
-                println!("Lower precision (fp32) path chosen.")
+                rprintln!("Lower precision (fp32) path chosen.");
             }
             let embd = r_matrix_to_faer_fp32(&embd);
 
@@ -681,7 +690,7 @@ fn rs_tsne_from_knn(
     match precision {
         FloatingPointPrecision::FP32 => {
             if verbosity.detailed_verbosity() {
-                println!("Lower precision (fp32) path chosen.")
+                rprintln!("Lower precision (fp32) path chosen.");
             }
 
             let embd = r_matrix_to_faer_fp32(&embd);
@@ -704,7 +713,7 @@ fn rs_tsne_from_knn(
         }
         FloatingPointPrecision::FP64 => {
             if verbosity.detailed_verbosity() {
-                println!("Large data set. Using higher precision floats.")
+                rprintln!("Large data set. Using higher precision floats.");
             }
 
             let embd = r_matrix_to_faer(&embd);
@@ -780,7 +789,7 @@ fn rs_densmap(
     match precision {
         FloatingPointPrecision::FP32 => {
             if verbosity.detailed_verbosity() {
-                println!("Lower precision (fp32) path chosen.")
+                rprintln!("Lower precision (fp32) path chosen.");
             }
 
             let embd = r_matrix_to_faer_fp32(&embd);
@@ -802,7 +811,7 @@ fn rs_densmap(
         }
         FloatingPointPrecision::FP64 => {
             if verbosity.detailed_verbosity() {
-                println!("Higher precision (fp64) path chosen.")
+                rprintln!("Higher precision (fp64) path chosen.");
             }
 
             let embd = r_matrix_to_faer(&embd);
@@ -875,7 +884,7 @@ fn rs_densmap_from_knn(
     match precision {
         FloatingPointPrecision::FP32 => {
             if verbosity.detailed_verbosity() {
-                println!("Lower precision (fp32) path chosen.")
+                rprintln!("Lower precision (fp32) path chosen.");
             }
 
             let embd = r_matrix_to_faer_fp32(&embd);
@@ -899,7 +908,7 @@ fn rs_densmap_from_knn(
         }
         FloatingPointPrecision::FP64 => {
             if verbosity.detailed_verbosity() {
-                println!("Higher precision (fp64) path chosen.")
+                rprintln!("Higher precision (fp64) path chosen.");
             }
 
             let embd = r_matrix_to_faer(&embd);
@@ -976,7 +985,7 @@ fn rs_densne(
     match precision {
         FloatingPointPrecision::FP32 => {
             if verbosity.detailed_verbosity() {
-                println!("Lower precision (fp32) path chosen.")
+                rprintln!("Lower precision (fp32) path chosen.");
             }
 
             let embd = r_matrix_to_faer_fp32(&embd);
@@ -997,7 +1006,7 @@ fn rs_densne(
         }
         FloatingPointPrecision::FP64 => {
             if verbosity.detailed_verbosity() {
-                println!("Larger data set. Using high precision floats.")
+                rprintln!("Larger data set. Using high precision floats.");
             }
 
             let embd = r_matrix_to_faer(&embd);
@@ -1069,7 +1078,7 @@ fn rs_densne_from_knn(
     match precision {
         FloatingPointPrecision::FP32 => {
             if verbosity.detailed_verbosity() {
-                println!("Lower precision (fp32) path chosen.")
+                rprintln!("Lower precision (fp32) path chosen.");
             }
 
             let embd = r_matrix_to_faer_fp32(&embd);
@@ -1092,7 +1101,7 @@ fn rs_densne_from_knn(
         }
         FloatingPointPrecision::FP64 => {
             if verbosity.detailed_verbosity() {
-                println!("Larger data set. Using high precision floats.")
+                rprintln!("Larger data set. Using high precision floats.");
             }
 
             let embd = r_matrix_to_faer(&embd);
@@ -1174,7 +1183,7 @@ fn rs_dreams(
     match precision {
         FloatingPointPrecision::FP32 => {
             if verbosity.detailed_verbosity() {
-                println!("Lower precision (fp32) path chosen.")
+                rprintln!("Lower precision (fp32) path chosen.");
             }
 
             let embd = r_matrix_to_faer_fp32(&embd);
@@ -1196,7 +1205,7 @@ fn rs_dreams(
         }
         FloatingPointPrecision::FP64 => {
             if verbosity.detailed_verbosity() {
-                println!("Larger data set. Using high precision floats.")
+                rprintln!("Larger data set. Using high precision floats.");
             }
 
             let embd = r_matrix_to_faer(&embd);
@@ -1274,7 +1283,7 @@ fn rs_dreams_from_knn(
     match precision {
         FloatingPointPrecision::FP32 => {
             if verbosity.detailed_verbosity() {
-                println!("Lower precision (fp32) path chosen.")
+                rprintln!("Lower precision (fp32) path chosen.");
             }
 
             let embd = r_matrix_to_faer_fp32(&embd);
@@ -1298,7 +1307,7 @@ fn rs_dreams_from_knn(
         }
         FloatingPointPrecision::FP64 => {
             if verbosity.detailed_verbosity() {
-                println!("Larger data set. Using high precision floats.")
+                rprintln!("Larger data set. Using high precision floats.");
             }
 
             let embd = r_matrix_to_faer(&embd);
@@ -1366,7 +1375,7 @@ fn rs_phate(
     match precision {
         FloatingPointPrecision::FP32 => {
             if verbosity.detailed_verbosity() {
-                println!("Lower precision (fp32) path chosen.")
+                rprintln!("Lower precision (fp32) path chosen.");
             }
 
             let embd = r_matrix_to_faer_fp32(&embd);
@@ -1377,7 +1386,7 @@ fn rs_phate(
         }
         FloatingPointPrecision::FP64 => {
             if verbosity.detailed_verbosity() {
-                println!("Higher precision (fp64) path chosen.")
+                rprintln!("Higher precision (fp64) path chosen.");
             }
 
             let embd = r_matrix_to_faer(&embd);
@@ -1433,7 +1442,7 @@ fn rs_phate_from_knn(
     match precision {
         FloatingPointPrecision::FP32 => {
             if verbosity.detailed_verbosity() {
-                println!("Lower precision (fp32) path chosen.")
+                rprintln!("Lower precision (fp32) path chosen.");
             }
 
             let embd = r_matrix_to_faer_fp32(&embd);
@@ -1445,7 +1454,7 @@ fn rs_phate_from_knn(
         }
         FloatingPointPrecision::FP64 => {
             if verbosity.detailed_verbosity() {
-                println!("Higher precision (fp64) path chosen.")
+                rprintln!("Higher precision (fp64) path chosen.");
             }
 
             let embd = r_matrix_to_faer(&embd);
@@ -1499,7 +1508,7 @@ fn rs_pacmap(
     match precision {
         FloatingPointPrecision::FP32 => {
             if verbosity.detailed_verbosity() {
-                println!("Lower precision (fp32) path chosen.")
+                rprintln!("Lower precision (fp32) path chosen.");
             }
 
             let embd = r_matrix_to_faer_fp32(&embd);
@@ -1510,7 +1519,7 @@ fn rs_pacmap(
         }
         FloatingPointPrecision::FP64 => {
             if verbosity.detailed_verbosity() {
-                println!("Higher precision (fp64) path chosen.")
+                rprintln!("Higher precision (fp64) path chosen.");
             }
 
             let embd = r_matrix_to_faer(&embd);
@@ -1562,7 +1571,7 @@ fn rs_pacmap_from_knn(
     match precision {
         FloatingPointPrecision::FP32 => {
             if verbosity.detailed_verbosity() {
-                println!("Lower precision (fp32) path chosen.")
+                rprintln!("Lower precision (fp32) path chosen.");
             }
 
             let embd = r_matrix_to_faer_fp32(&embd);
@@ -1574,7 +1583,7 @@ fn rs_pacmap_from_knn(
         }
         FloatingPointPrecision::FP64 => {
             if verbosity.detailed_verbosity() {
-                println!("High precision (fp64) path chosen.")
+                rprintln!("High precision (fp64) path chosen.");
             }
 
             let embd = r_matrix_to_faer(&embd);
@@ -1630,7 +1639,7 @@ fn rs_diffusion_maps(
     match precision {
         FloatingPointPrecision::FP32 => {
             if verbosity.detailed_verbosity() {
-                println!("Lower precision (fp32) path chosen.")
+                rprintln!("Lower precision (fp32) path chosen.");
             }
 
             let embd = r_matrix_to_faer_fp32(&embd);
@@ -1641,7 +1650,7 @@ fn rs_diffusion_maps(
         }
         FloatingPointPrecision::FP64 => {
             if verbosity.detailed_verbosity() {
-                println!("Higher precision (fp64) path chosen.")
+                rprintln!("Higher precision (fp64) path chosen.");
             }
 
             let embd = r_matrix_to_faer(&embd);
@@ -1695,7 +1704,7 @@ fn rs_diffusion_maps_from_knn(
     match precision {
         FloatingPointPrecision::FP32 => {
             if verbosity.detailed_verbosity() {
-                println!("Lower precision (fp32) path chosen.")
+                rprintln!("Lower precision (fp32) path chosen.");
             }
 
             let embd = r_matrix_to_faer_fp32(&embd);
@@ -1707,7 +1716,7 @@ fn rs_diffusion_maps_from_knn(
         }
         FloatingPointPrecision::FP64 => {
             if verbosity.detailed_verbosity() {
-                println!("Higher precision (fp64) path chosen.")
+                rprintln!("Higher precision (fp64) path chosen.");
             }
 
             let embd = r_matrix_to_faer(&embd);
@@ -2015,7 +2024,7 @@ fn rs_evoc(
     let (res, indices, dist) = match precision {
         FloatingPointPrecision::FP32 => {
             if verbosity.detailed_verbosity() {
-                println!("Lower precision (fp32) path chosen.")
+                rprintln!("Lower precision (fp32) path chosen.");
             }
 
             let embd = r_matrix_to_faer_fp32(&embd);
@@ -2031,7 +2040,7 @@ fn rs_evoc(
         }
         FloatingPointPrecision::FP64 => {
             if verbosity.detailed_verbosity() {
-                println!("Higher precision (fp64) path chosen.")
+                rprintln!("Higher precision (fp64) path chosen.");
             }
 
             let embd = r_matrix_to_faer(&embd);
@@ -2102,7 +2111,7 @@ fn rs_evoc_from_knn(
     let (res, _, _) = match precision {
         FloatingPointPrecision::FP32 => {
             if verbosity.detailed_verbosity() {
-                println!("Lower precision (fp32) path chosen.")
+                rprintln!("Lower precision (fp32) path chosen.");
             }
 
             let embd = r_matrix_to_faer_fp32(&embd);
@@ -2119,7 +2128,7 @@ fn rs_evoc_from_knn(
         }
         FloatingPointPrecision::FP64 => {
             if verbosity.detailed_verbosity() {
-                println!("Higher precision (fp64) path chosen.")
+                rprintln!("Higher precision (fp64) path chosen.");
             }
 
             let embd = r_matrix_to_faer(&embd);
