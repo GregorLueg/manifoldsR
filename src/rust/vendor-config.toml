@@ -2,4 +2,10 @@
 replace-with = "vendored-sources"
 
 [source.vendored-sources]
-directory = "../vendor"
+directory = "vendor"
+
+# Drop together with the bixverse-r [patch.crates-io] entry in Cargo.toml.
+[source."git+https://github.com/GregorLueg/bixverse-rs.git?branch=feat-remove-dependencies"]
+git = "https://github.com/GregorLueg/bixverse-rs.git"
+branch = "feat-remove-dependencies"
+replace-with = "vendored-sources"

@@ -16,9 +16,9 @@ pub mod umap;
 pub mod utils;
 
 use ann_search_rs::utils::matrix_to_flat;
-use bixverse_rs::ml::clustering::{clustering_metrics::adjusted_rand_index, k_means::*};
-use bixverse_rs::prelude::*;
-use bixverse_rs::utils::vec_utils::flatten_vector;
+use bixverse_r::ml::clustering::{clustering_metrics::adjusted_rand_index, k_means::*};
+use bixverse_r::prelude::*;
+use bixverse_r::utils::vec_utils::flatten_vector;
 use extendr_api::prelude::*;
 use faer::Mat;
 use manifolds_rs::data::synthetic::*;
@@ -191,7 +191,7 @@ fn rs_umap(
     use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
     let precision = parse_precision(use_high_precision, embd.nrows());
 
     match precision {
@@ -282,7 +282,7 @@ fn rs_umap_from_knn(
     use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
     let precision = parse_precision(use_high_precision, embd.nrows());
 
     match precision {
@@ -371,7 +371,7 @@ fn rs_forceatlas2(
     use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
     let precision = parse_precision(use_high_precision, embd.nrows());
 
     match precision {
@@ -435,7 +435,7 @@ fn rs_forceatlas2_from_knn(
     use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
     let precision = parse_precision(use_high_precision, embd.nrows());
 
     match precision {
@@ -508,7 +508,7 @@ fn rs_forceatlas2_from_graph(
     use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
     let precision = parse_precision(use_high_precision, n);
 
     let init = init.into_option();
@@ -585,7 +585,7 @@ fn rs_tsne(
     use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
     let precision = parse_precision(use_high_precision, embd.nrows());
 
     match precision {
@@ -675,7 +675,7 @@ fn rs_tsne_from_knn(
     use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
     let precision = parse_precision(use_high_precision, embd.nrows());
 
     match precision {
@@ -774,7 +774,7 @@ fn rs_densmap(
     use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
     let precision = parse_precision(use_high_precision, embd.nrows());
 
     match precision {
@@ -869,7 +869,7 @@ fn rs_densmap_from_knn(
     use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
     let precision = parse_precision(use_high_precision, embd.nrows());
 
     match precision {
@@ -970,7 +970,7 @@ fn rs_densne(
     use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
     let precision = parse_precision(use_high_precision, embd.nrows());
 
     match precision {
@@ -1063,7 +1063,7 @@ fn rs_densne_from_knn(
     use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
     let precision = parse_precision(use_high_precision, embd.nrows());
 
     match precision {
@@ -1167,7 +1167,7 @@ fn rs_dreams(
     use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
     let precision = parse_precision(use_high_precision, embd.nrows());
     let reference = reference.into_option();
 
@@ -1267,7 +1267,7 @@ fn rs_dreams_from_knn(
     use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
     let precision = parse_precision(use_high_precision, embd.nrows());
     let reference = reference.into_option();
 
@@ -1360,7 +1360,7 @@ fn rs_phate(
     use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
     let precision = parse_precision(use_high_precision, embd.nrows());
 
     match precision {
@@ -1427,7 +1427,7 @@ fn rs_phate_from_knn(
     use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
     let precision = parse_precision(use_high_precision, embd.nrows());
 
     match precision {
@@ -1493,7 +1493,7 @@ fn rs_pacmap(
     use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> Result<RMatrix<f64>, extendr_api::Error> {
-    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
     let precision = parse_precision(use_high_precision, embd.nrows());
 
     match precision {
@@ -1556,7 +1556,7 @@ fn rs_pacmap_from_knn(
     use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> Result<RMatrix<f64>, extendr_api::Error> {
-    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
     let precision = parse_precision(use_high_precision, embd.nrows());
 
     match precision {
@@ -1624,7 +1624,7 @@ fn rs_diffusion_maps(
     use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
     let precision = parse_precision(use_high_precision, embd.nrows());
 
     match precision {
@@ -1689,7 +1689,7 @@ fn rs_diffusion_maps_from_knn(
     use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
     let precision = parse_precision(use_high_precision, embd.nrows());
 
     match precision {
@@ -2009,7 +2009,7 @@ fn rs_evoc(
     use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> Result<List, extendr_api::Error> {
-    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
     let precision = parse_precision(use_high_precision, embd.nrows());
 
     let (res, indices, dist) = match precision {
@@ -2096,7 +2096,7 @@ fn rs_evoc_from_knn(
     use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> Result<List, extendr_api::Error> {
-    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
     let precision = parse_precision(use_high_precision, embd.nrows());
 
     let (res, _, _) = match precision {
