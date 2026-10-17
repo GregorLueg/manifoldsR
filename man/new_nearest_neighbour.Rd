@@ -10,7 +10,7 @@ new_nearest_neighbour(indices, dist, k, n)
 generate_nearest_neigbours_class(indices, dist, k, n)
 }
 \arguments{
-\item{indices}{Integer. Nearest neigbours in flat storage format. Need to
+\item{indices}{Integer. Nearest neighbours in flat storage format. Need to
 be sorted!}
 
 \item{dist}{Numeric. Nearest neighbour distances in flat storarge format.

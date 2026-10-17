@@ -4,7 +4,7 @@
 
 #' Generate a new NearestNeighbours
 #'
-#' @param indices Integer. Nearest neigbours in flat storage format. Need to
+#' @param indices Integer. Nearest neighbours in flat storage format. Need to
 #' be sorted!
 #' @param dist Numeric. Nearest neighbour distances in flat storarge format.
 #' Need to be sorted! On the scale of the metric they were generated with,
@@ -393,7 +393,7 @@ calc_inertia.KMeansCluster <- function(x, data) {
   checkmate::assertClass(x, "KMeansCluster")
   checkmate::assertMatrix(data, mode = "numeric")
 
-  rs_intertia(
+  rs_inertia(
     data = data,
     centroids = x$centroids,
     cluster_membership = x$assignments

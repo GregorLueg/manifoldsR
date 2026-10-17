@@ -248,24 +248,24 @@ Clusters are the easy case. The biased swiss roll samples non-uniformly along
 the roll, so the density gradient is continuous rather than blocky.
 
 ```{r}
-#| label: biased swiss role
-swissrole_data <- manifold_synthetic_data(
-  type = "biased_swiss_role",
+#| label: biased Swiss roll
+swissroll_data <- manifold_synthetic_data(
+  type = "biased_swiss_roll",
   n_samples = 5000L,
-  parameters = params_swiss_role_biased(noise = 0.1, bias = 2.5)
+  parameters = params_swiss_roll_biased(noise = 0.1, bias = 2.5)
 )
 
-swiss_radii <- local_radii(swissrole_data$data)
+swiss_radii <- local_radii(swissroll_data$data)
 
 swiss_umap <- umap(
-  data = swissrole_data$data,
+  data = swissroll_data$data,
   knn_method = "exhaustive",
   seed = 42L,
   .verbose = FALSE
 )
 
 swiss_densmap <- densmap(
-  data = swissrole_data$data,
+  data = swissroll_data$data,
   knn_method = "exhaustive",
   seed = 42L,
   .verbose = FALSE
@@ -273,7 +273,7 @@ swiss_densmap <- densmap(
 ```
 
 ```{r}
-#| label: biased swiss role plot
+#| label: biased Swiss roll plot
 swiss_dt <- function(embd, names) {
   as.data.table(embd) %>%
     `colnames<-`(names) %>%
@@ -300,7 +300,7 @@ ggplot(
 ```
 
 ```{r}
-#| label: biased swiss role correlation
+#| label: biased Swiss roll correlation
 data.table(
   method = c("UMAP", "densMAP"),
   rho = c(

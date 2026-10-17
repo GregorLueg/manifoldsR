@@ -97,8 +97,8 @@ reference:
       - params_dreams
       - params_phate
       - params_umap
-      - params_swiss_role
-      - params_swiss_role_biased
+      - params_swiss_roll
+      - params_swiss_roll_biased
       - params_trajectory
       - params_tsne
   - title: "Rust wrappers"
@@ -106,9 +106,9 @@ reference:
     contents:
       - rs_approx_nearest_neighbours
       - rs_ari
-      - rs_data_biased_swiss_role
+      - rs_data_biased_swiss_roll
       - rs_data_clusters
-      - rs_data_swiss_role
+      - rs_data_swiss_roll
       - rs_data_trajectory
       - rs_data_hierarchical
       - rs_densmap
@@ -124,7 +124,7 @@ reference:
       - rs_forceatlas2
       - rs_forceatlas2_from_graph
       - rs_forceatlas2_from_knn
-      - rs_intertia
+      - rs_inertia
       - rs_k_means
       - rs_k_means_mini_batch
       - rs_pacmap

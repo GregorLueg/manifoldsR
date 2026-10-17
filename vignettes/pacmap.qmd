@@ -79,8 +79,8 @@ cluster_data <- manifold_synthetic_data(
   parameters = params_clusters(n_clusters = 15L)
 )
 
-swissrole_data <- manifold_synthetic_data(
-  type = "swiss_role",
+swissroll_data <- manifold_synthetic_data(
+  type = "swiss_roll",
   n_samples = 1000L
 )
 
@@ -152,15 +152,15 @@ The clusters are well-separated. Another interesting detail is that we have
 some points that are further away from the rest and the actual statistical
 noise of the data is being better captured here.
 
-### Swiss role
+### Swiss roll
 
-The swiss role tests continuous manifold preservation. PaCMAP should unroll it
+The Swiss roll tests continuous manifold preservation. PaCMAP should unroll it
 cleanly, with the colour gradient along the roll preserved in the embedding.
 
 ```{r}
-#| label: swissrole data - pacmap
-pacmap_swissrole <- pacmap(
-  data = swissrole_data$data,
+#| label: swissroll data - pacmap
+pacmap_swissroll <- pacmap(
+  data = swissroll_data$data,
   knn_method = "exhaustive",
   pacmap_params = params_pacmap(
     optimiser = "adam_parallel"
@@ -168,12 +168,12 @@ pacmap_swissrole <- pacmap(
   seed = 42L
 )
 
-pacmap_swissrole_df <- as.data.table(pacmap_swissrole) %>%
+pacmap_swissroll_df <- as.data.table(pacmap_swissroll) %>%
   `colnames<-`(c("PaCMAP1", "PaCMAP2")) %>%
-  .[, z_axis := swissrole_data$data[, 3]]
+  .[, z_axis := swissroll_data$data[, 3]]
 
 ggplot(
-  data = pacmap_swissrole_df,
+  data = pacmap_swissroll_df,
   mapping = aes(x = PaCMAP1, y = PaCMAP2)
 ) +
   geom_point(
@@ -184,7 +184,7 @@ ggplot(
   ) +
   scale_fill_viridis_c() +
   theme_bw() +
-  ggtitle("PaCMAP on swiss role data")
+  ggtitle("PaCMAP on Swiss roll data")
 ```
 
 Also, in this case, PaCMAP can actually identify the underlying Swissrole

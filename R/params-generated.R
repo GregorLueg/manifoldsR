@@ -911,7 +911,7 @@ params_phate <- function(
 #' }
 #'
 #' @export
-params_swiss_role <- function(
+params_swiss_roll <- function(
   noise = 0.1
 ) {
   # Checks
@@ -939,7 +939,7 @@ params_swiss_role <- function(
 #' }
 #'
 #' @export
-params_swiss_role_biased <- function(
+params_swiss_roll_biased <- function(
   noise = 0.1,
   bias = 2.5
 ) {

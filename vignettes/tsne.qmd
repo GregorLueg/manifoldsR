@@ -80,8 +80,8 @@ cluster_data <- manifold_synthetic_data(
   n_samples = 25000L
 )
 
-swissrole_data <- manifold_synthetic_data(
-  type = "swiss_role",
+swissroll_data <- manifold_synthetic_data(
+  type = "swiss_roll",
   n_samples = 1000L
 )
 
@@ -143,20 +143,20 @@ faithful global geometry.
 
 ### Swissrole
 
-Let's look at the swiss role, where UMAP struggled due to its graph-based
+Let's look at the Swiss roll, where UMAP struggled due to its graph-based
 objective. We will need higher perplexity values here to emphasise the global
 structure more. Similar to last UMAP, let's start with PCA:
 
 ```{r}
-#| label: swissrole data - pca
-pca_swiss_role <- prcomp(swissrole_data$data)
+#| label: swissroll data - pca
+pca_swiss_roll <- prcomp(swissroll_data$data)
 
-pca_swiss_role_df <- as.data.table(pca_swiss_role$x[, 1:2]) %>%
+pca_swiss_roll_df <- as.data.table(pca_swiss_roll$x[, 1:2]) %>%
   `colnames<-`(c("PC1", "PC2")) %>%
-  .[, z_axis := swissrole_data$data[, 3]]
+  .[, z_axis := swissroll_data$data[, 3]]
 
 ggplot(
-  data = pca_swiss_role_df,
+  data = pca_swiss_roll_df,
   mapping = aes(x = PC1, y = PC2)
 ) +
   geom_point(
@@ -167,26 +167,26 @@ ggplot(
   ) +
   scale_fill_viridis_c() +
   theme_bw() +
-  ggtitle("PCA on swissrole")
+  ggtitle("PCA on swissroll")
 ``` 
 
 And compare against tSNE:
 
 ```{r}
-#| label: swissrole data - tsne
-tsne_swissrole <- tsne(
-  data = swissrole_data$data,
+#| label: swissroll data - tsne
+tsne_swissroll <- tsne(
+  data = swissroll_data$data,
   knn_method = "exhaustive",
   perplexity = 50L, # we need to increase perplexity to capture the global structure
   seed = 42L
 )
 
-tsne_swissrole_df <- as.data.table(tsne_swissrole) %>%
+tsne_swissroll_df <- as.data.table(tsne_swissroll) %>%
   `colnames<-`(c("tSNE1", "tSNE2")) %>%
-  .[, z_axis := swissrole_data$data[, 3]]
+  .[, z_axis := swissroll_data$data[, 3]]
 
 ggplot(
-  data = tsne_swissrole_df,
+  data = tsne_swissroll_df,
   mapping = aes(x = tSNE1, y = tSNE2)
 ) +
   geom_point(
@@ -197,10 +197,10 @@ ggplot(
   ) +
   scale_fill_viridis_c() +
   theme_bw() +
-  ggtitle("tSNE (BH) on swissrole")
+  ggtitle("tSNE (BH) on swissroll")
 ```
 
-t-SNE handles the swiss role more gracefully than UMAP, preserving more of the
+t-SNE handles the Swiss roll more gracefully than UMAP, preserving more of the
 continuous colour gradient along the roll. That said, it is still not perfect
 — this is still better approached with PCA or dedicated manifold unrolling
 methods (check out PHATE here).

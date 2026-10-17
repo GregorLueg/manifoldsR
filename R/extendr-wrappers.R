@@ -676,27 +676,27 @@ rs_k_means_mini_batch <- function(data, k, kmeans_params, seed, verbose) .Call(w
 #' @export
 rs_approx_nearest_neighbours <- function(data, k, ann_method, ann_params, seed, verbose) .Call(wrap__rs_approx_nearest_neighbours, data, k, ann_method, ann_params, seed, verbose)
 
-#' Generates the SwissRole data
+#' Generates Swiss roll data
 #'
 #' @description
 #' `r lifecycle::badge("experimental")`
-#' Generates synthetic data, i.e., the Swiss role to test different manifold
+#' Generates synthetic data, i.e., the Swiss roll to test different manifold
 #' learning techniques
 #'
 #' @param n_samples Integer. Number of data points to generate.
 #' @param noise Numeric. How much noise to add.
 #' @param seed Integer. For reproducibility purposes
 #'
-#' @return The swiss role synthetic data with the desired parameters.
+#' @return The Swiss roll synthetic data with the desired parameters.
 #'
 #' @export
-rs_data_swiss_role <- function(n_samples, noise, seed) .Call(wrap__rs_data_swiss_role, n_samples, noise, seed)
+rs_data_swiss_roll <- function(n_samples, noise, seed) .Call(wrap__rs_data_swiss_roll, n_samples, noise, seed)
 
-#' Generates the SwissRole data
+#' Generates biased Swiss roll data
 #'
 #' @description
 #' `r lifecycle::badge("experimental")`
-#' Generates synthetic data, i.e., the Swiss role to test different manifold
+#' Generates synthetic data, i.e., the Swiss roll to test different manifold
 #' learning techniques
 #'
 #' @param n_samples Integer. Number of data points to generate.
@@ -706,10 +706,10 @@ rs_data_swiss_role <- function(n_samples, noise, seed) .Call(wrap__rs_data_swiss
 #' value of `2.5` mirrors the trajectory accumulation behaviour.
 #' @param seed Integer. For reproducibility purposes
 #'
-#' @return The biased swiss role synthetic data with the desired parameters.
+#' @return The biased Swiss roll synthetic data with the desired parameters.
 #'
 #' @export
-rs_data_biased_swiss_role <- function(n_samples, noise, bias, seed) .Call(wrap__rs_data_biased_swiss_role, n_samples, noise, bias, seed)
+rs_data_biased_swiss_roll <- function(n_samples, noise, bias, seed) .Call(wrap__rs_data_biased_swiss_roll, n_samples, noise, bias, seed)
 
 #' Generates clustered data
 #'
@@ -843,7 +843,7 @@ rs_ari <- function(cluster_membership_a, cluster_membership_b) .Call(wrap__rs_ar
 #' @export
 rs_silhouette_score <- function(data, cluster_membership) .Call(wrap__rs_silhouette_score, data, cluster_membership)
 
-#' Calculates the intertia for k-means clustering
+#' Calculates the inertia for k-means clustering
 #'
 #' @description
 #' `r lifecycle::badge("experimental")`
@@ -857,6 +857,6 @@ rs_silhouette_score <- function(data, cluster_membership) .Call(wrap__rs_silhoue
 #' @returns The inertia score
 #'
 #' @export
-rs_intertia <- function(data, centroids, cluster_membership) .Call(wrap__rs_intertia, data, centroids, cluster_membership)
+rs_inertia <- function(data, centroids, cluster_membership) .Call(wrap__rs_inertia, data, centroids, cluster_membership)
 
 # nolint end

@@ -733,7 +733,7 @@ assertPhateParams <- checkmate::makeAssertionFunction(checkPhateParams)
 
 #' Check swiss roll params
 #'
-#' @description Checkmate extension for the output of [params_swiss_role()].
+#' @description Checkmate extension for the output of [params_swiss_roll()].
 #'
 #' @param x The object to check.
 #'
@@ -741,7 +741,7 @@ assertPhateParams <- checkmate::makeAssertionFunction(checkPhateParams)
 #' checkmate-style error string.
 #'
 #' @keywords internal
-checkSwissRoleParams <- function(x) {
+checkSwissRollParams <- function(x) {
   res <- check_list_shape(x, "noise")
   if (!isTRUE(res)) {
     return(res)
@@ -763,7 +763,7 @@ checkSwissRoleParams <- function(x) {
 
 #' Assert swiss roll params
 #'
-#' @inheritParams checkSwissRoleParams
+#' @inheritParams checkSwissRollParams
 #' @param .var.name Name of the checked object to print in assertions.
 #' @param add Collection to store assertion messages. See
 #' [checkmate::makeAssertCollection()].
@@ -772,12 +772,12 @@ checkSwissRoleParams <- function(x) {
 #' successful.
 #'
 #' @keywords internal
-assertSwissRoleParams <- checkmate::makeAssertionFunction(checkSwissRoleParams)
+assertSwissRollParams <- checkmate::makeAssertionFunction(checkSwissRollParams)
 
 #' Check biased swiss roll params
 #'
 #' @description Checkmate extension for the output of
-#' [params_swiss_role_biased()].
+#' [params_swiss_roll_biased()].
 #'
 #' @param x The object to check.
 #'
@@ -785,7 +785,7 @@ assertSwissRoleParams <- checkmate::makeAssertionFunction(checkSwissRoleParams)
 #' checkmate-style error string.
 #'
 #' @keywords internal
-checkSwissRoleBiasedParams <- function(x) {
+checkSwissRollBiasedParams <- function(x) {
   res <- check_list_shape(x, c("noise", "bias"))
   if (!isTRUE(res)) {
     return(res)
@@ -808,7 +808,7 @@ checkSwissRoleBiasedParams <- function(x) {
 
 #' Assert biased swiss roll params
 #'
-#' @inheritParams checkSwissRoleBiasedParams
+#' @inheritParams checkSwissRollBiasedParams
 #' @param .var.name Name of the checked object to print in assertions.
 #' @param add Collection to store assertion messages. See
 #' [checkmate::makeAssertCollection()].
@@ -817,8 +817,8 @@ checkSwissRoleBiasedParams <- function(x) {
 #' successful.
 #'
 #' @keywords internal
-assertSwissRoleBiasedParams <- checkmate::makeAssertionFunction(
-  checkSwissRoleBiasedParams
+assertSwissRollBiasedParams <- checkmate::makeAssertionFunction(
+  checkSwissRollBiasedParams
 )
 
 #' Check trajectory params

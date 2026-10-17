@@ -70,8 +70,8 @@ extendr_module! {
     // nn utils
     fn rs_approx_nearest_neighbours;
     // synthetic data
-    fn rs_data_swiss_role;
-    fn rs_data_biased_swiss_role;
+    fn rs_data_swiss_roll;
+    fn rs_data_biased_swiss_roll;
     fn rs_data_clusters;
     fn rs_data_trajectory;
     fn rs_data_hierarchical;
@@ -79,7 +79,7 @@ extendr_module! {
     fn rs_check_cluster_separation;
     fn rs_ari;
     fn rs_silhouette_score;
-    fn rs_intertia;
+    fn rs_inertia;
 }
 
 ////////////
@@ -1724,32 +1724,32 @@ fn rs_diffusion_maps_from_knn(
 // Synthetic data sets //
 /////////////////////////
 
-/// Generates the SwissRole data
+/// Generates Swiss roll data
 ///
 /// @description
 /// `r lifecycle::badge("experimental")`
-/// Generates synthetic data, i.e., the Swiss role to test different manifold
+/// Generates synthetic data, i.e., the Swiss roll to test different manifold
 /// learning techniques
 ///
 /// @param n_samples Integer. Number of data points to generate.
 /// @param noise Numeric. How much noise to add.
 /// @param seed Integer. For reproducibility purposes
 ///
-/// @return The swiss role synthetic data with the desired parameters.
+/// @return The Swiss roll synthetic data with the desired parameters.
 ///
 /// @export
 #[extendr]
-fn rs_data_swiss_role(n_samples: usize, noise: f64, seed: usize) -> RMatrix<f64> {
+fn rs_data_swiss_roll(n_samples: usize, noise: f64, seed: usize) -> RMatrix<f64> {
     let res = generate_swiss_roll(n_samples, noise, seed as u64);
 
     faer_to_r_matrix(res.as_ref())
 }
 
-/// Generates the SwissRole data
+/// Generates biased Swiss roll data
 ///
 /// @description
 /// `r lifecycle::badge("experimental")`
-/// Generates synthetic data, i.e., the Swiss role to test different manifold
+/// Generates synthetic data, i.e., the Swiss roll to test different manifold
 /// learning techniques
 ///
 /// @param n_samples Integer. Number of data points to generate.
@@ -1759,11 +1759,11 @@ fn rs_data_swiss_role(n_samples: usize, noise: f64, seed: usize) -> RMatrix<f64>
 /// value of `2.5` mirrors the trajectory accumulation behaviour.
 /// @param seed Integer. For reproducibility purposes
 ///
-/// @return The biased swiss role synthetic data with the desired parameters.
+/// @return The biased Swiss roll synthetic data with the desired parameters.
 ///
 /// @export
 #[extendr]
-fn rs_data_biased_swiss_role(n_samples: usize, noise: f64, bias: f64, seed: usize) -> RMatrix<f64> {
+fn rs_data_biased_swiss_roll(n_samples: usize, noise: f64, bias: f64, seed: usize) -> RMatrix<f64> {
     let (res, _) = generate_swiss_roll_biased(n_samples, noise, bias, seed as u64);
 
     faer_to_r_matrix(res.as_ref())
@@ -2354,7 +2354,7 @@ fn rs_silhouette_score(data: RMatrix<f64>, cluster_membership: &[i32]) -> List {
     )
 }
 
-/// Calculates the intertia for k-means clustering
+/// Calculates the inertia for k-means clustering
 ///
 /// @description
 /// `r lifecycle::badge("experimental")`
@@ -2369,7 +2369,7 @@ fn rs_silhouette_score(data: RMatrix<f64>, cluster_membership: &[i32]) -> List {
 ///
 /// @export
 #[extendr]
-fn rs_intertia(data: RMatrix<f64>, centroids: RMatrix<f64>, cluster_membership: &[i32]) -> f64 {
+fn rs_inertia(data: RMatrix<f64>, centroids: RMatrix<f64>, cluster_membership: &[i32]) -> f64 {
     let data = r_matrix_to_faer(&data);
     let centroids = r_matrix_to_faer(&centroids);
     let cluster_membership = cluster_membership.r_int_convert();

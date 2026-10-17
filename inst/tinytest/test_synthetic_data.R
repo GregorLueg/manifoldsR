@@ -2,10 +2,10 @@
 
 n_samples <- 1000L
 
-## swiss role ------------------------------------------------------------------
+## Swiss roll ------------------------------------------------------------------
 
 swiss <- manifold_synthetic_data(
-  type = "swiss_role",
+  type = "swiss_roll",
   n_samples = n_samples,
   seed = 42L
 )
@@ -16,12 +16,12 @@ expect_true(
     mode = "numeric",
     nrow = n_samples
   ),
-  info = "swiss_role returns numeric matrix with correct number of rows"
+  info = "swiss_roll returns numeric matrix with correct number of rows"
 )
 
 expect_null(
   current = swiss$membership,
-  info = "swiss_role membership is NULL"
+  info = "swiss_roll membership is NULL"
 )
 
 ## clusters --------------------------------------------------------------------
@@ -177,7 +177,7 @@ expect_equal(
 ## input validation ------------------------------------------------------------
 
 expect_error(
-  current = manifold_synthetic_data(type = "swiss_role", n_samples = -1L),
+  current = manifold_synthetic_data(type = "swiss_roll", n_samples = -1L),
   info = "negative n_samples raises error"
 )
 

@@ -74,7 +74,7 @@ need to be aware of this!
 # flat representation of the indices
 indices_flat <- get_idx_flat(exhaustive)
 
-# as N x idx nearest neigbours matrix
+# as N x idx nearest neighbours matrix
 indices_mat <- get_idx_mat(exhaustive)
 ```
 
@@ -85,7 +85,7 @@ The distances can also be extracted easily:
 # flat representation of the distances
 dist_flat <- get_dist_flat(exhaustive)
 
-# as N x idx nearest neigbours matrix
+# as N x idx nearest neighbours matrix
 dist_mat <- get_dist_mat(exhaustive)
 ```
 
