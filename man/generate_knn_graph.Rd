@@ -58,3 +58,9 @@ and probing a few of the clusters.
 inequality
 }
 }
+\examples{
+d <- manifold_synthetic_data(type = "clusters", n_samples = 500L)
+knn <- generate_knn_graph(d$data, k = 15L, .verbose = FALSE)
+knn
+
+}

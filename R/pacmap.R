@@ -83,6 +83,11 @@
 #' @return A numerical matrix with dimensions samples x n_dim containing
 #' the PaCMAP embedding.
 #'
+#' @examples
+#' d <- manifold_synthetic_data(type = "clusters", n_samples = 500L)
+#' emb <- pacmap(d$data, .verbose = FALSE)
+#' dim(emb)
+#'
 #' @export
 pacmap <- function(
   data,

@@ -48,3 +48,12 @@ A unified wrapper function for generating various types of
 synthetic data to test manifold learning techniques and demonstrate
 differences.
 }
+\examples{
+d <- manifold_synthetic_data(type = "clusters", n_samples = 500L)
+dim(d$data)
+table(d$membership)
+
+roll <- manifold_synthetic_data(type = "swiss_roll", n_samples = 500L)
+dim(roll$data)
+
+}

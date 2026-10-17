@@ -67,6 +67,11 @@
 #'
 #' @references Jacomy, et al., PLoS ONE, 2014
 #'
+#' @examples
+#' d <- manifold_synthetic_data(type = "clusters", n_samples = 500L)
+#' emb <- forceatlas2(d$data, .verbose = FALSE)
+#' dim(emb)
+#'
 #' @export
 forceatlas2 <- function(
   data,
@@ -167,6 +172,13 @@ forceatlas2 <- function(
 #' the ForceAtlas2 layout, rows in vertex order.
 #'
 #' @references Jacomy, et al., PLoS ONE, 2014
+#'
+#' @examples
+#' if (requireNamespace("igraph", quietly = TRUE)) {
+#'   g <- igraph::sample_gnp(200L, 0.05)
+#'   emb <- forceatlas2_from_graph(g, .verbose = FALSE)
+#'   dim(emb)
+#' }
 #'
 #' @export
 forceatlas2_from_graph <- function(

@@ -18,3 +18,9 @@ A \code{NearestNeighbours} object, or \code{NULL} if the kNN was not stored.
 \description{
 Get the kNN graph from an Evoc object
 }
+\examples{
+d <- manifold_synthetic_data(type = "clusters", n_samples = 500L)
+res <- evoc(d$data, return_knn = TRUE, .verbose = FALSE)
+get_nearest_neighbours(res)
+
+}

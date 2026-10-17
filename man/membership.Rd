@@ -19,3 +19,9 @@ Integer vector of length samples with cluster assignments
 \description{
 Get cluster assignments
 }
+\examples{
+d <- manifold_synthetic_data(type = "clusters", n_samples = 500L)
+km <- kmeans_cluster(d$data, k = 4L, .verbose = FALSE)
+table(membership(km))
+
+}

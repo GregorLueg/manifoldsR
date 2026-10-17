@@ -40,6 +40,11 @@
 #' after, so `dist_metric = "euclidean"` returns Euclidean distance, not the
 #' squared Euclidean the backends sort on internally.
 #'
+#' @examples
+#' d <- manifold_synthetic_data(type = "clusters", n_samples = 500L)
+#' knn <- generate_knn_graph(d$data, k = 15L, .verbose = FALSE)
+#' knn
+#'
 #' @export
 generate_knn_graph <- function(
   data,

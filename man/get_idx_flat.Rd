@@ -19,3 +19,9 @@ The indices in a flat format like
 \description{
 Get the indices as a flat vector
 }
+\examples{
+d <- manifold_synthetic_data(type = "clusters", n_samples = 500L)
+knn <- generate_knn_graph(d$data, k = 15L, .verbose = FALSE)
+head(get_idx_flat(knn))
+
+}
