@@ -200,6 +200,7 @@ km_mini <- kmeans_cluster(
 
 ```{r}
 #| label: kmeans - over-specified plot
+#| eval: !expr requireNamespace("gridExtra", quietly = TRUE)
 #| fig-height: 4
 #| fig-width: 10
 base_df[, `:=`(
@@ -433,6 +434,7 @@ Let's just compare at the end the methods
 
 ```{r}
 #| label: comparison
+#| eval: !expr requireNamespace("gridExtra", quietly = TRUE)
 #| fig-height: 6
 #| fig-width: 18
 base_df[, evoc_approx_label := as.factor(evoc_approx_best$labels)]

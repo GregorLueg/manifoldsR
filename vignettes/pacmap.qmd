@@ -370,36 +370,5 @@ We can appreciate that the points are now all squashed into single points. This
 is the overall macrostructure in the data.
 
 ## Benchmarks
-```{r}
-#| label: benchmark
-#| eval: !expr requireNamespace("microbenchmark", quietly = TRUE)
-benchmark_data <- manifold_synthetic_data(
-  type = "cluster",
-  n_samples = 10000L
-)
 
-microbenchmark::microbenchmark(
-  manifold_umap = {
-    umap(
-      data = benchmark_data$data,
-      k = 15L,
-      seed = 42L,
-      .verbose = FALSE
-    )
-  },
-  manifold_pacmap = {
-    pacmap(
-      data = benchmark_data$data,
-      seed = 42L,
-      .verbose = FALSE
-    )
-  },
-  times = 3L
-)
-```
-
-PaCMAP is generally slower than UMAP on the same data since it processes all
-pairs every epoch rather than sampling. The three-phase schedule with 450 epochs
-(vs UMAP's 200–500) compounds this. For most datasets up to ~50k samples this
-is not a concern in practice, but on very large data the difference becomes
-noticeable. 
+Speed comparisons against other packages live in the [benchmarks article](https://gregorlueg.github.io/manifoldsR/articles/benchmarks.html).

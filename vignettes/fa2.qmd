@@ -208,6 +208,7 @@ into one edge and drops self-loops.
 
 ```{r}
 #| label: own graph - build
+#| eval: !expr requireNamespace("igraph", quietly = TRUE)
 knn <- generate_knn_graph(
   data = trajectory_data$data,
   k = 15L
@@ -230,6 +231,7 @@ If the graph has a `weight` edge attribute, FA2 uses it (raised to the power
 
 ```{r}
 #| label: own graph - random init
+#| eval: !expr requireNamespace("igraph", quietly = TRUE)
 fa2_graph <- forceatlas2_from_graph(graph = knn_graph)
 
 fa2_graph_df <- as.data.table(fa2_graph) %>%
@@ -250,6 +252,7 @@ a UMAP of the same data, reusing the kNN search:
 
 ```{r}
 #| label: own graph - umap init
+#| eval: !expr requireNamespace("igraph", quietly = TRUE)
 umap_init <- umap(
   data = trajectory_data$data,
   knn = knn,
