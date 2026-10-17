@@ -54,7 +54,7 @@
 ## Features
 
 - Wired in [ForceAtlas2](https://doi.org/10.1371/journal.pone.0098679) from
-  [manifolds-rs](https://crates.io/crates/manifolds-rs).
+  [manifolds-rs](https://docs.rs/manifolds-rs).
 
 # manifoldsR 0.3.2
 
@@ -76,7 +76,7 @@ Major release
 ## Features
 
 - A lot of the backend code in Rust changed. This gives in parts substantially
-  faster kNN searches from [ann-search-rs](https://crates.io/crates/ann-search-rs)
+  faster kNN searches from [ann-search-rs](https://docs.rs/ann-search-rs)
   (`"v0.8.1"`).
 
 ## Breaking change
