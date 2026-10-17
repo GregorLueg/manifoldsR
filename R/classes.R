@@ -485,7 +485,7 @@ print.KMeansCluster <- function(x, ...) {
     "  sizes:      min=",
     min(sizes),
     " median=",
-    median(sizes),
+    stats::median(sizes),
     " max=",
     max(sizes),
     "\n"

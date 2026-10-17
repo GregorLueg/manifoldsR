@@ -40,7 +40,8 @@ Roxygen: list(markdown = TRUE)
 Imports:
     checkmate,
     lifecycle,
-    purrr
+    purrr,
+    stats
 Config/rextendr/version: 0.5.0
 SystemRequirements: Cargo (Rust's package manager), rustc >= 1.90, xz
 Depends:
