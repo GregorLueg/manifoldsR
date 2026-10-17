@@ -46,15 +46,16 @@ SystemRequirements: Cargo (Rust's package manager), rustc >= 1.90, xz
 Depends:
     R (>= 4.2)
 Suggests:
+    igraph,
+    tinytest,
+    zeallot
+Config/Needs/website:
     data.table,
     ggplot2,
     gridExtra,
-    igraph,
     knitr,
     magrittr,
-    quarto,
-    tinytest,
-    zeallot
+    quarto
 Config/Needs/benchmarks:
     microbenchmark,
     phateR,
@@ -62,7 +63,6 @@ Config/Needs/benchmarks:
     Rtsne,
     umap,
     uwot
-VignetteBuilder: quarto
 URL: https://gregorlueg.github.io/manifoldsR/, https://github.com/GregorLueg/manifoldsR
 BugReports: https://github.com/GregorLueg/manifoldsR/issues
 Config/roxygen2/version: 8.1.0

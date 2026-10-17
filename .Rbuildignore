@@ -5,8 +5,7 @@
 ^src/rust/target$
 ^src/Makevars$
 ^src/Makevars\.win$
-^vignettes/\.quarto$
-^vignettes/*_files$
+^vignettes$
 ^doc$
 ^Meta$
 ^_pkgdown\.yml$
@@ -23,6 +22,5 @@
 ^tools/vendor\.sh$
 ^cran-comments\.md$
 ^CRAN-SUBMISSION$
-^vignettes/articles$
 ^inst/params$
 ^\.git$
