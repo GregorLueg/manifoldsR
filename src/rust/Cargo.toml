@@ -21,7 +21,7 @@ rand = "0.10.0"
 rayon = "1.11.0"
 rustc-hash = "2.1.2"
 rand_distr = "0.5.1"
-manifolds-rs = { version = "0.7.0", features = ["fft_tsne"] }
+manifolds-rs = { version = "0.7.2", features = ["fft_tsne"] }
 
 [profile.test]
 opt-level = 3
