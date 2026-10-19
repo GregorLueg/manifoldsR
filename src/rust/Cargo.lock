@@ -84,7 +84,8 @@ checksum = "3ded4057c258ba199e2d26386d3af3780957ecaee6c4ef4041c6b4b8b97c0b06"
 [[package]]
 name = "bixverse-core"
 version = "0.8.0"
-source = "git+https://github.com/GregorLueg/bixverse-rs.git?branch=feat-remove-dependencies#fd6cc90d035a0c012a43f12312aeff7d3816a7c4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0681ce9750935aed4bf05cf8dccf6d9dc286891a3f3997ad8020b4a6dbb52880"
 dependencies = [
  "ann-search-rs",
  "approx",
@@ -106,7 +107,8 @@ dependencies = [
 [[package]]
 name = "bixverse-methods"
 version = "0.8.0"
-source = "git+https://github.com/GregorLueg/bixverse-rs.git?branch=feat-remove-dependencies#fd6cc90d035a0c012a43f12312aeff7d3816a7c4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "187fbb1483e5f38e8cc9a94c0a261a5b012bc86395a7a3b265a2ce7a8e75802d"
 dependencies = [
  "ann-search-rs",
  "approx",
@@ -126,7 +128,8 @@ dependencies = [
 [[package]]
 name = "bixverse-r"
 version = "0.8.0"
-source = "git+https://github.com/GregorLueg/bixverse-rs.git?branch=feat-remove-dependencies#fd6cc90d035a0c012a43f12312aeff7d3816a7c4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fea6f94f2f484e72f7051c0d51cf0e0a8df10e1e79cd4297561586da8bf0ccac"
 dependencies = [
  "ann-search-rs",
  "bixverse-rs",
@@ -143,7 +146,8 @@ dependencies = [
 [[package]]
 name = "bixverse-rs"
 version = "0.8.0"
-source = "git+https://github.com/GregorLueg/bixverse-rs.git?branch=feat-remove-dependencies#fd6cc90d035a0c012a43f12312aeff7d3816a7c4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e0027dedcaa7f0855f487a11150e9c97e7f6c9096c200ad60306fe723ad8d2d5"
 dependencies = [
  "bixverse-core",
  "bixverse-methods",
