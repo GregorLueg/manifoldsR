@@ -21,7 +21,7 @@ The package wraps the Rust crates 'manifolds-rs', 'ann-search-rs' and
   set, unless the user already set `RAYON_NUM_THREADS`.
 
 The tarball is 7.9 MB, almost all of it the vendored crates (`vendor.tar.xz`
-is 7.7 MB after dropping crates that only compile on platforms CRAN does not
+is 7.3 MB after dropping crates that only compile on platforms CRAN does not
 build for, and unused Win32 bindings in 'windows-sys').
 
 ## R CMD check results
@@ -33,5 +33,5 @@ build for, and unused Win32 bindings in 'windows-sys').
   and Jacomy are author names; UMAP, SNE, densMAP, PHATE, PaCMAP, EVoC and
   ForceAtlas are method names; "neighbour" is British spelling.
 
-The installed size is 17.7 MB, of which `libs` is 16.9 MB: the statically
+The installed size is 18.1 MB, of which `libs` is 17.3 MB: the statically
 linked Rust library.

@@ -1,3 +1,33 @@
+# manifoldsR 0.5.0
+
+First CRAN release.
+
+## Breaking changes
+
+- Typos fixed in exported names: `params_swiss_role()`,
+  `params_swiss_role_biased()`, `rs_data_swiss_role()`,
+  `rs_data_biased_swiss_role()` and `rs_intertia()` are now
+  `params_swiss_roll()`, `params_swiss_roll_biased()`, `rs_data_swiss_roll()`,
+  `rs_data_biased_swiss_roll()` and `rs_inertia()`. The old names still work
+  but throw a deprecation warning and will go in a future release.
+
+## Features
+
+- Rayon's thread pool is capped at two threads when `_R_CHECK_LIMIT_CORES_` is
+  set (i.e. under `R CMD check --as-cran`), unless `RAYON_NUM_THREADS` is
+  already set.
+- `use_high_precision = NA` now warns and falls back to `TRUE` instead of
+  silently doing so.
+
+## Internals
+
+- All Rust crates are vendored into `src/rust/vendor.tar.xz` and the build runs
+  offline. The vendored set is filtered to the CRAN platforms.
+- Rust output goes through R's console (`rprintln!`) rather than stdout.
+- Vignettes are pkgdown-only articles now and no longer ship with the package.
+- Examples added to all user-facing exports.
+- Backend bumps: `manifolds-rs` 0.7.2 and `bixverse-rs` 0.8.0.
+
 # manifoldsR 0.4.0
 
 ## Features
