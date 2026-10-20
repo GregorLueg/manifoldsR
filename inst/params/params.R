@@ -596,8 +596,8 @@ spec_diffusion_maps <- param_spec(
 
 # synthetic data ---------------------------------------------------------------
 
-spec_swiss_role <- param_spec(
-  name = "swiss_role",
+spec_swiss_roll <- param_spec(
+  name = "swiss_roll",
   title = "Parameters for swiss roll data generation",
   description = "For use with [manifold_synthetic_data()].",
   label = "swiss roll params",
@@ -606,8 +606,8 @@ spec_swiss_role <- param_spec(
   )
 )
 
-spec_swiss_role_biased <- param_spec(
-  name = "swiss_role_biased",
+spec_swiss_roll_biased <- param_spec(
+  name = "swiss_roll_biased",
   title = "Parameters for biased swiss roll data generation",
   description = "For use with [manifold_synthetic_data()].",
   label = "biased swiss roll params",

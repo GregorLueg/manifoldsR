@@ -71,6 +71,11 @@
 #' @return A numerical matrix with dimensions samples x n_dim containing the
 #' diffusion maps embedding.
 #'
+#' @examples
+#' d <- manifold_synthetic_data(type = "clusters", n_samples = 500L)
+#' emb <- diffusion_maps(d$data, .verbose = FALSE)
+#' dim(emb)
+#'
 #' @export
 diffusion_maps <- function(
   data,

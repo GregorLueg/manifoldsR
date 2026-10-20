@@ -20,3 +20,9 @@ assignments, \code{-1} for noise), \code{membership} (numeric vector of strength
 \description{
 Get the cluster membership at the best persistence score
 }
+\examples{
+d <- manifold_synthetic_data(type = "clusters", n_samples = 500L)
+res <- evoc(d$data, .verbose = FALSE)
+table(best_membership(res)$cluster)
+
+}

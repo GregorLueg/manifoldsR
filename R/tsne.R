@@ -82,6 +82,11 @@
 #' @return A numerical matrix with dimensions samples x n_dim containing
 #' the t-SNE embedding.
 #'
+#' @examples
+#' d <- manifold_synthetic_data(type = "clusters", n_samples = 500L)
+#' emb <- tsne(d$data, .verbose = FALSE)
+#' dim(emb)
+#'
 #' @export
 tsne <- function(
   data,

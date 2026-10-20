@@ -38,7 +38,7 @@ library(data.table)
 points to the nearest centroid and recomputing centroids as cluster means.
 
 The **full** (Lloyd's) implementation in `manifoldsR` is heavily optimised 
-(original from [ann-search-rs](https://crates.io/crates/ann-search-rs)). For
+(original from [ann-search-rs](https://docs.rs/ann-search-rs)). For
 high-dimensional data (dim >= 96), it defaults to the  Hamerly's algorithm: 
 per-point upper and lower distance bounds prune the vast majority of distance 
 computations after the first few iterations, while GEMM-based assignment 
@@ -200,6 +200,7 @@ km_mini <- kmeans_cluster(
 
 ```{r}
 #| label: kmeans - over-specified plot
+#| eval: !expr requireNamespace("gridExtra", quietly = TRUE)
 #| fig-height: 4
 #| fig-width: 10
 base_df[, `:=`(
@@ -433,6 +434,7 @@ Let's just compare at the end the methods
 
 ```{r}
 #| label: comparison
+#| eval: !expr requireNamespace("gridExtra", quietly = TRUE)
 #| fig-height: 6
 #| fig-width: 18
 base_df[, evoc_approx_label := as.factor(evoc_approx_best$labels)]

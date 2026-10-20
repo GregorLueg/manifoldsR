@@ -56,3 +56,9 @@ Performs EVoC (Embedding Vector Oriented Clustering) on the
 input data. Combines a UMAP-like node embedding with HDBSCAN-style
 density-based clustering and multi-layer persistence analysis.
 }
+\examples{
+d <- manifold_synthetic_data(type = "clusters", n_samples = 500L)
+res <- evoc(d$data, .verbose = FALSE)
+res
+
+}

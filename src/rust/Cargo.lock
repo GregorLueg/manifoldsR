@@ -82,32 +82,76 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3ded4057c258ba199e2d26386d3af3780957ecaee6c4ef4041c6b4b8b97c0b06"
 
 [[package]]
-name = "bixverse-rs"
-version = "0.7.0"
+name = "bixverse-core"
+version = "0.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "25d52de4570e37c8aec9c3f6a9d004e605a1b8c829d8904fce391fb039dc8cf3"
+checksum = "0681ce9750935aed4bf05cf8dccf6d9dc286891a3f3997ad8020b4a6dbb52880"
 dependencies = [
  "ann-search-rs",
  "approx",
  "document-features",
- "either",
- "extendr-api",
  "faer",
  "faer-entity",
  "faer-traits",
- "fmt",
  "num-traits",
- "once_cell",
- "petgraph",
  "rand 0.9.5",
  "rand_distr 0.5.1",
  "rayon",
  "rustc-hash",
- "serde",
  "statrs",
  "thiserror 2.0.21",
  "thousands",
  "wide 1.7.1",
+]
+
+[[package]]
+name = "bixverse-methods"
+version = "0.8.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "187fbb1483e5f38e8cc9a94c0a261a5b012bc86395a7a3b265a2ce7a8e75802d"
+dependencies = [
+ "ann-search-rs",
+ "approx",
+ "bixverse-core",
+ "document-features",
+ "faer",
+ "num-traits",
+ "once_cell",
+ "rand 0.9.5",
+ "rand_distr 0.5.1",
+ "rayon",
+ "rustc-hash",
+ "statrs",
+ "thiserror 2.0.21",
+]
+
+[[package]]
+name = "bixverse-r"
+version = "0.8.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fea6f94f2f484e72f7051c0d51cf0e0a8df10e1e79cd4297561586da8bf0ccac"
+dependencies = [
+ "ann-search-rs",
+ "bixverse-rs",
+ "document-features",
+ "extendr-api",
+ "faer",
+ "faer-entity",
+ "num-traits",
+ "rayon",
+ "rustc-hash",
+ "thiserror 2.0.21",
+]
+
+[[package]]
+name = "bixverse-rs"
+version = "0.8.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e0027dedcaa7f0855f487a11150e9c97e7f6c9096c200ad60306fe723ad8d2d5"
+dependencies = [
+ "bixverse-core",
+ "bixverse-methods",
+ "document-features",
 ]
 
 [[package]]
@@ -464,12 +508,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2b14b339eb76d07f052cdbad76ca7c1310e56173a138095d3bf42a23c06ef5d8"
 
 [[package]]
-name = "equivalent"
-version = "1.0.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "877a4ace8713b0bcf2a4e7eec82529c029f1d0619886d18145fea96c3ffe5c0f"
-
-[[package]]
 name = "evoc-rs"
 version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -586,18 +624,6 @@ name = "fixedbitset"
 version = "0.5.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1d674e81391d1e1ab681a28d99df07927c6d4aa5b027d7da16ba32d1d21ecd99"
-
-[[package]]
-name = "fmt"
-version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "09904adae26440d46daeacb5ed7922fee69d43ebf84d31e078cd49652cecd718"
-
-[[package]]
-name = "foldhash"
-version = "0.1.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d9c4f5dac5e15c24eb999c26181a6ca40b39fe946cbe4c263c7209467bc83af2"
 
 [[package]]
 name = "futures-core"
@@ -812,21 +838,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "hashbrown"
-version = "0.15.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9229cfe53dfd69f0609a49f65461bd93001ea1ef889cd5529dd176593f5338a1"
-dependencies = [
- "foldhash",
-]
-
-[[package]]
-name = "hashbrown"
-version = "0.17.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ed5909b6e89a2db4456e54cd5f673791d7eca6732202bbf2a9cc504fe2f9b84a"
-
-[[package]]
 name = "heck"
 version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -837,16 +848,6 @@ name = "hermit-abi"
 version = "0.5.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e17592d60ebacc7d5e169f4663c5f84f9161cc90328abcfe8456f41e4dfcb284"
-
-[[package]]
-name = "indexmap"
-version = "2.14.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cc4e190f5d26ca7051642629da2c52fc03bde85a03197c99408dcd291734c855"
-dependencies = [
- "equivalent",
- "hashbrown 0.17.1",
-]
 
 [[package]]
 name = "interpol"
@@ -941,9 +942,9 @@ dependencies = [
 
 [[package]]
 name = "manifolds-rs"
-version = "0.7.0"
+version = "0.7.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2f2e7889c18977cbc60b93774c40b0ba74cc9fa5a3aa42999a49ee05c5e3a0ec"
+checksum = "73e97d878964e09edfe7418bad8ad655b3ced05f771d2569cdc4fe90376037f7"
 dependencies = [
  "ann-search-rs",
  "approx",
@@ -962,10 +963,10 @@ dependencies = [
 
 [[package]]
 name = "manifoldsr"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "ann-search-rs",
- "bixverse-rs",
+ "bixverse-r",
  "evoc-rs",
  "extendr-api",
  "faer",
@@ -1241,18 +1242,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ed93ba1a9ffcca32130a5188701c81c0c49cf00d4b7c5007d5148951d743adcb"
 dependencies = [
  "pest",
-]
-
-[[package]]
-name = "petgraph"
-version = "0.8.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8701b58ea97060d5e5b155d383a69952a60943f0e6dfe30b04c287beb0b27455"
-dependencies = [
- "fixedbitset",
- "hashbrown 0.15.5",
- "indexmap",
- "serde",
 ]
 
 [[package]]

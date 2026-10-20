@@ -18,3 +18,9 @@ Numeric matrix of shape k x features.
 \description{
 Get cluster centroids
 }
+\examples{
+d <- manifold_synthetic_data(type = "clusters", n_samples = 500L)
+km <- kmeans_cluster(d$data, k = 4L, .verbose = FALSE)
+dim(get_centroids(km))
+
+}

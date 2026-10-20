@@ -52,6 +52,12 @@ union graph and every edge pulls, every node pair pushes (\code{1/d}, with masse
 \code{1 + degree}), plus gravity towards the origin. Repulsion runs on a
 Barnes-Hut tree. Already have a graph? Use \code{\link[=forceatlas2_from_graph]{forceatlas2_from_graph()}}.
 }
+\examples{
+d <- manifold_synthetic_data(type = "clusters", n_samples = 500L)
+emb <- forceatlas2(d$data, .verbose = FALSE)
+dim(emb)
+
+}
 \references{
 Jacomy, et al., PLoS ONE, 2014
 }

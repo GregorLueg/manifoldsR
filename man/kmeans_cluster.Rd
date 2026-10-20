@@ -42,3 +42,9 @@ Performs k-means clustering on the input data. Supports both
 full Lloyd's iterations (with SIMD/GEMM acceleration) and mini-batch k-means
 for large data sets.
 }
+\examples{
+d <- manifold_synthetic_data(type = "clusters", n_samples = 500L)
+km <- kmeans_cluster(d$data, k = 4L, .verbose = FALSE)
+km
+
+}

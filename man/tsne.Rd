@@ -71,3 +71,9 @@ before calling the Rust implementation.
 The number of neighbours will be `3 * perplexity``, as this is a
 usual default in tSNE.
 }
+\examples{
+d <- manifold_synthetic_data(type = "clusters", n_samples = 500L)
+emb <- tsne(d$data, .verbose = FALSE)
+dim(emb)
+
+}

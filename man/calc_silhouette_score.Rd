@@ -26,3 +26,10 @@ points.
 If the membership has only one group, the function will return \code{NaN} for
 \code{mean_silhouette} and \code{silhouette_scores}.
 }
+\examples{
+d <- manifold_synthetic_data(type = "clusters", n_samples = 500L)
+km <- kmeans_cluster(d$data, k = 4L, .verbose = FALSE)
+res <- calc_silhouette_score(d$data, membership(km))
+res$mean_silhouette
+
+}

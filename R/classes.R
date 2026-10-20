@@ -4,7 +4,7 @@
 
 #' Generate a new NearestNeighbours
 #'
-#' @param indices Integer. Nearest neigbours in flat storage format. Need to
+#' @param indices Integer. Nearest neighbours in flat storage format. Need to
 #' be sorted!
 #' @param dist Numeric. Nearest neighbour distances in flat storarge format.
 #' Need to be sorted! On the scale of the metric they were generated with,
@@ -13,6 +13,17 @@
 #' @param n Integer. Number of samples.
 #'
 #' @returns Initialised `NearestNeighbours` class.
+#'
+#' @examples
+#' d <- manifold_synthetic_data(type = "clusters", n_samples = 500L)
+#' knn <- generate_knn_graph(d$data, k = 15L, .verbose = FALSE)
+#' knn2 <- new_nearest_neighbour(
+#'   indices = get_idx_flat(knn),
+#'   dist = get_dist_flat(knn),
+#'   k = 15L,
+#'   n = 500L
+#' )
+#' knn2
 #'
 #' @export
 new_nearest_neighbour <- function(
@@ -50,6 +61,11 @@ new_nearest_neighbour <- function(
 #'
 #' @returns The indices in samples x neighbours format
 #'
+#' @examples
+#' d <- manifold_synthetic_data(type = "clusters", n_samples = 500L)
+#' knn <- generate_knn_graph(d$data, k = 15L, .verbose = FALSE)
+#' dim(get_idx_mat(knn))
+#'
 #' @export
 get_idx_mat <- function(x) {
   UseMethod("get_idx_mat")
@@ -74,6 +90,11 @@ get_idx_mat.NearestNeighbours <- function(x) {
 #' @returns The indices in a flat format like
 #' `c(idx1.1, idx1.2, ... , idx.2.1, idx2.2, ... idx3.1, idx3.2)`
 #'
+#' @examples
+#' d <- manifold_synthetic_data(type = "clusters", n_samples = 500L)
+#' knn <- generate_knn_graph(d$data, k = 15L, .verbose = FALSE)
+#' head(get_idx_flat(knn))
+#'
 #' @export
 get_idx_flat <- function(x) {
   UseMethod("get_idx_flat")
@@ -96,6 +117,11 @@ get_idx_flat.NearestNeighbours <- function(x) {
 #' @param x `NearestNeighbours` class
 #'
 #' @returns The indices in samples x neighbours format
+#'
+#' @examples
+#' d <- manifold_synthetic_data(type = "clusters", n_samples = 500L)
+#' knn <- generate_knn_graph(d$data, k = 15L, .verbose = FALSE)
+#' dim(get_dist_mat(knn))
 #'
 #' @export
 get_dist_mat <- function(x) {
@@ -120,6 +146,11 @@ get_dist_mat.NearestNeighbours <- function(x) {
 #'
 #' @returns The distances in a flat format like
 #' `c(dist1.1, dist1.2, ... , dist2.1, dist2.2, ... dist3.1, dist3.2)`
+#'
+#' @examples
+#' d <- manifold_synthetic_data(type = "clusters", n_samples = 500L)
+#' knn <- generate_knn_graph(d$data, k = 15L, .verbose = FALSE)
+#' head(get_dist_flat(knn))
 #'
 #' @export
 get_dist_flat <- function(x) {
@@ -209,6 +240,11 @@ new_evoc <- function(
 #' assignments, `-1` for noise), `membership` (numeric vector of strengths),
 #' `layer` (which layer index was selected), and `persistence` (the score).
 #'
+#' @examples
+#' d <- manifold_synthetic_data(type = "clusters", n_samples = 500L)
+#' res <- evoc(d$data, .verbose = FALSE)
+#' table(best_membership(res)$cluster)
+#'
 #' @export
 best_membership <- function(x) {
   UseMethod("best_membership")
@@ -233,6 +269,11 @@ best_membership.Evoc <- function(x) {
 #'
 #' @returns A named list with `labels`, `membership`, and `persistence` for
 #' the requested layer.
+#'
+#' @examples
+#' d <- manifold_synthetic_data(type = "clusters", n_samples = 500L)
+#' res <- evoc(d$data, .verbose = FALSE)
+#' str(get_layer(res, 1L))
 #'
 #' @export
 get_layer <- function(x, i) {
@@ -259,6 +300,11 @@ get_layer.Evoc <- function(x, i) {
 #' @param x An `Evoc` object.
 #'
 #' @returns A `NearestNeighbours` object, or `NULL` if the kNN was not stored.
+#'
+#' @examples
+#' d <- manifold_synthetic_data(type = "clusters", n_samples = 500L)
+#' res <- evoc(d$data, return_knn = TRUE, .verbose = FALSE)
+#' get_nearest_neighbours(res)
 #'
 #' @export
 get_nearest_neighbours <- function(x) {
@@ -338,6 +384,11 @@ new_kmeans_cluster <- function(centroids, assignments, k, method, metric) {
 #' @returns Integer vector of length samples with cluster assignments
 #'   (1-indexed).
 #'
+#' @examples
+#' d <- manifold_synthetic_data(type = "clusters", n_samples = 500L)
+#' km <- kmeans_cluster(d$data, k = 4L, .verbose = FALSE)
+#' table(membership(km))
+#'
 #' @export
 membership <- function(x) {
   UseMethod("membership")
@@ -354,6 +405,11 @@ membership.KMeansCluster <- function(x) {
 #' @param x A `KMeansCluster` object.
 #'
 #' @returns Numeric matrix of shape k x features.
+#'
+#' @examples
+#' d <- manifold_synthetic_data(type = "clusters", n_samples = 500L)
+#' km <- kmeans_cluster(d$data, k = 4L, .verbose = FALSE)
+#' dim(get_centroids(km))
 #'
 #' @export
 get_centroids <- function(x) {
@@ -380,6 +436,11 @@ get_centroids.KMeansCluster <- function(x) {
 #'
 #' @returns The cluster inertia
 #'
+#' @examples
+#' d <- manifold_synthetic_data(type = "clusters", n_samples = 500L)
+#' km <- kmeans_cluster(d$data, k = 4L, .verbose = FALSE)
+#' calc_inertia(km, d$data)
+#'
 #' @export
 calc_inertia <- function(x, data) {
   UseMethod("calc_inertia")
@@ -393,7 +454,7 @@ calc_inertia.KMeansCluster <- function(x, data) {
   checkmate::assertClass(x, "KMeansCluster")
   checkmate::assertMatrix(data, mode = "numeric")
 
-  rs_intertia(
+  rs_inertia(
     data = data,
     centroids = x$centroids,
     cluster_membership = x$assignments
@@ -424,7 +485,7 @@ print.KMeansCluster <- function(x, ...) {
     "  sizes:      min=",
     min(sizes),
     " median=",
-    median(sizes),
+    stats::median(sizes),
     " max=",
     max(sizes),
     "\n"

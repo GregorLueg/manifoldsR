@@ -21,3 +21,9 @@ the requested layer.
 \description{
 Get a specific EVoC layer
 }
+\examples{
+d <- manifold_synthetic_data(type = "clusters", n_samples = 500L)
+res <- evoc(d$data, .verbose = FALSE)
+str(get_layer(res, 1L))
+
+}

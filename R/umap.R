@@ -122,6 +122,15 @@
 #' @return A numerical matrix with dimensions samples x n_dim containing
 #' the UMAP embedding.
 #'
+#' @examples
+#' d <- manifold_synthetic_data(type = "clusters", n_samples = 500L)
+#' emb <- umap(d$data, .verbose = FALSE)
+#' dim(emb)
+#'
+#' # reuse one kNN graph across methods
+#' knn <- generate_knn_graph(d$data, k = 15L, .verbose = FALSE)
+#' emb <- umap(d$data, knn = knn, .verbose = FALSE)
+#'
 #' @export
 umap <- function(
   data,

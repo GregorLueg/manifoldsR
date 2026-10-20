@@ -57,3 +57,9 @@ Performs diffusion maps dimensionality reduction on the input
 data. This function provides a user-friendly interface with input
 validation before calling the Rust implementation.
 }
+\examples{
+d <- manifold_synthetic_data(type = "clusters", n_samples = 500L)
+emb <- diffusion_maps(d$data, .verbose = FALSE)
+dim(emb)
+
+}

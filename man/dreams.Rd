@@ -86,6 +86,11 @@ t-SNE started from the reference, \code{1} returns the (scaled) reference. The
 \code{init} element of \code{tsne_params} is ignored: DREAMS always initialises from
 its reference.
 }
+\examples{
+d <- manifold_synthetic_data(type = "clusters", n_samples = 500L)
+emb <- dreams(d$data, .verbose = FALSE)
+dim(emb)
+}
 \references{
 Kury, Kobak & Damrich, Transactions on Machine Learning
 Research, 2026

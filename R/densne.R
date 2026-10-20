@@ -89,6 +89,11 @@
 #' @export
 #'
 #' @references Narayan, Berger & Cho, Nat. Biotechnol., 2021
+#'
+#' @examples
+#' d <- manifold_synthetic_data(type = "clusters", n_samples = 500L)
+#' emb <- densne(d$data, .verbose = FALSE)
+#' dim(emb)
 densne <- function(
   data,
   knn = NULL,

@@ -43,6 +43,14 @@ SNN graph or a graph from another package. Edge weights come from the
 dropped. Only the optimisation parameters in \code{fa2_params} are used; the
 graph and initialisation ones do not apply here.
 }
+\examples{
+if (requireNamespace("igraph", quietly = TRUE)) {
+  g <- igraph::sample_gnp(200L, 0.05)
+  emb <- forceatlas2_from_graph(g, .verbose = FALSE)
+  dim(emb)
+}
+
+}
 \references{
 Jacomy, et al., PLoS ONE, 2014
 }

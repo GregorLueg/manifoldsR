@@ -80,8 +80,8 @@ cluster_data <- manifold_synthetic_data(
   n_samples = 10000L
 )
 
-swissrole_data <- manifold_synthetic_data(
-  type = "swiss_role",
+swissroll_data <- manifold_synthetic_data(
+  type = "swiss_roll",
   n_samples = 1000L
 )
 
@@ -143,27 +143,27 @@ As expected, the clusters explode outward and are condensed into nearly single
 points. PHATE is trying to lay out a manifold that does not exist in this data. 
 If your data looks like this, use t-SNE or UMAP instead.
 
-### Swiss role
+### Swiss roll
 
-The swiss role is a continuous manifold where PHATE should perform meaningfully
+The Swiss roll is a continuous manifold where PHATE should perform meaningfully
 better than t-SNE or UMAP. The diffusion process captures the smooth geometry
 of the roll rather than tearing it apart.
 
 ```{r}
-#| label: swissrole data - phate
-phate_swissrole <- phate(
-  data = swissrole_data$data,
+#| label: swissroll data - phate
+phate_swissroll <- phate(
+  data = swissroll_data$data,
   k = 15L,
   knn_method = "exhaustive",
   seed = 42L
 )
 
-phate_swissrole_df <- as.data.table(phate_swissrole) %>%
+phate_swissroll_df <- as.data.table(phate_swissroll) %>%
   `colnames<-`(c("PHATE1", "PHATE2")) %>%
-  .[, z_axis := swissrole_data$data[, 3]]
+  .[, z_axis := swissroll_data$data[, 3]]
 
 ggplot(
-  data = phate_swissrole_df,
+  data = phate_swissroll_df,
   mapping = aes(x = PHATE1, y = PHATE2)
 ) +
   geom_point(
@@ -174,7 +174,7 @@ ggplot(
   ) +
   scale_fill_viridis_c() +
   theme_bw() +
-  ggtitle("PHATE on swissrole data")
+  ggtitle("PHATE on swissroll data")
 ```
 
 PHATE preserves the continuous colour gradient along the roll substantially
@@ -391,17 +391,16 @@ Let's compare `manifoldsR` against `phateR` (the reference R implementation,
 itself a wrapper around the Python `phate` library) on the trajectory data.
 
 ```{r}
-#| label: benchmark
-#| eval: !expr requireNamespace("microbenchmark", quietly = TRUE) && requireNamespace("phateR", quietly = TRUE) && requireNamespace("reticulate", quietly = TRUE)
+#| label: python env
+#| eval: !expr requireNamespace("microbenchmark", quietly = TRUE) && requireNamespace("reticulate", quietly = TRUE)
+# set up the venv for the Python part/dependencies
 local({
   env_name <- "r-manifolds"
+  py_pkgs <- c("phate", "umap-learn", "numpy", "scipy")
 
   if (!reticulate::virtualenv_exists(env_name)) {
     reticulate::virtualenv_create(env_name)
-    reticulate::virtualenv_install(
-      env_name,
-      packages = c("phate", "umap-learn", "numpy", "scipy")
-    )
+    reticulate::virtualenv_install(env_name, packages = py_pkgs)
   }
 
   if (!reticulate::py_available()) {
@@ -413,13 +412,14 @@ local({
     c("phate", "umap")
   )
   if (length(missing_pkgs) > 0L) {
-    reticulate::virtualenv_install(
-      env_name,
-      packages = c("phate", "umap-learn", "numpy", "scipy")
-    )
+    reticulate::virtualenv_install(env_name, packages = py_pkgs)
   }
 })
+```
 
+```{r}
+#| label: phate - benchmark
+#| eval: !expr requireNamespace("microbenchmark", quietly = TRUE) && requireNamespace("reticulate", quietly = TRUE) && requireNamespace("phateR", quietly = TRUE)
 benchmark_data <- manifold_synthetic_data(
   type = "trajectory",
   n_samples = 10000L
@@ -449,8 +449,8 @@ microbenchmark::microbenchmark(
 And on a larger data set with additionally the random landmark version
 
 ```{r}
-#| label: benchmark - landmarks
-#| eval: !expr requireNamespace("microbenchmark", quietly = TRUE)
+#| label: phate - benchmark landmarks
+#| eval: !expr requireNamespace("microbenchmark", quietly = TRUE) && requireNamespace("reticulate", quietly = TRUE) && requireNamespace("phateR", quietly = TRUE)
 benchmark_data_large <- manifold_synthetic_data(
   type = "trajectory",
   n_samples = 100000L
@@ -472,7 +472,7 @@ microbenchmark::microbenchmark(
       k = 5L,
       knn_method = "nndescent", # good allrounder for larger data sets
       seed = 42L,
-      .verbose = TRUE
+      .verbose = FALSE
     )
   },
   manifold_phate_random = {
@@ -489,8 +489,8 @@ microbenchmark::microbenchmark(
 )
 ```
 
-As with t-SNE and UMAP, the speed advantage of the Rust implementation comes 
-from the entire pipeline — kNN construction, kernel computation, diffusion, and
-MDS — running within the Rust kernel without round-tripping through Python in
-this case. Usually, the differences become more pronounced with larger data 
-sets. 
+As with t-SNE and UMAP, the speed advantage of the Rust implementation comes
+from the entire pipeline (kNN construction, kernel computation, diffusion and
+MDS) running within the Rust kernel without round-tripping through Python in
+this case. Usually, the differences become more pronounced with larger data
+sets.

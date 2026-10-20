@@ -70,6 +70,11 @@
 #' @return An `Evoc` S3 object (see [print.Evoc], [best_membership],
 #' [get_layer]).
 #'
+#' @examples
+#' d <- manifold_synthetic_data(type = "clusters", n_samples = 500L)
+#' res <- evoc(d$data, .verbose = FALSE)
+#' res
+#'
 #' @export
 evoc <- function(
   data,

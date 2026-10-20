@@ -74,7 +74,7 @@ need to be aware of this!
 # flat representation of the indices
 indices_flat <- get_idx_flat(exhaustive)
 
-# as N x idx nearest neigbours matrix
+# as N x idx nearest neighbours matrix
 indices_mat <- get_idx_mat(exhaustive)
 ```
 
@@ -85,7 +85,7 @@ The distances can also be extracted easily:
 # flat representation of the distances
 dist_flat <- get_dist_flat(exhaustive)
 
-# as N x idx nearest neigbours matrix
+# as N x idx nearest neighbours matrix
 dist_mat <- get_dist_mat(exhaustive)
 ```
 
@@ -134,10 +134,17 @@ data and/or massive amounts of samples, some of the other methods will shine.
 
 ### Speed
 
-Let's just have a look on how they perform on different sizes
+Let's just have a look on how the different kNN methods perform on different
+sizes.
 
 ```{r}
-#| label: approximate nearest neighbour searches - benchmark 1000
+#| label: knn - benchmark 1000
+#| eval: !expr requireNamespace("microbenchmark", quietly = TRUE)
+cluster_data <- manifold_synthetic_data(
+  type = "cluster",
+  n_samples = 1000L
+)
+
 microbenchmark::microbenchmark(
   exhaustive = {
     generate_knn_graph(
@@ -207,7 +214,8 @@ sufficient samples to do this. Otherwise, modern CPUs with SIMD can do the
 necessary `O(N^2)` in no time on smaller datasets. What about 50k cells?
 
 ```{r}
-#| label: approximate nearest neighbour searches - benchmark 50k
+#| label: knn - benchmark 50k
+#| eval: !expr requireNamespace("microbenchmark", quietly = TRUE)
 benchmark_data <- manifold_synthetic_data(
   type = "cluster",
   n_samples = 50000L
@@ -276,11 +284,12 @@ microbenchmark::microbenchmark(
 ```
 
 We start observing the first pattern, that the approximate nearest neighbour
-searches are faster than the exhaustive search. The delta becomes more 
+searches are faster than the exhaustive search. The delta becomes more
 pronounced with more samples:
 
 ```{r}
-#| label: approximate nearest neighbour searches - benchmark 100k
+#| label: knn - benchmark 100k
+#| eval: !expr requireNamespace("microbenchmark", quietly = TRUE)
 benchmark_data <- manifold_synthetic_data(
   type = "cluster",
   n_samples = 100000L

@@ -80,6 +80,11 @@ usual default in tSNE. Setting \code{lambda} to \code{0} in \code{\link[=params_
 plain \code{\link[=tsne]{tsne()}} exactly. The default \code{lambda} is twenty times smaller than the
 densMAP one, matching the reference implementations.
 }
+\examples{
+d <- manifold_synthetic_data(type = "clusters", n_samples = 500L)
+emb <- densne(d$data, .verbose = FALSE)
+dim(emb)
+}
 \references{
 Narayan, Berger & Cho, Nat. Biotechnol., 2021
 }

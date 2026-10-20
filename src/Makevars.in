@@ -46,9 +46,13 @@ $(STATLIB):
 	# the same reason. Both invocations share one target dir, and cargo keys its
 	# fingerprint on RUSTFLAGS, so a flag set on one and not the other rebuilds
 	# the whole dependency tree just to emit the wrappers.
-	export CARGO_HOME=@CARGO_HOME@ && \
-	export PATH="$(PATH):$(HOME)/.cargo/bin" && \
-	@DEV_EXPORTS@RUSTFLAGS="$(RUSTFLAGS) --print=native-static-libs" cargo run @CRAN_FLAGS@ @PROFILE@ --bin document --manifest-path=./rust/Cargo.toml --target-dir $(TARGET_DIR) @TARGET@
+	# Only under roxygen (ROXYGEN_PKG set). The wrappers ship in R/, and on
+	# win-builder linking the bin overran MAX_PATH and failed the install.
+	if [ -n "$$ROXYGEN_PKG" ]; then \
+		export CARGO_HOME=@CARGO_HOME@ && \
+		export PATH="$(PATH):$(HOME)/.cargo/bin" && \
+		@DEV_EXPORTS@RUSTFLAGS="$(RUSTFLAGS) --print=native-static-libs" cargo run @CRAN_FLAGS@ @PROFILE@ --bin document --manifest-path=./rust/Cargo.toml --target-dir $(TARGET_DIR) @TARGET@; \
+	fi
 
 	# Always clean up CARGOTMP
 	rm -Rf $(CARGOTMP);

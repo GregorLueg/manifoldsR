@@ -93,6 +93,11 @@
 #'
 #' @references Kury, Kobak & Damrich, Transactions on Machine Learning
 #' Research, 2026
+#'
+#' @examples
+#' d <- manifold_synthetic_data(type = "clusters", n_samples = 500L)
+#' emb <- dreams(d$data, .verbose = FALSE)
+#' dim(emb)
 dreams <- function(
   data,
   knn = NULL,

@@ -16,9 +16,9 @@ pub mod umap;
 pub mod utils;
 
 use ann_search_rs::utils::matrix_to_flat;
-use bixverse_rs::ml::clustering::{clustering_metrics::adjusted_rand_index, k_means::*};
-use bixverse_rs::prelude::*;
-use bixverse_rs::utils::vec_utils::flatten_vector;
+use bixverse_r::ml::clustering::{clustering_metrics::adjusted_rand_index, k_means::*};
+use bixverse_r::prelude::*;
+use bixverse_r::utils::vec_utils::flatten_vector;
 use extendr_api::prelude::*;
 use faer::Mat;
 use manifolds_rs::data::synthetic::*;
@@ -70,8 +70,8 @@ extendr_module! {
     // nn utils
     fn rs_approx_nearest_neighbours;
     // synthetic data
-    fn rs_data_swiss_role;
-    fn rs_data_biased_swiss_role;
+    fn rs_data_swiss_roll;
+    fn rs_data_biased_swiss_roll;
     fn rs_data_clusters;
     fn rs_data_trajectory;
     fn rs_data_hierarchical;
@@ -79,7 +79,7 @@ extendr_module! {
     fn rs_check_cluster_separation;
     fn rs_ari;
     fn rs_silhouette_score;
-    fn rs_intertia;
+    fn rs_inertia;
 }
 
 ////////////
@@ -136,10 +136,19 @@ fn auto_precision(n: usize) -> FloatingPointPrecision {
 /// The determined [FloatingPointPrecision].
 fn parse_precision(use_high_precision: Nullable<Rbool>, n: usize) -> FloatingPointPrecision {
     if use_high_precision != Nullable::Null {
-        let val = use_high_precision.into_option().map(|x| x.to_bool()).unwrap_or_else(|| {
-            println!("[WARNING] - The provided 'use_high_precision' could not be decoded into a boolean. Function will assume 'true'");
-            true
-        });
+        // Rbool::to_bool() maps NA to true, so catch it explicitly. R_tryEval
+        // inside eval() keeps options(warn = 2) from longjmp-ing through Rust.
+        let val = match use_high_precision.into_option() {
+            Some(x) if !x.is_na() => x.to_bool(),
+            _ => {
+                let _ = lang!(
+                    "warning",
+                    "'use_high_precision' is NA. Function will assume 'TRUE'."
+                )
+                .eval();
+                true
+            }
+        };
         if val {
             FloatingPointPrecision::FP64
         } else {
@@ -191,13 +200,13 @@ fn rs_umap(
     use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
     let precision = parse_precision(use_high_precision, embd.nrows());
 
     match precision {
         FloatingPointPrecision::FP32 => {
             if verbosity.detailed_verbosity() {
-                println!("Lower precision (fp32) path chosen.")
+                rprintln!("Lower precision (fp32) path chosen.");
             }
 
             let embd = r_matrix_to_faer_fp32(&embd);
@@ -219,7 +228,7 @@ fn rs_umap(
         }
         FloatingPointPrecision::FP64 => {
             if verbosity.detailed_verbosity() {
-                println!("Higher precision (fp64) path chosen.")
+                rprintln!("Higher precision (fp64) path chosen.");
             }
 
             let embd = r_matrix_to_faer(&embd);
@@ -282,13 +291,13 @@ fn rs_umap_from_knn(
     use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
     let precision = parse_precision(use_high_precision, embd.nrows());
 
     match precision {
         FloatingPointPrecision::FP32 => {
             if verbosity.detailed_verbosity() {
-                println!("Lower precision (fp32) path chosen.")
+                rprintln!("Lower precision (fp32) path chosen.");
             }
 
             let embd = r_matrix_to_faer_fp32(&embd);
@@ -312,7 +321,7 @@ fn rs_umap_from_knn(
         }
         FloatingPointPrecision::FP64 => {
             if verbosity.detailed_verbosity() {
-                println!("Higher precision (fp64) path chosen.")
+                rprintln!("Higher precision (fp64) path chosen.");
             }
 
             let embd = r_matrix_to_faer(&embd);
@@ -371,13 +380,13 @@ fn rs_forceatlas2(
     use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
     let precision = parse_precision(use_high_precision, embd.nrows());
 
     match precision {
         FloatingPointPrecision::FP32 => {
             if verbosity.detailed_verbosity() {
-                println!("Lower precision (fp32) path chosen.")
+                rprintln!("Lower precision (fp32) path chosen.");
             }
 
             let embd = r_matrix_to_faer_fp32(&embd);
@@ -389,7 +398,7 @@ fn rs_forceatlas2(
         }
         FloatingPointPrecision::FP64 => {
             if verbosity.detailed_verbosity() {
-                println!("Higher precision (fp64) path chosen.")
+                rprintln!("Higher precision (fp64) path chosen.");
             }
 
             let embd = r_matrix_to_faer(&embd);
@@ -435,13 +444,13 @@ fn rs_forceatlas2_from_knn(
     use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
     let precision = parse_precision(use_high_precision, embd.nrows());
 
     match precision {
         FloatingPointPrecision::FP32 => {
             if verbosity.detailed_verbosity() {
-                println!("Lower precision (fp32) path chosen.")
+                rprintln!("Lower precision (fp32) path chosen.");
             }
 
             let embd = r_matrix_to_faer_fp32(&embd);
@@ -455,7 +464,7 @@ fn rs_forceatlas2_from_knn(
         }
         FloatingPointPrecision::FP64 => {
             if verbosity.detailed_verbosity() {
-                println!("Higher precision (fp64) path chosen.")
+                rprintln!("Higher precision (fp64) path chosen.");
             }
 
             let embd = r_matrix_to_faer(&embd);
@@ -508,7 +517,7 @@ fn rs_forceatlas2_from_graph(
     use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
     let precision = parse_precision(use_high_precision, n);
 
     let init = init.into_option();
@@ -517,7 +526,7 @@ fn rs_forceatlas2_from_graph(
     match precision {
         FloatingPointPrecision::FP32 => {
             if verbosity.detailed_verbosity() {
-                println!("Lower precision (fp32) path chosen.")
+                rprintln!("Lower precision (fp32) path chosen.");
             }
 
             let res = fa2_graph_manifold::<f32>(
@@ -529,7 +538,7 @@ fn rs_forceatlas2_from_graph(
         }
         FloatingPointPrecision::FP64 => {
             if verbosity.detailed_verbosity() {
-                println!("Higher precision (fp64) path chosen.")
+                rprintln!("Higher precision (fp64) path chosen.");
             }
 
             let res = fa2_graph_manifold::<f64>(
@@ -585,13 +594,13 @@ fn rs_tsne(
     use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
     let precision = parse_precision(use_high_precision, embd.nrows());
 
     match precision {
         FloatingPointPrecision::FP64 => {
             if verbosity.detailed_verbosity() {
-                println!("Larger data set. Using high precision floats.")
+                rprintln!("Larger data set. Using high precision floats.");
             }
 
             let embd = r_matrix_to_faer(&embd);
@@ -612,7 +621,7 @@ fn rs_tsne(
         }
         FloatingPointPrecision::FP32 => {
             if verbosity.detailed_verbosity() {
-                println!("Lower precision (fp32) path chosen.")
+                rprintln!("Lower precision (fp32) path chosen.");
             }
             let embd = r_matrix_to_faer_fp32(&embd);
 
@@ -675,13 +684,13 @@ fn rs_tsne_from_knn(
     use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
     let precision = parse_precision(use_high_precision, embd.nrows());
 
     match precision {
         FloatingPointPrecision::FP32 => {
             if verbosity.detailed_verbosity() {
-                println!("Lower precision (fp32) path chosen.")
+                rprintln!("Lower precision (fp32) path chosen.");
             }
 
             let embd = r_matrix_to_faer_fp32(&embd);
@@ -704,7 +713,7 @@ fn rs_tsne_from_knn(
         }
         FloatingPointPrecision::FP64 => {
             if verbosity.detailed_verbosity() {
-                println!("Large data set. Using higher precision floats.")
+                rprintln!("Large data set. Using higher precision floats.");
             }
 
             let embd = r_matrix_to_faer(&embd);
@@ -774,13 +783,13 @@ fn rs_densmap(
     use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
     let precision = parse_precision(use_high_precision, embd.nrows());
 
     match precision {
         FloatingPointPrecision::FP32 => {
             if verbosity.detailed_verbosity() {
-                println!("Lower precision (fp32) path chosen.")
+                rprintln!("Lower precision (fp32) path chosen.");
             }
 
             let embd = r_matrix_to_faer_fp32(&embd);
@@ -802,7 +811,7 @@ fn rs_densmap(
         }
         FloatingPointPrecision::FP64 => {
             if verbosity.detailed_verbosity() {
-                println!("Higher precision (fp64) path chosen.")
+                rprintln!("Higher precision (fp64) path chosen.");
             }
 
             let embd = r_matrix_to_faer(&embd);
@@ -869,13 +878,13 @@ fn rs_densmap_from_knn(
     use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
     let precision = parse_precision(use_high_precision, embd.nrows());
 
     match precision {
         FloatingPointPrecision::FP32 => {
             if verbosity.detailed_verbosity() {
-                println!("Lower precision (fp32) path chosen.")
+                rprintln!("Lower precision (fp32) path chosen.");
             }
 
             let embd = r_matrix_to_faer_fp32(&embd);
@@ -899,7 +908,7 @@ fn rs_densmap_from_knn(
         }
         FloatingPointPrecision::FP64 => {
             if verbosity.detailed_verbosity() {
-                println!("Higher precision (fp64) path chosen.")
+                rprintln!("Higher precision (fp64) path chosen.");
             }
 
             let embd = r_matrix_to_faer(&embd);
@@ -970,13 +979,13 @@ fn rs_densne(
     use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
     let precision = parse_precision(use_high_precision, embd.nrows());
 
     match precision {
         FloatingPointPrecision::FP32 => {
             if verbosity.detailed_verbosity() {
-                println!("Lower precision (fp32) path chosen.")
+                rprintln!("Lower precision (fp32) path chosen.");
             }
 
             let embd = r_matrix_to_faer_fp32(&embd);
@@ -997,7 +1006,7 @@ fn rs_densne(
         }
         FloatingPointPrecision::FP64 => {
             if verbosity.detailed_verbosity() {
-                println!("Larger data set. Using high precision floats.")
+                rprintln!("Larger data set. Using high precision floats.");
             }
 
             let embd = r_matrix_to_faer(&embd);
@@ -1063,13 +1072,13 @@ fn rs_densne_from_knn(
     use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
     let precision = parse_precision(use_high_precision, embd.nrows());
 
     match precision {
         FloatingPointPrecision::FP32 => {
             if verbosity.detailed_verbosity() {
-                println!("Lower precision (fp32) path chosen.")
+                rprintln!("Lower precision (fp32) path chosen.");
             }
 
             let embd = r_matrix_to_faer_fp32(&embd);
@@ -1092,7 +1101,7 @@ fn rs_densne_from_knn(
         }
         FloatingPointPrecision::FP64 => {
             if verbosity.detailed_verbosity() {
-                println!("Larger data set. Using high precision floats.")
+                rprintln!("Larger data set. Using high precision floats.");
             }
 
             let embd = r_matrix_to_faer(&embd);
@@ -1167,14 +1176,14 @@ fn rs_dreams(
     use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
     let precision = parse_precision(use_high_precision, embd.nrows());
     let reference = reference.into_option();
 
     match precision {
         FloatingPointPrecision::FP32 => {
             if verbosity.detailed_verbosity() {
-                println!("Lower precision (fp32) path chosen.")
+                rprintln!("Lower precision (fp32) path chosen.");
             }
 
             let embd = r_matrix_to_faer_fp32(&embd);
@@ -1196,7 +1205,7 @@ fn rs_dreams(
         }
         FloatingPointPrecision::FP64 => {
             if verbosity.detailed_verbosity() {
-                println!("Larger data set. Using high precision floats.")
+                rprintln!("Larger data set. Using high precision floats.");
             }
 
             let embd = r_matrix_to_faer(&embd);
@@ -1267,14 +1276,14 @@ fn rs_dreams_from_knn(
     use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
     let precision = parse_precision(use_high_precision, embd.nrows());
     let reference = reference.into_option();
 
     match precision {
         FloatingPointPrecision::FP32 => {
             if verbosity.detailed_verbosity() {
-                println!("Lower precision (fp32) path chosen.")
+                rprintln!("Lower precision (fp32) path chosen.");
             }
 
             let embd = r_matrix_to_faer_fp32(&embd);
@@ -1298,7 +1307,7 @@ fn rs_dreams_from_knn(
         }
         FloatingPointPrecision::FP64 => {
             if verbosity.detailed_verbosity() {
-                println!("Larger data set. Using high precision floats.")
+                rprintln!("Larger data set. Using high precision floats.");
             }
 
             let embd = r_matrix_to_faer(&embd);
@@ -1360,13 +1369,13 @@ fn rs_phate(
     use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
     let precision = parse_precision(use_high_precision, embd.nrows());
 
     match precision {
         FloatingPointPrecision::FP32 => {
             if verbosity.detailed_verbosity() {
-                println!("Lower precision (fp32) path chosen.")
+                rprintln!("Lower precision (fp32) path chosen.");
             }
 
             let embd = r_matrix_to_faer_fp32(&embd);
@@ -1377,7 +1386,7 @@ fn rs_phate(
         }
         FloatingPointPrecision::FP64 => {
             if verbosity.detailed_verbosity() {
-                println!("Higher precision (fp64) path chosen.")
+                rprintln!("Higher precision (fp64) path chosen.");
             }
 
             let embd = r_matrix_to_faer(&embd);
@@ -1427,13 +1436,13 @@ fn rs_phate_from_knn(
     use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
     let precision = parse_precision(use_high_precision, embd.nrows());
 
     match precision {
         FloatingPointPrecision::FP32 => {
             if verbosity.detailed_verbosity() {
-                println!("Lower precision (fp32) path chosen.")
+                rprintln!("Lower precision (fp32) path chosen.");
             }
 
             let embd = r_matrix_to_faer_fp32(&embd);
@@ -1445,7 +1454,7 @@ fn rs_phate_from_knn(
         }
         FloatingPointPrecision::FP64 => {
             if verbosity.detailed_verbosity() {
-                println!("Higher precision (fp64) path chosen.")
+                rprintln!("Higher precision (fp64) path chosen.");
             }
 
             let embd = r_matrix_to_faer(&embd);
@@ -1493,13 +1502,13 @@ fn rs_pacmap(
     use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> Result<RMatrix<f64>, extendr_api::Error> {
-    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
     let precision = parse_precision(use_high_precision, embd.nrows());
 
     match precision {
         FloatingPointPrecision::FP32 => {
             if verbosity.detailed_verbosity() {
-                println!("Lower precision (fp32) path chosen.")
+                rprintln!("Lower precision (fp32) path chosen.");
             }
 
             let embd = r_matrix_to_faer_fp32(&embd);
@@ -1510,7 +1519,7 @@ fn rs_pacmap(
         }
         FloatingPointPrecision::FP64 => {
             if verbosity.detailed_verbosity() {
-                println!("Higher precision (fp64) path chosen.")
+                rprintln!("Higher precision (fp64) path chosen.");
             }
 
             let embd = r_matrix_to_faer(&embd);
@@ -1556,13 +1565,13 @@ fn rs_pacmap_from_knn(
     use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> Result<RMatrix<f64>, extendr_api::Error> {
-    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
     let precision = parse_precision(use_high_precision, embd.nrows());
 
     match precision {
         FloatingPointPrecision::FP32 => {
             if verbosity.detailed_verbosity() {
-                println!("Lower precision (fp32) path chosen.")
+                rprintln!("Lower precision (fp32) path chosen.");
             }
 
             let embd = r_matrix_to_faer_fp32(&embd);
@@ -1574,7 +1583,7 @@ fn rs_pacmap_from_knn(
         }
         FloatingPointPrecision::FP64 => {
             if verbosity.detailed_verbosity() {
-                println!("High precision (fp64) path chosen.")
+                rprintln!("High precision (fp64) path chosen.");
             }
 
             let embd = r_matrix_to_faer(&embd);
@@ -1624,13 +1633,13 @@ fn rs_diffusion_maps(
     use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
     let precision = parse_precision(use_high_precision, embd.nrows());
 
     match precision {
         FloatingPointPrecision::FP32 => {
             if verbosity.detailed_verbosity() {
-                println!("Lower precision (fp32) path chosen.")
+                rprintln!("Lower precision (fp32) path chosen.");
             }
 
             let embd = r_matrix_to_faer_fp32(&embd);
@@ -1641,7 +1650,7 @@ fn rs_diffusion_maps(
         }
         FloatingPointPrecision::FP64 => {
             if verbosity.detailed_verbosity() {
-                println!("Higher precision (fp64) path chosen.")
+                rprintln!("Higher precision (fp64) path chosen.");
             }
 
             let embd = r_matrix_to_faer(&embd);
@@ -1689,13 +1698,13 @@ fn rs_diffusion_maps_from_knn(
     use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
     let precision = parse_precision(use_high_precision, embd.nrows());
 
     match precision {
         FloatingPointPrecision::FP32 => {
             if verbosity.detailed_verbosity() {
-                println!("Lower precision (fp32) path chosen.")
+                rprintln!("Lower precision (fp32) path chosen.");
             }
 
             let embd = r_matrix_to_faer_fp32(&embd);
@@ -1707,7 +1716,7 @@ fn rs_diffusion_maps_from_knn(
         }
         FloatingPointPrecision::FP64 => {
             if verbosity.detailed_verbosity() {
-                println!("Higher precision (fp64) path chosen.")
+                rprintln!("Higher precision (fp64) path chosen.");
             }
 
             let embd = r_matrix_to_faer(&embd);
@@ -1724,32 +1733,32 @@ fn rs_diffusion_maps_from_knn(
 // Synthetic data sets //
 /////////////////////////
 
-/// Generates the SwissRole data
+/// Generates Swiss roll data
 ///
 /// @description
 /// `r lifecycle::badge("experimental")`
-/// Generates synthetic data, i.e., the Swiss role to test different manifold
+/// Generates synthetic data, i.e., the Swiss roll to test different manifold
 /// learning techniques
 ///
 /// @param n_samples Integer. Number of data points to generate.
 /// @param noise Numeric. How much noise to add.
 /// @param seed Integer. For reproducibility purposes
 ///
-/// @return The swiss role synthetic data with the desired parameters.
+/// @return The Swiss roll synthetic data with the desired parameters.
 ///
 /// @export
 #[extendr]
-fn rs_data_swiss_role(n_samples: usize, noise: f64, seed: usize) -> RMatrix<f64> {
+fn rs_data_swiss_roll(n_samples: usize, noise: f64, seed: usize) -> RMatrix<f64> {
     let res = generate_swiss_roll(n_samples, noise, seed as u64);
 
     faer_to_r_matrix(res.as_ref())
 }
 
-/// Generates the SwissRole data
+/// Generates biased Swiss roll data
 ///
 /// @description
 /// `r lifecycle::badge("experimental")`
-/// Generates synthetic data, i.e., the Swiss role to test different manifold
+/// Generates synthetic data, i.e., the Swiss roll to test different manifold
 /// learning techniques
 ///
 /// @param n_samples Integer. Number of data points to generate.
@@ -1759,11 +1768,11 @@ fn rs_data_swiss_role(n_samples: usize, noise: f64, seed: usize) -> RMatrix<f64>
 /// value of `2.5` mirrors the trajectory accumulation behaviour.
 /// @param seed Integer. For reproducibility purposes
 ///
-/// @return The biased swiss role synthetic data with the desired parameters.
+/// @return The biased Swiss roll synthetic data with the desired parameters.
 ///
 /// @export
 #[extendr]
-fn rs_data_biased_swiss_role(n_samples: usize, noise: f64, bias: f64, seed: usize) -> RMatrix<f64> {
+fn rs_data_biased_swiss_roll(n_samples: usize, noise: f64, bias: f64, seed: usize) -> RMatrix<f64> {
     let (res, _) = generate_swiss_roll_biased(n_samples, noise, bias, seed as u64);
 
     faer_to_r_matrix(res.as_ref())
@@ -2009,13 +2018,13 @@ fn rs_evoc(
     use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> Result<List, extendr_api::Error> {
-    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
     let precision = parse_precision(use_high_precision, embd.nrows());
 
     let (res, indices, dist) = match precision {
         FloatingPointPrecision::FP32 => {
             if verbosity.detailed_verbosity() {
-                println!("Lower precision (fp32) path chosen.")
+                rprintln!("Lower precision (fp32) path chosen.");
             }
 
             let embd = r_matrix_to_faer_fp32(&embd);
@@ -2031,7 +2040,7 @@ fn rs_evoc(
         }
         FloatingPointPrecision::FP64 => {
             if verbosity.detailed_verbosity() {
-                println!("Higher precision (fp64) path chosen.")
+                rprintln!("Higher precision (fp64) path chosen.");
             }
 
             let embd = r_matrix_to_faer(&embd);
@@ -2096,13 +2105,13 @@ fn rs_evoc_from_knn(
     use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> Result<List, extendr_api::Error> {
-    let verbosity = bixverse_rs::prelude::parse_verbosity_level(verbose);
+    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
     let precision = parse_precision(use_high_precision, embd.nrows());
 
     let (res, _, _) = match precision {
         FloatingPointPrecision::FP32 => {
             if verbosity.detailed_verbosity() {
-                println!("Lower precision (fp32) path chosen.")
+                rprintln!("Lower precision (fp32) path chosen.");
             }
 
             let embd = r_matrix_to_faer_fp32(&embd);
@@ -2119,7 +2128,7 @@ fn rs_evoc_from_knn(
         }
         FloatingPointPrecision::FP64 => {
             if verbosity.detailed_verbosity() {
-                println!("Higher precision (fp64) path chosen.")
+                rprintln!("Higher precision (fp64) path chosen.");
             }
 
             let embd = r_matrix_to_faer(&embd);
@@ -2354,7 +2363,7 @@ fn rs_silhouette_score(data: RMatrix<f64>, cluster_membership: &[i32]) -> List {
     )
 }
 
-/// Calculates the intertia for k-means clustering
+/// Calculates the inertia for k-means clustering
 ///
 /// @description
 /// `r lifecycle::badge("experimental")`
@@ -2369,7 +2378,7 @@ fn rs_silhouette_score(data: RMatrix<f64>, cluster_membership: &[i32]) -> List {
 ///
 /// @export
 #[extendr]
-fn rs_intertia(data: RMatrix<f64>, centroids: RMatrix<f64>, cluster_membership: &[i32]) -> f64 {
+fn rs_inertia(data: RMatrix<f64>, centroids: RMatrix<f64>, cluster_membership: &[i32]) -> f64 {
     let data = r_matrix_to_faer(&data);
     let centroids = r_matrix_to_faer(&centroids);
     let cluster_membership = cluster_membership.r_int_convert();

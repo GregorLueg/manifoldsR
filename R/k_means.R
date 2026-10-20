@@ -23,6 +23,11 @@
 #'  assignments (1-indexed).}
 #' }
 #'
+#' @examples
+#' d <- manifold_synthetic_data(type = "clusters", n_samples = 500L)
+#' km <- kmeans_cluster(d$data, k = 4L, .verbose = FALSE)
+#' km
+#'
 #' @export
 kmeans_cluster <- function(
   data,

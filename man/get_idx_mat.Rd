@@ -18,3 +18,9 @@ The indices in samples x neighbours format
 \description{
 Get the indices as a matrix
 }
+\examples{
+d <- manifold_synthetic_data(type = "clusters", n_samples = 500L)
+knn <- generate_knn_graph(d$data, k = 15L, .verbose = FALSE)
+dim(get_idx_mat(knn))
+
+}

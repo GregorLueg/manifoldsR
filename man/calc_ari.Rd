@@ -19,3 +19,9 @@ Adjusted Rand index
 \description{
 Calculates the adjusted Rand index between two sets of cluster assignments.
 }
+\examples{
+d <- manifold_synthetic_data(type = "clusters", n_samples = 500L)
+km <- kmeans_cluster(d$data, k = 4L, .verbose = FALSE)
+calc_ari(membership(km), d$membership)
+
+}

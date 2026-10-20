@@ -30,6 +30,11 @@ parse_verbosity <- function(x) {
 #'
 #' @returns Adjusted Rand index
 #'
+#' @examples
+#' d <- manifold_synthetic_data(type = "clusters", n_samples = 500L)
+#' km <- kmeans_cluster(d$data, k = 4L, .verbose = FALSE)
+#' calc_ari(membership(km), d$membership)
+#'
 #' @export
 calc_ari <- function(members_a, members_b) {
   # checks
@@ -58,6 +63,12 @@ calc_ari <- function(members_a, members_b) {
 #'  \item silhouette_scores - The individual Silhouette scores of all the data
 #'  points.
 #' }
+#'
+#' @examples
+#' d <- manifold_synthetic_data(type = "clusters", n_samples = 500L)
+#' km <- kmeans_cluster(d$data, k = 4L, .verbose = FALSE)
+#' res <- calc_silhouette_score(d$data, membership(km))
+#' res$mean_silhouette
 #'
 #' @export
 calc_silhouette_score <- function(data, membership) {

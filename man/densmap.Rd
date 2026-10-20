@@ -80,6 +80,11 @@ Setting \code{lambda} to \code{0} in \code{\link[=params_densmap]{params_densmap
 \code{\link[=umap]{umap()}} exactly. The density term is only active over the final \code{frac} of
 the epochs, which is why it costs comparatively little.
 }
+\examples{
+d <- manifold_synthetic_data(type = "clusters", n_samples = 500L)
+emb <- densmap(d$data, .verbose = FALSE)
+dim(emb)
+}
 \references{
 Narayan, Berger & Cho, Nat. Biotechnol., 2021
 }
