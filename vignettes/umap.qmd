@@ -383,4 +383,124 @@ This one is SUBSTANTIALLY faster, as the gradients for each node in the graph
 are collected in parallel and then applied. This allows us to make usage of
 heavy multi-threading which Rust supports beautifully via Rayon.
 
-Speed comparisons against other packages live in the [benchmarks article](https://gregorlueg.github.io/manifoldsR/articles/benchmarks.html).
+How does the parallel Adam version compare against other UMAP
+implementations? Let's do a benchmark:
+
+```{r}
+#| label: python env
+#| eval: !expr requireNamespace("microbenchmark", quietly = TRUE) && requireNamespace("reticulate", quietly = TRUE)
+# set up the venv for the Python part/dependencies
+local({
+  env_name <- "r-manifolds"
+  py_pkgs <- c("phate", "umap-learn", "numpy", "scipy")
+
+  if (!reticulate::virtualenv_exists(env_name)) {
+    reticulate::virtualenv_create(env_name)
+    reticulate::virtualenv_install(env_name, packages = py_pkgs)
+  }
+
+  if (!reticulate::py_available()) {
+    reticulate::use_virtualenv(env_name, required = TRUE)
+  }
+
+  missing_pkgs <- Filter(
+    Negate(reticulate::py_module_available),
+    c("phate", "umap")
+  )
+  if (length(missing_pkgs) > 0L) {
+    reticulate::virtualenv_install(env_name, packages = py_pkgs)
+  }
+})
+```
+
+```{r}
+#| label: umap - benchmark small
+#| eval: !expr requireNamespace("microbenchmark", quietly = TRUE) && requireNamespace("reticulate", quietly = TRUE) && requireNamespace("umap", quietly = TRUE) && requireNamespace("uwot", quietly = TRUE)
+benchmark_data <- manifold_synthetic_data(
+  type = "cluster",
+  n_samples = 5000L
+)
+
+umap_py <- reticulate::import("umap")
+
+# initialise numba properly via JIT for fair comparison
+# run a small dataset...
+test_reducer <- umap_py$UMAP(
+  n_neighbors = 15L,
+  n_jobs = parallel::detectCores() - 1L
+)
+test <- test_reducer$fit_transform(benchmark_data$data[1:500, ])
+
+microbenchmark::microbenchmark(
+  # umap version in pure R
+  umap = {
+    umap::umap(
+      d = benchmark_data$data,
+      method = "naive"
+    )
+  },
+  umap_reticulate = {
+    reducer <- umap_py$UMAP(
+      n_neighbors = 15L,
+      n_jobs = parallel::detectCores() - 1L
+    )
+    reducer$fit_transform(benchmark_data$data)
+  },
+  # uwot - umap, for example used in Seurat
+  uwot = {
+    uwot::umap(X = benchmark_data$data)
+  },
+  # uwot - umap2 version with parallel Adam under the hood
+  # the approach that was also taken by manifoldsR
+  uwot_v2 = {
+    uwot::umap2(X = benchmark_data$data)
+  },
+  # the manifolds version
+  manifold_umap = {
+    umap(
+      data = benchmark_data$data,
+      k = 15L,
+      .verbose = FALSE
+    )
+  },
+  times = 1L # single comparison for speed
+)
+```
+
+We can appreciate that the standard R version is slow (as expected). If we
+leverage the Python version (with numba behind the scenes) via reticulate,
+we can get some speed ups (we need to however first JIT compile the numba
+parts). However, the uwot v2 version and the manifold are the fastest here.
+Let's pit them together against each other in a larger data set.
+
+```{r}
+#| label: umap - benchmark large
+#| eval: !expr requireNamespace("microbenchmark", quietly = TRUE) && requireNamespace("uwot", quietly = TRUE)
+benchmark_data_2 <- manifold_synthetic_data(
+  type = "cluster",
+  n_samples = 50000L
+)
+
+microbenchmark::microbenchmark(
+  # uwot - umap2, for example used in Seurat
+  uwot_v2 = {
+    uwot::umap2(X = benchmark_data_2$data)
+  },
+  manifold_umap = {
+    umap(
+      data = benchmark_data_2$data,
+      k = 15L,
+      .verbose = FALSE
+    )
+  },
+  times = 1L # single comparison for speed
+)
+```
+
+Due to optimised memory layouts, aggressive in-lining, heavy parallelism and
+look-up tables (LUTs), this version is **fast** and is likely(?) the fastest
+UMAP available in R, while keeping memory usage minimal due to leveraging Rust
+from the point that data is moved into the Rust kernel, until the embedding has
+been fitted. No round tripping through R, just highly optimised and compiled
+code throughout. The different nearest neighbour search algorithms give
+additional flexibility.

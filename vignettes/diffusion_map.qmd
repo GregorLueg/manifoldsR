@@ -345,4 +345,48 @@ how uniformly the branches are sampled.
 
 ## Benchmarks
 
-Speed comparisons against other packages live in the [benchmarks article](https://gregorlueg.github.io/manifoldsR/articles/benchmarks.html).
+The most widely used R implementation of diffusion maps is
+[`destiny`](https://bioconductor.org/packages/destiny/) (Bioconductor), which
+implements the Haghverdi et al. variant aimed at single-cell data. However,
+the installation of [`smoother`](https://cran.r-project.org/package=smoother),
+a needed dependency of the package is not behaving at the moment. Hence, a
+comparison could not be made here. We can still compare two different landmark
+methods here on a larger data set.
+
+```{r}
+#| label: dm - benchmark landmarks
+#| eval: !expr requireNamespace("microbenchmark", quietly = TRUE)
+benchmark_data_large <- manifold_synthetic_data(
+  type = "trajectory",
+  n_samples = 50000L
+)
+
+microbenchmark::microbenchmark(
+  manifold_dm_spectral = {
+    diffusion_maps(
+      data = benchmark_data_large$data,
+      k = 15L,
+      knn_method = "nndescent",
+      seed = 42L,
+      .verbose = FALSE
+    )
+  },
+  manifold_dm_random = {
+    diffusion_maps(
+      data = benchmark_data_large$data,
+      k = 15L,
+      knn_method = "nndescent",
+      dm_params = params_diffusion_maps(landmark_method = "random"),
+      seed = 42L,
+      .verbose = FALSE
+    )
+  },
+  times = 1L
+)
+```
+
+As elsewhere in `manifoldsR`, the speed gains come from keeping the whole
+pipeline (kNN, kernel, diffusion, eigendecomposition, Nystroem extension)
+inside the Rust kernel without bouncing through interpreted code. The gap
+widens on larger data and becomes particularly pronounced once landmarks are
+enabled.

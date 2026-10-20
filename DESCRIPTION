@@ -56,10 +56,9 @@ Config/Needs/website:
     gridExtra,
     knitr,
     magrittr,
-    quarto
-Config/Needs/benchmarks:
     microbenchmark,
     phateR,
+    quarto,
     reticulate,
     Rtsne,
     umap,

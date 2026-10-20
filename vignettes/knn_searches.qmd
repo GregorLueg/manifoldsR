@@ -134,7 +134,230 @@ data and/or massive amounts of samples, some of the other methods will shine.
 
 ### Speed
 
-Speed comparisons against other packages live in the [benchmarks article](https://gregorlueg.github.io/manifoldsR/articles/benchmarks.html).
+Let's just have a look on how the different kNN methods perform on different
+sizes.
+
+```{r}
+#| label: knn - benchmark 1000
+#| eval: !expr requireNamespace("microbenchmark", quietly = TRUE)
+cluster_data <- manifold_synthetic_data(
+  type = "cluster",
+  n_samples = 1000L
+)
+
+microbenchmark::microbenchmark(
+  exhaustive = {
+    generate_knn_graph(
+      data = cluster_data$data,
+      k = k,
+      knn_method = "exhaustive",
+      .verbose = FALSE
+    )
+  },
+  kmknn = {
+    generate_knn_graph(
+      data = cluster_data$data,
+      k = k,
+      knn_method = "kmknn",
+      .verbose = FALSE
+    )
+  },
+  annoy = {
+    generate_knn_graph(
+      data = cluster_data$data,
+      k = k,
+      knn_method = "annoy",
+      .verbose = FALSE
+    )
+  },
+  hnsw = {
+    generate_knn_graph(
+      data = cluster_data$data,
+      k = k,
+      knn_method = "hnsw",
+      .verbose = FALSE
+    )
+  },
+  balltree = {
+    generate_knn_graph(
+      data = cluster_data$data,
+      k = k,
+      knn_method = "balltree",
+      .verbose = FALSE
+    )
+  },
+  nndescent = {
+    generate_knn_graph(
+      data = cluster_data$data,
+      k = k,
+      knn_method = "nndescent",
+      nn_params = params_nn(extract_knn = TRUE),
+      .verbose = FALSE
+    )
+  },
+  ivf = {
+    generate_knn_graph(
+      data = cluster_data$data,
+      k = k,
+      knn_method = "ivf",
+      nn_params = params_nn(),
+      .verbose = FALSE
+    )
+  },
+  times = 1L # single comparison for speed
+)
+```
+
+On small datasets, the exhaustive search beats everything. We need to build
+the indices in the other methods, a cost that only makes sense when we have
+sufficient samples to do this. Otherwise, modern CPUs with SIMD can do the
+necessary `O(N^2)` in no time on smaller datasets. What about 50k cells?
+
+```{r}
+#| label: knn - benchmark 50k
+#| eval: !expr requireNamespace("microbenchmark", quietly = TRUE)
+benchmark_data <- manifold_synthetic_data(
+  type = "cluster",
+  n_samples = 50000L
+)
+
+microbenchmark::microbenchmark(
+  exhaustive = {
+    generate_knn_graph(
+      data = benchmark_data$data,
+      k = k,
+      knn_method = "exhaustive",
+      .verbose = FALSE
+    )
+  },
+  kmknn = {
+    generate_knn_graph(
+      data = benchmark_data$data,
+      k = k,
+      knn_method = "kmknn",
+      .verbose = FALSE
+    )
+  },
+  annoy = {
+    generate_knn_graph(
+      data = benchmark_data$data,
+      k = k,
+      knn_method = "annoy",
+      .verbose = FALSE
+    )
+  },
+  hnsw = {
+    generate_knn_graph(
+      data = benchmark_data$data,
+      k = k,
+      knn_method = "hnsw",
+      .verbose = FALSE
+    )
+  },
+  balltree = {
+    generate_knn_graph(
+      data = benchmark_data$data,
+      k = k,
+      knn_method = "balltree",
+      .verbose = FALSE
+    )
+  },
+  nndescent = {
+    generate_knn_graph(
+      data = benchmark_data$data,
+      k = k,
+      knn_method = "nndescent",
+      .verbose = FALSE
+    )
+  },
+  ivf = {
+    generate_knn_graph(
+      data = benchmark_data$data,
+      k = k,
+      knn_method = "ivf",
+      nn_params = params_nn(n_probe = 25L),
+      .verbose = FALSE
+    )
+  },
+  times = 1L # single comparison for speed
+)
+```
+
+We start observing the first pattern, that the approximate nearest neighbour
+searches are faster than the exhaustive search. The delta becomes more
+pronounced with more samples:
+
+```{r}
+#| label: knn - benchmark 100k
+#| eval: !expr requireNamespace("microbenchmark", quietly = TRUE)
+benchmark_data <- manifold_synthetic_data(
+  type = "cluster",
+  n_samples = 100000L
+)
+
+# this will take some time...
+microbenchmark::microbenchmark(
+  exhaustive = {
+    generate_knn_graph(
+      data = benchmark_data$data,
+      k = k,
+      knn_method = "exhaustive",
+      .verbose = FALSE
+    )
+  },
+  kmknn = {
+    generate_knn_graph(
+      data = benchmark_data$data,
+      k = k,
+      knn_method = "kmknn",
+      .verbose = FALSE
+    )
+  },
+  annoy = {
+    generate_knn_graph(
+      data = benchmark_data$data,
+      k = k,
+      knn_method = "annoy",
+      .verbose = FALSE
+    )
+  },
+  hnsw = {
+    generate_knn_graph(
+      data = benchmark_data$data,
+      k = k,
+      knn_method = "hnsw",
+      .verbose = FALSE
+    )
+  },
+  balltree = {
+    generate_knn_graph(
+      data = benchmark_data$data,
+      k = k,
+      knn_method = "balltree",
+      .verbose = FALSE
+    )
+  },
+  nndescent = {
+    generate_knn_graph(
+      data = benchmark_data$data,
+      k = k,
+      knn_method = "nndescent",
+      nn_params = params_nn(extract_knn = TRUE),
+      .verbose = FALSE
+    )
+  },
+  ivf = {
+    generate_knn_graph(
+      data = benchmark_data$data,
+      k = k,
+      knn_method = "ivf",
+      nn_params = params_nn(n_probe = 25L),
+      .verbose = FALSE
+    )
+  },
+  times = 1L # single comparison for speed
+)
+```
 
 ### Precision
 

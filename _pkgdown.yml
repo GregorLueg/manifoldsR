@@ -40,7 +40,6 @@ articles:
       - fa2
       - diffusion_map
       - clustering
-      - articles/benchmarks
 
 reference:
   - title: "2D embedding methods"
