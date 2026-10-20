@@ -89,3 +89,58 @@ A named list with the following elements:
 - use_gemm - Boolean or `NULL`. Shall the GEMM path be used. Useful on
   high dimensional data. If `NULL`, choice will be based on heuristics.
   Defaults to `NULL`.
+
+## Examples
+
+``` r
+params_kmeans()
+#> $metric
+#> [1] "euclidean"
+#> 
+#> $max_iters
+#> [1] 1000
+#> 
+#> $batch_size
+#> [1] 4096
+#> 
+#> $drift_threshold
+#> [1] 1e-04
+#> 
+#> $lr_alpha
+#> [1] 1
+#> 
+#> $init
+#> [1] "parallel"
+#> 
+#> $use_hamerly
+#> NULL
+#> 
+#> $use_gemm
+#> NULL
+#> 
+params_kmeans(metric = "cosine", max_iters = 100L)
+#> $metric
+#> [1] "cosine"
+#> 
+#> $max_iters
+#> [1] 100
+#> 
+#> $batch_size
+#> [1] 4096
+#> 
+#> $drift_threshold
+#> [1] 1e-04
+#> 
+#> $lr_alpha
+#> [1] 1
+#> 
+#> $init
+#> [1] "parallel"
+#> 
+#> $use_hamerly
+#> NULL
+#> 
+#> $use_gemm
+#> NULL
+#> 
+```

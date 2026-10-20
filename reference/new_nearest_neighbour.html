@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,7 +47,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Generate a new NearestNeighbours</h1>
-
+      <small class="dont-index">Source: <a href="https://github.com/GregorLueg/manifoldsR/blob/main/R/classes.R" class="external-link"><code>R/classes.R</code></a>, <a href="https://github.com/GregorLueg/manifoldsR/blob/main/R/deprecated.R" class="external-link"><code>R/deprecated.R</code></a></small>
       <div class="d-none name"><code>new_nearest_neighbour.Rd</code></div>
     </div>
 
@@ -67,7 +67,7 @@
 
 
 <dl><dt id="arg-indices">indices<a class="anchor" aria-label="anchor" href="#arg-indices"></a></dt>
-<dd><p>Integer. Nearest neigbours in flat storage format. Need to
+<dd><p>Integer. Nearest neighbours in flat storage format. Need to
 be sorted!</p></dd>
 
 
@@ -90,6 +90,23 @@ i.e. Euclidean rather than squared Euclidean.</p></dd>
     <p>Initialised <code>NearestNeighbours</code> class.</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="manifold_synthetic_data.html">manifold_synthetic_data</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"clusters"</span>, n_samples <span class="op">=</span> <span class="fl">500L</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">knn</span> <span class="op">&lt;-</span> <span class="fu"><a href="generate_knn_graph.html">generate_knn_graph</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">data</span>, k <span class="op">=</span> <span class="fl">15L</span>, .verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">knn2</span> <span class="op">&lt;-</span> <span class="fu">new_nearest_neighbour</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  indices <span class="op">=</span> <span class="fu"><a href="get_idx_flat.html">get_idx_flat</a></span><span class="op">(</span><span class="va">knn</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  dist <span class="op">=</span> <span class="fu"><a href="get_dist_flat.html">get_dist_flat</a></span><span class="op">(</span><span class="va">knn</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  k <span class="op">=</span> <span class="fl">15L</span>,</span></span>
+<span class="r-in"><span>  n <span class="op">=</span> <span class="fl">500L</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">knn2</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NearestNeighbours</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   n_samples:    500 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   k_neighbours: 15 </span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

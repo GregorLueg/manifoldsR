@@ -56,3 +56,40 @@ A named list with the following elements:
 
 - point_std - Numeric. Within-subcluster Gaussian noise. Defaults to
   `0.4`.
+
+## Examples
+
+``` r
+params_hierarchical()
+#> $n_supergroups
+#> [1] 3
+#> 
+#> $n_subclusts
+#> [1] 3
+#> 
+#> $supergroup_spread
+#> [1] 15
+#> 
+#> $subcluster_spread
+#> [1] 2
+#> 
+#> $point_std
+#> [1] 0.4
+#> 
+params_hierarchical(n_supergroups = 4L, n_subclusts = 2L)
+#> $n_supergroups
+#> [1] 4
+#> 
+#> $n_subclusts
+#> [1] 2
+#> 
+#> $supergroup_spread
+#> [1] 15
+#> 
+#> $subcluster_spread
+#> [1] 2
+#> 
+#> $point_std
+#> [1] 0.4
+#> 
+```

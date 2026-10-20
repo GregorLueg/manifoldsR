@@ -75,8 +75,8 @@ cluster_data <- manifold_synthetic_data(
   n_samples = 25000L
 )
 
-swissrole_data <- manifold_synthetic_data(
-  type = "swiss_role",
+swissroll_data <- manifold_synthetic_data(
+  type = "swiss_roll",
   n_samples = 1000L
 )
 
@@ -142,21 +142,21 @@ faithful global geometry.
 
 #### Swissrole
 
-Let’s look at the swiss role, where UMAP struggled due to its
+Let’s look at the Swiss roll, where UMAP struggled due to its
 graph-based objective. We will need higher perplexity values here to
 emphasise the global structure more. Similar to last UMAP, let’s start
 with PCA:
 
 ``` r
 
-pca_swiss_role <- prcomp(swissrole_data$data)
+pca_swiss_roll <- prcomp(swissroll_data$data)
 
-pca_swiss_role_df <- as.data.table(pca_swiss_role$x[, 1:2]) %>%
+pca_swiss_roll_df <- as.data.table(pca_swiss_roll$x[, 1:2]) %>%
   `colnames<-`(c("PC1", "PC2")) %>%
-  .[, z_axis := swissrole_data$data[, 3]]
+  .[, z_axis := swissroll_data$data[, 3]]
 
 ggplot(
-  data = pca_swiss_role_df,
+  data = pca_swiss_roll_df,
   mapping = aes(x = PC1, y = PC2)
 ) +
   geom_point(
@@ -167,28 +167,28 @@ ggplot(
   ) +
   scale_fill_viridis_c() +
   theme_bw() +
-  ggtitle("PCA on swissrole")
+  ggtitle("PCA on swissroll")
 ```
 
-![](tsne_files/figure-html/swissrole%20data%20-%20pca-1.png)
+![](tsne_files/figure-html/swissroll%20data%20-%20pca-1.png)
 
 And compare against tSNE:
 
 ``` r
 
-tsne_swissrole <- tsne(
-  data = swissrole_data$data,
+tsne_swissroll <- tsne(
+  data = swissroll_data$data,
   knn_method = "exhaustive",
   perplexity = 50L, # we need to increase perplexity to capture the global structure
   seed = 42L
 )
 
-tsne_swissrole_df <- as.data.table(tsne_swissrole) %>%
+tsne_swissroll_df <- as.data.table(tsne_swissroll) %>%
   `colnames<-`(c("tSNE1", "tSNE2")) %>%
-  .[, z_axis := swissrole_data$data[, 3]]
+  .[, z_axis := swissroll_data$data[, 3]]
 
 ggplot(
-  data = tsne_swissrole_df,
+  data = tsne_swissroll_df,
   mapping = aes(x = tSNE1, y = tSNE2)
 ) +
   geom_point(
@@ -199,12 +199,12 @@ ggplot(
   ) +
   scale_fill_viridis_c() +
   theme_bw() +
-  ggtitle("tSNE (BH) on swissrole")
+  ggtitle("tSNE (BH) on swissroll")
 ```
 
-![](tsne_files/figure-html/swissrole%20data%20-%20tsne-1.png)
+![](tsne_files/figure-html/swissroll%20data%20-%20tsne-1.png)
 
-t-SNE handles the swiss role more gracefully than UMAP, preserving more
+t-SNE handles the Swiss roll more gracefully than UMAP, preserving more
 of the continuous colour gradient along the roll. That said, it is still
 not perfect — this is still better approached with PCA or dedicated
 manifold unrolling methods (check out PHATE here).
@@ -511,9 +511,9 @@ microbenchmark::microbenchmark(
 )
 #> Unit: seconds
 #>            expr       min        lq      mean    median        uq       max
-#>           Rtsne 10.566956 10.566956 10.566956 10.566956 10.566956 10.566956
-#>     manifold_bh  3.847466  3.847466  3.847466  3.847466  3.847466  3.847466
-#>  manifold_bh_qd  1.608557  1.608557  1.608557  1.608557  1.608557  1.608557
+#>           Rtsne 12.605955 12.605955 12.605955 12.605955 12.605955 12.605955
+#>     manifold_bh  3.815150  3.815150  3.815150  3.815150  3.815150  3.815150
+#>  manifold_bh_qd  1.747368  1.747368  1.747368  1.747368  1.747368  1.747368
 #>  neval
 #>      1
 #>      1
@@ -572,14 +572,14 @@ microbenchmark::microbenchmark(
 )
 #> Unit: seconds
 #>             expr      min       lq     mean   median       uq      max neval
-#>      manifold_bh 94.82867 94.82867 94.82867 94.82867 94.82867 94.82867     1
-#>   manifold_bh_qd 21.00353 21.00353 21.00353 21.00353 21.00353 21.00353     1
-#>     manifold_fft 23.96751 23.96751 23.96751 23.96751 23.96751 23.96751     1
-#>  manifold_fft_3k 20.06453 20.06453 20.06453 20.06453 20.06453 20.06453     1
+#>      manifold_bh 93.57530 93.57530 93.57530 93.57530 93.57530 93.57530     1
+#>   manifold_bh_qd 24.10453 24.10453 24.10453 24.10453 24.10453 24.10453     1
+#>     manifold_fft 26.66654 26.66654 26.66654 26.66654 26.66654 26.66654     1
+#>  manifold_fft_3k 24.66720 24.66720 24.66720 24.66720 24.66720 24.66720     1
 ```
 
 The speed advantage of the Rust implementation comes from a combination
 of optimised memory layout, aggressive inlining, and the fact that the
-entire pipeline — kNN construction, probability computation, and
-gradient descent — runs within the Rust kernel without round-tripping
-through R. If you like tSNE, but thought it’s too slow… we got you.
+entire pipeline (kNN construction, probability computation and gradient
+descent) runs within the Rust kernel without round-tripping through R.
+If you like tSNE, but thought it’s too slow… we got you.

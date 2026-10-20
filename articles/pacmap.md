@@ -75,8 +75,8 @@ cluster_data <- manifold_synthetic_data(
   parameters = params_clusters(n_clusters = 15L)
 )
 
-swissrole_data <- manifold_synthetic_data(
-  type = "swiss_role",
+swissroll_data <- manifold_synthetic_data(
+  type = "swiss_roll",
   n_samples = 1000L
 )
 
@@ -152,16 +152,16 @@ The clusters are well-separated. Another interesting detail is that we
 have some points that are further away from the rest and the actual
 statistical noise of the data is being better captured here.
 
-#### Swiss role
+#### Swiss roll
 
-The swiss role tests continuous manifold preservation. PaCMAP should
+The Swiss roll tests continuous manifold preservation. PaCMAP should
 unroll it cleanly, with the colour gradient along the roll preserved in
 the embedding.
 
 ``` r
 
-pacmap_swissrole <- pacmap(
-  data = swissrole_data$data,
+pacmap_swissroll <- pacmap(
+  data = swissroll_data$data,
   knn_method = "exhaustive",
   pacmap_params = params_pacmap(
     optimiser = "adam_parallel"
@@ -169,12 +169,12 @@ pacmap_swissrole <- pacmap(
   seed = 42L
 )
 
-pacmap_swissrole_df <- as.data.table(pacmap_swissrole) %>%
+pacmap_swissroll_df <- as.data.table(pacmap_swissroll) %>%
   `colnames<-`(c("PaCMAP1", "PaCMAP2")) %>%
-  .[, z_axis := swissrole_data$data[, 3]]
+  .[, z_axis := swissroll_data$data[, 3]]
 
 ggplot(
-  data = pacmap_swissrole_df,
+  data = pacmap_swissroll_df,
   mapping = aes(x = PaCMAP1, y = PaCMAP2)
 ) +
   geom_point(
@@ -185,10 +185,10 @@ ggplot(
   ) +
   scale_fill_viridis_c() +
   theme_bw() +
-  ggtitle("PaCMAP on swiss role data")
+  ggtitle("PaCMAP on Swiss roll data")
 ```
 
-![](pacmap_files/figure-html/swissrole%20data%20-%20pacmap-1.png)
+![](pacmap_files/figure-html/swissroll%20data%20-%20pacmap-1.png)
 
 Also, in this case, PaCMAP can actually identify the underlying
 Swissrole structure better than tSNE or UMAP (please refer to these
@@ -413,13 +413,13 @@ microbenchmark::microbenchmark(
   times = 3L
 )
 #> Unit: seconds
-#>             expr      min       lq     mean   median       uq     max neval
-#>    manifold_umap 1.177489 1.181512 1.187611 1.185535 1.192673 1.19981     3
-#>  manifold_pacmap 1.940322 1.957246 1.969874 1.974170 1.984650 1.99513     3
+#>             expr      min       lq     mean   median       uq      max neval
+#>    manifold_umap 1.314393 1.321025 1.326042 1.327658 1.331866 1.336074     3
+#>  manifold_pacmap 1.759151 1.761670 1.820478 1.764189 1.851141 1.938094     3
 ```
 
 PaCMAP is generally slower than UMAP on the same data since it processes
 all pairs every epoch rather than sampling. The three-phase schedule
-with 450 epochs (vs UMAP’s 200–500) compounds this. For most datasets up
-to ~50k samples this is not a concern in practice, but on very large
+with 450 epochs (vs UMAP’s 200 to 500) compounds this. For most datasets
+up to ~50k samples this is not a concern in practice, but on very large
 data the difference becomes noticeable.

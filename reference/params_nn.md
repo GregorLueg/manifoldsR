@@ -128,3 +128,88 @@ A named list with the following elements:
 
 - n_probes - Integer or `NULL`. Number of clusters to probe for IVF. If
   `NULL`, uses `sqrt(n_list)`. Defaults to `NULL`.
+
+## Examples
+
+``` r
+params_nn()
+#> $dist_metric
+#> [1] "euclidean"
+#> 
+#> $n_tree
+#> [1] 50
+#> 
+#> $search_budget
+#> NULL
+#> 
+#> $m
+#> [1] 16
+#> 
+#> $ef_construction
+#> [1] 100
+#> 
+#> $ef_search
+#> [1] 100
+#> 
+#> $diversify_prob
+#> [1] 0
+#> 
+#> $delta
+#> [1] 0.001
+#> 
+#> $ef_budget
+#> NULL
+#> 
+#> $extract_knn
+#> [1] TRUE
+#> 
+#> $bt_budget
+#> [1] 0.1
+#> 
+#> $n_list
+#> NULL
+#> 
+#> $n_probes
+#> NULL
+#> 
+params_nn(dist_metric = "cosine", ef_search = 200L)
+#> $dist_metric
+#> [1] "cosine"
+#> 
+#> $n_tree
+#> [1] 50
+#> 
+#> $search_budget
+#> NULL
+#> 
+#> $m
+#> [1] 16
+#> 
+#> $ef_construction
+#> [1] 100
+#> 
+#> $ef_search
+#> [1] 200
+#> 
+#> $diversify_prob
+#> [1] 0
+#> 
+#> $delta
+#> [1] 0.001
+#> 
+#> $ef_budget
+#> NULL
+#> 
+#> $extract_knn
+#> [1] TRUE
+#> 
+#> $bt_budget
+#> [1] 0.1
+#> 
+#> $n_list
+#> NULL
+#> 
+#> $n_probes
+#> NULL
+#> 
+```

@@ -32,20 +32,20 @@ cluster means.
 
 The **full** (Lloyd’s) implementation in `manifoldsR` is heavily
 optimised (original from
-[ann-search-rs](https://crates.io/crates/ann-search-rs)). For
-high-dimensional data (dim \>= 96), it defaults to the Hamerly’s
-algorithm: per-point upper and lower distance bounds prune the vast
-majority of distance computations after the first few iterations, while
-GEMM-based assignment (defaulted to when the dimensionality is high
-enough) keeps the remaining work cache-friendly. For Euclidean distance,
-this typically prunes 90%+ of point-centroid comparisons after 3-4
-iterations, meaning convergence cost is closer to a handful of full
-passes than the theoretical worst case. For cosine distance (where
-Hamerly’s bounds do not apply, since cosine lacks the triangle
-inequality), a full GEMM reassignment is performed each iteration.
-Lower-dimensional data (dim \< 96) falls back to direct SIMD-accelerated
-loops, which avoid the GEMM kernel overhead at small dimensions. (If you
-wish you can actually control the exact dispatch. The
+[ann-search-rs](https://docs.rs/ann-search-rs)). For high-dimensional
+data (dim \>= 96), it defaults to the Hamerly’s algorithm: per-point
+upper and lower distance bounds prune the vast majority of distance
+computations after the first few iterations, while GEMM-based assignment
+(defaulted to when the dimensionality is high enough) keeps the
+remaining work cache-friendly. For Euclidean distance, this typically
+prunes 90%+ of point-centroid comparisons after 3-4 iterations, meaning
+convergence cost is closer to a handful of full passes than the
+theoretical worst case. For cosine distance (where Hamerly’s bounds do
+not apply, since cosine lacks the triangle inequality), a full GEMM
+reassignment is performed each iteration. Lower-dimensional data (dim \<
+96) falls back to direct SIMD-accelerated loops, which avoid the GEMM
+kernel overhead at small dimensions. (If you wish you can actually
+control the exact dispatch. The
 [`params_kmeans()`](https://gregorlueg.github.io/manifoldsR/reference/params_kmeans.md)
 give you tight control if needed.)
 
@@ -245,7 +245,7 @@ true structure.
 cat("Full k-means:\n")
 #> Full k-means:
 cat("  ARI:", calc_ari(cluster_data$membership, membership(km_full)), "\n")
-#>   ARI: 0.7085234
+#>   ARI: 0.7086227
 cat("  Effective clusters:", length(unique(membership(km_full))), "\n")
 #>   Effective clusters: 25
 cat(
@@ -256,7 +256,7 @@ cat(
   )$mean_silhouette,
   "\n"
 )
-#>   Silhouette: 0.4139893
+#>   Silhouette: 0.4140061
 
 cat("\nMini-batch k-means:\n")
 #> 
@@ -353,9 +353,9 @@ evoc_res <- evoc(
 
 evoc_res
 #> Evoc
-#>   layers:               4 
+#>   layers:               3 
 #>   best layer:           3 
-#>   best persistence:     2646.579 
+#>   best persistence:     2687.141 
 #>   knn:                  not stored
 ```
 
@@ -366,7 +366,7 @@ evoc_best <- best_membership(evoc_res)
 cat("Selected layer:", evoc_best$layer, "\n")
 #> Selected layer: 3
 cat("Persistence score:", round(evoc_best$persistence, 4), "\n")
-#> Persistence score: 2646.579
+#> Persistence score: 2687.141
 cat(
   "Clusters found:",
   length(unique(evoc_best$labels[evoc_best$labels != -1L])),

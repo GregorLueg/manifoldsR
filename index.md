@@ -7,7 +7,7 @@ badge](https://gregorlueg.r-universe.dev/manifoldsR/badges/version)](https://gre
 [![License:
 MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![pkgdown](https://img.shields.io/badge/pkgdown-website-1b5e9f?logo=github)](https://gregorlueg.github.io/manifoldsR/)
-[![extendr](https://img.shields.io/badge/extendr-%5E0.9.0-276DC2)](https://extendr.github.io/extendr/extendr_api/)
+[![extendr](https://img.shields.io/badge/extendr-%5E0.9.0-276DC2)](https://extendr.rs/extendr/extendr_api/)
 
 **Rust-accelerated** manifold learning methods with R bindings. For the
 modern-day single-cell Pollock. Additionally, provides some clustering

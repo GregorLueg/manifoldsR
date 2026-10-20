@@ -114,3 +114,12 @@ epochs, which is why it costs comparatively little.
 ## References
 
 Narayan, Berger & Cho, Nat. Biotechnol., 2021
+
+## Examples
+
+``` r
+d <- manifold_synthetic_data(type = "clusters", n_samples = 500L)
+emb <- densmap(d$data, .verbose = FALSE)
+dim(emb)
+#> [1] 500   2
+```

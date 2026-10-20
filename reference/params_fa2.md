@@ -138,3 +138,88 @@ A named list with the following elements:
 ## References
 
 Jacomy, et al., PLoS ONE, 2014
+
+## Examples
+
+``` r
+params_fa2()
+#> $local_connectivity
+#> [1] 1
+#> 
+#> $bandwidth
+#> [1] 1e-05
+#> 
+#> $n_epochs
+#> [1] 500
+#> 
+#> $scaling_ratio
+#> [1] 2
+#> 
+#> $gravity
+#> [1] 1
+#> 
+#> $strong_gravity
+#> [1] FALSE
+#> 
+#> $lin_log
+#> [1] FALSE
+#> 
+#> $dissuade_hubs
+#> [1] FALSE
+#> 
+#> $edge_weight_influence
+#> [1] 1
+#> 
+#> $jitter_tolerance
+#> [1] 1
+#> 
+#> $theta
+#> [1] 1.2
+#> 
+#> $init
+#> [1] "spectral"
+#> 
+#> $randomised
+#> [1] FALSE
+#> 
+params_fa2(n_epochs = 200L, lin_log = TRUE)
+#> $local_connectivity
+#> [1] 1
+#> 
+#> $bandwidth
+#> [1] 1e-05
+#> 
+#> $n_epochs
+#> [1] 200
+#> 
+#> $scaling_ratio
+#> [1] 2
+#> 
+#> $gravity
+#> [1] 1
+#> 
+#> $strong_gravity
+#> [1] FALSE
+#> 
+#> $lin_log
+#> [1] TRUE
+#> 
+#> $dissuade_hubs
+#> [1] FALSE
+#> 
+#> $edge_weight_influence
+#> [1] 1
+#> 
+#> $jitter_tolerance
+#> [1] 1
+#> 
+#> $theta
+#> [1] 1.2
+#> 
+#> $init
+#> [1] "spectral"
+#> 
+#> $randomised
+#> [1] FALSE
+#> 
+```

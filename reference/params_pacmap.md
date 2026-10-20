@@ -129,3 +129,94 @@ A named list with the following elements:
 
 - phase2_end - Integer or `NULL`. Epoch at which phase 2 ends. If
   `NULL`, resolved downstream to `200`. Defaults to `NULL`.
+
+## Examples
+
+``` r
+params_pacmap()
+#> $n_near
+#> [1] 10
+#> 
+#> $n_mid_near
+#> [1] 5
+#> 
+#> $n_further
+#> [1] 20
+#> 
+#> $mn_candidate_start
+#> [1] 4
+#> 
+#> $mn_candidate_end
+#> [1] 50
+#> 
+#> $init
+#> [1] "pca"
+#> 
+#> $optimiser
+#> [1] "adam_parallel"
+#> 
+#> $lr
+#> [1] 1
+#> 
+#> $n_epochs
+#> NULL
+#> 
+#> $beta1
+#> [1] 0.9
+#> 
+#> $beta2
+#> [1] 0.999
+#> 
+#> $eps
+#> [1] 1e-07
+#> 
+#> $phase1_end
+#> NULL
+#> 
+#> $phase2_end
+#> NULL
+#> 
+params_pacmap(n_near = 15L, n_further = 30L)
+#> $n_near
+#> [1] 15
+#> 
+#> $n_mid_near
+#> [1] 5
+#> 
+#> $n_further
+#> [1] 30
+#> 
+#> $mn_candidate_start
+#> [1] 4
+#> 
+#> $mn_candidate_end
+#> [1] 50
+#> 
+#> $init
+#> [1] "pca"
+#> 
+#> $optimiser
+#> [1] "adam_parallel"
+#> 
+#> $lr
+#> [1] 1
+#> 
+#> $n_epochs
+#> NULL
+#> 
+#> $beta1
+#> [1] 0.9
+#> 
+#> $beta2
+#> [1] 0.999
+#> 
+#> $eps
+#> [1] 1e-07
+#> 
+#> $phase1_end
+#> NULL
+#> 
+#> $phase2_end
+#> NULL
+#> 
+```

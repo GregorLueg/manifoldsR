@@ -14,7 +14,7 @@ generate_nearest_neigbours_class(indices, dist, k, n)
 
 - indices:
 
-  Integer. Nearest neigbours in flat storage format. Need to be sorted!
+  Integer. Nearest neighbours in flat storage format. Need to be sorted!
 
 - dist:
 
@@ -33,3 +33,20 @@ generate_nearest_neigbours_class(indices, dist, k, n)
 ## Value
 
 Initialised `NearestNeighbours` class.
+
+## Examples
+
+``` r
+d <- manifold_synthetic_data(type = "clusters", n_samples = 500L)
+knn <- generate_knn_graph(d$data, k = 15L, .verbose = FALSE)
+knn2 <- new_nearest_neighbour(
+  indices = get_idx_flat(knn),
+  dist = get_dist_flat(knn),
+  k = 15L,
+  n = 500L
+)
+knn2
+#> NearestNeighbours
+#>   n_samples:    500 
+#>   k_neighbours: 15 
+```

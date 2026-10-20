@@ -25,3 +25,12 @@ calc_inertia(x, data)
 ## Value
 
 The cluster inertia
+
+## Examples
+
+``` r
+d <- manifold_synthetic_data(type = "clusters", n_samples = 500L)
+km <- kmeans_cluster(d$data, k = 4L, .verbose = FALSE)
+calc_inertia(km, d$data)
+#> [1] 220044.2
+```

@@ -113,3 +113,12 @@ one, matching the reference implementations.
 ## References
 
 Narayan, Berger & Cho, Nat. Biotechnol., 2021
+
+## Examples
+
+``` r
+d <- manifold_synthetic_data(type = "clusters", n_samples = 500L)
+emb <- densne(d$data, .verbose = FALSE)
+dim(emb)
+#> [1] 500   2
+```

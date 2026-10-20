@@ -29,7 +29,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -82,7 +82,7 @@
       <p class="author">Gregor Lueg</p>
       <p class="date">2026-10-20</p>
 
-
+      <small class="dont-index">Source: <a href="https://github.com/GregorLueg/manifoldsR/blob/main/vignettes/umap.qmd" class="external-link"><code>vignettes/umap.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
     </div>
 
@@ -119,8 +119,8 @@
 <span>  n_samples <span class="op">=</span> <span class="fl">25000L</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">swissrole_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/manifold_synthetic_data.html">manifold_synthetic_data</a></span><span class="op">(</span></span>
-<span>  type <span class="op">=</span> <span class="st">"swiss_role"</span>,</span>
+<span><span class="va">swissroll_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/manifold_synthetic_data.html">manifold_synthetic_data</a></span><span class="op">(</span></span>
+<span>  type <span class="op">=</span> <span class="st">"swiss_roll"</span>,</span>
 <span>  n_samples <span class="op">=</span> <span class="fl">1000L</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -187,19 +187,19 @@
 </div>
 </div>
 </div>
-<p>In this case, UMAP is clearly able to separate out the individual clusters (as expected). However, in other cases, UMAP does worse… Let’s look at the SwissRole example.</p>
+<p>In this case, UMAP is clearly able to separate out the individual clusters (as expected). However, in other cases, UMAP does worse… Let’s look at the SwissRoll example.</p>
 </section><section class="level3"><h4 id="swissrole">Swissrole<a class="anchor" aria-label="anchor" href="#swissrole"></a>
 </h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">pca_swiss_role</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/prcomp.html" class="external-link">prcomp</a></span><span class="op">(</span><span class="va">swissrole_data</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">pca_swiss_roll</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/prcomp.html" class="external-link">prcomp</a></span><span class="op">(</span><span class="va">swissroll_data</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">pca_swiss_role_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/as.data.table.html" class="external-link">as.data.table</a></span><span class="op">(</span><span class="va">pca_swiss_role</span><span class="op">$</span><span class="va">x</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span><span class="va">pca_swiss_roll_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/as.data.table.html" class="external-link">as.data.table</a></span><span class="op">(</span><span class="va">pca_swiss_roll</span><span class="op">$</span><span class="va">x</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu">`colnames&lt;-`</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PC1"</span>, <span class="st">"PC2"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="va">.</span><span class="op">[</span>, <span class="va">z_axis</span> <span class="op">:=</span> <span class="va">swissrole_data</span><span class="op">$</span><span class="va">data</span><span class="op">[</span>, <span class="fl">3</span><span class="op">]</span><span class="op">]</span></span>
+<span>  <span class="va">.</span><span class="op">[</span>, <span class="va">z_axis</span> <span class="op">:=</span> <span class="va">swissroll_data</span><span class="op">$</span><span class="va">data</span><span class="op">[</span>, <span class="fl">3</span><span class="op">]</span><span class="op">]</span></span>
 <span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span></span>
-<span>  data <span class="op">=</span> <span class="va">pca_swiss_role_df</span>,</span>
+<span>  data <span class="op">=</span> <span class="va">pca_swiss_roll_df</span>,</span>
 <span>  mapping <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">PC1</span>, y <span class="op">=</span> <span class="va">PC2</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span></span>
@@ -210,10 +210,10 @@
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html" class="external-link">scale_fill_viridis_c</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"PCA on swissrole"</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"PCA on swissroll"</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div>
-<figure><p><img src="umap_files/figure-html/swissrole%20data%20-%20pca-1.png" width="672"></p>
+<figure><p><img src="umap_files/figure-html/swissroll%20data%20-%20pca-1.png" width="672"></p>
 </figure>
 </div>
 </div>
@@ -221,8 +221,8 @@
 <p>PCA clearly captures the Swissrole structure. How does UMAP perform here … ?</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">umap_swissrole</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/umap.html">umap</a></span><span class="op">(</span></span>
-<span>  data <span class="op">=</span> <span class="va">swissrole_data</span><span class="op">$</span><span class="va">data</span>,</span>
+<code class="sourceCode R"><span><span class="va">umap_swissroll</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/umap.html">umap</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">swissroll_data</span><span class="op">$</span><span class="va">data</span>,</span>
 <span>  knn_method <span class="op">=</span> <span class="st">"exhaustive"</span>,</span>
 <span>  min_dist <span class="op">=</span> <span class="fl">0.3</span>,</span>
 <span>  umap_params <span class="op">=</span> <span class="fu"><a href="../reference/params_umap.html">params_umap</a></span><span class="op">(</span>optimiser <span class="op">=</span> <span class="st">"sgd"</span><span class="op">)</span>,</span>
@@ -230,13 +230,13 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Using n_epochs = 500 (dataset &lt;10k samples or adam_parallel optimiser)</span></span>
 <span></span>
-<span><span class="va">umap_swissrole_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/as.data.table.html" class="external-link">as.data.table</a></span><span class="op">(</span><span class="va">umap_swissrole</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span><span class="va">umap_swissroll_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/as.data.table.html" class="external-link">as.data.table</a></span><span class="op">(</span><span class="va">umap_swissroll</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu">`colnames&lt;-`</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"UMAP1"</span>, <span class="st">"UMAP2"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="va">.</span><span class="op">[</span>, <span class="va">z_axis</span> <span class="op">:=</span> <span class="va">swissrole_data</span><span class="op">$</span><span class="va">data</span><span class="op">[</span>, <span class="fl">3</span><span class="op">]</span><span class="op">]</span></span>
+<span>  <span class="va">.</span><span class="op">[</span>, <span class="va">z_axis</span> <span class="op">:=</span> <span class="va">swissroll_data</span><span class="op">$</span><span class="va">data</span><span class="op">[</span>, <span class="fl">3</span><span class="op">]</span><span class="op">]</span></span>
 <span></span>
 <span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span></span>
-<span>  data <span class="op">=</span> <span class="va">umap_swissrole_df</span>,</span>
+<span>  data <span class="op">=</span> <span class="va">umap_swissroll_df</span>,</span>
 <span>  mapping <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">UMAP1</span>, y <span class="op">=</span> <span class="va">UMAP2</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span></span>
@@ -247,15 +247,15 @@
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html" class="external-link">scale_fill_viridis_c</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"UMAP on swissrole (SGD)"</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"UMAP on swissroll (SGD)"</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div>
-<figure><p><img src="umap_files/figure-html/swissrole%20data%20-%20umap-1.png" width="672"></p>
+<figure><p><img src="umap_files/figure-html/swissroll%20data%20-%20umap-1.png" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
-<p>UMAP rips apart the swiss role structure. Due to the nature of the loss, it is not a great algorithm for data with a continuum-type manifold. This is also apparent in the trajectory type data, see below:</p>
+<p>UMAP rips apart the Swiss roll structure. Due to the nature of the loss, it is not a great algorithm for data with a continuum-type manifold. This is also apparent in the trajectory type data, see below:</p>
 </section><section class="level3"><h4 id="trajectory">Trajectory<a class="anchor" aria-label="anchor" href="#trajectory"></a>
 </h4>
 <p>Let’s start with PCA again</p>
@@ -463,19 +463,18 @@
 </div>
 </div>
 </div>
-<p>This one is SUBSTANTIALLY faster, as the gradients for each node in the graph are collected in parallel and then applied. This allows us to make usage of heavy multi-threading which Rust supports beautifully via Rayon. In terms of how does this version compare against other versions, let’s do a benchmark:</p>
+<p>This one is SUBSTANTIALLY faster, as the gradients for each node in the graph are collected in parallel and then applied. This allows us to make usage of heavy multi-threading which Rust supports beautifully via Rayon.</p>
+<p>How does the parallel Adam version compare against other UMAP implementations? Let’s do a benchmark:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># set up the venv for the Python part/dependencies</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">local</a></span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="va">env_name</span> <span class="op">&lt;-</span> <span class="st">"r-manifolds"</span></span>
+<span>  <span class="va">py_pkgs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"phate"</span>, <span class="st">"umap-learn"</span>, <span class="st">"numpy"</span>, <span class="st">"scipy"</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/virtualenv-tools.html" class="external-link">virtualenv_exists</a></span><span class="op">(</span><span class="va">env_name</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/virtualenv-tools.html" class="external-link">virtualenv_create</a></span><span class="op">(</span><span class="va">env_name</span><span class="op">)</span></span>
-<span>    <span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/virtualenv-tools.html" class="external-link">virtualenv_install</a></span><span class="op">(</span></span>
-<span>      <span class="va">env_name</span>,</span>
-<span>      packages <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"phate"</span>, <span class="st">"umap-learn"</span>, <span class="st">"numpy"</span>, <span class="st">"scipy"</span><span class="op">)</span></span>
-<span>    <span class="op">)</span></span>
+<span>    <span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/virtualenv-tools.html" class="external-link">virtualenv_install</a></span><span class="op">(</span><span class="va">env_name</span>, packages <span class="op">=</span> <span class="va">py_pkgs</span><span class="op">)</span></span>
 <span>  <span class="op">}</span></span>
 <span></span>
 <span>  <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/py_available.html" class="external-link">py_available</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
@@ -487,14 +486,13 @@
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"phate"</span>, <span class="st">"umap"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span>  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">missing_pkgs</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0L</span><span class="op">)</span> <span class="op">{</span></span>
-<span>    <span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/virtualenv-tools.html" class="external-link">virtualenv_install</a></span><span class="op">(</span></span>
-<span>      <span class="va">env_name</span>,</span>
-<span>      packages <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"phate"</span>, <span class="st">"umap-learn"</span>, <span class="st">"numpy"</span>, <span class="st">"scipy"</span><span class="op">)</span></span>
-<span>    <span class="op">)</span></span>
+<span>    <span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/virtualenv-tools.html" class="external-link">virtualenv_install</a></span><span class="op">(</span><span class="va">env_name</span>, packages <span class="op">=</span> <span class="va">py_pkgs</span><span class="op">)</span></span>
 <span>  <span class="op">}</span></span>
-<span><span class="op">}</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">benchmark_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/manifold_synthetic_data.html">manifold_synthetic_data</a></span><span class="op">(</span></span>
+<span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">benchmark_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/manifold_synthetic_data.html">manifold_synthetic_data</a></span><span class="op">(</span></span>
 <span>  type <span class="op">=</span> <span class="st">"cluster"</span>,</span>
 <span>  n_samples <span class="op">=</span> <span class="fl">5000L</span></span>
 <span><span class="op">)</span></span>
@@ -545,21 +543,21 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: milliseconds</span></span>
 <span><span class="co">#&gt;             expr        min         lq       mean     median         uq</span></span>
-<span><span class="co">#&gt;             umap 20772.1018 20772.1018 20772.1018 20772.1018 20772.1018</span></span>
-<span><span class="co">#&gt;  umap_reticulate 17346.6239 17346.6239 17346.6239 17346.6239 17346.6239</span></span>
-<span><span class="co">#&gt;             uwot  5195.6760  5195.6760  5195.6760  5195.6760  5195.6760</span></span>
-<span><span class="co">#&gt;          uwot_v2  3229.3922  3229.3922  3229.3922  3229.3922  3229.3922</span></span>
-<span><span class="co">#&gt;    manifold_umap   613.4677   613.4677   613.4677   613.4677   613.4677</span></span>
+<span><span class="co">#&gt;             umap 22855.4592 22855.4592 22855.4592 22855.4592 22855.4592</span></span>
+<span><span class="co">#&gt;  umap_reticulate 20390.0282 20390.0282 20390.0282 20390.0282 20390.0282</span></span>
+<span><span class="co">#&gt;             uwot  5137.4403  5137.4403  5137.4403  5137.4403  5137.4403</span></span>
+<span><span class="co">#&gt;          uwot_v2  3347.0561  3347.0561  3347.0561  3347.0561  3347.0561</span></span>
+<span><span class="co">#&gt;    manifold_umap   637.0557   637.0557   637.0557   637.0557   637.0557</span></span>
 <span><span class="co">#&gt;         max neval</span></span>
-<span><span class="co">#&gt;  20772.1018     1</span></span>
-<span><span class="co">#&gt;  17346.6239     1</span></span>
-<span><span class="co">#&gt;   5195.6760     1</span></span>
-<span><span class="co">#&gt;   3229.3922     1</span></span>
-<span><span class="co">#&gt;    613.4677     1</span></span></code></pre></div>
+<span><span class="co">#&gt;  22855.4592     1</span></span>
+<span><span class="co">#&gt;  20390.0282     1</span></span>
+<span><span class="co">#&gt;   5137.4403     1</span></span>
+<span><span class="co">#&gt;   3347.0561     1</span></span>
+<span><span class="co">#&gt;    637.0557     1</span></span></code></pre></div>
 </div>
-<p>We can appreciate that the standard R version is slow (as expected). If we leverage the Python version (with numba behind the scences) via the reticulate, we can get some speed ups (we need to however first JIT compile the numba parts). However, the uwot v2 version and the manifold are the fastest here. Let’s pit them together against each other in a larger data set.</p>
+<p>We can appreciate that the standard R version is slow (as expected). If we leverage the Python version (with numba behind the scenes) via reticulate, we can get some speed ups (we need to however first JIT compile the numba parts). However, the uwot v2 version and the manifold are the fastest here. Let’s pit them together against each other in a larger data set.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">benchmark_data_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/manifold_synthetic_data.html">manifold_synthetic_data</a></span><span class="op">(</span></span>
 <span>  type <span class="op">=</span> <span class="st">"cluster"</span>,</span>
 <span>  n_samples <span class="op">=</span> <span class="fl">50000L</span></span>
@@ -580,11 +578,14 @@
 <span>  times <span class="op">=</span> <span class="fl">1L</span> <span class="co"># single comparison for speed</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
-<span><span class="co">#&gt;           expr      min       lq     mean   median       uq      max neval</span></span>
-<span><span class="co">#&gt;        uwot_v2 22.59180 22.59180 22.59180 22.59180 22.59180 22.59180     1</span></span>
-<span><span class="co">#&gt;  manifold_umap  6.97964  6.97964  6.97964  6.97964  6.97964  6.97964     1</span></span></code></pre></div>
+<span><span class="co">#&gt;           expr       min        lq      mean    median        uq       max</span></span>
+<span><span class="co">#&gt;        uwot_v2 25.279354 25.279354 25.279354 25.279354 25.279354 25.279354</span></span>
+<span><span class="co">#&gt;  manifold_umap  8.206415  8.206415  8.206415  8.206415  8.206415  8.206415</span></span>
+<span><span class="co">#&gt;  neval</span></span>
+<span><span class="co">#&gt;      1</span></span>
+<span><span class="co">#&gt;      1</span></span></code></pre></div>
 </div>
-<p>Due to optimised memory layouts, aggressive in-lining, heavy parallelism, leveragig look-up tables (LUTs), this version is <strong>fast</strong> and is likely(?) the fastest UMAP available in R, while keeping memory usage minimal due to leveraging Rust from the point that data is moved into the Rust kernel, until the embedding has been fitted. No round tripping through R, just highly optimised and compiled code throughout. The different nearest neighbour search algorithms give additional flexibility.</p>
+<p>Due to optimised memory layouts, aggressive in-lining, heavy parallelism and look-up tables (LUTs), this version is <strong>fast</strong> and is likely(?) the fastest UMAP available in R, while keeping memory usage minimal due to leveraging Rust from the point that data is moved into the Rust kernel, until the embedding has been fitted. No round tripping through R, just highly optimised and compiled code throughout. The different nearest neighbour search algorithms give additional flexibility.</p>
 </section></section><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);

@@ -15,7 +15,7 @@ Barnes-Hut tree. Already have a graph? Use forceatlas2_from_graph()."><meta prop
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -55,7 +55,7 @@ Barnes-Hut tree. Already have a graph? Use forceatlas2_from_graph()."><meta prop
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Rust-based ForceAtlas2</h1>
-
+      <small class="dont-index">Source: <a href="https://github.com/GregorLueg/manifoldsR/blob/main/R/fa2.R" class="external-link"><code>R/fa2.R</code></a></small>
       <div class="d-none name"><code>forceatlas2.Rd</code></div>
     </div>
 
@@ -138,6 +138,15 @@ ForceAtlas2 layout.</p>
     <p>Jacomy, et al., PLoS ONE, 2014</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="manifold_synthetic_data.html">manifold_synthetic_data</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"clusters"</span>, n_samples <span class="op">=</span> <span class="fl">500L</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">emb</span> <span class="op">&lt;-</span> <span class="fu">forceatlas2</span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">data</span>, .verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">emb</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 500   2</span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

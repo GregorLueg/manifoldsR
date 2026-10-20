@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,9 +47,31 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Changelog</h1>
-
+      <small>Source: <a href="https://github.com/GregorLueg/manifoldsR/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.5.0" id="manifoldsr-050">manifoldsR 0.5.0<a class="anchor" aria-label="anchor" href="#manifoldsr-050"></a></h2>
+<p>First CRAN release.</p>
+<div class="section level3">
+<h3 id="breaking-changes-0-5-0">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-5-0"></a></h3>
+<ul><li>Typos fixed in exported names: <code><a href="../reference/manifoldsR-deprecated.html">params_swiss_role()</a></code>, <code><a href="../reference/manifoldsR-deprecated.html">params_swiss_role_biased()</a></code>, <code><a href="../reference/manifoldsR-deprecated.html">rs_data_swiss_role()</a></code>, <code><a href="../reference/manifoldsR-deprecated.html">rs_data_biased_swiss_role()</a></code> and <code><a href="../reference/manifoldsR-deprecated.html">rs_intertia()</a></code> are now <code><a href="../reference/params_swiss_roll.html">params_swiss_roll()</a></code>, <code><a href="../reference/params_swiss_roll_biased.html">params_swiss_roll_biased()</a></code>, <code><a href="../reference/rs_data_swiss_roll.html">rs_data_swiss_roll()</a></code>, <code><a href="../reference/rs_data_biased_swiss_roll.html">rs_data_biased_swiss_roll()</a></code> and <code><a href="../reference/rs_inertia.html">rs_inertia()</a></code>. The old names still work but throw a deprecation warning and will go in a future release.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="features-0-5-0">Features<a class="anchor" aria-label="anchor" href="#features-0-5-0"></a></h3>
+<ul><li>Rayon’s thread pool is capped at two threads when <code>_R_CHECK_LIMIT_CORES_</code> is set (i.e. under <code>R CMD check --as-cran</code>), unless <code>RAYON_NUM_THREADS</code> is already set.</li>
+<li>
+<code>use_high_precision = NA</code> now warns and falls back to <code>TRUE</code> instead of silently doing so.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="internals-0-5-0">Internals<a class="anchor" aria-label="anchor" href="#internals-0-5-0"></a></h3>
+<ul><li>All Rust crates are vendored into <code>src/rust/vendor.tar.xz</code> and the build runs offline. The vendored set is filtered to the CRAN platforms.</li>
+<li>Rust output goes through R’s console (<code>rprintln!</code>) rather than stdout.</li>
+<li>Vignettes are pkgdown-only articles now and no longer ship with the package.</li>
+<li>Examples added to all user-facing exports.</li>
+<li>Backend bumps: <code>manifolds-rs</code> 0.7.2 and <code>bixverse-rs</code> 0.8.0.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.4.0" id="manifoldsr-040">manifoldsR 0.4.0<a class="anchor" aria-label="anchor" href="#manifoldsr-040"></a></h2>
 <div class="section level3">
@@ -100,7 +122,7 @@
 <h2 class="pkg-version" data-toc-text="0.3.3" id="manifoldsr-033">manifoldsR 0.3.3<a class="anchor" aria-label="anchor" href="#manifoldsr-033"></a></h2>
 <div class="section level3">
 <h3 id="features-0-3-3">Features<a class="anchor" aria-label="anchor" href="#features-0-3-3"></a></h3>
-<ul><li>Wired in <a href="https://doi.org/10.1371/journal.pone.0098679" class="external-link">ForceAtlas2</a> from <a href="https://crates.io/crates/manifolds-rs" class="external-link">manifolds-rs</a>.</li>
+<ul><li>Wired in <a href="https://doi.org/10.1371/journal.pone.0098679" class="external-link">ForceAtlas2</a> from <a href="https://docs.rs/manifolds-rs" class="external-link">manifolds-rs</a>.</li>
 </ul></div>
 </div>
     <div class="section level2">
@@ -122,7 +144,7 @@
 <p>Major release</p>
 <div class="section level3">
 <h3 id="features-0-3-0">Features<a class="anchor" aria-label="anchor" href="#features-0-3-0"></a></h3>
-<ul><li>A lot of the backend code in Rust changed. This gives in parts substantially faster kNN searches from <a href="https://crates.io/crates/ann-search-rs" class="external-link">ann-search-rs</a> (<code>"v0.8.1"</code>).</li>
+<ul><li>A lot of the backend code in Rust changed. This gives in parts substantially faster kNN searches from <a href="https://docs.rs/ann-search-rs" class="external-link">ann-search-rs</a> (<code>"v0.8.1"</code>).</li>
 </ul></div>
 <div class="section level3">
 <h3 id="breaking-change-0-3-0">Breaking change<a class="anchor" aria-label="anchor" href="#breaking-change-0-3-0"></a></h3>

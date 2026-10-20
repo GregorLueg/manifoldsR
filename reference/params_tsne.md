@@ -113,3 +113,70 @@ A named list with the following elements:
 ## References
 
 Belkina, et al., Nat. Commun., 2019
+
+## Examples
+
+``` r
+params_tsne()
+#> $lr
+#> NULL
+#> 
+#> $n_epochs
+#> [1] 1000
+#> 
+#> $early_exag_iter
+#> [1] 250
+#> 
+#> $early_exag_factor
+#> [1] 12
+#> 
+#> $late_exag_factor
+#> NULL
+#> 
+#> $theta
+#> [1] 0.5
+#> 
+#> $n_interp_points
+#> [1] 3
+#> 
+#> $max_depth
+#> [1] 7
+#> 
+#> $init
+#> [1] "pca"
+#> 
+#> $randomised
+#> [1] TRUE
+#> 
+params_tsne(n_epochs = 500L, theta = 0.8)
+#> $lr
+#> NULL
+#> 
+#> $n_epochs
+#> [1] 500
+#> 
+#> $early_exag_iter
+#> [1] 250
+#> 
+#> $early_exag_factor
+#> [1] 12
+#> 
+#> $late_exag_factor
+#> NULL
+#> 
+#> $theta
+#> [1] 0.8
+#> 
+#> $n_interp_points
+#> [1] 3
+#> 
+#> $max_depth
+#> [1] 7
+#> 
+#> $init
+#> [1] "pca"
+#> 
+#> $randomised
+#> [1] TRUE
+#> 
+```

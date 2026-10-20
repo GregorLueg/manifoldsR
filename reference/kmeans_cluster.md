@@ -58,3 +58,17 @@ A named list with:
 - assignments:
 
   Integer vector of length samples with cluster assignments (1-indexed).
+
+## Examples
+
+``` r
+d <- manifold_synthetic_data(type = "clusters", n_samples = 500L)
+km <- kmeans_cluster(d$data, k = 4L, .verbose = FALSE)
+km
+#> KMeansCluster
+#>   method:     full 
+#>   metric:     euclidean 
+#>   k:          4 
+#>   n:          500 
+#>   sizes:      min= 0  median= 68.5  max= 121 
+```

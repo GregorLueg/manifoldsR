@@ -21,3 +21,16 @@ A named list with the following elements:
 
 - n_clusters - Integer. Number of clusters to generate. Defaults to
   `15L`.
+
+## Examples
+
+``` r
+params_clusters()
+#> $n_clusters
+#> [1] 15
+#> 
+params_clusters(n_clusters = 5L)
+#> $n_clusters
+#> [1] 5
+#> 
+```

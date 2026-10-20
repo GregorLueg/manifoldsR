@@ -120,3 +120,12 @@ initialises from its reference.
 ## References
 
 Kury, Kobak & Damrich, Transactions on Machine Learning Research, 2026
+
+## Examples
+
+``` r
+d <- manifold_synthetic_data(type = "clusters", n_samples = 500L)
+emb <- dreams(d$data, .verbose = FALSE)
+dim(emb)
+#> [1] 500   2
+```

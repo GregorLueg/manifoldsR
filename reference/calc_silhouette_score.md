@@ -29,3 +29,13 @@ A list with the following items:
 
 - silhouette_scores - The individual Silhouette scores of all the data
   points.
+
+## Examples
+
+``` r
+d <- manifold_synthetic_data(type = "clusters", n_samples = 500L)
+km <- kmeans_cluster(d$data, k = 4L, .verbose = FALSE)
+res <- calc_silhouette_score(d$data, membership(km))
+res$mean_silhouette
+#> [1] 0.3044454
+```

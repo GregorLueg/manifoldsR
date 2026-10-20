@@ -113,3 +113,70 @@ A named list with the following elements:
 - graph_symmetry - String. Method used to symmetrise the affinity graph.
   One of `c("additive", "multiplicative", "mnn", "none")`. Defaults to
   `"additive"`.
+
+## Examples
+
+``` r
+params_phate()
+#> $decay
+#> [1] 40
+#> 
+#> $bandwidth_scale
+#> NULL
+#> 
+#> $t_max
+#> [1] 100
+#> 
+#> $t_custom
+#> NULL
+#> 
+#> $gamma
+#> [1] 1
+#> 
+#> $n_landmarks
+#> [1] 2048
+#> 
+#> $landmark_method
+#> [1] "spectral"
+#> 
+#> $n_svd
+#> NULL
+#> 
+#> $mds_method
+#> [1] "sgd_dense"
+#> 
+#> $graph_symmetry
+#> [1] "additive"
+#> 
+params_phate(decay = 20, n_landmarks = 500L)
+#> $decay
+#> [1] 20
+#> 
+#> $bandwidth_scale
+#> NULL
+#> 
+#> $t_max
+#> [1] 100
+#> 
+#> $t_custom
+#> NULL
+#> 
+#> $gamma
+#> [1] 1
+#> 
+#> $n_landmarks
+#> [1] 500
+#> 
+#> $landmark_method
+#> [1] "spectral"
+#> 
+#> $n_svd
+#> NULL
+#> 
+#> $mds_method
+#> [1] "sgd_dense"
+#> 
+#> $graph_symmetry
+#> [1] "additive"
+#> 
+```

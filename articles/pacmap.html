@@ -29,7 +29,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -82,7 +82,7 @@
       <p class="author">Gregor Lueg</p>
       <p class="date">2026-10-20</p>
 
-
+      <small class="dont-index">Source: <a href="https://github.com/GregorLueg/manifoldsR/blob/main/vignettes/pacmap.qmd" class="external-link"><code>vignettes/pacmap.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
     </div>
 
@@ -130,8 +130,8 @@
 <span>  parameters <span class="op">=</span> <span class="fu"><a href="../reference/params_clusters.html">params_clusters</a></span><span class="op">(</span>n_clusters <span class="op">=</span> <span class="fl">15L</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">swissrole_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/manifold_synthetic_data.html">manifold_synthetic_data</a></span><span class="op">(</span></span>
-<span>  type <span class="op">=</span> <span class="st">"swiss_role"</span>,</span>
+<span><span class="va">swissroll_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/manifold_synthetic_data.html">manifold_synthetic_data</a></span><span class="op">(</span></span>
+<span>  type <span class="op">=</span> <span class="st">"swiss_roll"</span>,</span>
 <span>  n_samples <span class="op">=</span> <span class="fl">1000L</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -204,13 +204,13 @@
 </div>
 </div>
 <p>The clusters are well-separated. Another interesting detail is that we have some points that are further away from the rest and the actual statistical noise of the data is being better captured here.</p>
-</section><section class="level3"><h4 id="swiss-role">Swiss role<a class="anchor" aria-label="anchor" href="#swiss-role"></a>
+</section><section class="level3"><h4 id="swiss-roll">Swiss roll<a class="anchor" aria-label="anchor" href="#swiss-roll"></a>
 </h4>
-<p>The swiss role tests continuous manifold preservation. PaCMAP should unroll it cleanly, with the colour gradient along the roll preserved in the embedding.</p>
+<p>The Swiss roll tests continuous manifold preservation. PaCMAP should unroll it cleanly, with the colour gradient along the roll preserved in the embedding.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">pacmap_swissrole</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pacmap.html">pacmap</a></span><span class="op">(</span></span>
-<span>  data <span class="op">=</span> <span class="va">swissrole_data</span><span class="op">$</span><span class="va">data</span>,</span>
+<code class="sourceCode R"><span><span class="va">pacmap_swissroll</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pacmap.html">pacmap</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">swissroll_data</span><span class="op">$</span><span class="va">data</span>,</span>
 <span>  knn_method <span class="op">=</span> <span class="st">"exhaustive"</span>,</span>
 <span>  pacmap_params <span class="op">=</span> <span class="fu"><a href="../reference/params_pacmap.html">params_pacmap</a></span><span class="op">(</span></span>
 <span>    optimiser <span class="op">=</span> <span class="st">"adam_parallel"</span></span>
@@ -218,12 +218,12 @@
 <span>  seed <span class="op">=</span> <span class="fl">42L</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">pacmap_swissrole_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/as.data.table.html" class="external-link">as.data.table</a></span><span class="op">(</span><span class="va">pacmap_swissrole</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span><span class="va">pacmap_swissroll_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/as.data.table.html" class="external-link">as.data.table</a></span><span class="op">(</span><span class="va">pacmap_swissroll</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu">`colnames&lt;-`</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PaCMAP1"</span>, <span class="st">"PaCMAP2"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="va">.</span><span class="op">[</span>, <span class="va">z_axis</span> <span class="op">:=</span> <span class="va">swissrole_data</span><span class="op">$</span><span class="va">data</span><span class="op">[</span>, <span class="fl">3</span><span class="op">]</span><span class="op">]</span></span>
+<span>  <span class="va">.</span><span class="op">[</span>, <span class="va">z_axis</span> <span class="op">:=</span> <span class="va">swissroll_data</span><span class="op">$</span><span class="va">data</span><span class="op">[</span>, <span class="fl">3</span><span class="op">]</span><span class="op">]</span></span>
 <span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span></span>
-<span>  data <span class="op">=</span> <span class="va">pacmap_swissrole_df</span>,</span>
+<span>  data <span class="op">=</span> <span class="va">pacmap_swissroll_df</span>,</span>
 <span>  mapping <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">PaCMAP1</span>, y <span class="op">=</span> <span class="va">PaCMAP2</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span></span>
@@ -234,10 +234,10 @@
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html" class="external-link">scale_fill_viridis_c</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"PaCMAP on swiss role data"</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"PaCMAP on Swiss roll data"</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div>
-<figure><p><img src="pacmap_files/figure-html/swissrole%20data%20-%20pacmap-1.png" width="672"></p>
+<figure><p><img src="pacmap_files/figure-html/swissroll%20data%20-%20pacmap-1.png" width="672"></p>
 </figure>
 </div>
 </div>
@@ -447,11 +447,11 @@
 <span>  times <span class="op">=</span> <span class="fl">3L</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
-<span><span class="co">#&gt;             expr      min       lq     mean   median       uq     max neval</span></span>
-<span><span class="co">#&gt;    manifold_umap 1.177489 1.181512 1.187611 1.185535 1.192673 1.19981     3</span></span>
-<span><span class="co">#&gt;  manifold_pacmap 1.940322 1.957246 1.969874 1.974170 1.984650 1.99513     3</span></span></code></pre></div>
+<span><span class="co">#&gt;             expr      min       lq     mean   median       uq      max neval</span></span>
+<span><span class="co">#&gt;    manifold_umap 1.314393 1.321025 1.326042 1.327658 1.331866 1.336074     3</span></span>
+<span><span class="co">#&gt;  manifold_pacmap 1.759151 1.761670 1.820478 1.764189 1.851141 1.938094     3</span></span></code></pre></div>
 </div>
-<p>PaCMAP is generally slower than UMAP on the same data since it processes all pairs every epoch rather than sampling. The three-phase schedule with 450 epochs (vs UMAP’s 200–500) compounds this. For most datasets up to ~50k samples this is not a concern in practice, but on very large data the difference becomes noticeable.</p>
+<p>PaCMAP is generally slower than UMAP on the same data since it processes all pairs every epoch rather than sampling. The three-phase schedule with 450 epochs (vs UMAP’s 200 to 500) compounds this. For most datasets up to ~50k samples this is not a concern in practice, but on very large data the difference becomes noticeable.</p>
 </section></section><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);

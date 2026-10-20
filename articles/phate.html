@@ -29,7 +29,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -82,7 +82,7 @@
       <p class="author">Gregor Lueg</p>
       <p class="date">2026-10-20</p>
 
-
+      <small class="dont-index">Source: <a href="https://github.com/GregorLueg/manifoldsR/blob/main/vignettes/phate.qmd" class="external-link"><code>vignettes/phate.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
     </div>
 
@@ -130,8 +130,8 @@
 <span>  n_samples <span class="op">=</span> <span class="fl">10000L</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">swissrole_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/manifold_synthetic_data.html">manifold_synthetic_data</a></span><span class="op">(</span></span>
-<span>  type <span class="op">=</span> <span class="st">"swiss_role"</span>,</span>
+<span><span class="va">swissroll_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/manifold_synthetic_data.html">manifold_synthetic_data</a></span><span class="op">(</span></span>
+<span>  type <span class="op">=</span> <span class="st">"swiss_roll"</span>,</span>
 <span>  n_samples <span class="op">=</span> <span class="fl">1000L</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -193,24 +193,24 @@
 </div>
 </div>
 <p>As expected, the clusters explode outward and are condensed into nearly single points. PHATE is trying to lay out a manifold that does not exist in this data. If your data looks like this, use t-SNE or UMAP instead.</p>
-</section><section class="level3"><h4 id="swiss-role">Swiss role<a class="anchor" aria-label="anchor" href="#swiss-role"></a>
+</section><section class="level3"><h4 id="swiss-roll">Swiss roll<a class="anchor" aria-label="anchor" href="#swiss-roll"></a>
 </h4>
-<p>The swiss role is a continuous manifold where PHATE should perform meaningfully better than t-SNE or UMAP. The diffusion process captures the smooth geometry of the roll rather than tearing it apart.</p>
+<p>The Swiss roll is a continuous manifold where PHATE should perform meaningfully better than t-SNE or UMAP. The diffusion process captures the smooth geometry of the roll rather than tearing it apart.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">phate_swissrole</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/phate.html">phate</a></span><span class="op">(</span></span>
-<span>  data <span class="op">=</span> <span class="va">swissrole_data</span><span class="op">$</span><span class="va">data</span>,</span>
+<code class="sourceCode R"><span><span class="va">phate_swissroll</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/phate.html">phate</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">swissroll_data</span><span class="op">$</span><span class="va">data</span>,</span>
 <span>  k <span class="op">=</span> <span class="fl">15L</span>,</span>
 <span>  knn_method <span class="op">=</span> <span class="st">"exhaustive"</span>,</span>
 <span>  seed <span class="op">=</span> <span class="fl">42L</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">phate_swissrole_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/as.data.table.html" class="external-link">as.data.table</a></span><span class="op">(</span><span class="va">phate_swissrole</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span><span class="va">phate_swissroll_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/as.data.table.html" class="external-link">as.data.table</a></span><span class="op">(</span><span class="va">phate_swissroll</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu">`colnames&lt;-`</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PHATE1"</span>, <span class="st">"PHATE2"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="va">.</span><span class="op">[</span>, <span class="va">z_axis</span> <span class="op">:=</span> <span class="va">swissrole_data</span><span class="op">$</span><span class="va">data</span><span class="op">[</span>, <span class="fl">3</span><span class="op">]</span><span class="op">]</span></span>
+<span>  <span class="va">.</span><span class="op">[</span>, <span class="va">z_axis</span> <span class="op">:=</span> <span class="va">swissroll_data</span><span class="op">$</span><span class="va">data</span><span class="op">[</span>, <span class="fl">3</span><span class="op">]</span><span class="op">]</span></span>
 <span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span></span>
-<span>  data <span class="op">=</span> <span class="va">phate_swissrole_df</span>,</span>
+<span>  data <span class="op">=</span> <span class="va">phate_swissroll_df</span>,</span>
 <span>  mapping <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">PHATE1</span>, y <span class="op">=</span> <span class="va">PHATE2</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span></span>
@@ -221,10 +221,10 @@
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html" class="external-link">scale_fill_viridis_c</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"PHATE on swissrole data"</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"PHATE on swissroll data"</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div>
-<figure><p><img src="phate_files/figure-html/swissrole%20data%20-%20phate-1.png" width="672"></p>
+<figure><p><img src="phate_files/figure-html/swissroll%20data%20-%20phate-1.png" width="672"></p>
 </figure>
 </div>
 </div>
@@ -436,15 +436,14 @@
 <p>Let’s compare <code>manifoldsR</code> against <code>phateR</code> (the reference R implementation, itself a wrapper around the Python <code>phate</code> library) on the trajectory data.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">local</a></span><span class="op">(</span><span class="op">{</span></span>
+<code class="sourceCode R"><span><span class="co"># set up the venv for the Python part/dependencies</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">local</a></span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="va">env_name</span> <span class="op">&lt;-</span> <span class="st">"r-manifolds"</span></span>
+<span>  <span class="va">py_pkgs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"phate"</span>, <span class="st">"umap-learn"</span>, <span class="st">"numpy"</span>, <span class="st">"scipy"</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/virtualenv-tools.html" class="external-link">virtualenv_exists</a></span><span class="op">(</span><span class="va">env_name</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/virtualenv-tools.html" class="external-link">virtualenv_create</a></span><span class="op">(</span><span class="va">env_name</span><span class="op">)</span></span>
-<span>    <span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/virtualenv-tools.html" class="external-link">virtualenv_install</a></span><span class="op">(</span></span>
-<span>      <span class="va">env_name</span>,</span>
-<span>      packages <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"phate"</span>, <span class="st">"umap-learn"</span>, <span class="st">"numpy"</span>, <span class="st">"scipy"</span><span class="op">)</span></span>
-<span>    <span class="op">)</span></span>
+<span>    <span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/virtualenv-tools.html" class="external-link">virtualenv_install</a></span><span class="op">(</span><span class="va">env_name</span>, packages <span class="op">=</span> <span class="va">py_pkgs</span><span class="op">)</span></span>
 <span>  <span class="op">}</span></span>
 <span></span>
 <span>  <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/py_available.html" class="external-link">py_available</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
@@ -456,10 +455,7 @@
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"phate"</span>, <span class="st">"umap"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span>  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">missing_pkgs</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0L</span><span class="op">)</span> <span class="op">{</span></span>
-<span>    <span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/virtualenv-tools.html" class="external-link">virtualenv_install</a></span><span class="op">(</span></span>
-<span>      <span class="va">env_name</span>,</span>
-<span>      packages <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"phate"</span>, <span class="st">"umap-learn"</span>, <span class="st">"numpy"</span>, <span class="st">"scipy"</span><span class="op">)</span></span>
-<span>    <span class="op">)</span></span>
+<span>    <span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/virtualenv-tools.html" class="external-link">virtualenv_install</a></span><span class="op">(</span><span class="va">env_name</span>, packages <span class="op">=</span> <span class="va">py_pkgs</span><span class="op">)</span></span>
 <span>  <span class="op">}</span></span>
 <span><span class="op">}</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Using Python: /usr/bin/python3.12</span></span>
@@ -472,9 +468,11 @@
 <span><span class="co">#&gt; + /home/runner/.virtualenvs/r-manifolds/bin/python -m pip install --upgrade --no-user numpy</span></span>
 <span><span class="co">#&gt; Virtual environment 'r-manifolds' successfully created.</span></span>
 <span><span class="co">#&gt; Using virtual environment 'r-manifolds' ...</span></span>
-<span><span class="co">#&gt; + /home/runner/.virtualenvs/r-manifolds/bin/python -m pip install --upgrade --no-user phate umap-learn numpy scipy</span></span>
-<span></span>
-<span><span class="va">benchmark_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/manifold_synthetic_data.html">manifold_synthetic_data</a></span><span class="op">(</span></span>
+<span><span class="co">#&gt; + /home/runner/.virtualenvs/r-manifolds/bin/python -m pip install --upgrade --no-user phate umap-learn numpy scipy</span></span></code></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">benchmark_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/manifold_synthetic_data.html">manifold_synthetic_data</a></span><span class="op">(</span></span>
 <span>  type <span class="op">=</span> <span class="st">"trajectory"</span>,</span>
 <span>  n_samples <span class="op">=</span> <span class="fl">10000L</span></span>
 <span><span class="op">)</span></span>
@@ -500,15 +498,15 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;            expr       min        lq      mean    median        uq       max</span></span>
-<span><span class="co">#&gt;          phateR 10.283154 10.283154 10.283154 10.283154 10.283154 10.283154</span></span>
-<span><span class="co">#&gt;  manifold_phate  8.163053  8.163053  8.163053  8.163053  8.163053  8.163053</span></span>
+<span><span class="co">#&gt;          phateR 12.271045 12.271045 12.271045 12.271045 12.271045 12.271045</span></span>
+<span><span class="co">#&gt;  manifold_phate  8.734944  8.734944  8.734944  8.734944  8.734944  8.734944</span></span>
 <span><span class="co">#&gt;  neval</span></span>
 <span><span class="co">#&gt;      1</span></span>
 <span><span class="co">#&gt;      1</span></span></code></pre></div>
 </div>
 <p>And on a larger data set with additionally the random landmark version</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">benchmark_data_large</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/manifold_synthetic_data.html">manifold_synthetic_data</a></span><span class="op">(</span></span>
 <span>  type <span class="op">=</span> <span class="st">"trajectory"</span>,</span>
 <span>  n_samples <span class="op">=</span> <span class="fl">100000L</span></span>
@@ -530,7 +528,7 @@
 <span>      k <span class="op">=</span> <span class="fl">5L</span>,</span>
 <span>      knn_method <span class="op">=</span> <span class="st">"nndescent"</span>, <span class="co"># good allrounder for larger data sets</span></span>
 <span>      seed <span class="op">=</span> <span class="fl">42L</span>,</span>
-<span>      .verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>      .verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span>    <span class="op">)</span></span>
 <span>  <span class="op">}</span>,</span>
 <span>  manifold_phate_random <span class="op">=</span> <span class="op">{</span></span>
@@ -545,18 +543,18 @@
 <span>  <span class="op">}</span>,</span>
 <span>  times <span class="op">=</span> <span class="fl">1L</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt;     SGD-MDS may not have converged: stress changed by 1.8% in final iterations. Consider increasing n_iter or adjusting learning_rate.</span></span>
+<span><span class="co">#&gt;     SGD-MDS may not have converged: stress changed by -3.4% in final iterations. Consider increasing n_iter or adjusting learning_rate.</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;                     expr      min       lq     mean   median       uq      max</span></span>
-<span><span class="co">#&gt;                   phateR 44.41794 44.41794 44.41794 44.41794 44.41794 44.41794</span></span>
-<span><span class="co">#&gt;  manifold_phate_spectral 21.57715 21.57715 21.57715 21.57715 21.57715 21.57715</span></span>
-<span><span class="co">#&gt;    manifold_phate_random 11.78723 11.78723 11.78723 11.78723 11.78723 11.78723</span></span>
+<span><span class="co">#&gt;                   phateR 59.57196 59.57196 59.57196 59.57196 59.57196 59.57196</span></span>
+<span><span class="co">#&gt;  manifold_phate_spectral 24.28921 24.28921 24.28921 24.28921 24.28921 24.28921</span></span>
+<span><span class="co">#&gt;    manifold_phate_random 12.59971 12.59971 12.59971 12.59971 12.59971 12.59971</span></span>
 <span><span class="co">#&gt;  neval</span></span>
 <span><span class="co">#&gt;      1</span></span>
 <span><span class="co">#&gt;      1</span></span>
 <span><span class="co">#&gt;      1</span></span></code></pre></div>
 </div>
-<p>As with t-SNE and UMAP, the speed advantage of the Rust implementation comes from the entire pipeline — kNN construction, kernel computation, diffusion, and MDS — running within the Rust kernel without round-tripping through Python in this case. Usually, the differences become more pronounced with larger data sets.</p>
+<p>As with t-SNE and UMAP, the speed advantage of the Rust implementation comes from the entire pipeline (kNN construction, kernel computation, diffusion and MDS) running within the Rust kernel without round-tripping through Python in this case. Usually, the differences become more pronounced with larger data sets.</p>
 </section></section><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);

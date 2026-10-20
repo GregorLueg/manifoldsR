@@ -103,9 +103,9 @@ Wrapper functions around core parameters
   : Wrapper function to generate PHATE parameters
 - [`params_umap()`](https://gregorlueg.github.io/manifoldsR/reference/params_umap.md)
   : Wrapper function to generate UMAP parameters
-- [`params_swiss_role()`](https://gregorlueg.github.io/manifoldsR/reference/params_swiss_role.md)
+- [`params_swiss_roll()`](https://gregorlueg.github.io/manifoldsR/reference/params_swiss_roll.md)
   : Parameters for swiss roll data generation
-- [`params_swiss_role_biased()`](https://gregorlueg.github.io/manifoldsR/reference/params_swiss_role_biased.md)
+- [`params_swiss_roll_biased()`](https://gregorlueg.github.io/manifoldsR/reference/params_swiss_roll_biased.md)
   : Parameters for biased swiss roll data generation
 - [`params_trajectory()`](https://gregorlueg.github.io/manifoldsR/reference/params_trajectory.md)
   : Parameters for trajectory data generation
@@ -121,12 +121,12 @@ Everything rusty - only use this if you know what you are doing…
   integrated into manifold-rs
 - [`rs_ari()`](https://gregorlueg.github.io/manifoldsR/reference/rs_ari.md)
   **\[experimental\]** : Adjusted Rand index
-- [`rs_data_biased_swiss_role()`](https://gregorlueg.github.io/manifoldsR/reference/rs_data_biased_swiss_role.md)
-  **\[experimental\]** : Generates the SwissRole data
+- [`rs_data_biased_swiss_roll()`](https://gregorlueg.github.io/manifoldsR/reference/rs_data_biased_swiss_roll.md)
+  **\[experimental\]** : Generates biased Swiss roll data
 - [`rs_data_clusters()`](https://gregorlueg.github.io/manifoldsR/reference/rs_data_clusters.md)
   **\[experimental\]** : Generates clustered data
-- [`rs_data_swiss_role()`](https://gregorlueg.github.io/manifoldsR/reference/rs_data_swiss_role.md)
-  **\[experimental\]** : Generates the SwissRole data
+- [`rs_data_swiss_roll()`](https://gregorlueg.github.io/manifoldsR/reference/rs_data_swiss_roll.md)
+  **\[experimental\]** : Generates Swiss roll data
 - [`rs_data_trajectory()`](https://gregorlueg.github.io/manifoldsR/reference/rs_data_trajectory.md)
   **\[experimental\]** : Generates tree-like data with branches
 - [`rs_data_hierarchical()`](https://gregorlueg.github.io/manifoldsR/reference/rs_data_hierarchical.md)
@@ -158,8 +158,8 @@ Everything rusty - only use this if you know what you are doing…
   **\[experimental\]** : ForceAtlas2 on a pre-computed graph
 - [`rs_forceatlas2_from_knn()`](https://gregorlueg.github.io/manifoldsR/reference/rs_forceatlas2_from_knn.md)
   **\[experimental\]** : ForceAtlas2 implementation
-- [`rs_intertia()`](https://gregorlueg.github.io/manifoldsR/reference/rs_intertia.md)
-  **\[experimental\]** : Calculates the intertia for k-means clustering
+- [`rs_inertia()`](https://gregorlueg.github.io/manifoldsR/reference/rs_inertia.md)
+  **\[experimental\]** : Calculates the inertia for k-means clustering
 - [`rs_k_means()`](https://gregorlueg.github.io/manifoldsR/reference/rs_k_means.md)
   **\[experimental\]** : K-means clustering (full)
 - [`rs_k_means_mini_batch()`](https://gregorlueg.github.io/manifoldsR/reference/rs_k_means_mini_batch.md)

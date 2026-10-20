@@ -31,8 +31,8 @@
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/assertNnParams.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/assertPacmapParams.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/assertPhateParams.html</loc></url>
-<url><loc>https://gregorlueg.github.io/manifoldsR/reference/assertSwissRoleBiasedParams.html</loc></url>
-<url><loc>https://gregorlueg.github.io/manifoldsR/reference/assertSwissRoleParams.html</loc></url>
+<url><loc>https://gregorlueg.github.io/manifoldsR/reference/assertSwissRollBiasedParams.html</loc></url>
+<url><loc>https://gregorlueg.github.io/manifoldsR/reference/assertSwissRollParams.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/assertTrajectoryParams.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/assertTsneParams.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/assertUmapParams.html</loc></url>
@@ -52,8 +52,8 @@
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/checkNnParams.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/checkPacmapParams.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/checkPhateParams.html</loc></url>
-<url><loc>https://gregorlueg.github.io/manifoldsR/reference/checkSwissRoleBiasedParams.html</loc></url>
-<url><loc>https://gregorlueg.github.io/manifoldsR/reference/checkSwissRoleParams.html</loc></url>
+<url><loc>https://gregorlueg.github.io/manifoldsR/reference/checkSwissRollBiasedParams.html</loc></url>
+<url><loc>https://gregorlueg.github.io/manifoldsR/reference/checkSwissRollParams.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/checkTrajectoryParams.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/checkTsneParams.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/checkUmapParams.html</loc></url>
@@ -87,6 +87,7 @@
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/index.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/kmeans_cluster.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/manifold_synthetic_data.html</loc></url>
+<url><loc>https://gregorlueg.github.io/manifoldsR/reference/manifoldsR-deprecated.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/manifoldsR-package.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/membership.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/new_evoc.html</loc></url>
@@ -105,8 +106,8 @@
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/params_nn.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/params_pacmap.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/params_phate.html</loc></url>
-<url><loc>https://gregorlueg.github.io/manifoldsR/reference/params_swiss_role.html</loc></url>
-<url><loc>https://gregorlueg.github.io/manifoldsR/reference/params_swiss_role_biased.html</loc></url>
+<url><loc>https://gregorlueg.github.io/manifoldsR/reference/params_swiss_roll.html</loc></url>
+<url><loc>https://gregorlueg.github.io/manifoldsR/reference/params_swiss_roll_biased.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/params_trajectory.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/params_tsne.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/params_umap.html</loc></url>
@@ -118,10 +119,10 @@
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/rs_approx_nearest_neighbours.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/rs_ari.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/rs_check_cluster_separation.html</loc></url>
-<url><loc>https://gregorlueg.github.io/manifoldsR/reference/rs_data_biased_swiss_role.html</loc></url>
+<url><loc>https://gregorlueg.github.io/manifoldsR/reference/rs_data_biased_swiss_roll.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/rs_data_clusters.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/rs_data_hierarchical.html</loc></url>
-<url><loc>https://gregorlueg.github.io/manifoldsR/reference/rs_data_swiss_role.html</loc></url>
+<url><loc>https://gregorlueg.github.io/manifoldsR/reference/rs_data_swiss_roll.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/rs_data_trajectory.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/rs_densmap.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/rs_densmap_from_knn.html</loc></url>
@@ -136,7 +137,7 @@
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/rs_forceatlas2.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/rs_forceatlas2_from_graph.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/rs_forceatlas2_from_knn.html</loc></url>
-<url><loc>https://gregorlueg.github.io/manifoldsR/reference/rs_intertia.html</loc></url>
+<url><loc>https://gregorlueg.github.io/manifoldsR/reference/rs_inertia.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/rs_k_means.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/rs_k_means_mini_batch.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/rs_pacmap.html</loc></url>

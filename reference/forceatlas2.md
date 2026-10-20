@@ -76,3 +76,12 @@ ForceAtlas2 layout.
 ## References
 
 Jacomy, et al., PLoS ONE, 2014
+
+## Examples
+
+``` r
+d <- manifold_synthetic_data(type = "clusters", n_samples = 500L)
+emb <- forceatlas2(d$data, .verbose = FALSE)
+dim(emb)
+#> [1] 500   2
+```

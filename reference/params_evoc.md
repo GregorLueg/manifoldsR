@@ -103,3 +103,70 @@ A named list with the following elements:
 
 - max_layers - Integer. Maximum number of cluster layers to return.
   Defaults to `10L`.
+
+## Examples
+
+``` r
+params_evoc()
+#> $noise_level
+#> [1] 0.5
+#> 
+#> $n_epochs
+#> [1] 50
+#> 
+#> $embedding_dim
+#> NULL
+#> 
+#> $neighbour_scale
+#> [1] 1
+#> 
+#> $symmetrise
+#> [1] TRUE
+#> 
+#> $min_samples
+#> [1] 5
+#> 
+#> $base_min_cluster_size
+#> [1] 5
+#> 
+#> $approx_n_clusters
+#> NULL
+#> 
+#> $min_similarity_threshold
+#> [1] 0.2
+#> 
+#> $max_layers
+#> [1] 10
+#> 
+params_evoc(min_samples = 10L, base_min_cluster_size = 10L)
+#> $noise_level
+#> [1] 0.5
+#> 
+#> $n_epochs
+#> [1] 50
+#> 
+#> $embedding_dim
+#> NULL
+#> 
+#> $neighbour_scale
+#> [1] 1
+#> 
+#> $symmetrise
+#> [1] TRUE
+#> 
+#> $min_samples
+#> [1] 10
+#> 
+#> $base_min_cluster_size
+#> [1] 10
+#> 
+#> $approx_n_clusters
+#> NULL
+#> 
+#> $min_similarity_threshold
+#> [1] 0.2
+#> 
+#> $max_layers
+#> [1] 10
+#> 
+```

@@ -48,3 +48,18 @@ A named list with the following elements:
   instead. Defaults to `NULL`.
 
 - noise - Numeric. Amount of noise to add. Defaults to `0.1`.
+
+## Examples
+
+``` r
+params_trajectory()
+#> $topology
+#> [1] "bifurcation"
+#> 
+#> $cell_trajectories
+#> NULL
+#> 
+#> $noise
+#> [1] 0.1
+#> 
+```

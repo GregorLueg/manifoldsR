@@ -78,3 +78,16 @@ An `Evoc` S3 object (see
 [print.Evoc](https://gregorlueg.github.io/manifoldsR/reference/print.Evoc.md),
 [best_membership](https://gregorlueg.github.io/manifoldsR/reference/best_membership.md),
 [get_layer](https://gregorlueg.github.io/manifoldsR/reference/get_layer.md)).
+
+## Examples
+
+``` r
+d <- manifold_synthetic_data(type = "clusters", n_samples = 500L)
+res <- evoc(d$data, .verbose = FALSE)
+res
+#> Evoc
+#>   layers:               2 
+#>   best layer:           2 
+#>   best persistence:     76.7282 
+#>   knn:                  not stored 
+```

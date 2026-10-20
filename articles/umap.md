@@ -55,8 +55,8 @@ cluster_data <- manifold_synthetic_data(
   n_samples = 25000L
 )
 
-swissrole_data <- manifold_synthetic_data(
-  type = "swiss_role",
+swissroll_data <- manifold_synthetic_data(
+  type = "swiss_roll",
   n_samples = 1000L
 )
 
@@ -128,20 +128,20 @@ ggplot(
 
 In this case, UMAP is clearly able to separate out the individual
 clusters (as expected). However, in other cases, UMAP does worse… Let’s
-look at the SwissRole example.
+look at the SwissRoll example.
 
 #### Swissrole
 
 ``` r
 
-pca_swiss_role <- prcomp(swissrole_data$data)
+pca_swiss_roll <- prcomp(swissroll_data$data)
 
-pca_swiss_role_df <- as.data.table(pca_swiss_role$x[, 1:2]) %>%
+pca_swiss_roll_df <- as.data.table(pca_swiss_roll$x[, 1:2]) %>%
   `colnames<-`(c("PC1", "PC2")) %>%
-  .[, z_axis := swissrole_data$data[, 3]]
+  .[, z_axis := swissroll_data$data[, 3]]
 
 ggplot(
-  data = pca_swiss_role_df,
+  data = pca_swiss_roll_df,
   mapping = aes(x = PC1, y = PC2)
 ) +
   geom_point(
@@ -152,18 +152,18 @@ ggplot(
   ) +
   scale_fill_viridis_c() +
   theme_bw() +
-  ggtitle("PCA on swissrole")
+  ggtitle("PCA on swissroll")
 ```
 
-![](umap_files/figure-html/swissrole%20data%20-%20pca-1.png)
+![](umap_files/figure-html/swissroll%20data%20-%20pca-1.png)
 
 PCA clearly captures the Swissrole structure. How does UMAP perform here
 … ?
 
 ``` r
 
-umap_swissrole <- umap(
-  data = swissrole_data$data,
+umap_swissroll <- umap(
+  data = swissroll_data$data,
   knn_method = "exhaustive",
   min_dist = 0.3,
   umap_params = params_umap(optimiser = "sgd"),
@@ -171,13 +171,13 @@ umap_swissrole <- umap(
 )
 #> Using n_epochs = 500 (dataset <10k samples or adam_parallel optimiser)
 
-umap_swissrole_df <- as.data.table(umap_swissrole) %>%
+umap_swissroll_df <- as.data.table(umap_swissroll) %>%
   `colnames<-`(c("UMAP1", "UMAP2")) %>%
-  .[, z_axis := swissrole_data$data[, 3]]
+  .[, z_axis := swissroll_data$data[, 3]]
 
 
 ggplot(
-  data = umap_swissrole_df,
+  data = umap_swissroll_df,
   mapping = aes(x = UMAP1, y = UMAP2)
 ) +
   geom_point(
@@ -188,12 +188,12 @@ ggplot(
   ) +
   scale_fill_viridis_c() +
   theme_bw() +
-  ggtitle("UMAP on swissrole (SGD)")
+  ggtitle("UMAP on swissroll (SGD)")
 ```
 
-![](umap_files/figure-html/swissrole%20data%20-%20umap-1.png)
+![](umap_files/figure-html/swissroll%20data%20-%20umap-1.png)
 
-UMAP rips apart the swiss role structure. Due to the nature of the loss,
+UMAP rips apart the Swiss roll structure. Due to the nature of the loss,
 it is not a great algorithm for data with a continuum-type manifold.
 This is also apparent in the trajectory type data, see below:
 
@@ -406,21 +406,21 @@ ggplot(
 This one is SUBSTANTIALLY faster, as the gradients for each node in the
 graph are collected in parallel and then applied. This allows us to make
 usage of heavy multi-threading which Rust supports beautifully via
-Rayon. In terms of how does this version compare against other versions,
-let’s do a benchmark:
+Rayon.
+
+How does the parallel Adam version compare against other UMAP
+implementations? Let’s do a benchmark:
 
 ``` r
 
 # set up the venv for the Python part/dependencies
 local({
   env_name <- "r-manifolds"
+  py_pkgs <- c("phate", "umap-learn", "numpy", "scipy")
 
   if (!reticulate::virtualenv_exists(env_name)) {
     reticulate::virtualenv_create(env_name)
-    reticulate::virtualenv_install(
-      env_name,
-      packages = c("phate", "umap-learn", "numpy", "scipy")
-    )
+    reticulate::virtualenv_install(env_name, packages = py_pkgs)
   }
 
   if (!reticulate::py_available()) {
@@ -432,12 +432,12 @@ local({
     c("phate", "umap")
   )
   if (length(missing_pkgs) > 0L) {
-    reticulate::virtualenv_install(
-      env_name,
-      packages = c("phate", "umap-learn", "numpy", "scipy")
-    )
+    reticulate::virtualenv_install(env_name, packages = py_pkgs)
   }
 })
+```
+
+``` r
 
 benchmark_data <- manifold_synthetic_data(
   type = "cluster",
@@ -490,21 +490,21 @@ microbenchmark::microbenchmark(
 )
 #> Unit: milliseconds
 #>             expr        min         lq       mean     median         uq
-#>             umap 20772.1018 20772.1018 20772.1018 20772.1018 20772.1018
-#>  umap_reticulate 17346.6239 17346.6239 17346.6239 17346.6239 17346.6239
-#>             uwot  5195.6760  5195.6760  5195.6760  5195.6760  5195.6760
-#>          uwot_v2  3229.3922  3229.3922  3229.3922  3229.3922  3229.3922
-#>    manifold_umap   613.4677   613.4677   613.4677   613.4677   613.4677
+#>             umap 22855.4592 22855.4592 22855.4592 22855.4592 22855.4592
+#>  umap_reticulate 20390.0282 20390.0282 20390.0282 20390.0282 20390.0282
+#>             uwot  5137.4403  5137.4403  5137.4403  5137.4403  5137.4403
+#>          uwot_v2  3347.0561  3347.0561  3347.0561  3347.0561  3347.0561
+#>    manifold_umap   637.0557   637.0557   637.0557   637.0557   637.0557
 #>         max neval
-#>  20772.1018     1
-#>  17346.6239     1
-#>   5195.6760     1
-#>   3229.3922     1
-#>    613.4677     1
+#>  22855.4592     1
+#>  20390.0282     1
+#>   5137.4403     1
+#>   3347.0561     1
+#>    637.0557     1
 ```
 
 We can appreciate that the standard R version is slow (as expected). If
-we leverage the Python version (with numba behind the scences) via the
+we leverage the Python version (with numba behind the scenes) via
 reticulate, we can get some speed ups (we need to however first JIT
 compile the numba parts). However, the uwot v2 version and the manifold
 are the fastest here. Let’s pit them together against each other in a
@@ -532,16 +532,18 @@ microbenchmark::microbenchmark(
   times = 1L # single comparison for speed
 )
 #> Unit: seconds
-#>           expr      min       lq     mean   median       uq      max neval
-#>        uwot_v2 22.59180 22.59180 22.59180 22.59180 22.59180 22.59180     1
-#>  manifold_umap  6.97964  6.97964  6.97964  6.97964  6.97964  6.97964     1
+#>           expr       min        lq      mean    median        uq       max
+#>        uwot_v2 25.279354 25.279354 25.279354 25.279354 25.279354 25.279354
+#>  manifold_umap  8.206415  8.206415  8.206415  8.206415  8.206415  8.206415
+#>  neval
+#>      1
+#>      1
 ```
 
-Due to optimised memory layouts, aggressive in-lining, heavy
-parallelism, leveragig look-up tables (LUTs), this version is **fast**
-and is likely(?) the fastest UMAP available in R, while keeping memory
-usage minimal due to leveraging Rust from the point that data is moved
-into the Rust kernel, until the embedding has been fitted. No round
-tripping through R, just highly optimised and compiled code throughout.
-The different nearest neighbour search algorithms give additional
-flexibility.
+Due to optimised memory layouts, aggressive in-lining, heavy parallelism
+and look-up tables (LUTs), this version is **fast** and is likely(?) the
+fastest UMAP available in R, while keeping memory usage minimal due to
+leveraging Rust from the point that data is moved into the Rust kernel,
+until the embedding has been fitted. No round tripping through R, just
+highly optimised and compiled code throughout. The different nearest
+neighbour search algorithms give additional flexibility.

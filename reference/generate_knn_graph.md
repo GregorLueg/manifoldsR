@@ -76,3 +76,14 @@ A nearest neighbours class object with 1-indexed neighbour indices and
 distances. Distances are on the scale of the metric they are named
 after, so `dist_metric = "euclidean"` returns Euclidean distance, not
 the squared Euclidean the backends sort on internally.
+
+## Examples
+
+``` r
+d <- manifold_synthetic_data(type = "clusters", n_samples = 500L)
+knn <- generate_knn_graph(d$data, k = 15L, .verbose = FALSE)
+knn
+#> NearestNeighbours
+#>   n_samples:    500 
+#>   k_neighbours: 15 
+```

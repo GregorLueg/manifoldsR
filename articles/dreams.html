@@ -29,7 +29,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -82,7 +82,7 @@
       <p class="author">Gregor Lueg</p>
       <p class="date">2026-10-20</p>
 
-
+      <small class="dont-index">Source: <a href="https://github.com/GregorLueg/manifoldsR/blob/main/vignettes/dreams.qmd" class="external-link"><code>vignettes/dreams.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
     </div>
 
@@ -237,8 +237,8 @@
 <span><span class="co">#&gt;    method global local</span></span>
 <span><span class="co">#&gt;    &lt;char&gt;  &lt;num&gt; &lt;num&gt;</span></span>
 <span><span class="co">#&gt; 1:    PCA  0.896 0.061</span></span>
-<span><span class="co">#&gt; 2:   tSNE  0.439 0.241</span></span>
-<span><span class="co">#&gt; 3: DREAMS  0.894 0.215</span></span></code></pre></div>
+<span><span class="co">#&gt; 2:   tSNE  0.434 0.241</span></span>
+<span><span class="co">#&gt; 3: DREAMS  0.894 0.213</span></span></code></pre></div>
 </div>
 <p>The numbers say the same thing. DREAMS matches PCA on the global score and keeps most of the kNN preservation of t-SNE. PCA’s local score is dismal: two dimensions out of fifty is not enough to keep anyone’s neighbours.</p>
 </section><section class="level2"><h3 id="tuning-lambda">Tuning lambda<a class="anchor" aria-label="anchor" href="#tuning-lambda"></a>
@@ -268,10 +268,10 @@
 <span>  <span class="va">.</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="va">round</span>, <span class="fl">3</span><span class="op">)</span>, by <span class="op">=</span> <span class="va">lambda</span><span class="op">]</span></span>
 <span><span class="co">#&gt;           lambda global local</span></span>
 <span><span class="co">#&gt;           &lt;char&gt;  &lt;num&gt; &lt;num&gt;</span></span>
-<span><span class="co">#&gt; 1: lambda = 0.00  0.425 0.239</span></span>
-<span><span class="co">#&gt; 2: lambda = 0.05  0.766 0.238</span></span>
-<span><span class="co">#&gt; 3: lambda = 0.15  0.894 0.215</span></span>
-<span><span class="co">#&gt; 4: lambda = 0.50  0.910 0.145</span></span>
+<span><span class="co">#&gt; 1: lambda = 0.00  0.426 0.240</span></span>
+<span><span class="co">#&gt; 2: lambda = 0.05  0.769 0.238</span></span>
+<span><span class="co">#&gt; 3: lambda = 0.15  0.894 0.213</span></span>
+<span><span class="co">#&gt; 4: lambda = 0.50  0.910 0.146</span></span>
 <span><span class="co">#&gt; 5: lambda = 1.00  0.896 0.061</span></span></code></pre></div>
 </div>
 <div class="cell">
@@ -331,7 +331,7 @@
 <span>  data <span class="op">=</span> <span class="va">trajectory_data</span><span class="op">$</span><span class="va">data</span>,</span>
 <span>  reference <span class="op">=</span> <span class="va">phate_traj</span>,</span>
 <span>  seed <span class="op">=</span> <span class="fl">42L</span>,</span>
-<span>  .verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  .verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="cell">

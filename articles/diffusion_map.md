@@ -84,8 +84,8 @@ cluster_data <- manifold_synthetic_data(
   n_samples = 10000L
 )
 
-swissrole_data <- manifold_synthetic_data(
-  type = "swiss_role",
+swissroll_data <- manifold_synthetic_data(
+  type = "swiss_roll",
   n_samples = 1000L
 )
 
@@ -144,7 +144,7 @@ You can typically read off cluster identity from the discrete positions,
 but any internal structure within each cluster is gone. If this is what
 your data looks like, reach for t-SNE, UMAP or PaCMAP instead.
 
-#### Swiss role
+#### Swiss roll
 
 The swiss roll is a textbook example for diffusion maps — it was one of
 the canonical test cases in the original literature. The anisotropic
@@ -152,19 +152,19 @@ normalisation should recover the underlying 2D manifold cleanly.
 
 ``` r
 
-dm_swissrole <- diffusion_maps(
-  data = swissrole_data$data,
+dm_swissroll <- diffusion_maps(
+  data = swissroll_data$data,
   k = 15L,
   knn_method = "kmknn",
   seed = 42L
 )
 
-dm_swissrole_df <- as.data.table(dm_swissrole) %>%
+dm_swissroll_df <- as.data.table(dm_swissroll) %>%
   `colnames<-`(c("DM1", "DM2")) %>%
-  .[, z_axis := swissrole_data$data[, 3]]
+  .[, z_axis := swissroll_data$data[, 3]]
 
 ggplot(
-  data = dm_swissrole_df,
+  data = dm_swissroll_df,
   mapping = aes(x = DM1, y = DM2)
 ) +
   geom_point(
@@ -175,10 +175,10 @@ ggplot(
   ) +
   scale_fill_viridis_c() +
   theme_bw() +
-  ggtitle("Diffusion maps on swissrole data")
+  ggtitle("Diffusion maps on swissroll data")
 ```
 
-![](diffusion_map_files/figure-html/swissrole%20data%20-%20diffusion%20maps-1.png)
+![](diffusion_map_files/figure-html/swissroll%20data%20-%20diffusion%20maps-1.png)
 
 The roll unfolds along a clean gradient along the colour axis, which is
 the behaviour we want. For this class of problem, diffusion maps is
@@ -360,9 +360,9 @@ The most widely used R implementation of diffusion maps is
 [`destiny`](https://bioconductor.org/packages/destiny/) (Bioconductor),
 which implements the Haghverdi et al. variant aimed at single-cell data.
 However, the installation of
-[`smoother`](https://cran.r-project.org/web/packages/smoother/index.html),
-a needed dependency of the package is not behaving at the moment. Hence,
-a comparison could not be made here. We can still compare two different
+[`smoother`](https://cran.r-project.org/package=smoother), a needed
+dependency of the package is not behaving at the moment. Hence, a
+comparison could not be made here. We can still compare two different
 landmark methods here on a larger data set.
 
 ``` r
@@ -394,10 +394,17 @@ microbenchmark::microbenchmark(
   },
   times = 1L
 )
+#> Unit: seconds
+#>                  expr       min        lq      mean    median        uq
+#>  manifold_dm_spectral 15.157127 15.157127 15.157127 15.157127 15.157127
+#>    manifold_dm_random  2.606979  2.606979  2.606979  2.606979  2.606979
+#>        max neval
+#>  15.157127     1
+#>   2.606979     1
 ```
 
 As elsewhere in `manifoldsR`, the speed gains come from keeping the
-whole pipeline - kNN, kernel, diffusion, eigendecomposition, Nystroem
-extension — inside the Rust kernel without bouncing through interpreted
+whole pipeline (kNN, kernel, diffusion, eigendecomposition, Nystroem
+extension) inside the Rust kernel without bouncing through interpreted
 code. The gap widens on larger data and becomes particularly pronounced
 once landmarks are enabled.

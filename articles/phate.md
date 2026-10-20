@@ -72,8 +72,8 @@ cluster_data <- manifold_synthetic_data(
   n_samples = 10000L
 )
 
-swissrole_data <- manifold_synthetic_data(
-  type = "swiss_role",
+swissroll_data <- manifold_synthetic_data(
+  type = "swiss_roll",
   n_samples = 1000L
 )
 
@@ -139,27 +139,27 @@ As expected, the clusters explode outward and are condensed into nearly
 single points. PHATE is trying to lay out a manifold that does not exist
 in this data. If your data looks like this, use t-SNE or UMAP instead.
 
-#### Swiss role
+#### Swiss roll
 
-The swiss role is a continuous manifold where PHATE should perform
+The Swiss roll is a continuous manifold where PHATE should perform
 meaningfully better than t-SNE or UMAP. The diffusion process captures
 the smooth geometry of the roll rather than tearing it apart.
 
 ``` r
 
-phate_swissrole <- phate(
-  data = swissrole_data$data,
+phate_swissroll <- phate(
+  data = swissroll_data$data,
   k = 15L,
   knn_method = "exhaustive",
   seed = 42L
 )
 
-phate_swissrole_df <- as.data.table(phate_swissrole) %>%
+phate_swissroll_df <- as.data.table(phate_swissroll) %>%
   `colnames<-`(c("PHATE1", "PHATE2")) %>%
-  .[, z_axis := swissrole_data$data[, 3]]
+  .[, z_axis := swissroll_data$data[, 3]]
 
 ggplot(
-  data = phate_swissrole_df,
+  data = phate_swissroll_df,
   mapping = aes(x = PHATE1, y = PHATE2)
 ) +
   geom_point(
@@ -170,10 +170,10 @@ ggplot(
   ) +
   scale_fill_viridis_c() +
   theme_bw() +
-  ggtitle("PHATE on swissrole data")
+  ggtitle("PHATE on swissroll data")
 ```
 
-![](phate_files/figure-html/swissrole%20data%20-%20phate-1.png)
+![](phate_files/figure-html/swissroll%20data%20-%20phate-1.png)
 
 PHATE preserves the continuous colour gradient along the roll
 substantially better than t-SNE, and considerably better than UMAP. For
@@ -408,15 +408,14 @@ the trajectory data.
 
 ``` r
 
+# set up the venv for the Python part/dependencies
 local({
   env_name <- "r-manifolds"
+  py_pkgs <- c("phate", "umap-learn", "numpy", "scipy")
 
   if (!reticulate::virtualenv_exists(env_name)) {
     reticulate::virtualenv_create(env_name)
-    reticulate::virtualenv_install(
-      env_name,
-      packages = c("phate", "umap-learn", "numpy", "scipy")
-    )
+    reticulate::virtualenv_install(env_name, packages = py_pkgs)
   }
 
   if (!reticulate::py_available()) {
@@ -428,10 +427,7 @@ local({
     c("phate", "umap")
   )
   if (length(missing_pkgs) > 0L) {
-    reticulate::virtualenv_install(
-      env_name,
-      packages = c("phate", "umap-learn", "numpy", "scipy")
-    )
+    reticulate::virtualenv_install(env_name, packages = py_pkgs)
   }
 })
 #> Using Python: /usr/bin/python3.12
@@ -445,6 +441,9 @@ local({
 #> Virtual environment 'r-manifolds' successfully created.
 #> Using virtual environment 'r-manifolds' ...
 #> + /home/runner/.virtualenvs/r-manifolds/bin/python -m pip install --upgrade --no-user phate umap-learn numpy scipy
+```
+
+``` r
 
 benchmark_data <- manifold_synthetic_data(
   type = "trajectory",
@@ -472,8 +471,8 @@ microbenchmark::microbenchmark(
 )
 #> Unit: seconds
 #>            expr       min        lq      mean    median        uq       max
-#>          phateR 10.283154 10.283154 10.283154 10.283154 10.283154 10.283154
-#>  manifold_phate  8.163053  8.163053  8.163053  8.163053  8.163053  8.163053
+#>          phateR 12.271045 12.271045 12.271045 12.271045 12.271045 12.271045
+#>  manifold_phate  8.734944  8.734944  8.734944  8.734944  8.734944  8.734944
 #>  neval
 #>      1
 #>      1
@@ -504,7 +503,7 @@ microbenchmark::microbenchmark(
       k = 5L,
       knn_method = "nndescent", # good allrounder for larger data sets
       seed = 42L,
-      .verbose = TRUE
+      .verbose = FALSE
     )
   },
   manifold_phate_random = {
@@ -519,12 +518,12 @@ microbenchmark::microbenchmark(
   },
   times = 1L
 )
-#>     SGD-MDS may not have converged: stress changed by 1.8% in final iterations. Consider increasing n_iter or adjusting learning_rate.
+#>     SGD-MDS may not have converged: stress changed by -3.4% in final iterations. Consider increasing n_iter or adjusting learning_rate.
 #> Unit: seconds
 #>                     expr      min       lq     mean   median       uq      max
-#>                   phateR 44.41794 44.41794 44.41794 44.41794 44.41794 44.41794
-#>  manifold_phate_spectral 21.57715 21.57715 21.57715 21.57715 21.57715 21.57715
-#>    manifold_phate_random 11.78723 11.78723 11.78723 11.78723 11.78723 11.78723
+#>                   phateR 59.57196 59.57196 59.57196 59.57196 59.57196 59.57196
+#>  manifold_phate_spectral 24.28921 24.28921 24.28921 24.28921 24.28921 24.28921
+#>    manifold_phate_random 12.59971 12.59971 12.59971 12.59971 12.59971 12.59971
 #>  neval
 #>      1
 #>      1
@@ -532,7 +531,7 @@ microbenchmark::microbenchmark(
 ```
 
 As with t-SNE and UMAP, the speed advantage of the Rust implementation
-comes from the entire pipeline — kNN construction, kernel computation,
-diffusion, and MDS — running within the Rust kernel without
-round-tripping through Python in this case. Usually, the differences
-become more pronounced with larger data sets.
+comes from the entire pipeline (kNN construction, kernel computation,
+diffusion and MDS) running within the Rust kernel without round-tripping
+through Python in this case. Usually, the differences become more
+pronounced with larger data sets.

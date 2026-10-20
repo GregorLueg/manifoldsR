@@ -104,3 +104,64 @@ A named list with the following elements:
 - n_svd - Integer or `NULL`. Number of SVD components used in landmark
   construction. If `NULL`, the library selects a sensible default.
   Defaults to `NULL`.
+
+## Examples
+
+``` r
+params_diffusion_maps()
+#> $bandwidth_scale
+#> [1] 1
+#> 
+#> $thresh
+#> [1] 1e-04
+#> 
+#> $graph_symmetry
+#> [1] "additive"
+#> 
+#> $alpha_norm
+#> [1] 1
+#> 
+#> $t_max
+#> [1] 100
+#> 
+#> $t_custom
+#> NULL
+#> 
+#> $n_landmarks
+#> [1] 2048
+#> 
+#> $landmark_method
+#> [1] "spectral"
+#> 
+#> $n_svd
+#> NULL
+#> 
+params_diffusion_maps(t_max = 50L)
+#> $bandwidth_scale
+#> [1] 1
+#> 
+#> $thresh
+#> [1] 1e-04
+#> 
+#> $graph_symmetry
+#> [1] "additive"
+#> 
+#> $alpha_norm
+#> [1] 1
+#> 
+#> $t_max
+#> [1] 50
+#> 
+#> $t_custom
+#> NULL
+#> 
+#> $n_landmarks
+#> [1] 2048
+#> 
+#> $landmark_method
+#> [1] "spectral"
+#> 
+#> $n_svd
+#> NULL
+#> 
+```

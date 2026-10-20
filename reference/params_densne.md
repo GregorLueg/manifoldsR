@@ -46,3 +46,28 @@ A named list with the following elements:
 ## References
 
 Narayan, Berger & Cho, Nat. Biotechnol., 2021
+
+## Examples
+
+``` r
+params_densne()
+#> $lambda
+#> [1] 0.5
+#> 
+#> $frac
+#> [1] 0.3
+#> 
+#> $var_shift
+#> [1] 0.1
+#> 
+params_densne(lambda = 1)
+#> $lambda
+#> [1] 1
+#> 
+#> $frac
+#> [1] 0.3
+#> 
+#> $var_shift
+#> [1] 0.1
+#> 
+```

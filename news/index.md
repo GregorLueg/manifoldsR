@@ -1,5 +1,47 @@
 # Changelog
 
+## manifoldsR 0.5.0
+
+First CRAN release.
+
+### Breaking changes
+
+- Typos fixed in exported names:
+  [`params_swiss_role()`](https://gregorlueg.github.io/manifoldsR/reference/manifoldsR-deprecated.md),
+  [`params_swiss_role_biased()`](https://gregorlueg.github.io/manifoldsR/reference/manifoldsR-deprecated.md),
+  [`rs_data_swiss_role()`](https://gregorlueg.github.io/manifoldsR/reference/manifoldsR-deprecated.md),
+  [`rs_data_biased_swiss_role()`](https://gregorlueg.github.io/manifoldsR/reference/manifoldsR-deprecated.md)
+  and
+  [`rs_intertia()`](https://gregorlueg.github.io/manifoldsR/reference/manifoldsR-deprecated.md)
+  are now
+  [`params_swiss_roll()`](https://gregorlueg.github.io/manifoldsR/reference/params_swiss_roll.md),
+  [`params_swiss_roll_biased()`](https://gregorlueg.github.io/manifoldsR/reference/params_swiss_roll_biased.md),
+  [`rs_data_swiss_roll()`](https://gregorlueg.github.io/manifoldsR/reference/rs_data_swiss_roll.md),
+  [`rs_data_biased_swiss_roll()`](https://gregorlueg.github.io/manifoldsR/reference/rs_data_biased_swiss_roll.md)
+  and
+  [`rs_inertia()`](https://gregorlueg.github.io/manifoldsR/reference/rs_inertia.md).
+  The old names still work but throw a deprecation warning and will go
+  in a future release.
+
+### Features
+
+- Rayon’s thread pool is capped at two threads when
+  `_R_CHECK_LIMIT_CORES_` is set (i.e. under `R CMD check --as-cran`),
+  unless `RAYON_NUM_THREADS` is already set.
+- `use_high_precision = NA` now warns and falls back to `TRUE` instead
+  of silently doing so.
+
+### Internals
+
+- All Rust crates are vendored into `src/rust/vendor.tar.xz` and the
+  build runs offline. The vendored set is filtered to the CRAN
+  platforms.
+- Rust output goes through R’s console (`rprintln!`) rather than stdout.
+- Vignettes are pkgdown-only articles now and no longer ship with the
+  package.
+- Examples added to all user-facing exports.
+- Backend bumps: `manifolds-rs` 0.7.2 and `bixverse-rs` 0.8.0.
+
 ## manifoldsR 0.4.0
 
 ### Features
@@ -70,7 +112,7 @@
 ### Features
 
 - Wired in [ForceAtlas2](https://doi.org/10.1371/journal.pone.0098679)
-  from [manifolds-rs](https://crates.io/crates/manifolds-rs).
+  from [manifolds-rs](https://docs.rs/manifolds-rs).
 
 ## manifoldsR 0.3.2
 
@@ -94,7 +136,7 @@ Major release
 
 - A lot of the backend code in Rust changed. This gives in parts
   substantially faster kNN searches from
-  [ann-search-rs](https://crates.io/crates/ann-search-rs) (`"v0.8.1"`).
+  [ann-search-rs](https://docs.rs/ann-search-rs) (`"v0.8.1"`).
 
 ### Breaking change
 

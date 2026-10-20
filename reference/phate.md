@@ -78,3 +78,12 @@ phate(
 
 A numerical matrix with dimensions samples x n_dim containing the PHATE
 embedding.
+
+## Examples
+
+``` r
+d <- manifold_synthetic_data(type = "clusters", n_samples = 500L)
+emb <- phate(d$data, .verbose = FALSE)
+dim(emb)
+#> [1] 500   2
+```

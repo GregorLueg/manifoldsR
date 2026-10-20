@@ -11,7 +11,7 @@ differences."><meta property="og:image" content="https://gregorlueg.github.io/ma
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,7 +51,7 @@ differences."><meta property="og:image" content="https://gregorlueg.github.io/ma
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Generate synthetic data for manifold learning</h1>
-
+      <small class="dont-index">Source: <a href="https://github.com/GregorLueg/manifoldsR/blob/main/R/synthetic_data.R" class="external-link"><code>R/synthetic_data.R</code></a></small>
       <div class="d-none name"><code>manifold_synthetic_data.Rd</code></div>
     </div>
 
@@ -64,7 +64,7 @@ differences.</p>
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">manifold_synthetic_data</span><span class="op">(</span></span>
-<span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"swiss_role"</span>, <span class="st">"biased_swiss_role"</span>, <span class="st">"clusters"</span>, <span class="st">"trajectory"</span>, <span class="st">"hierarchical"</span><span class="op">)</span>,</span>
+<span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"swiss_roll"</span>, <span class="st">"biased_swiss_roll"</span>, <span class="st">"clusters"</span>, <span class="st">"trajectory"</span>, <span class="st">"hierarchical"</span><span class="op">)</span>,</span>
 <span>  <span class="va">n_samples</span>,</span>
 <span>  dim <span class="op">=</span> <span class="fl">32L</span>,</span>
 <span>  seed <span class="op">=</span> <span class="fl">42L</span>,</span>
@@ -77,8 +77,8 @@ differences.</p>
 
 
 <dl><dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
-<dd><p>Character. Type of synthetic data to generate. One of:</p><ul><li><p><code>"swiss_role"</code> - Swiss roll manifold</p></li>
-<li><p><code>"biased_swiss_role"</code> - Biased swiss role manifold</p></li>
+<dd><p>Character. Type of synthetic data to generate. One of:</p><ul><li><p><code>"swiss_roll"</code> - Swiss roll manifold</p></li>
+<li><p><code>"biased_swiss_roll"</code> - Biased Swiss roll manifold</p></li>
 <li><p><code>"clusters"</code> - Clustered data</p></li>
 <li><p><code>"trajectory"</code> - Trajectory-like data with branching</p></li>
 <li><p><code>"hierarchical"</code> - Two-level hierarchical cluster structure</p></li>
@@ -91,7 +91,7 @@ differences.</p>
 
 <dt id="arg-dim">dim<a class="anchor" aria-label="anchor" href="#arg-dim"></a></dt>
 <dd><p>Integer. Dimensionality of the ambient space. Used for all types
-except <code>"swiss_role"</code>. Defaults to <code>32L</code>.</p></dd>
+except <code>"swiss_roll"</code>. Defaults to <code>32L</code>.</p></dd>
 
 
 <dt id="arg-seed">seed<a class="anchor" aria-label="anchor" href="#arg-seed"></a></dt>
@@ -100,7 +100,7 @@ except <code>"swiss_role"</code>. Defaults to <code>32L</code>.</p></dd>
 
 <dt id="arg-parameters">parameters<a class="anchor" aria-label="anchor" href="#arg-parameters"></a></dt>
 <dd><p>A named list of type-specific parameters, constructed via
-<code><a href="params_swiss_role.html">params_swiss_role()</a></code>, <code><a href="params_swiss_role_biased.html">params_swiss_role_biased()</a></code> <code><a href="params_clusters.html">params_clusters()</a></code>,
+<code><a href="params_swiss_roll.html">params_swiss_roll()</a></code>, <code><a href="params_swiss_roll_biased.html">params_swiss_roll_biased()</a></code> <code><a href="params_clusters.html">params_clusters()</a></code>,
 <code><a href="params_trajectory.html">params_trajectory()</a></code>, or <code><a href="params_hierarchical.html">params_hierarchical()</a></code>. If <code>NULL</code>, defaults for
 the chosen type are used. A plain list is accepted but must contain all
 required fields for the given type.</p></dd>
@@ -110,9 +110,25 @@ required fields for the given type.</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A list with the following elements:</p><ul><li><p><code>data</code> - Numeric matrix of shape <code>n_samples x dim</code></p></li>
 <li><p><code>membership</code> - Integer vector of cluster/branch assignments (<code>NULL</code>
-for <code>"swiss_role"</code>)</p></li>
+for <code>"swiss_roll"</code>)</p></li>
 </ul></div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu">manifold_synthetic_data</span><span class="op">(</span>type <span class="op">=</span> <span class="st">"clusters"</span>, n_samples <span class="op">=</span> <span class="fl">500L</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 500  32</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">membership</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 38 31 35 23 35 56 16 14 29 36 33 55 33 18 48 </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">roll</span> <span class="op">&lt;-</span> <span class="fu">manifold_synthetic_data</span><span class="op">(</span>type <span class="op">=</span> <span class="st">"swiss_roll"</span>, n_samples <span class="op">=</span> <span class="fl">500L</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">roll</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 500   3</span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

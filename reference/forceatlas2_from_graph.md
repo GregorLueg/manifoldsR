@@ -61,3 +61,14 @@ ForceAtlas2 layout, rows in vertex order.
 ## References
 
 Jacomy, et al., PLoS ONE, 2014
+
+## Examples
+
+``` r
+if (requireNamespace("igraph", quietly = TRUE)) {
+  g <- igraph::sample_gnp(200L, 0.05)
+  emb <- forceatlas2_from_graph(g, .verbose = FALSE)
+  dim(emb)
+}
+#> [1] 200   2
+```

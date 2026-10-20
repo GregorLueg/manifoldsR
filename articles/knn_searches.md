@@ -64,7 +64,7 @@ use them in R, you need to be aware of this!
 # flat representation of the indices
 indices_flat <- get_idx_flat(exhaustive)
 
-# as N x idx nearest neigbours matrix
+# as N x idx nearest neighbours matrix
 indices_mat <- get_idx_mat(exhaustive)
 ```
 
@@ -75,7 +75,7 @@ The distances can also be extracted easily:
 # flat representation of the distances
 dist_flat <- get_dist_flat(exhaustive)
 
-# as N x idx nearest neigbours matrix
+# as N x idx nearest neighbours matrix
 dist_mat <- get_dist_mat(exhaustive)
 ```
 
@@ -130,9 +130,15 @@ samples, some of the other methods will shine.
 
 #### Speed
 
-Let’s just have a look on how they perform on different sizes
+Let’s just have a look on how the different kNN methods perform on
+different sizes.
 
 ``` r
+
+cluster_data <- manifold_synthetic_data(
+  type = "cluster",
+  n_samples = 1000L
+)
 
 microbenchmark::microbenchmark(
   exhaustive = {
@@ -197,13 +203,13 @@ microbenchmark::microbenchmark(
 )
 #> Unit: milliseconds
 #>        expr       min        lq      mean    median        uq       max neval
-#>  exhaustive  3.784091  3.784091  3.784091  3.784091  3.784091  3.784091     1
-#>       kmknn  5.101227  5.101227  5.101227  5.101227  5.101227  5.101227     1
-#>       annoy 27.678858 27.678858 27.678858 27.678858 27.678858 27.678858     1
-#>        hnsw 20.214867 20.214867 20.214867 20.214867 20.214867 20.214867     1
-#>    balltree  3.480015  3.480015  3.480015  3.480015  3.480015  3.480015     1
-#>   nndescent 47.666816 47.666816 47.666816 47.666816 47.666816 47.666816     1
-#>         ivf  4.951432  4.951432  4.951432  4.951432  4.951432  4.951432     1
+#>  exhaustive  3.783461  3.783461  3.783461  3.783461  3.783461  3.783461     1
+#>       kmknn  4.681059  4.681059  4.681059  4.681059  4.681059  4.681059     1
+#>       annoy 25.213784 25.213784 25.213784 25.213784 25.213784 25.213784     1
+#>        hnsw 17.677514 17.677514 17.677514 17.677514 17.677514 17.677514     1
+#>    balltree  3.222337  3.222337  3.222337  3.222337  3.222337  3.222337     1
+#>   nndescent 37.458951 37.458951 37.458951 37.458951 37.458951 37.458951     1
+#>         ivf  4.624807  4.624807  4.624807  4.624807  4.624807  4.624807     1
 ```
 
 On small datasets, the exhaustive search beats everything. We need to
@@ -281,13 +287,13 @@ microbenchmark::microbenchmark(
 )
 #> Unit: milliseconds
 #>        expr       min        lq      mean    median        uq       max neval
-#>  exhaustive 2959.1462 2959.1462 2959.1462 2959.1462 2959.1462 2959.1462     1
-#>       kmknn 1008.5747 1008.5747 1008.5747 1008.5747 1008.5747 1008.5747     1
-#>       annoy 3127.7116 3127.7116 3127.7116 3127.7116 3127.7116 3127.7116     1
-#>        hnsw 2320.1299 2320.1299 2320.1299 2320.1299 2320.1299 2320.1299     1
-#>    balltree  835.6549  835.6549  835.6549  835.6549  835.6549  835.6549     1
-#>   nndescent 1740.5484 1740.5484 1740.5484 1740.5484 1740.5484 1740.5484     1
-#>         ivf  924.1355  924.1355  924.1355  924.1355  924.1355  924.1355     1
+#>  exhaustive 3766.9864 3766.9864 3766.9864 3766.9864 3766.9864 3766.9864     1
+#>       kmknn 1261.7178 1261.7178 1261.7178 1261.7178 1261.7178 1261.7178     1
+#>       annoy 2863.7580 2863.7580 2863.7580 2863.7580 2863.7580 2863.7580     1
+#>        hnsw 1948.9907 1948.9907 1948.9907 1948.9907 1948.9907 1948.9907     1
+#>    balltree  968.3056  968.3056  968.3056  968.3056  968.3056  968.3056     1
+#>   nndescent 1554.2424 1554.2424 1554.2424 1554.2424 1554.2424 1554.2424     1
+#>         ivf  990.6399  990.6399  990.6399  990.6399  990.6399  990.6399     1
 ```
 
 We start observing the first pattern, that the approximate nearest
@@ -365,13 +371,13 @@ microbenchmark::microbenchmark(
 )
 #> Unit: seconds
 #>        expr       min        lq      mean    median        uq       max neval
-#>  exhaustive 11.403090 11.403090 11.403090 11.403090 11.403090 11.403090     1
-#>       kmknn  3.327213  3.327213  3.327213  3.327213  3.327213  3.327213     1
-#>       annoy  8.166038  8.166038  8.166038  8.166038  8.166038  8.166038     1
-#>        hnsw  5.547965  5.547965  5.547965  5.547965  5.547965  5.547965     1
-#>    balltree  3.166384  3.166384  3.166384  3.166384  3.166384  3.166384     1
-#>   nndescent  3.717185  3.717185  3.717185  3.717185  3.717185  3.717185     1
-#>         ivf  2.424247  2.424247  2.424247  2.424247  2.424247  2.424247     1
+#>  exhaustive 14.987533 14.987533 14.987533 14.987533 14.987533 14.987533     1
+#>       kmknn  4.254889  4.254889  4.254889  4.254889  4.254889  4.254889     1
+#>       annoy  7.216895  7.216895  7.216895  7.216895  7.216895  7.216895     1
+#>        hnsw  5.150780  5.150780  5.150780  5.150780  5.150780  5.150780     1
+#>    balltree  3.536583  3.536583  3.536583  3.536583  3.536583  3.536583     1
+#>   nndescent  3.305300  3.305300  3.305300  3.305300  3.305300  3.305300     1
+#>         ivf  2.536294  2.536294  2.536294  2.536294  2.536294  2.536294     1
 ```
 
 #### Precision
@@ -418,7 +424,7 @@ for (idx in indices) {
 #> [1] "ANN method annoy achieves a Recall of 1.000."
 #> [1] "ANN method nndescent achieves a Recall of 1.000."
 #> [1] "ANN method balltree achieves a Recall of 0.974."
-#> [1] "ANN method ivf achieves a Recall of 0.967."
+#> [1] "ANN method ivf achieves a Recall of 0.966."
 #> [1] "ANN method kmknn achieves a Recall of 1.000."
 ```
 

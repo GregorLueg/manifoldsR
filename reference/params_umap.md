@@ -100,3 +100,70 @@ A named list with the following elements:
 
 - randomised - Boolean. Use randomised SVD for PCA initialisation.
   Defaults to `TRUE`.
+
+## Examples
+
+``` r
+params_umap()
+#> $local_connectivity
+#> [1] 1
+#> 
+#> $bandwidth
+#> [1] 1e-05
+#> 
+#> $mix_weight
+#> [1] 1
+#> 
+#> $lr
+#> [1] 1
+#> 
+#> $n_epochs
+#> NULL
+#> 
+#> $neg_sample_rate
+#> [1] 5
+#> 
+#> $gamma
+#> [1] 1
+#> 
+#> $optimiser
+#> [1] "adam_parallel"
+#> 
+#> $init
+#> [1] "spectral"
+#> 
+#> $randomised
+#> [1] TRUE
+#> 
+params_umap(n_epochs = 200L, neg_sample_rate = 10L)
+#> $local_connectivity
+#> [1] 1
+#> 
+#> $bandwidth
+#> [1] 1e-05
+#> 
+#> $mix_weight
+#> [1] 1
+#> 
+#> $lr
+#> [1] 1
+#> 
+#> $n_epochs
+#> [1] 200
+#> 
+#> $neg_sample_rate
+#> [1] 10
+#> 
+#> $gamma
+#> [1] 1
+#> 
+#> $optimiser
+#> [1] "adam_parallel"
+#> 
+#> $init
+#> [1] "spectral"
+#> 
+#> $randomised
+#> [1] TRUE
+#> 
+```

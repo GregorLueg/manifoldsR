@@ -29,7 +29,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -82,7 +82,7 @@
       <p class="author">Gregor Lueg</p>
       <p class="date">2026-10-20</p>
 
-
+      <small class="dont-index">Source: <a href="https://github.com/GregorLueg/manifoldsR/blob/main/vignettes/tsne.qmd" class="external-link"><code>vignettes/tsne.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
     </div>
 
@@ -132,8 +132,8 @@
 <span>  n_samples <span class="op">=</span> <span class="fl">25000L</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">swissrole_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/manifold_synthetic_data.html">manifold_synthetic_data</a></span><span class="op">(</span></span>
-<span>  type <span class="op">=</span> <span class="st">"swiss_role"</span>,</span>
+<span><span class="va">swissroll_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/manifold_synthetic_data.html">manifold_synthetic_data</a></span><span class="op">(</span></span>
+<span>  type <span class="op">=</span> <span class="st">"swiss_roll"</span>,</span>
 <span>  n_samples <span class="op">=</span> <span class="fl">1000L</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -197,17 +197,17 @@
 <p>As expected, t-SNE separates the clusters cleanly. Worth noting: the inter-cluster distances and cluster sizes visible here are not directly interpretable — t-SNE optimises for local neighbourhood fidelity, not a faithful global geometry.</p>
 </section><section class="level3"><h4 id="swissrole">Swissrole<a class="anchor" aria-label="anchor" href="#swissrole"></a>
 </h4>
-<p>Let’s look at the swiss role, where UMAP struggled due to its graph-based objective. We will need higher perplexity values here to emphasise the global structure more. Similar to last UMAP, let’s start with PCA:</p>
+<p>Let’s look at the Swiss roll, where UMAP struggled due to its graph-based objective. We will need higher perplexity values here to emphasise the global structure more. Similar to last UMAP, let’s start with PCA:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">pca_swiss_role</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/prcomp.html" class="external-link">prcomp</a></span><span class="op">(</span><span class="va">swissrole_data</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">pca_swiss_roll</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/prcomp.html" class="external-link">prcomp</a></span><span class="op">(</span><span class="va">swissroll_data</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">pca_swiss_role_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/as.data.table.html" class="external-link">as.data.table</a></span><span class="op">(</span><span class="va">pca_swiss_role</span><span class="op">$</span><span class="va">x</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span><span class="va">pca_swiss_roll_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/as.data.table.html" class="external-link">as.data.table</a></span><span class="op">(</span><span class="va">pca_swiss_roll</span><span class="op">$</span><span class="va">x</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu">`colnames&lt;-`</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PC1"</span>, <span class="st">"PC2"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="va">.</span><span class="op">[</span>, <span class="va">z_axis</span> <span class="op">:=</span> <span class="va">swissrole_data</span><span class="op">$</span><span class="va">data</span><span class="op">[</span>, <span class="fl">3</span><span class="op">]</span><span class="op">]</span></span>
+<span>  <span class="va">.</span><span class="op">[</span>, <span class="va">z_axis</span> <span class="op">:=</span> <span class="va">swissroll_data</span><span class="op">$</span><span class="va">data</span><span class="op">[</span>, <span class="fl">3</span><span class="op">]</span><span class="op">]</span></span>
 <span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span></span>
-<span>  data <span class="op">=</span> <span class="va">pca_swiss_role_df</span>,</span>
+<span>  data <span class="op">=</span> <span class="va">pca_swiss_roll_df</span>,</span>
 <span>  mapping <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">PC1</span>, y <span class="op">=</span> <span class="va">PC2</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span></span>
@@ -218,10 +218,10 @@
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html" class="external-link">scale_fill_viridis_c</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"PCA on swissrole"</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"PCA on swissroll"</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div>
-<figure><p><img src="tsne_files/figure-html/swissrole%20data%20-%20pca-1.png" width="672"></p>
+<figure><p><img src="tsne_files/figure-html/swissroll%20data%20-%20pca-1.png" width="672"></p>
 </figure>
 </div>
 </div>
@@ -229,19 +229,19 @@
 <p>And compare against tSNE:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">tsne_swissrole</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tsne.html">tsne</a></span><span class="op">(</span></span>
-<span>  data <span class="op">=</span> <span class="va">swissrole_data</span><span class="op">$</span><span class="va">data</span>,</span>
+<code class="sourceCode R"><span><span class="va">tsne_swissroll</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tsne.html">tsne</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">swissroll_data</span><span class="op">$</span><span class="va">data</span>,</span>
 <span>  knn_method <span class="op">=</span> <span class="st">"exhaustive"</span>,</span>
 <span>  perplexity <span class="op">=</span> <span class="fl">50L</span>, <span class="co"># we need to increase perplexity to capture the global structure</span></span>
 <span>  seed <span class="op">=</span> <span class="fl">42L</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">tsne_swissrole_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/as.data.table.html" class="external-link">as.data.table</a></span><span class="op">(</span><span class="va">tsne_swissrole</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span><span class="va">tsne_swissroll_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/as.data.table.html" class="external-link">as.data.table</a></span><span class="op">(</span><span class="va">tsne_swissroll</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu">`colnames&lt;-`</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"tSNE1"</span>, <span class="st">"tSNE2"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="va">.</span><span class="op">[</span>, <span class="va">z_axis</span> <span class="op">:=</span> <span class="va">swissrole_data</span><span class="op">$</span><span class="va">data</span><span class="op">[</span>, <span class="fl">3</span><span class="op">]</span><span class="op">]</span></span>
+<span>  <span class="va">.</span><span class="op">[</span>, <span class="va">z_axis</span> <span class="op">:=</span> <span class="va">swissroll_data</span><span class="op">$</span><span class="va">data</span><span class="op">[</span>, <span class="fl">3</span><span class="op">]</span><span class="op">]</span></span>
 <span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span></span>
-<span>  data <span class="op">=</span> <span class="va">tsne_swissrole_df</span>,</span>
+<span>  data <span class="op">=</span> <span class="va">tsne_swissroll_df</span>,</span>
 <span>  mapping <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">tSNE1</span>, y <span class="op">=</span> <span class="va">tSNE2</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span></span>
@@ -252,15 +252,15 @@
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html" class="external-link">scale_fill_viridis_c</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"tSNE (BH) on swissrole"</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"tSNE (BH) on swissroll"</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div>
-<figure><p><img src="tsne_files/figure-html/swissrole%20data%20-%20tsne-1.png" width="672"></p>
+<figure><p><img src="tsne_files/figure-html/swissroll%20data%20-%20tsne-1.png" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
-<p>t-SNE handles the swiss role more gracefully than UMAP, preserving more of the continuous colour gradient along the roll. That said, it is still not perfect — this is still better approached with PCA or dedicated manifold unrolling methods (check out PHATE here).</p>
+<p>t-SNE handles the Swiss roll more gracefully than UMAP, preserving more of the continuous colour gradient along the roll. That said, it is still not perfect — this is still better approached with PCA or dedicated manifold unrolling methods (check out PHATE here).</p>
 </section><section class="level3"><h4 id="trajectory">Trajectory<a class="anchor" aria-label="anchor" href="#trajectory"></a>
 </h4>
 <p>Lastly, let’s look at trajectory type data…</p>
@@ -526,9 +526,9 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;            expr       min        lq      mean    median        uq       max</span></span>
-<span><span class="co">#&gt;           Rtsne 10.566956 10.566956 10.566956 10.566956 10.566956 10.566956</span></span>
-<span><span class="co">#&gt;     manifold_bh  3.847466  3.847466  3.847466  3.847466  3.847466  3.847466</span></span>
-<span><span class="co">#&gt;  manifold_bh_qd  1.608557  1.608557  1.608557  1.608557  1.608557  1.608557</span></span>
+<span><span class="co">#&gt;           Rtsne 12.605955 12.605955 12.605955 12.605955 12.605955 12.605955</span></span>
+<span><span class="co">#&gt;     manifold_bh  3.815150  3.815150  3.815150  3.815150  3.815150  3.815150</span></span>
+<span><span class="co">#&gt;  manifold_bh_qd  1.747368  1.747368  1.747368  1.747368  1.747368  1.747368</span></span>
 <span><span class="co">#&gt;  neval</span></span>
 <span><span class="co">#&gt;      1</span></span>
 <span><span class="co">#&gt;      1</span></span>
@@ -583,12 +583,12 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;             expr      min       lq     mean   median       uq      max neval</span></span>
-<span><span class="co">#&gt;      manifold_bh 94.82867 94.82867 94.82867 94.82867 94.82867 94.82867     1</span></span>
-<span><span class="co">#&gt;   manifold_bh_qd 21.00353 21.00353 21.00353 21.00353 21.00353 21.00353     1</span></span>
-<span><span class="co">#&gt;     manifold_fft 23.96751 23.96751 23.96751 23.96751 23.96751 23.96751     1</span></span>
-<span><span class="co">#&gt;  manifold_fft_3k 20.06453 20.06453 20.06453 20.06453 20.06453 20.06453     1</span></span></code></pre></div>
+<span><span class="co">#&gt;      manifold_bh 93.57530 93.57530 93.57530 93.57530 93.57530 93.57530     1</span></span>
+<span><span class="co">#&gt;   manifold_bh_qd 24.10453 24.10453 24.10453 24.10453 24.10453 24.10453     1</span></span>
+<span><span class="co">#&gt;     manifold_fft 26.66654 26.66654 26.66654 26.66654 26.66654 26.66654     1</span></span>
+<span><span class="co">#&gt;  manifold_fft_3k 24.66720 24.66720 24.66720 24.66720 24.66720 24.66720     1</span></span></code></pre></div>
 </div>
-<p>The speed advantage of the Rust implementation comes from a combination of optimised memory layout, aggressive inlining, and the fact that the entire pipeline — kNN construction, probability computation, and gradient descent — runs within the Rust kernel without round-tripping through R. If you like tSNE, but thought it’s too slow… we got you.</p>
+<p>The speed advantage of the Rust implementation comes from a combination of optimised memory layout, aggressive inlining, and the fact that the entire pipeline (kNN construction, probability computation and gradient descent) runs within the Rust kernel without round-tripping through R. If you like tSNE, but thought it’s too slow… we got you.</p>
 </section></section><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);

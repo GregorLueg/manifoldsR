@@ -30,3 +30,16 @@ A named list with the following elements:
 ## References
 
 Kury, Kobak & Damrich, Transactions on Machine Learning Research, 2026
+
+## Examples
+
+``` r
+params_dreams()
+#> $lambda
+#> [1] 0.15
+#> 
+params_dreams(lambda = 0.3)
+#> $lambda
+#> [1] 0.3
+#> 
+```
