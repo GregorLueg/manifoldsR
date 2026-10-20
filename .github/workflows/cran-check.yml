@@ -1,0 +1,11 @@
+name: CRAN check
+
+on:
+  workflow_dispatch:
+
+jobs:
+  cran-check:
+    uses: GregorLueg/personal-actions/.github/workflows/r-cran-check.yml@main
+    with:
+      msrv: 1.90.0
+    secrets: inherit
