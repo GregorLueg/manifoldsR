@@ -1,0 +1,28 @@
+name: Conda release
+
+# Dispatched by auto-tag.yml after it cuts a release, or by hand with an older
+# tag to backfill it. This file is the trusted publisher on the prefix.dev
+# channel, so keep its name.
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Tag to build, e.g. v0.5.0
+        required: true
+        type: string
+      publish:
+        description: Upload to the channel
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  conda:
+    uses: GregorLueg/personal-actions/.github/workflows/r-conda-release.yml@v1
+    with:
+      channel: https://prefix.dev/gregorlueg/bixverse
+      ref: ${{ inputs.ref }}
+      publish: ${{ inputs.publish }}

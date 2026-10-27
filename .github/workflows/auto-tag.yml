@@ -11,8 +11,20 @@ on:
 
 permissions:
   contents: write
+  actions: write
 
 jobs:
   tag:
     uses: GregorLueg/personal-actions/.github/workflows/r-auto-tag.yml@v1
     secrets: inherit
+
+  # A tag pushed with GITHUB_TOKEN starts no workflows, a dispatch does.
+  conda:
+    needs: tag
+    if: needs.tag.outputs.created == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch the conda release
+        run: gh workflow run conda-release.yml -R "$GITHUB_REPOSITORY" -f ref="${{ needs.tag.outputs.tag }}"
+        env:
+          GH_TOKEN: ${{ github.token }}
