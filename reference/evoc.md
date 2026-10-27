@@ -88,6 +88,6 @@ res
 #> Evoc
 #>   layers:               2 
 #>   best layer:           2 
-#>   best persistence:     76.7282 
+#>   best persistence:     76.7277 
 #>   knn:                  not stored 
 ```

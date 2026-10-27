@@ -395,12 +395,12 @@ microbenchmark::microbenchmark(
   times = 1L
 )
 #> Unit: seconds
-#>                  expr       min        lq      mean    median        uq
-#>  manifold_dm_spectral 15.157127 15.157127 15.157127 15.157127 15.157127
-#>    manifold_dm_random  2.606979  2.606979  2.606979  2.606979  2.606979
-#>        max neval
-#>  15.157127     1
-#>   2.606979     1
+#>                  expr      min       lq     mean   median       uq      max
+#>  manifold_dm_spectral 20.37932 20.37932 20.37932 20.37932 20.37932 20.37932
+#>    manifold_dm_random  2.83124  2.83124  2.83124  2.83124  2.83124  2.83124
+#>  neval
+#>      1
+#>      1
 ```
 
 As elsewhere in `manifoldsR`, the speed gains come from keeping the

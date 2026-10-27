@@ -430,9 +430,9 @@ local({
     reticulate::virtualenv_install(env_name, packages = py_pkgs)
   }
 })
-#> Using Python: /usr/bin/python3.12
+#> Using Python: /usr/bin/python3.14
 #> Creating virtual environment 'r-manifolds' ...
-#> + /usr/bin/python3.12 -m venv /home/runner/.virtualenvs/r-manifolds
+#> + /usr/bin/python3.14 -m venv /home/runner/.virtualenvs/r-manifolds
 #> Done!
 #> Installing packages: pip, wheel, setuptools
 #> + /home/runner/.virtualenvs/r-manifolds/bin/python -m pip install --upgrade pip wheel setuptools
@@ -469,10 +469,11 @@ microbenchmark::microbenchmark(
   },
   times = 1L
 )
+#>     SGD-MDS may not have converged: stress changed by -1.7% in final iterations. Consider increasing n_iter or adjusting learning_rate.
 #> Unit: seconds
 #>            expr       min        lq      mean    median        uq       max
-#>          phateR 12.271045 12.271045 12.271045 12.271045 12.271045 12.271045
-#>  manifold_phate  8.734944  8.734944  8.734944  8.734944  8.734944  8.734944
+#>          phateR 10.417856 10.417856 10.417856 10.417856 10.417856 10.417856
+#>  manifold_phate  9.784525  9.784525  9.784525  9.784525  9.784525  9.784525
 #>  neval
 #>      1
 #>      1
@@ -518,12 +519,11 @@ microbenchmark::microbenchmark(
   },
   times = 1L
 )
-#>     SGD-MDS may not have converged: stress changed by -3.4% in final iterations. Consider increasing n_iter or adjusting learning_rate.
 #> Unit: seconds
 #>                     expr      min       lq     mean   median       uq      max
-#>                   phateR 59.57196 59.57196 59.57196 59.57196 59.57196 59.57196
-#>  manifold_phate_spectral 24.28921 24.28921 24.28921 24.28921 24.28921 24.28921
-#>    manifold_phate_random 12.59971 12.59971 12.59971 12.59971 12.59971 12.59971
+#>                   phateR 47.78267 47.78267 47.78267 47.78267 47.78267 47.78267
+#>  manifold_phate_spectral 24.71066 24.71066 24.71066 24.71066 24.71066 24.71066
+#>    manifold_phate_random 13.64334 13.64334 13.64334 13.64334 13.64334 13.64334
 #>  neval
 #>      1
 #>      1

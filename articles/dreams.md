@@ -187,8 +187,8 @@ lapply(embeddings, \(embd) {
 #>    method global local
 #>    <char>  <num> <num>
 #> 1:    PCA  0.896 0.061
-#> 2:   tSNE  0.434 0.241
-#> 3: DREAMS  0.894 0.213
+#> 2:   tSNE  0.439 0.241
+#> 3: DREAMS  0.894 0.215
 ```
 
 The numbers say the same thing. DREAMS matches PCA on the global score
@@ -224,10 +224,10 @@ lapply(lambda_sweep, \(embd) {
   .[, lapply(.SD, round, 3), by = lambda]
 #>           lambda global local
 #>           <char>  <num> <num>
-#> 1: lambda = 0.00  0.426 0.240
-#> 2: lambda = 0.05  0.769 0.238
-#> 3: lambda = 0.15  0.894 0.213
-#> 4: lambda = 0.50  0.910 0.146
+#> 1: lambda = 0.00  0.425 0.239
+#> 2: lambda = 0.05  0.766 0.238
+#> 3: lambda = 0.15  0.894 0.215
+#> 4: lambda = 0.50  0.910 0.145
 #> 5: lambda = 1.00  0.896 0.061
 ```
 
