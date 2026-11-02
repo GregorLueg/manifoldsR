@@ -4,17 +4,7 @@
 \alias{rs_densmap}
 \title{densMAP implementation}
 \usage{
-rs_densmap(
-  embd,
-  n_dim,
-  min_dist,
-  spread,
-  k,
-  densmap_params,
-  seed,
-  use_high_precision,
-  verbose
-)
+rs_densmap(embd, n_dim, min_dist, spread, k, densmap_params, seed, verbose)
 }
 \arguments{
 \item{embd}{Numerical matrix. The data to use to generate the embeddings.
@@ -33,9 +23,6 @@ parameters for the densMAP generation, i.e. the UMAP ones plus \code{lambda},
 \code{frac} and \code{var_shift}.}
 
 \item{seed}{Integer. Seed for reproducibility.}
-
-\item{use_high_precision}{Optional logical. Controls \code{fp32} vs \code{fp64} for.
-If \code{NULL} will use sensible default thresholding.}
 
 \item{verbose}{Integer. If \code{0L} -> silent or \code{1L} for normal verbosity; \code{2L}
 for detailed verbosity.}

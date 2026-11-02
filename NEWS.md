@@ -4,9 +4,9 @@
 
 - The spectral initialisation was updated via a better Lanczos solver. That
   can shift previous embeddings, but is faster and more memory-frugal.
-- `params_nn()` loses `diversify_prob`, `ef_budget` and `extract_knn`. NN-Descent
-  now builds the kNN graph and hands it back directly, with no index and no
-  query.
+- `params_nn()` loses `diversify_prob`, `ef_budget` and `extract_knn`. 
+  NN-Descent now builds the kNN graph and hands it back directly, with no index 
+  and no query.
 - `params_pacmap()` loses `mn_candidate_start` and `mn_candidate_end`. Mid-near
   pairs are now the second closest of six random points, not a window in the
   kNN list, and the kNN search size is `n_near` rather than 50. Different
@@ -24,6 +24,9 @@
   MDS with `randomised`, give different coordinates than before at the same
   seed. The CPU kNN backends bar `"exhaustive"` now search in `f32` whatever the
   input precision.
+- The embeddings lose `use_high_precision` and the automatic switch to `f64`
+  above 100k samples. They now always run in `f32`, with `manifolds-rs` doing the
+  steps prone to catastrophic cancellation in `f64`. `evoc()` keeps the argument.
 - One verbosity grammar across all embeddings. `.verbose = 1L` prints timed
   stages and epochs every 50, `.verbose = 2L` adds parameters, landmark
   selection and the kNN internals.

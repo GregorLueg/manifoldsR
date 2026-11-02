@@ -58,8 +58,6 @@
 #' [params_nn()].
 #' @param fa2_params Named list. ForceAtlas2 parameters, see [params_fa2()].
 #' @param seed Integer. Random seed for reproducibility. Defaults to `42L`.
-#' @param use_high_precision Optional boolean. Gives fine-grained control over
-#' `fp32` vs `fp64` usage.
 #' @param .verbose Logical. Controls verbosity. Defaults to `TRUE`.
 #'
 #' @return A numerical matrix with dimensions samples x 2 containing the
@@ -89,7 +87,6 @@ forceatlas2 <- function(
   nn_params = params_nn(),
   fa2_params = params_fa2(),
   seed = 42L,
-  use_high_precision = NULL,
   .verbose = TRUE
 ) {
   # transformation
@@ -111,7 +108,6 @@ forceatlas2 <- function(
   )
   checkmate::qassert(k, "I1[2,)")
   checkmate::qassert(.verbose, c("B1", "I1[0, 2]"))
-  checkmate::qassert(use_high_precision, c("0", "B1"))
   checkmate::qassert(seed, "I1")
 
   final_fa2_params <- .prepare_fa2_params(
@@ -130,7 +126,6 @@ forceatlas2 <- function(
       k = k,
       fa2_params = final_fa2_params,
       seed = seed,
-      use_high_precision = use_high_precision,
       verbose = parse_verbosity(.verbose)
     )
   } else {
@@ -139,7 +134,6 @@ forceatlas2 <- function(
       k = k,
       fa2_params = final_fa2_params,
       seed = seed,
-      use_high_precision = use_high_precision,
       verbose = parse_verbosity(.verbose)
     )
   }
@@ -164,8 +158,6 @@ forceatlas2 <- function(
 #' layout is used. Defaults to `NULL`.
 #' @param fa2_params Named list. ForceAtlas2 parameters, see [params_fa2()].
 #' @param seed Integer. Random seed for reproducibility. Defaults to `42L`.
-#' @param use_high_precision Optional boolean. Gives fine-grained control over
-#' `fp32` vs `fp64` usage.
 #' @param .verbose Logical. Controls verbosity. Defaults to `TRUE`.
 #'
 #' @return A numerical matrix with dimensions `vcount(graph) x 2` containing
@@ -186,7 +178,6 @@ forceatlas2_from_graph <- function(
   init = NULL,
   fa2_params = params_fa2(),
   seed = 42L,
-  use_high_precision = NULL,
   .verbose = TRUE
 ) {
   checkmate::assertClass(graph, "igraph")
@@ -215,7 +206,6 @@ forceatlas2_from_graph <- function(
   )
   assertFa2Params(fa2_params)
   checkmate::qassert(.verbose, c("B1", "I1[0, 2]"))
-  checkmate::qassert(use_high_precision, c("0", "B1"))
   checkmate::qassert(seed, "I1")
 
   if (!is.null(init)) {
@@ -242,7 +232,6 @@ forceatlas2_from_graph <- function(
     init = init,
     fa2_params = fa2_params,
     seed = seed,
-    use_high_precision = use_high_precision,
     verbose = parse_verbosity(.verbose)
   )
 }

@@ -9,7 +9,6 @@ forceatlas2_from_graph(
   init = NULL,
   fa2_params = params_fa2(),
   seed = 42L,
-  use_high_precision = NULL,
   .verbose = TRUE
 )
 }
@@ -26,9 +25,6 @@ layout is used. Defaults to \code{NULL}.}
 \item{fa2_params}{Named list. ForceAtlas2 parameters, see \code{\link[=params_fa2]{params_fa2()}}.}
 
 \item{seed}{Integer. Random seed for reproducibility. Defaults to \code{42L}.}
-
-\item{use_high_precision}{Optional boolean. Gives fine-grained control over
-\code{fp32} vs \code{fp64} usage.}
 
 \item{.verbose}{Logical. Controls verbosity. Defaults to \code{TRUE}.}
 }

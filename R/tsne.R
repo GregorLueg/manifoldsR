@@ -75,8 +75,6 @@
 #' @param tsne_params Named list. t-SNE algorithm parameters, see
 #' [params_tsne()].
 #' @param seed Integer. Random seed for reproducibility.
-#' @param use_high_precision Optional boolean. Gives fine-grained control over
-#' `fp32` vs `fp64` usage.
 #' @param .verbose Logical. Controls verbosity. Defaults to `TRUE`.
 #'
 #' @return A numerical matrix with dimensions samples x n_dim containing
@@ -106,7 +104,6 @@ tsne <- function(
   nn_params = params_nn(),
   tsne_params = params_tsne(),
   seed = 42L,
-  use_high_precision = NULL,
   .verbose = TRUE
 ) {
   if (is.data.frame(data)) {
@@ -139,7 +136,6 @@ tsne <- function(
   assertNnParams(nn_params)
   assertTsneParams(tsne_params)
   checkmate::qassert(seed, "I1")
-  checkmate::qassert(use_high_precision, c("B1", "0"))
   checkmate::qassert(.verbose, c("B1", "I1[0, 2]"))
 
   final_tsne_params <- .prepare_tsne_params(
@@ -160,7 +156,6 @@ tsne <- function(
       approx_type = approx_type,
       tsne_params = final_tsne_params,
       seed = seed,
-      use_high_precision = use_high_precision,
       verbose = parse_verbosity(.verbose)
     )
   } else {
@@ -171,7 +166,6 @@ tsne <- function(
       approx_type = approx_type,
       tsne_params = final_tsne_params,
       seed = seed,
-      use_high_precision = use_high_precision,
       verbose = parse_verbosity(.verbose)
     )
   }

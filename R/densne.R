@@ -79,8 +79,6 @@
 #' @param dens_params Named list. Density-preservation parameters, see
 #' [params_densne()].
 #' @param seed Integer. Random seed for reproducibility.
-#' @param use_high_precision Optional boolean. Gives fine-grained control over
-#' `fp32` vs `fp64` usage.
 #' @param .verbose Logical. Controls verbosity. Defaults to `TRUE`.
 #'
 #' @return A numerical matrix with dimensions samples x n_dim containing
@@ -113,7 +111,6 @@ densne <- function(
   tsne_params = params_tsne(),
   dens_params = params_densne(),
   seed = 42L,
-  use_high_precision = NULL,
   .verbose = TRUE
 ) {
   if (is.data.frame(data)) {
@@ -147,7 +144,6 @@ densne <- function(
   assertTsneParams(tsne_params)
   assertDensParams(dens_params)
   checkmate::qassert(seed, "I1")
-  checkmate::qassert(use_high_precision, c("B1", "0"))
   checkmate::qassert(.verbose, c("B1", "I1[0, 2]"))
 
   final_densne_params <- .prepare_densne_params(
@@ -169,7 +165,6 @@ densne <- function(
       approx_type = approx_type,
       densne_params = final_densne_params,
       seed = seed,
-      use_high_precision = use_high_precision,
       verbose = parse_verbosity(.verbose)
     )
   } else {
@@ -180,7 +175,6 @@ densne <- function(
       approx_type = approx_type,
       densne_params = final_densne_params,
       seed = seed,
-      use_high_precision = use_high_precision,
       verbose = parse_verbosity(.verbose)
     )
   }

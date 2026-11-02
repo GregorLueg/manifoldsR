@@ -14,7 +14,6 @@ tsne(
   nn_params = params_nn(),
   tsne_params = params_tsne(),
   seed = 42L,
-  use_high_precision = NULL,
   .verbose = TRUE
 )
 }
@@ -52,9 +51,6 @@ or \code{"exhaustive"}. Defaults to \code{"ivf"}.}
 \code{\link[=params_tsne]{params_tsne()}}.}
 
 \item{seed}{Integer. Random seed for reproducibility.}
-
-\item{use_high_precision}{Optional boolean. Gives fine-grained control over
-\code{fp32} vs \code{fp64} usage.}
 
 \item{.verbose}{Logical. Controls verbosity. Defaults to \code{TRUE}.}
 }

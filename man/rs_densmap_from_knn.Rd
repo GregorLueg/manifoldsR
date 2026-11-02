@@ -13,7 +13,6 @@ rs_densmap_from_knn(
   k,
   densmap_params,
   seed,
-  use_high_precision,
   verbose
 )
 }
@@ -36,9 +35,6 @@ parameters for the densMAP generation, i.e. the UMAP ones plus \code{lambda},
 \code{frac} and \code{var_shift}.}
 
 \item{seed}{Integer. Seed for reproducibility.}
-
-\item{use_high_precision}{Optional logical. Controls \code{fp32} vs \code{fp64} for.
-If \code{NULL} will use sensible default thresholding.}
 
 \item{verbose}{Integer. If \code{0L} -> silent or \code{1L} for normal verbosity; \code{2L}
 for detailed verbosity.}

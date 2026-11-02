@@ -130,27 +130,6 @@ expect_equal(
   info = "dreams is reproducible with the same seed"
 )
 
-### high precision -------------------------------------------------------------
-
-dreams_res_fp64 <- dreams(
-  data = cluster_data,
-  perplexity = 10,
-  seed = 42L,
-  use_high_precision = TRUE,
-  .verbose = FALSE
-)
-
-dreams_res_fp64_tests <- check_cluster_separation(
-  embd = dreams_res_fp64,
-  cluster_membership = cluster_membership
-)
-
-expect_true(
-  current = mean(dreams_res_fp64_tests$within_dists) <
-    mean(dreams_res_fp64_tests$between_dists),
-  info = "dreams fp64 path correctly separates clusters"
-)
-
 ### fft approximation ----------------------------------------------------------
 
 dreams_res_fft <- dreams(

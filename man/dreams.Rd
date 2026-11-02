@@ -16,7 +16,6 @@ dreams(
   tsne_params = params_tsne(),
   dreams_params = params_dreams(),
   seed = 42L,
-  use_high_precision = NULL,
   .verbose = TRUE
 )
 }
@@ -61,9 +60,6 @@ or \code{"exhaustive"}. Defaults to \code{"ivf"}.}
 \item{dreams_params}{Named list. DREAMS parameters, see \code{\link[=params_dreams]{params_dreams()}}.}
 
 \item{seed}{Integer. Random seed for reproducibility.}
-
-\item{use_high_precision}{Optional boolean. Gives fine-grained control over
-\code{fp32} vs \code{fp64} usage.}
 
 \item{.verbose}{Logical. Controls verbosity. Defaults to \code{TRUE}.}
 }

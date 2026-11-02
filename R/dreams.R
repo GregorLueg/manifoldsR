@@ -82,8 +82,6 @@
 #' [params_tsne()].
 #' @param dreams_params Named list. DREAMS parameters, see [params_dreams()].
 #' @param seed Integer. Random seed for reproducibility.
-#' @param use_high_precision Optional boolean. Gives fine-grained control over
-#' `fp32` vs `fp64` usage.
 #' @param .verbose Logical. Controls verbosity. Defaults to `TRUE`.
 #'
 #' @return A numerical matrix with dimensions samples x n_dim containing
@@ -118,7 +116,6 @@ dreams <- function(
   tsne_params = params_tsne(),
   dreams_params = params_dreams(),
   seed = 42L,
-  use_high_precision = NULL,
   .verbose = TRUE
 ) {
   if (is.data.frame(data)) {
@@ -163,7 +160,6 @@ dreams <- function(
   assertTsneParams(tsne_params)
   assertDreamsParams(dreams_params)
   checkmate::qassert(seed, "I1")
-  checkmate::qassert(use_high_precision, c("B1", "0"))
   checkmate::qassert(.verbose, c("B1", "I1[0, 2]"))
 
   # Rust expects a double matrix; an integer one would fail the conversion
@@ -191,7 +187,6 @@ dreams <- function(
       approx_type = approx_type,
       dreams_params = final_dreams_params,
       seed = seed,
-      use_high_precision = use_high_precision,
       verbose = parse_verbosity(.verbose)
     )
   } else {
@@ -203,7 +198,6 @@ dreams <- function(
       approx_type = approx_type,
       dreams_params = final_dreams_params,
       seed = seed,
-      use_high_precision = use_high_precision,
       verbose = parse_verbosity(.verbose)
     )
   }

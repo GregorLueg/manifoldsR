@@ -4,15 +4,7 @@
 \alias{rs_forceatlas2_from_knn}
 \title{ForceAtlas2 implementation}
 \usage{
-rs_forceatlas2_from_knn(
-  embd,
-  knn_data,
-  k,
-  fa2_params,
-  seed,
-  use_high_precision,
-  verbose
-)
+rs_forceatlas2_from_knn(embd, knn_data, k, fa2_params, seed, verbose)
 }
 \arguments{
 \item{embd}{Numerical matrix. The data to use to generate the embeddings.
@@ -26,9 +18,6 @@ Should be of dimensions samples x features.}
 for the graph generation and ForceAtlas2 optimisation.}
 
 \item{seed}{Integer. Seed for reproducibility.}
-
-\item{use_high_precision}{Optional logical. Controls \code{fp32} vs \code{fp64}.
-If \code{NULL} will use sensible default thresholding.}
 
 \item{verbose}{Integer. If \code{0L} -> silent or \code{1L} for normal verbosity; \code{2L}
 for detailed verbosity.}

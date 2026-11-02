@@ -13,7 +13,6 @@ rs_dreams_from_knn(
   approx_type,
   dreams_params,
   seed,
-  use_high_precision,
   verbose
 )
 }
@@ -39,9 +38,6 @@ of the approximations to use.}
 parameters for the DREAMS generation, i.e. the tSNE ones plus \code{lambda}.}
 
 \item{seed}{Integer. Seed for reproducibility.}
-
-\item{use_high_precision}{Optional logical. Controls \code{fp32} vs \code{fp64} for.
-If \code{NULL} will use sensible default thresholding.}
 
 \item{verbose}{Integer. If \code{0L} -> silent or \code{1L} for normal verbosity; \code{2L}
 for detailed verbosity.}

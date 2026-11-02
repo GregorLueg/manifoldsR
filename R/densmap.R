@@ -89,8 +89,6 @@
 #' @param dens_params Named list. Density-preservation parameters, see
 #' [params_densmap()].
 #' @param seed Integer. Random seed for reproducibility. Defaults to `42L`.
-#' @param use_high_precision Optional boolean. Gives fine-grained control over
-#' `fp32` vs `fp64` usage.
 #' @param .verbose Logical. Controls verbosity. Defaults to `TRUE`.
 #'
 #' @return A numerical matrix with dimensions samples x n_dim containing
@@ -124,7 +122,6 @@ densmap <- function(
   umap_params = params_umap(),
   dens_params = params_densmap(),
   seed = 42L,
-  use_high_precision = NULL,
   .verbose = TRUE
 ) {
   # transformation
@@ -150,7 +147,6 @@ densmap <- function(
   checkmate::qassert(spread, "N1[0,)")
   assertDensParams(dens_params)
   checkmate::qassert(.verbose, c("B1", "I1[0, 2]"))
-  checkmate::qassert(use_high_precision, c("0", "B1"))
   checkmate::qassert(seed, "I1")
 
   final_densmap_params <- .prepare_densmap_params(
@@ -178,7 +174,6 @@ densmap <- function(
       k = k,
       densmap_params = final_densmap_params,
       seed = seed,
-      use_high_precision = use_high_precision,
       verbose = parse_verbosity(.verbose)
     )
   } else {
@@ -190,7 +185,6 @@ densmap <- function(
       k = k,
       densmap_params = final_densmap_params,
       seed = seed,
-      use_high_precision = use_high_precision,
       verbose = parse_verbosity(.verbose)
     )
   }

@@ -95,26 +95,6 @@ expect_true(
   info = "forceatlas2 correctly separates clusters from pre-computed kNN"
 )
 
-### fp64 -----------------------------------------------------------------------
-
-fa2_res_fp64 <- forceatlas2(
-  data = cluster_data,
-  k = 5L,
-  use_high_precision = TRUE,
-  .verbose = FALSE
-)
-
-fa2_res_fp64_tests <- check_cluster_separation(
-  embd = fa2_res_fp64,
-  cluster_membership = cluster_membership
-)
-
-expect_true(
-  current = mean(fa2_res_fp64_tests$within_dists) <
-    mean(fa2_res_fp64_tests$between_dists),
-  info = "forceatlas2 correctly separates clusters (fp64)"
-)
-
 ### reproducibility ------------------------------------------------------------
 
 fa2_res_rerun <- forceatlas2(data = cluster_data, k = 5L, .verbose = FALSE)

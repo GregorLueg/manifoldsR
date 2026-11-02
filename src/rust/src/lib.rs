@@ -86,8 +86,7 @@ extendr_module! {
 // Consts //
 ////////////
 
-/// Threshold at which the switch from fp32 to fp64 happens. Some algorithms
-/// (tSNE, cough) are very sensitive to precision differences.
+/// Sample count above which EVoC switches from fp32 to fp64.
 const SAMPLE_THRESHOLD_HIGH_PRECISION: usize = 100_000;
 
 ///////////
@@ -179,8 +178,6 @@ fn parse_precision(use_high_precision: Nullable<Rbool>, n: usize) -> FloatingPoi
 /// @param umap_params Named list. List that contains all of the key parameters
 /// for the UMAP generation.
 /// @param seed Integer. Seed for reproducibility.
-/// @param use_high_precision Optional logical. Controls `fp32` vs `fp64` for.
-/// If `NULL` will use sensible default thresholding.
 /// @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
 /// for detailed verbosity.
 ///
@@ -197,58 +194,24 @@ fn rs_umap(
     k: usize,
     umap_params: List,
     seed: usize,
-    use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
-    let precision = parse_precision(use_high_precision, embd.nrows());
+    let embd = r_matrix_to_faer_fp32(&embd);
 
-    match precision {
-        FloatingPointPrecision::FP32 => {
-            if verbosity.detailed_verbosity() {
-                rprintln!("Lower precision (fp32) path chosen.");
-            }
+    let res = umap_manifold(
+        embd.as_ref(),
+        None,
+        n_dim,
+        k,
+        min_dist,
+        spread,
+        umap_params,
+        seed,
+        verbose,
+    )
+    .to_extendr()?;
 
-            let embd = r_matrix_to_faer_fp32(&embd);
-
-            let res = umap_manifold(
-                embd.as_ref(),
-                None,
-                n_dim,
-                k,
-                min_dist,
-                spread,
-                umap_params,
-                seed,
-                verbose,
-            )
-            .to_extendr()?;
-
-            Ok(faer_to_r_matrix(res.as_ref()))
-        }
-        FloatingPointPrecision::FP64 => {
-            if verbosity.detailed_verbosity() {
-                rprintln!("Higher precision (fp64) path chosen.");
-            }
-
-            let embd = r_matrix_to_faer(&embd);
-
-            let res = umap_manifold(
-                embd.as_ref(),
-                None,
-                n_dim,
-                k,
-                min_dist,
-                spread,
-                umap_params,
-                seed,
-                verbose,
-            )
-            .to_extendr()?;
-
-            Ok(faer_to_r_matrix(res.as_ref()))
-        }
-    }
+    Ok(faer_to_r_matrix(res.as_ref()))
 }
 
 /// UMAP implementation
@@ -269,8 +232,6 @@ fn rs_umap(
 /// @param umap_params Named list. List that contains all of the key parameters
 /// for the UMAP generation.
 /// @param seed Integer. Seed for reproducibility.
-/// @param use_high_precision Optional logical. Controls `fp32` vs `fp64` for.
-/// If `NULL` will use sensible default thresholding.
 /// @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
 /// for detailed verbosity.
 ///
@@ -288,62 +249,26 @@ fn rs_umap_from_knn(
     k: usize,
     umap_params: List,
     seed: usize,
-    use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
-    let precision = parse_precision(use_high_precision, embd.nrows());
+    let embd = r_matrix_to_faer_fp32(&embd);
 
-    match precision {
-        FloatingPointPrecision::FP32 => {
-            if verbosity.detailed_verbosity() {
-                rprintln!("Lower precision (fp32) path chosen.");
-            }
+    let knn = nearest_neighbours_to_rust(knn_data);
 
-            let embd = r_matrix_to_faer_fp32(&embd);
+    let res = umap_manifold(
+        embd.as_ref(),
+        knn,
+        n_dim,
+        k,
+        min_dist,
+        spread,
+        umap_params,
+        seed,
+        verbose,
+    )
+    .to_extendr()?;
 
-            let knn = nearest_neighbours_to_rust(knn_data);
-
-            let res = umap_manifold(
-                embd.as_ref(),
-                knn,
-                n_dim,
-                k,
-                min_dist,
-                spread,
-                umap_params,
-                seed,
-                verbose,
-            )
-            .to_extendr()?;
-
-            Ok(faer_to_r_matrix(res.as_ref()))
-        }
-        FloatingPointPrecision::FP64 => {
-            if verbosity.detailed_verbosity() {
-                rprintln!("Higher precision (fp64) path chosen.");
-            }
-
-            let embd = r_matrix_to_faer(&embd);
-
-            let knn = nearest_neighbours_to_rust(knn_data);
-
-            let res = umap_manifold(
-                embd.as_ref(),
-                knn,
-                n_dim,
-                k,
-                min_dist,
-                spread,
-                umap_params,
-                seed,
-                verbose,
-            )
-            .to_extendr()?;
-
-            Ok(faer_to_r_matrix(res.as_ref()))
-        }
-    }
+    Ok(faer_to_r_matrix(res.as_ref()))
 }
 
 /////////////////
@@ -363,8 +288,6 @@ fn rs_umap_from_knn(
 /// @param fa2_params Named list. List that contains all of the key parameters
 /// for the kNN search, graph generation and ForceAtlas2 optimisation.
 /// @param seed Integer. Seed for reproducibility.
-/// @param use_high_precision Optional logical. Controls `fp32` vs `fp64`.
-/// If `NULL` will use sensible default thresholding.
 /// @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
 /// for detailed verbosity.
 ///
@@ -377,38 +300,14 @@ fn rs_forceatlas2(
     k: usize,
     fa2_params: List,
     seed: usize,
-    use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
-    let precision = parse_precision(use_high_precision, embd.nrows());
+    let embd = r_matrix_to_faer_fp32(&embd);
 
-    match precision {
-        FloatingPointPrecision::FP32 => {
-            if verbosity.detailed_verbosity() {
-                rprintln!("Lower precision (fp32) path chosen.");
-            }
+    let res = fa2_manifold(embd.as_ref(), None, k, fa2_params, seed, verbose)
+        .to_extendr()?;
 
-            let embd = r_matrix_to_faer_fp32(&embd);
-
-            let res = fa2_manifold(embd.as_ref(), None, k, fa2_params, seed, verbose)
-                .to_extendr()?;
-
-            Ok(faer_to_r_matrix(res.as_ref()))
-        }
-        FloatingPointPrecision::FP64 => {
-            if verbosity.detailed_verbosity() {
-                rprintln!("Higher precision (fp64) path chosen.");
-            }
-
-            let embd = r_matrix_to_faer(&embd);
-
-            let res = fa2_manifold(embd.as_ref(), None, k, fa2_params, seed, verbose)
-                .to_extendr()?;
-
-            Ok(faer_to_r_matrix(res.as_ref()))
-        }
-    }
+    Ok(faer_to_r_matrix(res.as_ref()))
 }
 
 /// ForceAtlas2 implementation
@@ -425,8 +324,6 @@ fn rs_forceatlas2(
 /// @param fa2_params Named list. List that contains all of the key parameters
 /// for the graph generation and ForceAtlas2 optimisation.
 /// @param seed Integer. Seed for reproducibility.
-/// @param use_high_precision Optional logical. Controls `fp32` vs `fp64`.
-/// If `NULL` will use sensible default thresholding.
 /// @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
 /// for detailed verbosity.
 ///
@@ -441,42 +338,16 @@ fn rs_forceatlas2_from_knn(
     k: usize,
     fa2_params: List,
     seed: usize,
-    use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
-    let precision = parse_precision(use_high_precision, embd.nrows());
+    let embd = r_matrix_to_faer_fp32(&embd);
 
-    match precision {
-        FloatingPointPrecision::FP32 => {
-            if verbosity.detailed_verbosity() {
-                rprintln!("Lower precision (fp32) path chosen.");
-            }
+    let knn = nearest_neighbours_to_rust(knn_data);
 
-            let embd = r_matrix_to_faer_fp32(&embd);
+    let res =
+        fa2_manifold(embd.as_ref(), knn, k, fa2_params, seed, verbose).to_extendr()?;
 
-            let knn = nearest_neighbours_to_rust(knn_data);
-
-            let res =
-                fa2_manifold(embd.as_ref(), knn, k, fa2_params, seed, verbose).to_extendr()?;
-
-            Ok(faer_to_r_matrix(res.as_ref()))
-        }
-        FloatingPointPrecision::FP64 => {
-            if verbosity.detailed_verbosity() {
-                rprintln!("Higher precision (fp64) path chosen.");
-            }
-
-            let embd = r_matrix_to_faer(&embd);
-
-            let knn = nearest_neighbours_to_rust(knn_data);
-
-            let res =
-                fa2_manifold(embd.as_ref(), knn, k, fa2_params, seed, verbose).to_extendr()?;
-
-            Ok(faer_to_r_matrix(res.as_ref()))
-        }
-    }
+    Ok(faer_to_r_matrix(res.as_ref()))
 }
 
 /// ForceAtlas2 on a pre-computed graph
@@ -496,8 +367,6 @@ fn rs_forceatlas2_from_knn(
 /// @param fa2_params Named list. List that contains the ForceAtlas2
 /// optimisation parameters.
 /// @param seed Integer. Seed for reproducibility.
-/// @param use_high_precision Optional logical. Controls `fp32` vs `fp64`.
-/// If `NULL` will use sensible default thresholding.
 /// @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
 /// for detailed verbosity.
 ///
@@ -514,41 +383,17 @@ fn rs_forceatlas2_from_graph(
     init: Nullable<RMatrix<f64>>,
     fa2_params: List,
     seed: usize,
-    use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
-    let precision = parse_precision(use_high_precision, n);
-
     let init = init.into_option();
     let init = init.as_ref().map(|m| m.data());
 
-    match precision {
-        FloatingPointPrecision::FP32 => {
-            if verbosity.detailed_verbosity() {
-                rprintln!("Lower precision (fp32) path chosen.");
-            }
+    let res = fa2_graph_manifold::<f32>(
+        from, to, weight, n, init, fa2_params, seed, verbose,
+    )
+    .to_extendr()?;
 
-            let res = fa2_graph_manifold::<f32>(
-                from, to, weight, n, init, fa2_params, seed, verbose,
-            )
-            .to_extendr()?;
-
-            Ok(faer_to_r_matrix(res.as_ref()))
-        }
-        FloatingPointPrecision::FP64 => {
-            if verbosity.detailed_verbosity() {
-                rprintln!("Higher precision (fp64) path chosen.");
-            }
-
-            let res = fa2_graph_manifold::<f64>(
-                from, to, weight, n, init, fa2_params, seed, verbose,
-            )
-            .to_extendr()?;
-
-            Ok(faer_to_r_matrix(res.as_ref()))
-        }
-    }
+    Ok(faer_to_r_matrix(res.as_ref()))
 }
 
 //////////
@@ -574,8 +419,6 @@ fn rs_forceatlas2_from_graph(
 /// @param tsne_params Named list. List that contains all of the key parameters
 /// for the tSNE generation.
 /// @param seed Integer. Seed for reproducibility.
-/// @param use_high_precision Optional logical. Controls `fp32` vs `fp64` for.
-/// If `NULL` will use sensible default thresholding.
 /// @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
 /// for detailed verbosity.
 ///
@@ -591,55 +434,23 @@ fn rs_tsne(
     approx_type: String,
     tsne_params: List,
     seed: usize,
-    use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
-    let precision = parse_precision(use_high_precision, embd.nrows());
+    let embd = r_matrix_to_faer_fp32(&embd);
 
-    match precision {
-        FloatingPointPrecision::FP64 => {
-            if verbosity.detailed_verbosity() {
-                rprintln!("Larger data set. Using high precision floats.");
-            }
+    let res = tsne_manifold(
+        embd.as_ref(),
+        None,
+        n_dim,
+        &approx_type,
+        perplexity as f32,
+        tsne_params,
+        seed,
+        verbose,
+    )
+    .to_extendr()?;
 
-            let embd = r_matrix_to_faer(&embd);
-
-            let res = tsne_manifold(
-                embd.as_ref(),
-                None,
-                n_dim,
-                &approx_type,
-                perplexity,
-                tsne_params,
-                seed,
-                verbose,
-            )
-            .to_extendr()?;
-
-            Ok(faer_to_r_matrix(res.as_ref()))
-        }
-        FloatingPointPrecision::FP32 => {
-            if verbosity.detailed_verbosity() {
-                rprintln!("Lower precision (fp32) path chosen.");
-            }
-            let embd = r_matrix_to_faer_fp32(&embd);
-
-            let res = tsne_manifold(
-                embd.as_ref(),
-                None,
-                n_dim,
-                &approx_type,
-                perplexity as f32,
-                tsne_params,
-                seed,
-                verbose,
-            )
-            .to_extendr()?;
-
-            Ok(faer_to_r_matrix(res.as_ref()))
-        }
-    }
+    Ok(faer_to_r_matrix(res.as_ref()))
 }
 
 /// tSNE implementation
@@ -663,8 +474,6 @@ fn rs_tsne(
 /// @param tsne_params Named list. List that contains all of the key parameters
 /// for the tSNE generation.
 /// @param seed Integer. Seed for reproducibility.
-/// @param use_high_precision Optional logical. Controls `fp32` vs `fp64` for.
-/// If `NULL` will use sensible default thresholding.
 /// @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
 /// for detailed verbosity.
 ///
@@ -681,60 +490,25 @@ fn rs_tsne_from_knn(
     approx_type: String,
     tsne_params: List,
     seed: usize,
-    use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
-    let precision = parse_precision(use_high_precision, embd.nrows());
+    let embd = r_matrix_to_faer_fp32(&embd);
 
-    match precision {
-        FloatingPointPrecision::FP32 => {
-            if verbosity.detailed_verbosity() {
-                rprintln!("Lower precision (fp32) path chosen.");
-            }
+    let knn = nearest_neighbours_to_rust(knn_data);
 
-            let embd = r_matrix_to_faer_fp32(&embd);
+    let res = tsne_manifold(
+        embd.as_ref(),
+        knn,
+        n_dim,
+        &approx_type,
+        perplexity as f32,
+        tsne_params,
+        seed,
+        verbose,
+    )
+    .to_extendr()?;
 
-            let knn = nearest_neighbours_to_rust(knn_data);
-
-            let res = tsne_manifold(
-                embd.as_ref(),
-                knn,
-                n_dim,
-                &approx_type,
-                perplexity as f32,
-                tsne_params,
-                seed,
-                verbose,
-            )
-            .to_extendr()?;
-
-            Ok(faer_to_r_matrix(res.as_ref()))
-        }
-        FloatingPointPrecision::FP64 => {
-            if verbosity.detailed_verbosity() {
-                rprintln!("Large data set. Using higher precision floats.");
-            }
-
-            let embd = r_matrix_to_faer(&embd);
-
-            let knn = nearest_neighbours_to_rust(knn_data);
-
-            let res = tsne_manifold(
-                embd.as_ref(),
-                knn,
-                n_dim,
-                &approx_type,
-                perplexity,
-                tsne_params,
-                seed,
-                verbose,
-            )
-            .to_extendr()?;
-
-            Ok(faer_to_r_matrix(res.as_ref()))
-        }
-    }
+    Ok(faer_to_r_matrix(res.as_ref()))
 }
 
 /////////////
@@ -760,8 +534,6 @@ fn rs_tsne_from_knn(
 /// parameters for the densMAP generation, i.e. the UMAP ones plus `lambda`,
 /// `frac` and `var_shift`.
 /// @param seed Integer. Seed for reproducibility.
-/// @param use_high_precision Optional logical. Controls `fp32` vs `fp64` for.
-/// If `NULL` will use sensible default thresholding.
 /// @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
 /// for detailed verbosity.
 ///
@@ -780,58 +552,24 @@ fn rs_densmap(
     k: usize,
     densmap_params: List,
     seed: usize,
-    use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
-    let precision = parse_precision(use_high_precision, embd.nrows());
+    let embd = r_matrix_to_faer_fp32(&embd);
 
-    match precision {
-        FloatingPointPrecision::FP32 => {
-            if verbosity.detailed_verbosity() {
-                rprintln!("Lower precision (fp32) path chosen.");
-            }
+    let res = densmap_manifold(
+        embd.as_ref(),
+        None,
+        n_dim,
+        k,
+        min_dist,
+        spread,
+        densmap_params,
+        seed,
+        verbose,
+    )
+    .to_extendr()?;
 
-            let embd = r_matrix_to_faer_fp32(&embd);
-
-            let res = densmap_manifold(
-                embd.as_ref(),
-                None,
-                n_dim,
-                k,
-                min_dist,
-                spread,
-                densmap_params,
-                seed,
-                verbose,
-            )
-            .to_extendr()?;
-
-            Ok(faer_to_r_matrix(res.as_ref()))
-        }
-        FloatingPointPrecision::FP64 => {
-            if verbosity.detailed_verbosity() {
-                rprintln!("Higher precision (fp64) path chosen.");
-            }
-
-            let embd = r_matrix_to_faer(&embd);
-
-            let res = densmap_manifold(
-                embd.as_ref(),
-                None,
-                n_dim,
-                k,
-                min_dist,
-                spread,
-                densmap_params,
-                seed,
-                verbose,
-            )
-            .to_extendr()?;
-
-            Ok(faer_to_r_matrix(res.as_ref()))
-        }
-    }
+    Ok(faer_to_r_matrix(res.as_ref()))
 }
 
 /// densMAP implementation
@@ -854,8 +592,6 @@ fn rs_densmap(
 /// parameters for the densMAP generation, i.e. the UMAP ones plus `lambda`,
 /// `frac` and `var_shift`.
 /// @param seed Integer. Seed for reproducibility.
-/// @param use_high_precision Optional logical. Controls `fp32` vs `fp64` for.
-/// If `NULL` will use sensible default thresholding.
 /// @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
 /// for detailed verbosity.
 ///
@@ -875,62 +611,26 @@ fn rs_densmap_from_knn(
     k: usize,
     densmap_params: List,
     seed: usize,
-    use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
-    let precision = parse_precision(use_high_precision, embd.nrows());
+    let embd = r_matrix_to_faer_fp32(&embd);
 
-    match precision {
-        FloatingPointPrecision::FP32 => {
-            if verbosity.detailed_verbosity() {
-                rprintln!("Lower precision (fp32) path chosen.");
-            }
+    let knn = nearest_neighbours_to_rust(knn_data);
 
-            let embd = r_matrix_to_faer_fp32(&embd);
+    let res = densmap_manifold(
+        embd.as_ref(),
+        knn,
+        n_dim,
+        k,
+        min_dist,
+        spread,
+        densmap_params,
+        seed,
+        verbose,
+    )
+    .to_extendr()?;
 
-            let knn = nearest_neighbours_to_rust(knn_data);
-
-            let res = densmap_manifold(
-                embd.as_ref(),
-                knn,
-                n_dim,
-                k,
-                min_dist,
-                spread,
-                densmap_params,
-                seed,
-                verbose,
-            )
-            .to_extendr()?;
-
-            Ok(faer_to_r_matrix(res.as_ref()))
-        }
-        FloatingPointPrecision::FP64 => {
-            if verbosity.detailed_verbosity() {
-                rprintln!("Higher precision (fp64) path chosen.");
-            }
-
-            let embd = r_matrix_to_faer(&embd);
-
-            let knn = nearest_neighbours_to_rust(knn_data);
-
-            let res = densmap_manifold(
-                embd.as_ref(),
-                knn,
-                n_dim,
-                k,
-                min_dist,
-                spread,
-                densmap_params,
-                seed,
-                verbose,
-            )
-            .to_extendr()?;
-
-            Ok(faer_to_r_matrix(res.as_ref()))
-        }
-    }
+    Ok(faer_to_r_matrix(res.as_ref()))
 }
 
 ////////////
@@ -957,8 +657,6 @@ fn rs_densmap_from_knn(
 /// parameters for the den-SNE generation, i.e. the tSNE ones plus `lambda`,
 /// `frac` and `var_shift`.
 /// @param seed Integer. Seed for reproducibility.
-/// @param use_high_precision Optional logical. Controls `fp32` vs `fp64` for.
-/// If `NULL` will use sensible default thresholding.
 /// @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
 /// for detailed verbosity.
 ///
@@ -976,56 +674,23 @@ fn rs_densne(
     approx_type: String,
     densne_params: List,
     seed: usize,
-    use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
-    let precision = parse_precision(use_high_precision, embd.nrows());
+    let embd = r_matrix_to_faer_fp32(&embd);
 
-    match precision {
-        FloatingPointPrecision::FP32 => {
-            if verbosity.detailed_verbosity() {
-                rprintln!("Lower precision (fp32) path chosen.");
-            }
+    let res = densne_manifold(
+        embd.as_ref(),
+        None,
+        n_dim,
+        &approx_type,
+        perplexity as f32,
+        densne_params,
+        seed,
+        verbose,
+    )
+    .to_extendr()?;
 
-            let embd = r_matrix_to_faer_fp32(&embd);
-
-            let res = densne_manifold(
-                embd.as_ref(),
-                None,
-                n_dim,
-                &approx_type,
-                perplexity as f32,
-                densne_params,
-                seed,
-                verbose,
-            )
-            .to_extendr()?;
-
-            Ok(faer_to_r_matrix(res.as_ref()))
-        }
-        FloatingPointPrecision::FP64 => {
-            if verbosity.detailed_verbosity() {
-                rprintln!("Larger data set. Using high precision floats.");
-            }
-
-            let embd = r_matrix_to_faer(&embd);
-
-            let res = densne_manifold(
-                embd.as_ref(),
-                None,
-                n_dim,
-                &approx_type,
-                perplexity,
-                densne_params,
-                seed,
-                verbose,
-            )
-            .to_extendr()?;
-
-            Ok(faer_to_r_matrix(res.as_ref()))
-        }
-    }
+    Ok(faer_to_r_matrix(res.as_ref()))
 }
 
 /// den-SNE implementation
@@ -1049,8 +714,6 @@ fn rs_densne(
 /// parameters for the den-SNE generation, i.e. the tSNE ones plus `lambda`,
 /// `frac` and `var_shift`.
 /// @param seed Integer. Seed for reproducibility.
-/// @param use_high_precision Optional logical. Controls `fp32` vs `fp64` for.
-/// If `NULL` will use sensible default thresholding.
 /// @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
 /// for detailed verbosity.
 ///
@@ -1069,60 +732,25 @@ fn rs_densne_from_knn(
     approx_type: String,
     densne_params: List,
     seed: usize,
-    use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
-    let precision = parse_precision(use_high_precision, embd.nrows());
+    let embd = r_matrix_to_faer_fp32(&embd);
 
-    match precision {
-        FloatingPointPrecision::FP32 => {
-            if verbosity.detailed_verbosity() {
-                rprintln!("Lower precision (fp32) path chosen.");
-            }
+    let knn = nearest_neighbours_to_rust(knn_data);
 
-            let embd = r_matrix_to_faer_fp32(&embd);
+    let res = densne_manifold(
+        embd.as_ref(),
+        knn,
+        n_dim,
+        &approx_type,
+        perplexity as f32,
+        densne_params,
+        seed,
+        verbose,
+    )
+    .to_extendr()?;
 
-            let knn = nearest_neighbours_to_rust(knn_data);
-
-            let res = densne_manifold(
-                embd.as_ref(),
-                knn,
-                n_dim,
-                &approx_type,
-                perplexity as f32,
-                densne_params,
-                seed,
-                verbose,
-            )
-            .to_extendr()?;
-
-            Ok(faer_to_r_matrix(res.as_ref()))
-        }
-        FloatingPointPrecision::FP64 => {
-            if verbosity.detailed_verbosity() {
-                rprintln!("Larger data set. Using high precision floats.");
-            }
-
-            let embd = r_matrix_to_faer(&embd);
-
-            let knn = nearest_neighbours_to_rust(knn_data);
-
-            let res = densne_manifold(
-                embd.as_ref(),
-                knn,
-                n_dim,
-                &approx_type,
-                perplexity,
-                densne_params,
-                seed,
-                verbose,
-            )
-            .to_extendr()?;
-
-            Ok(faer_to_r_matrix(res.as_ref()))
-        }
-    }
+    Ok(faer_to_r_matrix(res.as_ref()))
 }
 
 ////////////
@@ -1152,8 +780,6 @@ fn rs_densne_from_knn(
 /// @param dreams_params Named list. List that contains all of the key
 /// parameters for the DREAMS generation, i.e. the tSNE ones plus `lambda`.
 /// @param seed Integer. Seed for reproducibility.
-/// @param use_high_precision Optional logical. Controls `fp32` vs `fp64` for.
-/// If `NULL` will use sensible default thresholding.
 /// @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
 /// for detailed verbosity.
 ///
@@ -1173,59 +799,26 @@ fn rs_dreams(
     approx_type: String,
     dreams_params: List,
     seed: usize,
-    use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
-    let precision = parse_precision(use_high_precision, embd.nrows());
     let reference = reference.into_option();
 
-    match precision {
-        FloatingPointPrecision::FP32 => {
-            if verbosity.detailed_verbosity() {
-                rprintln!("Lower precision (fp32) path chosen.");
-            }
+    let embd = r_matrix_to_faer_fp32(&embd);
 
-            let embd = r_matrix_to_faer_fp32(&embd);
+    let res = dreams_manifold(
+        embd.as_ref(),
+        None,
+        r_reference_to_rust::<f32>(reference.as_ref()),
+        n_dim,
+        &approx_type,
+        perplexity as f32,
+        dreams_params,
+        seed,
+        verbose,
+    )
+    .to_extendr()?;
 
-            let res = dreams_manifold(
-                embd.as_ref(),
-                None,
-                r_reference_to_rust::<f32>(reference.as_ref()),
-                n_dim,
-                &approx_type,
-                perplexity as f32,
-                dreams_params,
-                seed,
-                verbose,
-            )
-            .to_extendr()?;
-
-            Ok(faer_to_r_matrix(res.as_ref()))
-        }
-        FloatingPointPrecision::FP64 => {
-            if verbosity.detailed_verbosity() {
-                rprintln!("Larger data set. Using high precision floats.");
-            }
-
-            let embd = r_matrix_to_faer(&embd);
-
-            let res = dreams_manifold(
-                embd.as_ref(),
-                None,
-                r_reference_to_rust::<f64>(reference.as_ref()),
-                n_dim,
-                &approx_type,
-                perplexity,
-                dreams_params,
-                seed,
-                verbose,
-            )
-            .to_extendr()?;
-
-            Ok(faer_to_r_matrix(res.as_ref()))
-        }
-    }
+    Ok(faer_to_r_matrix(res.as_ref()))
 }
 
 /// DREAMS implementation
@@ -1251,8 +844,6 @@ fn rs_dreams(
 /// @param dreams_params Named list. List that contains all of the key
 /// parameters for the DREAMS generation, i.e. the tSNE ones plus `lambda`.
 /// @param seed Integer. Seed for reproducibility.
-/// @param use_high_precision Optional logical. Controls `fp32` vs `fp64` for.
-/// If `NULL` will use sensible default thresholding.
 /// @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
 /// for detailed verbosity.
 ///
@@ -1273,63 +864,28 @@ fn rs_dreams_from_knn(
     approx_type: String,
     dreams_params: List,
     seed: usize,
-    use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
-    let precision = parse_precision(use_high_precision, embd.nrows());
     let reference = reference.into_option();
 
-    match precision {
-        FloatingPointPrecision::FP32 => {
-            if verbosity.detailed_verbosity() {
-                rprintln!("Lower precision (fp32) path chosen.");
-            }
+    let embd = r_matrix_to_faer_fp32(&embd);
 
-            let embd = r_matrix_to_faer_fp32(&embd);
+    let knn = nearest_neighbours_to_rust(knn_data);
 
-            let knn = nearest_neighbours_to_rust(knn_data);
+    let res = dreams_manifold(
+        embd.as_ref(),
+        knn,
+        r_reference_to_rust::<f32>(reference.as_ref()),
+        n_dim,
+        &approx_type,
+        perplexity as f32,
+        dreams_params,
+        seed,
+        verbose,
+    )
+    .to_extendr()?;
 
-            let res = dreams_manifold(
-                embd.as_ref(),
-                knn,
-                r_reference_to_rust::<f32>(reference.as_ref()),
-                n_dim,
-                &approx_type,
-                perplexity as f32,
-                dreams_params,
-                seed,
-                verbose,
-            )
-            .to_extendr()?;
-
-            Ok(faer_to_r_matrix(res.as_ref()))
-        }
-        FloatingPointPrecision::FP64 => {
-            if verbosity.detailed_verbosity() {
-                rprintln!("Larger data set. Using high precision floats.");
-            }
-
-            let embd = r_matrix_to_faer(&embd);
-
-            let knn = nearest_neighbours_to_rust(knn_data);
-
-            let res = dreams_manifold(
-                embd.as_ref(),
-                knn,
-                r_reference_to_rust::<f64>(reference.as_ref()),
-                n_dim,
-                &approx_type,
-                perplexity,
-                dreams_params,
-                seed,
-                verbose,
-            )
-            .to_extendr()?;
-
-            Ok(faer_to_r_matrix(res.as_ref()))
-        }
-    }
+    Ok(faer_to_r_matrix(res.as_ref()))
 }
 
 ///////////
@@ -1351,8 +907,6 @@ fn rs_dreams_from_knn(
 /// @param phate_params Named list. Contains all key parameters for PHATE,
 /// see [params_phate()] and [params_nn()].
 /// @param seed Integer. Seed for reproducibility.
-/// @param use_high_precision Optional logical. Controls `fp32` vs `fp64` for.
-/// If `NULL` will use sensible default thresholding.
 /// @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
 /// for detailed verbosity.
 ///
@@ -1366,36 +920,13 @@ fn rs_phate(
     k: usize,
     phate_params: List,
     seed: usize,
-    use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
-    let precision = parse_precision(use_high_precision, embd.nrows());
+    let embd = r_matrix_to_faer_fp32(&embd);
+    let res = phate_simple(embd.as_ref(), None, n_dim, k, phate_params, seed, verbose)
+        .to_extendr()?;
 
-    match precision {
-        FloatingPointPrecision::FP32 => {
-            if verbosity.detailed_verbosity() {
-                rprintln!("Lower precision (fp32) path chosen.");
-            }
-
-            let embd = r_matrix_to_faer_fp32(&embd);
-            let res = phate_simple(embd.as_ref(), None, n_dim, k, phate_params, seed, verbose)
-                .to_extendr()?;
-
-            Ok(faer_to_r_matrix(res.as_ref()))
-        }
-        FloatingPointPrecision::FP64 => {
-            if verbosity.detailed_verbosity() {
-                rprintln!("Higher precision (fp64) path chosen.");
-            }
-
-            let embd = r_matrix_to_faer(&embd);
-            let res = phate_simple(embd.as_ref(), None, n_dim, k, phate_params, seed, verbose)
-                .to_extendr()?;
-
-            Ok(faer_to_r_matrix(res.as_ref()))
-        }
-    }
+    Ok(faer_to_r_matrix(res.as_ref()))
 }
 
 /// Run PHATE dimensionality reduction from a precomputed kNN graph
@@ -1416,8 +947,6 @@ fn rs_phate(
 /// @param phate_params Named list. Contains all key parameters for PHATE,
 /// see [params_phate()] and [params_nn()].
 /// @param seed Integer. Seed for reproducibility.
-/// @param use_high_precision Optional logical. Controls `fp32` vs `fp64` for.
-/// If `NULL` will use sensible default thresholding.
 /// @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
 /// for detailed verbosity.
 ///
@@ -1433,38 +962,14 @@ fn rs_phate_from_knn(
     k: usize,
     phate_params: List,
     seed: usize,
-    use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
-    let precision = parse_precision(use_high_precision, embd.nrows());
+    let embd = r_matrix_to_faer_fp32(&embd);
+    let knn = nearest_neighbours_to_rust(knn_data);
+    let res = phate_simple(embd.as_ref(), knn, n_dim, k, phate_params, seed, verbose)
+        .to_extendr()?;
 
-    match precision {
-        FloatingPointPrecision::FP32 => {
-            if verbosity.detailed_verbosity() {
-                rprintln!("Lower precision (fp32) path chosen.");
-            }
-
-            let embd = r_matrix_to_faer_fp32(&embd);
-            let knn = nearest_neighbours_to_rust(knn_data);
-            let res = phate_simple(embd.as_ref(), knn, n_dim, k, phate_params, seed, verbose)
-                .to_extendr()?;
-
-            Ok(faer_to_r_matrix(res.as_ref()))
-        }
-        FloatingPointPrecision::FP64 => {
-            if verbosity.detailed_verbosity() {
-                rprintln!("Higher precision (fp64) path chosen.");
-            }
-
-            let embd = r_matrix_to_faer(&embd);
-            let knn = nearest_neighbours_to_rust(knn_data);
-            let res = phate_simple(embd.as_ref(), knn, n_dim, k, phate_params, seed, verbose)
-                .to_extendr()?;
-
-            Ok(faer_to_r_matrix(res.as_ref()))
-        }
-    }
+    Ok(faer_to_r_matrix(res.as_ref()))
 }
 
 ////////////
@@ -1484,8 +989,6 @@ fn rs_phate_from_knn(
 /// @param pacmap_params Named list. List that contains all of the key
 /// parameters for the PaCMAP generation.
 /// @param seed Integer. Seed for reproducibility.
-/// @param use_high_precision Optional logical. Controls `fp32` vs `fp64` for.
-/// If `NULL` will use sensible default thresholding.
 /// @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
 /// for detailed verbosity.
 ///
@@ -1499,36 +1002,13 @@ fn rs_pacmap(
     n_dim: usize,
     pacmap_params: List,
     seed: usize,
-    use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> Result<RMatrix<f64>, extendr_api::Error> {
-    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
-    let precision = parse_precision(use_high_precision, embd.nrows());
+    let embd = r_matrix_to_faer_fp32(&embd);
+    let res = pacmap_manifold(embd.as_ref(), None, n_dim, pacmap_params, seed, verbose)
+        .to_extendr()?;
 
-    match precision {
-        FloatingPointPrecision::FP32 => {
-            if verbosity.detailed_verbosity() {
-                rprintln!("Lower precision (fp32) path chosen.");
-            }
-
-            let embd = r_matrix_to_faer_fp32(&embd);
-            let res = pacmap_manifold(embd.as_ref(), None, n_dim, pacmap_params, seed, verbose)
-                .to_extendr()?;
-
-            Ok(faer_to_r_matrix(res.as_ref()))
-        }
-        FloatingPointPrecision::FP64 => {
-            if verbosity.detailed_verbosity() {
-                rprintln!("Higher precision (fp64) path chosen.");
-            }
-
-            let embd = r_matrix_to_faer(&embd);
-            let res = pacmap_manifold(embd.as_ref(), None, n_dim, pacmap_params, seed, verbose)
-                .to_extendr()?;
-
-            Ok(faer_to_r_matrix(res.as_ref()))
-        }
-    }
+    Ok(faer_to_r_matrix(res.as_ref()))
 }
 
 /// PaCMAP implementation with pre-computed kNN
@@ -1546,8 +1026,6 @@ fn rs_pacmap(
 /// @param pacmap_params Named list. List that contains all of the key
 /// parameters for the PaCMAP generation.
 /// @param seed Integer. Seed for reproducibility.
-/// @param use_high_precision Optional logical. Controls `fp32` vs `fp64` for.
-/// If `NULL` will use sensible default thresholding.
 /// @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
 /// for detailed verbosity.
 ///
@@ -1562,38 +1040,14 @@ fn rs_pacmap_from_knn(
     n_dim: usize,
     pacmap_params: List,
     seed: usize,
-    use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> Result<RMatrix<f64>, extendr_api::Error> {
-    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
-    let precision = parse_precision(use_high_precision, embd.nrows());
+    let embd = r_matrix_to_faer_fp32(&embd);
+    let knn = nearest_neighbours_to_rust(knn_data);
+    let res = pacmap_manifold(embd.as_ref(), knn, n_dim, pacmap_params, seed, verbose)
+        .to_extendr()?;
 
-    match precision {
-        FloatingPointPrecision::FP32 => {
-            if verbosity.detailed_verbosity() {
-                rprintln!("Lower precision (fp32) path chosen.");
-            }
-
-            let embd = r_matrix_to_faer_fp32(&embd);
-            let knn = nearest_neighbours_to_rust(knn_data);
-            let res = pacmap_manifold(embd.as_ref(), knn, n_dim, pacmap_params, seed, verbose)
-                .to_extendr()?;
-
-            Ok(faer_to_r_matrix(res.as_ref()))
-        }
-        FloatingPointPrecision::FP64 => {
-            if verbosity.detailed_verbosity() {
-                rprintln!("High precision (fp64) path chosen.");
-            }
-
-            let embd = r_matrix_to_faer(&embd);
-            let knn = nearest_neighbours_to_rust(knn_data);
-            let res = pacmap_manifold(embd.as_ref(), knn, n_dim, pacmap_params, seed, verbose)
-                .to_extendr()?;
-
-            Ok(faer_to_r_matrix(res.as_ref()))
-        }
-    }
+    Ok(faer_to_r_matrix(res.as_ref()))
 }
 
 ////////////////////
@@ -1614,8 +1068,6 @@ fn rs_pacmap_from_knn(
 /// @param dm_params Named list. List that contains all of the key parameters
 /// for the diffusion maps generation.
 /// @param seed Integer. Seed for reproducibility.
-/// @param use_high_precision Optional logical. Controls `fp32` vs `fp64` for.
-/// If `NULL` will use sensible default thresholding.
 /// @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
 /// for detailed verbosity.
 ///
@@ -1630,36 +1082,13 @@ fn rs_diffusion_maps(
     k: usize,
     dm_params: List,
     seed: usize,
-    use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
-    let precision = parse_precision(use_high_precision, embd.nrows());
-
-    match precision {
-        FloatingPointPrecision::FP32 => {
-            if verbosity.detailed_verbosity() {
-                rprintln!("Lower precision (fp32) path chosen.");
-            }
-
-            let embd = r_matrix_to_faer_fp32(&embd);
-            let res =
-                diffusion_maps_manifold(embd.as_ref(), None, n_dim, k, dm_params, seed, verbose)
-                    .to_extendr()?;
-            Ok(faer_to_r_matrix(res.as_ref()))
-        }
-        FloatingPointPrecision::FP64 => {
-            if verbosity.detailed_verbosity() {
-                rprintln!("Higher precision (fp64) path chosen.");
-            }
-
-            let embd = r_matrix_to_faer(&embd);
-            let res =
-                diffusion_maps_manifold(embd.as_ref(), None, n_dim, k, dm_params, seed, verbose)
-                    .to_extendr()?;
-            Ok(faer_to_r_matrix(res.as_ref()))
-        }
-    }
+    let embd = r_matrix_to_faer_fp32(&embd);
+    let res =
+        diffusion_maps_manifold(embd.as_ref(), None, n_dim, k, dm_params, seed, verbose)
+            .to_extendr()?;
+    Ok(faer_to_r_matrix(res.as_ref()))
 }
 
 /// Diffusion maps implementation with pre-computed kNN
@@ -1678,8 +1107,6 @@ fn rs_diffusion_maps(
 /// @param dm_params Named list. List that contains all of the key parameters
 /// for the diffusion maps generation.
 /// @param seed Integer. Seed for reproducibility.
-/// @param use_high_precision Optional logical. Controls `fp32` vs `fp64` for.
-/// If `NULL` will use sensible default thresholding.
 /// @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
 /// for detailed verbosity.
 ///
@@ -1695,38 +1122,14 @@ fn rs_diffusion_maps_from_knn(
     k: usize,
     dm_params: List,
     seed: usize,
-    use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> extendr_api::Result<RMatrix<f64>> {
-    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
-    let precision = parse_precision(use_high_precision, embd.nrows());
-
-    match precision {
-        FloatingPointPrecision::FP32 => {
-            if verbosity.detailed_verbosity() {
-                rprintln!("Lower precision (fp32) path chosen.");
-            }
-
-            let embd = r_matrix_to_faer_fp32(&embd);
-            let knn = nearest_neighbours_to_rust(knn_data);
-            let res =
-                diffusion_maps_manifold(embd.as_ref(), knn, n_dim, k, dm_params, seed, verbose)
-                    .to_extendr()?;
-            Ok(faer_to_r_matrix(res.as_ref()))
-        }
-        FloatingPointPrecision::FP64 => {
-            if verbosity.detailed_verbosity() {
-                rprintln!("Higher precision (fp64) path chosen.");
-            }
-
-            let embd = r_matrix_to_faer(&embd);
-            let knn = nearest_neighbours_to_rust(knn_data);
-            let res =
-                diffusion_maps_manifold(embd.as_ref(), knn, n_dim, k, dm_params, seed, verbose)
-                    .to_extendr()?;
-            Ok(faer_to_r_matrix(res.as_ref()))
-        }
-    }
+    let embd = r_matrix_to_faer_fp32(&embd);
+    let knn = nearest_neighbours_to_rust(knn_data);
+    let res =
+        diffusion_maps_manifold(embd.as_ref(), knn, n_dim, k, dm_params, seed, verbose)
+            .to_extendr()?;
+    Ok(faer_to_r_matrix(res.as_ref()))
 }
 
 /////////////////////////
