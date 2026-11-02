@@ -55,7 +55,7 @@
 #' construction. Defaults to `15L`.
 #' @param knn_method Character. (Approximate) Nearest neighbour method to use.
 #' One of `"kmknn"`, `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, `"ivf"`
-#' or `"exhaustive"`. Defaults to `"kmknn"`.
+#' or `"exhaustive"`. Defaults to `"nndescent"`.
 #' @param nn_params Named list. Nearest neighbour search parameters, see
 #' [params_nn()].
 #' @param evoc_params Named list. EVoC algorithm parameters, see
@@ -81,10 +81,10 @@ evoc <- function(
   knn = NULL,
   n_neighbours = 15L,
   knn_method = c(
+    "nndescent",
     "kmknn",
     "hnsw",
     "annoy",
-    "nndescent",
     "balltree",
     "ivf",
     "exhaustive"

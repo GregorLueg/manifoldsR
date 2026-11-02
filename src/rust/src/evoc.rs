@@ -158,7 +158,7 @@ where
         let knn_method = String::from(
             map.get("knn_method")
                 .and_then(|v| v.as_str())
-                .unwrap_or("kmknn"),
+                .unwrap_or("nndescent"),
         );
 
         Ok(Self {

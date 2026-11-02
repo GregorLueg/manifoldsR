@@ -12,10 +12,10 @@
   kNN list, and the kNN search size is `n_near` rather than 50. Different
   embeddings at the same seed.
 - New `knn_method` defaults, in line with `manifolds-rs`: `"nndescent"` for
-  `umap()`, `densmap()`, `phate()`, `pacmap()`, `diffusion_maps()` and
-  `forceatlas2()`, and `"ivf"` for `tsne()`, `densne()` and `dreams()`.
-  `generate_knn_graph()` and `evoc()` stay on `"kmknn"`. Different embeddings
-  at the same seed.
+  `umap()`, `densmap()`, `phate()`, `pacmap()`, `diffusion_maps()`,
+  `forceatlas2()` and `evoc()`, and `"ivf"` for `tsne()`, `densne()` and
+  `dreams()`. `generate_knn_graph()` stays on `"kmknn"`. Different results at
+  the same seed.
 - `phate()` follows the reference kernel. The kNN search runs `3 * k + 2` wide
   and neighbours past `k` join the kernel while their affinity clears `thresh`,
   so build any graph you pass via `knn` that wide too. The kernel has a unit
