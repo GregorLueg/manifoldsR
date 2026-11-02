@@ -1,6 +1,6 @@
 Package: manifoldsR
 Title: Fast Low-Dimensional Embeddings and Clustering via 'Rust'
-Version: 0.5.0
+Version: 0.6.0
 Authors@R:
     c(
         person(
@@ -65,4 +65,4 @@ Config/Needs/website:
     uwot
 URL: https://gregorlueg.github.io/manifoldsR/, https://github.com/GregorLueg/manifoldsR
 BugReports: https://github.com/GregorLueg/manifoldsR/issues
-Config/roxygen2/version: 8.1.0
+Config/roxygen2/version: 8.1.1

@@ -1,3 +1,47 @@
+# manifoldsR 0.6.0
+
+## Breaking changes
+
+- The spectral initialisation was updated via a better Lanczos solver. That
+  can shift previous embeddings, but is faster and more memory-frugal.
+- `params_nn()` loses `diversify_prob`, `ef_budget` and `extract_knn`. NN-Descent
+  now builds the kNN graph and hands it back directly, with no index and no
+  query.
+- `params_pacmap()` loses `mn_candidate_start` and `mn_candidate_end`. Mid-near
+  pairs are now the second closest of six random points, not a window in the
+  kNN list, and the kNN search size is `n_near` rather than 50. Different
+  embeddings at the same seed.
+- New `knn_method` defaults, in line with `manifolds-rs`: `"nndescent"` for
+  `umap()`, `densmap()`, `phate()`, `pacmap()`, `diffusion_maps()` and
+  `forceatlas2()`, and `"ivf"` for `tsne()`, `densne()` and `dreams()`.
+  `generate_knn_graph()` and `evoc()` stay on `"kmknn"`. Different embeddings
+  at the same seed.
+- `phate()` follows the reference kernel. The kNN search runs `3 * k + 2` wide
+  and neighbours past `k` join the kernel while their affinity clears `thresh`,
+  so build any graph you pass via `knn` that wide too. The kernel has a unit
+  diagonal and the landmark operator sums the kernel rather than `P`.
+- `f32` runs of PHATE and diffusion maps with spectral landmarks, and of classic
+  MDS with `randomised`, give different coordinates than before at the same
+  seed. The CPU kNN backends bar `"exhaustive"` now search in `f32` whatever the
+  input precision.
+- One verbosity grammar across all embeddings. `.verbose = 1L` prints timed
+  stages and epochs every 50, `.verbose = 2L` adds parameters, landmark
+  selection and the kNN internals.
+
+## Bug fixes
+
+- PCA initialisation runs its centring and SVD in `f64`. In `f32` the SVD could
+  collapse the layout onto a few points in larger data sets.
+- PaCMAP no longer compresses the layout. Mid-near pairs used to be kNN slots 4
+  to 8, so all of them were already near pairs.
+- Spectral landmark selection works at scale. It now runs seven power iterations
+  on the symmetrically normalised kernel instead of two on the raw one.
+
+## Internals
+
+- Backend bumps: `manifolds-rs` 0.9.0, `evoc-rs` 0.6.0, `bixverse-rs` 0.10.0 and
+  `ann-search-rs` 0.12.1.
+
 # manifoldsR 0.5.0
 
 First CRAN release.
