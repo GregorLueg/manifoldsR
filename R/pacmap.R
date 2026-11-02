@@ -69,7 +69,7 @@
 #' Defaults to `2L`.
 #' @param knn_method Character. (Approximate) Nearest neighbour method to use.
 #' One of `"kmknn"`, `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, `"ivf"`
-#' or `"exhaustive"`. Defaults to `"kmknn"`.
+#' or `"exhaustive"`. Defaults to `"nndescent"`.
 #' @param nn_params Named list. Nearest neighbour search parameters, see
 #' [params_nn()].
 #' @param pacmap_params Named list. PaCMAP algorithm parameters, see
@@ -94,11 +94,11 @@ pacmap <- function(
   knn = NULL,
   n_dim = 2L,
   knn_method = c(
+    "nndescent",
     "kmknn",
     "balltree",
     "hnsw",
     "annoy",
-    "nndescent",
     "exhaustive",
     "ivf"
   ),

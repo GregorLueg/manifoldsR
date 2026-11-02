@@ -61,7 +61,7 @@ where
             params
                 .get("knn_method")
                 .and_then(|v| v.as_str())
-                .unwrap_or("kmknn"),
+                .unwrap_or("nndescent"),
         );
 
         let init = String::from(params.get("init").and_then(|v| v.as_str()).unwrap_or("pca"));

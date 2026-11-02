@@ -10,7 +10,7 @@ tsne(
   n_dim = 2L,
   perplexity = 20,
   approx_type = c("bh", "bh_qd", "fft", "fft_3k"),
-  knn_method = c("kmknn", "balltree", "hnsw", "annoy", "nndescent", "exhaustive", "ivf"),
+  knn_method = c("ivf", "kmknn", "balltree", "hnsw", "annoy", "nndescent", "exhaustive"),
   nn_params = params_nn(),
   tsne_params = params_tsne(),
   seed = 42L,
@@ -43,7 +43,7 @@ forward and three inverse FFTs per epoch instead of four each). Defaults to
 
 \item{knn_method}{Character. (Approximate) Nearest neighbour method to use.
 One of \code{"kmknn"}, \code{"hnsw"}, \code{"annoy"}, \code{"nndescent"}, \code{"balltree"}, \code{"ivf"}
-or \code{"exhaustive"}. Defaults to \code{"kmknn"}.}
+or \code{"exhaustive"}. Defaults to \code{"ivf"}.}
 
 \item{nn_params}{Named list. Nearest neighbour search parameters, see
 \code{\link[=params_nn]{params_nn()}}.}

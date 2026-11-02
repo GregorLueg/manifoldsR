@@ -11,7 +11,7 @@ umap(
   k = 15L,
   min_dist = 0.5,
   spread = 1,
-  knn_method = c("kmknn", "balltree", "hnsw", "annoy", "nndescent", "exhaustive", "ivf"),
+  knn_method = c("nndescent", "kmknn", "balltree", "hnsw", "annoy", "exhaustive", "ivf"),
   nn_params = params_nn(),
   umap_params = params_umap(),
   seed = 42L,
@@ -44,7 +44,7 @@ scale at which embedded points will be spread out. Defaults to \code{1.0}.}
 
 \item{knn_method}{Character. (Approximate) Nearest neighbour method to use.
 One of \code{"kmknn"}, \code{"hnsw"}, \code{"annoy"}, \code{"nndescent"}, \code{"balltree"}, \code{"ivf"}
-or \code{"exhaustive"}. Defaults to \code{"kmknn"}.}
+or \code{"exhaustive"}. Defaults to \code{"nndescent"}.}
 
 \item{nn_params}{Named list. Nearest neighbour search parameters, see
 \code{\link[=params_nn]{params_nn()}}.}

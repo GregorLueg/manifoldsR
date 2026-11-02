@@ -25,7 +25,7 @@ trajectory_data_df <- as.data.frame(trajectory_data)
 
 exhaustive <- generate_knn_graph(
   data = trajectory_data,
-  k = 5L,
+  k = 17L,
   knn_method = "exhaustive"
 )
 

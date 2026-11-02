@@ -46,15 +46,17 @@
 #' @param data Numerical matrix or data frame. The data to embed of shape
 #' samples x features. Will be coerced to a matrix.
 #' @param knn Optional `NearestNeighbours` class. If provided, PHATE will skip
-#' the k-nearest neighbour graph generation and use this one instead. The `k`
-#' argument must match the k used to generate this graph. Defaults to `NULL`.
+#' the k-nearest neighbour graph generation and use this one instead. Every
+#' neighbour in the graph can join the kernel while its affinity clears
+#' `thresh`, so build the graph `3 * k + 2` wide to match the internal search.
+#' Defaults to `NULL`.
 #' @param n_dim Integer. Number of dimensions in the embedding space.
 #' Currently only `2L` is supported. Defaults to `2L`.
-#' @param k Integer. Number of nearest neighbours for graph construction.
-#' Defaults to `5L`.
+#' @param k Integer. Number of nearest neighbours that set the kernel bandwidth.
+#' The kNN search itself runs `3 * k + 2` wide. Defaults to `5L`.
 #' @param knn_method Character. (Approximate) Nearest neighbour method to use.
 #' One of `"kmknn"`, `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, `"ivf"`
-#' or `"exhaustive"`. Defaults to `"kmknn"`.
+#' or `"exhaustive"`. Defaults to `"nndescent"`.
 #' @param nn_params Named list. Nearest neighbour search parameters, see
 #' [params_nn()].
 #' @param phate_params Named list. PHATE algorithm parameters, see
@@ -79,11 +81,11 @@ phate <- function(
   n_dim = 2L,
   k = 5L,
   knn_method = c(
+    "nndescent",
     "kmknn",
     "balltree",
     "hnsw",
     "annoy",
-    "nndescent",
     "exhaustive",
     "ivf"
   ),

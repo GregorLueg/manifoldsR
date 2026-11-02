@@ -53,7 +53,7 @@
 #' @param k Integer. Number of nearest neighbours. Defaults to `15L`.
 #' @param knn_method Character. (Approximate) Nearest neighbour method to use.
 #' One of `"kmknn"`, `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, `"ivf"`
-#' or `"exhaustive"`. Defaults to `"kmknn"`.
+#' or `"exhaustive"`. Defaults to `"nndescent"`.
 #' @param nn_params Named list. Nearest neighbour search parameters, see
 #' [params_nn()].
 #' @param fa2_params Named list. ForceAtlas2 parameters, see [params_fa2()].
@@ -78,11 +78,11 @@ forceatlas2 <- function(
   knn = NULL,
   k = 15L,
   knn_method = c(
+    "nndescent",
     "kmknn",
     "balltree",
     "hnsw",
     "annoy",
-    "nndescent",
     "exhaustive",
     "ivf"
   ),

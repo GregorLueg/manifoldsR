@@ -71,7 +71,7 @@
 #' `"bh"`.
 #' @param knn_method Character. (Approximate) Nearest neighbour method to use.
 #' One of `"kmknn"`, `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, `"ivf"`
-#' or `"exhaustive"`. Defaults to `"kmknn"`.
+#' or `"exhaustive"`. Defaults to `"ivf"`.
 #' @param nn_params Named list. Nearest neighbour search parameters, see
 #' [params_nn()].
 #' @param tsne_params Named list. t-SNE algorithm parameters, see
@@ -101,13 +101,13 @@ densne <- function(
   perplexity = 20.0,
   approx_type = c("bh", "bh_qd", "fft", "fft_3k"),
   knn_method = c(
+    "ivf",
     "kmknn",
     "balltree",
     "hnsw",
     "annoy",
     "nndescent",
-    "exhaustive",
-    "ivf"
+    "exhaustive"
   ),
   nn_params = params_nn(),
   tsne_params = params_tsne(),
