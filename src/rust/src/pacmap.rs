@@ -30,10 +30,6 @@ pub struct InternalPacmapParams<T> {
     pub n_mid_near: usize,
     /// Further (random) pairs per point.
     pub n_further: usize,
-    /// Start index into kNN list for mid-near candidate window.
-    pub mn_candidate_start: usize,
-    /// End index into kNN list for mid-near candidate window.
-    pub mn_candidate_end: usize,
     /// Which initialisation to use. One of `"pca"` or `"random"`.
     pub init: String,
     /// Which optimiser to use. One of `"adam"` or `"adam_parallel"`.
@@ -92,24 +88,12 @@ where
             .and_then(|v| v.as_integer())
             .unwrap_or(20) as usize;
 
-        let mn_candidate_start = params
-            .get("mn_candidate_start")
-            .and_then(|v| v.as_integer())
-            .unwrap_or(4) as usize;
-
-        let mn_candidate_end = params
-            .get("mn_candidate_end")
-            .and_then(|v| v.as_integer())
-            .unwrap_or(50) as usize;
-
         Ok(Self {
             knn_method,
             param_knn: nn_params,
             n_near,
             n_mid_near,
             n_further,
-            mn_candidate_start,
-            mn_candidate_end,
             init,
             optimiser,
             param_optimiser: optim_params,
@@ -214,8 +198,6 @@ where
         internal.n_near,
         internal.n_mid_near,
         internal.n_further,
-        internal.mn_candidate_start,
-        internal.mn_candidate_end,
         internal.init,
         None,
         internal.param_knn,

@@ -48,8 +48,6 @@ pacmap_hierarchical <- pacmap(
   data = hierarchical_data$data,
   k = 10L,
   pacmap_params = params_pacmap(
-    mn_candidate_start = 4L,
-    mn_candidate_end = 25L,
     n_further = 5L,
     optimiser = "adam_parallel"
   ),

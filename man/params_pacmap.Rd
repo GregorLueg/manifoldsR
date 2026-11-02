@@ -8,8 +8,6 @@ params_pacmap(
   n_near = 10L,
   n_mid_near = 5L,
   n_further = 20L,
-  mn_candidate_start = 4L,
-  mn_candidate_end = 50L,
   init = c("pca", "random"),
   optimiser = c("adam_parallel", "adam"),
   lr = 1,
@@ -28,12 +26,6 @@ params_pacmap(
 
 \item{n_further}{Integer. Further (random) pairs per point. Defaults to
 \code{20L}.}
-
-\item{mn_candidate_start}{Integer. Start index into kNN list for mid-near
-candidate window. Defaults to \code{4L}.}
-
-\item{mn_candidate_end}{Integer. End index into kNN list for mid-near
-candidate window. Also determines the kNN search size. Defaults to \code{50L}.}
 
 \item{init}{String. Embedding initialisation. One of \code{c("pca", "random")}.
 Defaults to \code{"pca"}.}
@@ -66,10 +58,6 @@ A named list with the following elements:
 \item n_mid_near - Integer. Mid-near pairs per point. Defaults to \code{5L}.
 \item n_further - Integer. Further (random) pairs per point. Defaults to
 \code{20L}.
-\item mn_candidate_start - Integer. Start index into kNN list for mid-near
-candidate window. Defaults to \code{4L}.
-\item mn_candidate_end - Integer. End index into kNN list for mid-near
-candidate window. Also determines the kNN search size. Defaults to \code{50L}.
 \item init - String. Embedding initialisation. One of \code{c("pca", "random")}.
 Defaults to \code{"pca"}.
 \item optimiser - String. The optimiser. One of \code{c("adam_parallel", "adam")}. Defaults to \code{"adam_parallel"}.

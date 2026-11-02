@@ -19,9 +19,9 @@ checksum = "4b46cbb362ab8752921c97e041f5e366ee6297bd428a31275b9fcf1e380f7299"
 
 [[package]]
 name = "ann-search-rs"
-version = "0.11.0"
+version = "0.12.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8cbacc0c29f0573eab8ab8a567c76966684be5827be542895a53ed9697a83b0f"
+checksum = "db6ff239ade3d62b71478947e89f022b4032bd3c85a44f8bcc385e1a93b7878c"
 dependencies = [
  "document-features",
  "faer",
@@ -76,6 +76,26 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f2032f911046de80f0a198e0901378627c33f59ea0ac00e363d481118bd70a53"
 
 [[package]]
+name = "bincode"
+version = "2.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "36eaf5d7b090263e8150820482d5d93cd964a81e4019913c972f4edcc6edb740"
+dependencies = [
+ "bincode_derive",
+ "serde",
+ "unty",
+]
+
+[[package]]
+name = "bincode_derive"
+version = "2.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bf95709a440f45e986983918d0e8a1f30a9b1df04918fc828670606804ac3c09"
+dependencies = [
+ "virtue",
+]
+
+[[package]]
 name = "bitflags"
 version = "2.13.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -83,12 +103,12 @@ checksum = "3ded4057c258ba199e2d26386d3af3780957ecaee6c4ef4041c6b4b8b97c0b06"
 
 [[package]]
 name = "bixverse-core"
-version = "0.8.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0681ce9750935aed4bf05cf8dccf6d9dc286891a3f3997ad8020b4a6dbb52880"
+version = "0.10.0"
+source = "git+https://github.com/GregorLueg/bixverse-rs?branch=feat-singlecell-py#4aed8e96e49a052be256a68d2dd2b210480bb38b"
 dependencies = [
  "ann-search-rs",
  "approx",
+ "bixverse-sparse",
  "document-features",
  "faer",
  "faer-entity",
@@ -106,13 +126,13 @@ dependencies = [
 
 [[package]]
 name = "bixverse-methods"
-version = "0.8.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "187fbb1483e5f38e8cc9a94c0a261a5b012bc86395a7a3b265a2ce7a8e75802d"
+version = "0.10.0"
+source = "git+https://github.com/GregorLueg/bixverse-rs?branch=feat-singlecell-py#4aed8e96e49a052be256a68d2dd2b210480bb38b"
 dependencies = [
  "ann-search-rs",
  "approx",
  "bixverse-core",
+ "bixverse-sparse",
  "document-features",
  "faer",
  "num-traits",
@@ -121,15 +141,15 @@ dependencies = [
  "rand_distr 0.5.1",
  "rayon",
  "rustc-hash",
+ "serde",
  "statrs",
  "thiserror 2.0.21",
 ]
 
 [[package]]
 name = "bixverse-r"
-version = "0.8.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fea6f94f2f484e72f7051c0d51cf0e0a8df10e1e79cd4297561586da8bf0ccac"
+version = "0.10.0"
+source = "git+https://github.com/GregorLueg/bixverse-rs?branch=feat-singlecell-py#4aed8e96e49a052be256a68d2dd2b210480bb38b"
 dependencies = [
  "ann-search-rs",
  "bixverse-rs",
@@ -145,13 +165,24 @@ dependencies = [
 
 [[package]]
 name = "bixverse-rs"
-version = "0.8.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e0027dedcaa7f0855f487a11150e9c97e7f6c9096c200ad60306fe723ad8d2d5"
+version = "0.10.0"
+source = "git+https://github.com/GregorLueg/bixverse-rs?branch=feat-singlecell-py#4aed8e96e49a052be256a68d2dd2b210480bb38b"
 dependencies = [
  "bixverse-core",
  "bixverse-methods",
  "document-features",
+]
+
+[[package]]
+name = "bixverse-sparse"
+version = "0.10.0"
+source = "git+https://github.com/GregorLueg/bixverse-rs?branch=feat-singlecell-py#4aed8e96e49a052be256a68d2dd2b210480bb38b"
+dependencies = [
+ "bincode",
+ "num-traits",
+ "rayon",
+ "serde",
+ "thiserror 2.0.21",
 ]
 
 [[package]]
@@ -509,9 +540,8 @@ checksum = "2b14b339eb76d07f052cdbad76ca7c1310e56173a138095d3bf42a23c06ef5d8"
 
 [[package]]
 name = "evoc-rs"
-version = "0.5.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f8a3fe25cb2fc091b212142072471ea49a893c4799754c8be70a19745ec3da1d"
+version = "0.6.0"
+source = "git+https://github.com/GregorLueg/evoc-rs?branch=main#8067794fb5b2683d3664b2151f7ab16acf6e100a"
 dependencies = [
  "ann-search-rs",
  "approx",
@@ -942,9 +972,8 @@ dependencies = [
 
 [[package]]
 name = "manifolds-rs"
-version = "0.7.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "73e97d878964e09edfe7418bad8ad655b3ced05f771d2569cdc4fe90376037f7"
+version = "0.9.0"
+source = "git+https://github.com/GregorLueg/manifolds-rs?branch=fix-fp64-python#572af534e92ee9c8022beba01457d9ea732f337a"
 dependencies = [
  "ann-search-rs",
  "approx",
@@ -963,7 +992,7 @@ dependencies = [
 
 [[package]]
 name = "manifoldsr"
-version = "0.5.0"
+version = "0.6.0"
 dependencies = [
  "ann-search-rs",
  "bixverse-r",
@@ -1992,6 +2021,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d245f478577f809a851594d02313b640fb437e0bb33866753cff937863096954"
 
 [[package]]
+name = "unty"
+version = "0.0.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6d49784317cd0d1ee7ec5c716dd598ec5b4483ea832a2dced265471cc0f690ae"
+
+[[package]]
 name = "valuable"
 version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2002,6 +2037,12 @@ name = "version_check"
 version = "0.9.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0b928f33d975fc6ad9f86c8f283853ad26bdd5b10b7f1542aa2fa15e2289105a"
+
+[[package]]
+name = "virtue"
+version = "0.0.18"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "051eb1abcf10076295e815102942cc58f9d5e3b4560e46e53c21e8ff6f3af7b1"
 
 [[package]]
 name = "voracious_radix_sort"

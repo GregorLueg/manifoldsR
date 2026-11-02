@@ -64,24 +64,11 @@ where
         .get("ef_search")
         .and_then(|v| v.as_integer())
         .unwrap_or(100) as usize;
-    let diversify_prob = nn_params
-        .get("diversify_prob")
-        .and_then(|v| v.as_real())
-        .map(|v| T::from_f64(v).unwrap())
-        .unwrap_or(T::from_f64(0.0).unwrap());
     let delta = nn_params
         .get("delta")
         .and_then(|v| v.as_real())
         .map(|v| T::from_f64(v).unwrap())
         .unwrap_or(T::from_f64(0.001).unwrap());
-    let ef_budget = nn_params
-        .get("ef_budget")
-        .and_then(|v| v.as_integer())
-        .map(|v| v as usize);
-    let extract_knn = nn_params
-        .get("extract_knn")
-        .and_then(|v| v.as_bool())
-        .unwrap_or(true);
     let bt_budget = nn_params
         .get("bt_budget")
         .and_then(|v| v.as_real())
@@ -102,11 +89,8 @@ where
         search_budget,
         m,
         ef_construction,
-        ef_budget,
         ef_search,
-        diversify_prob,
         delta,
-        extract_knn,
         bt_budget,
         n_list,
         n_probes,

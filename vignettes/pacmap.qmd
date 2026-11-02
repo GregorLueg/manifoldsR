@@ -58,15 +58,11 @@ A few things to keep in mind:
 - **PCA initialisation is strongly recommended.** Unlike UMAP, where spectral
   initialisation works well, PaCMAP with random initialisation degrades global
   structure significantly. The default here is `"pca"` for this reason.
-- **k is less sensitive than in UMAP.** The paper default of 10 works well
-  across a wide range of datasets. That said, the kNN search is actually run
-  with `mn_candidate_end` neighbours (default 50) to have a sufficient pool for
-  mid-near sampling; `k` only controls how many of those are used as near pairs
-  in optimisation.
-- **Mid-near candidates matter.** The `mn_candidate_start` and
-  `mn_candidate_end` parameters control the window in the kNN list from which
-  mid-near pairs are drawn. The defaults (skip the 4 nearest, sample up to
-  rank 50) reflect the paper's recommendations and rarely need changing.
+- **`n_near` is less sensitive than `k` in UMAP.** The paper default of 10 works
+  well across a wide range of datasets. It also sets the kNN search size.
+- **Mid-near pairs don't come from the kNN graph.** Each one is the second
+  closest of six random points, so a pre-computed graph only needs `n_near`
+  neighbours.
 
 ## Running PaCMAP
 
@@ -322,7 +318,7 @@ without repeating the kNN search, precompute the graph first.
 #| label: pacmap - pre-computed kNN
 precomputed_knn <- generate_knn_graph(
   data = cluster_data$data,
-  k = 50L, # we need to set this high for pacmap
+  k = 10L,
   knn_method = "balltree",
   .verbose = FALSE
 )
@@ -343,8 +339,6 @@ pacmap_long_phase1 <- pacmap(
   data = cluster_data$data,
   knn = precomputed_knn,
   pacmap_params = params_pacmap(
-    mn_candidate_start = 4L,
-    mn_candidate_end = 25L,
     n_further = 5L,
     phase1_end = 250L,
     phase2_end = 400L

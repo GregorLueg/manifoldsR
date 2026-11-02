@@ -35,8 +35,8 @@ or \code{"exhaustive"}. Defaults to \code{"kmknn"}.}
 \code{\link[=params_nn]{params_nn()}}.}
 
 \item{pacmap_params}{Named list. PaCMAP algorithm parameters, see
-\code{\link[=params_pacmap]{params_pacmap()}}. Controls near/mid-near/further pair counts and the kNN
-search size (via \code{mn_candidate_end}).}
+\code{\link[=params_pacmap]{params_pacmap()}}. Controls near/mid-near/further pair counts. The kNN search
+size is \code{n_near}.}
 
 \item{seed}{Integer. Random seed for reproducibility. Defaults to \code{42L}.}
 

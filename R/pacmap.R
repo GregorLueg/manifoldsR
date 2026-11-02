@@ -73,8 +73,8 @@
 #' @param nn_params Named list. Nearest neighbour search parameters, see
 #' [params_nn()].
 #' @param pacmap_params Named list. PaCMAP algorithm parameters, see
-#' [params_pacmap()]. Controls near/mid-near/further pair counts and the kNN
-#' search size (via `mn_candidate_end`).
+#' [params_pacmap()]. Controls near/mid-near/further pair counts. The kNN search
+#' size is `n_near`.
 #' @param seed Integer. Random seed for reproducibility. Defaults to `42L`.
 #' @param use_high_precision Optional boolean. Gives fine-grained control over
 #' `fp32` vs `fp64` usage.

@@ -25,28 +25,7 @@ spec_nn <- param_spec(
       100L,
       doc = "Size of the dynamic candidate list during HNSW search."
     ),
-    diversify_prob = p_dbl(
-      0.0,
-      doc = "Diversification probability for NN descent."
-    ),
     delta = p_dbl(0.001, doc = "Precision parameter for NN descent."),
-    ef_budget = p_int(
-      NULL,
-      null_ok = TRUE,
-      doc = paste(
-        "Effort budget for NN descent. Ignored when `extract_knn` is `TRUE`,",
-        "as no search runs."
-      )
-    ),
-    extract_knn = p_lgl(
-      TRUE,
-      doc = paste(
-        "Only affects the `\"nndescent\"` backend. If `TRUE`, the descent",
-        "hands back the graph it just built instead of running a beam search",
-        "over it. Faster, at a recall of roughly `0.98` rather than",
-        "`0.99`-`1.00`."
-      )
-    ),
     bt_budget = p_dbl(0.1, doc = "Budget for ball tree search."),
     n_list = p_int(
       NULL,
@@ -468,17 +447,6 @@ spec_pacmap <- param_spec(
     n_near = p_int(10L, doc = "Near pairs per point (attractive)."),
     n_mid_near = p_int(5L, doc = "Mid-near pairs per point."),
     n_further = p_int(20L, doc = "Further (random) pairs per point."),
-    mn_candidate_start = p_int(
-      4L,
-      doc = "Start index into kNN list for mid-near candidate window."
-    ),
-    mn_candidate_end = p_int(
-      50L,
-      doc = paste(
-        "End index into kNN list for mid-near candidate window. Also",
-        "determines the kNN search size."
-      )
-    ),
     init = p_choice(
       "pca",
       c("pca", "random"),

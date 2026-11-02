@@ -593,16 +593,8 @@ params_kmeans <- function(
 #' HNSW construction. Defaults to `100L`.
 #' @param ef_search Integer. Size of the dynamic candidate list during HNSW
 #' search. Defaults to `100L`.
-#' @param diversify_prob Numeric. Diversification probability for NN descent.
-#' Defaults to `0.0`.
 #' @param delta Numeric. Precision parameter for NN descent. Defaults to
 #' `0.001`.
-#' @param ef_budget Integer or `NULL`. Effort budget for NN descent. Ignored
-#' when `extract_knn` is `TRUE`, as no search runs. Defaults to `NULL`.
-#' @param extract_knn Boolean. Only affects the `"nndescent"` backend. If
-#' `TRUE`, the descent hands back the graph it just built instead of running a
-#' beam search over it. Faster, at a recall of roughly `0.98` rather than
-#' `0.99`-`1.00`. Defaults to `TRUE`.
 #' @param bt_budget Numeric. Budget for ball tree search. Defaults to `0.1`.
 #' @param n_list Integer or `NULL`. Number of clusters to use for IVF. If
 #' `NULL`, uses `sqrt(n)`. Defaults to `NULL`.
@@ -622,16 +614,8 @@ params_kmeans <- function(
 #'  HNSW construction. Defaults to `100L`.
 #'  \item ef_search - Integer. Size of the dynamic candidate list during HNSW
 #'  search. Defaults to `100L`.
-#'  \item diversify_prob - Numeric. Diversification probability for NN descent.
-#'  Defaults to `0.0`.
 #'  \item delta - Numeric. Precision parameter for NN descent. Defaults to
 #'  `0.001`.
-#'  \item ef_budget - Integer or `NULL`. Effort budget for NN descent. Ignored
-#'  when `extract_knn` is `TRUE`, as no search runs. Defaults to `NULL`.
-#'  \item extract_knn - Boolean. Only affects the `"nndescent"` backend. If
-#'  `TRUE`, the descent hands back the graph it just built instead of running a
-#'  beam search over it. Faster, at a recall of roughly `0.98` rather than
-#'  `0.99`-`1.00`. Defaults to `TRUE`.
 #'  \item bt_budget - Numeric. Budget for ball tree search. Defaults to `0.1`.
 #'  \item n_list - Integer or `NULL`. Number of clusters to use for IVF. If
 #'  `NULL`, uses `sqrt(n)`. Defaults to `NULL`.
@@ -647,10 +631,7 @@ params_nn <- function(
   m = 16L,
   ef_construction = 100L,
   ef_search = 100L,
-  diversify_prob = 0.0,
   delta = 0.001,
-  ef_budget = NULL,
-  extract_knn = TRUE,
   bt_budget = 0.1,
   n_list = NULL,
   n_probes = NULL
@@ -664,10 +645,7 @@ params_nn <- function(
   checkmate::qassert(m, "I1")
   checkmate::qassert(ef_construction, "I1")
   checkmate::qassert(ef_search, "I1")
-  checkmate::qassert(diversify_prob, "N1")
   checkmate::qassert(delta, "N1")
-  checkmate::qassert(ef_budget, c("I1", "0"))
-  checkmate::qassert(extract_knn, "B1")
   checkmate::qassert(bt_budget, "N1")
   checkmate::qassert(n_list, c("I1", "0"))
   checkmate::qassert(n_probes, c("I1", "0"))
@@ -680,10 +658,7 @@ params_nn <- function(
     m = m,
     ef_construction = ef_construction,
     ef_search = ef_search,
-    diversify_prob = diversify_prob,
     delta = delta,
-    ef_budget = ef_budget,
-    extract_knn = extract_knn,
     bt_budget = bt_budget,
     n_list = n_list,
     n_probes = n_probes
@@ -696,10 +671,6 @@ params_nn <- function(
 #' @param n_mid_near Integer. Mid-near pairs per point. Defaults to `5L`.
 #' @param n_further Integer. Further (random) pairs per point. Defaults to
 #' `20L`.
-#' @param mn_candidate_start Integer. Start index into kNN list for mid-near
-#' candidate window. Defaults to `4L`.
-#' @param mn_candidate_end Integer. End index into kNN list for mid-near
-#' candidate window. Also determines the kNN search size. Defaults to `50L`.
 #' @param init String. Embedding initialisation. One of `c("pca", "random")`.
 #' Defaults to `"pca"`.
 #' @param optimiser String. The optimiser. One of `c("adam_parallel", "adam")`.
@@ -722,10 +693,6 @@ params_nn <- function(
 #'  \item n_mid_near - Integer. Mid-near pairs per point. Defaults to `5L`.
 #'  \item n_further - Integer. Further (random) pairs per point. Defaults to
 #'  `20L`.
-#'  \item mn_candidate_start - Integer. Start index into kNN list for mid-near
-#'  candidate window. Defaults to `4L`.
-#'  \item mn_candidate_end - Integer. End index into kNN list for mid-near
-#'  candidate window. Also determines the kNN search size. Defaults to `50L`.
 #'  \item init - String. Embedding initialisation. One of `c("pca", "random")`.
 #'  Defaults to `"pca"`.
 #'  \item optimiser - String. The optimiser. One of `c("adam_parallel",
@@ -747,8 +714,6 @@ params_pacmap <- function(
   n_near = 10L,
   n_mid_near = 5L,
   n_further = 20L,
-  mn_candidate_start = 4L,
-  mn_candidate_end = 50L,
   init = c("pca", "random"),
   optimiser = c("adam_parallel", "adam"),
   lr = 1.0,
@@ -766,8 +731,6 @@ params_pacmap <- function(
   checkmate::qassert(n_near, "I1")
   checkmate::qassert(n_mid_near, "I1")
   checkmate::qassert(n_further, "I1")
-  checkmate::qassert(mn_candidate_start, "I1")
-  checkmate::qassert(mn_candidate_end, "I1")
   checkmate::assertChoice(init, c("pca", "random"))
   checkmate::assertChoice(optimiser, c("adam_parallel", "adam"))
   checkmate::qassert(lr, "N1")
@@ -783,8 +746,6 @@ params_pacmap <- function(
     n_near = n_near,
     n_mid_near = n_mid_near,
     n_further = n_further,
-    mn_candidate_start = mn_candidate_start,
-    mn_candidate_end = mn_candidate_end,
     init = init,
     optimiser = optimiser,
     lr = lr,

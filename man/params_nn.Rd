@@ -11,10 +11,7 @@ params_nn(
   m = 16L,
   ef_construction = 100L,
   ef_search = 100L,
-  diversify_prob = 0,
   delta = 0.001,
-  ef_budget = NULL,
-  extract_knn = TRUE,
   bt_budget = 0.1,
   n_list = NULL,
   n_probes = NULL
@@ -36,19 +33,8 @@ HNSW construction. Defaults to \code{100L}.}
 \item{ef_search}{Integer. Size of the dynamic candidate list during HNSW
 search. Defaults to \code{100L}.}
 
-\item{diversify_prob}{Numeric. Diversification probability for NN descent.
-Defaults to \code{0.0}.}
-
 \item{delta}{Numeric. Precision parameter for NN descent. Defaults to
 \code{0.001}.}
-
-\item{ef_budget}{Integer or \code{NULL}. Effort budget for NN descent. Ignored
-when \code{extract_knn} is \code{TRUE}, as no search runs. Defaults to \code{NULL}.}
-
-\item{extract_knn}{Boolean. Only affects the \code{"nndescent"} backend. If
-\code{TRUE}, the descent hands back the graph it just built instead of running a
-beam search over it. Faster, at a recall of roughly \code{0.98} rather than
-\code{0.99}-\code{1.00}. Defaults to \code{TRUE}.}
 
 \item{bt_budget}{Numeric. Budget for ball tree search. Defaults to \code{0.1}.}
 
@@ -72,16 +58,8 @@ to \code{NULL}.
 HNSW construction. Defaults to \code{100L}.
 \item ef_search - Integer. Size of the dynamic candidate list during HNSW
 search. Defaults to \code{100L}.
-\item diversify_prob - Numeric. Diversification probability for NN descent.
-Defaults to \code{0.0}.
 \item delta - Numeric. Precision parameter for NN descent. Defaults to
 \code{0.001}.
-\item ef_budget - Integer or \code{NULL}. Effort budget for NN descent. Ignored
-when \code{extract_knn} is \code{TRUE}, as no search runs. Defaults to \code{NULL}.
-\item extract_knn - Boolean. Only affects the \code{"nndescent"} backend. If
-\code{TRUE}, the descent hands back the graph it just built instead of running a
-beam search over it. Faster, at a recall of roughly \code{0.98} rather than
-\code{0.99}-\code{1.00}. Defaults to \code{TRUE}.
 \item bt_budget - Numeric. Budget for ball tree search. Defaults to \code{0.1}.
 \item n_list - Integer or \code{NULL}. Number of clusters to use for IVF. If
 \code{NULL}, uses \code{sqrt(n)}. Defaults to \code{NULL}.
