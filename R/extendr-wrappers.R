@@ -520,8 +520,6 @@ rs_diffusion_maps_from_knn <- function(embd, knn_data, n_dim, k, dm_params, seed
 #' for EVoC clustering.
 #' @param return_knn Boolean. Shall the kNN graph be returned.
 #' @param seed Integer. Seed for reproducibility.
-#' @param use_high_precision Optional logical. Controls `fp32` vs `fp64` for.
-#' If `NULL` will use sensible default thresholding.
 #' @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
 #' for detailed verbosity.
 #'
@@ -532,7 +530,7 @@ rs_diffusion_maps_from_knn <- function(embd, knn_data, n_dim, k, dm_params, seed
 #' }
 #'
 #' @export
-rs_evoc <- function(embd, n_neighbours, evoc_params, return_knn, seed, use_high_precision, verbose) .Call(wrap__rs_evoc, embd, n_neighbours, evoc_params, return_knn, seed, use_high_precision, verbose)
+rs_evoc <- function(embd, n_neighbours, evoc_params, return_knn, seed, verbose) .Call(wrap__rs_evoc, embd, n_neighbours, evoc_params, return_knn, seed, verbose)
 
 #' EVoC clustering from pre-computed kNN
 #'
@@ -550,8 +548,6 @@ rs_evoc <- function(embd, n_neighbours, evoc_params, return_knn, seed, use_high_
 #' @param evoc_params Named list. List that contains all of the key parameters
 #' for EVoC clustering.
 #' @param seed Integer. Seed for reproducibility.
-#' @param use_high_precision Optional logical. Controls `fp32` vs `fp64` for.
-#' If `NULL` will use sensible default thresholding.
 #' @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
 #' for detailed verbosity.
 #'
@@ -559,7 +555,7 @@ rs_evoc <- function(embd, n_neighbours, evoc_params, return_knn, seed, use_high_
 #' scores, and the kNN graph.
 #'
 #' @export
-rs_evoc_from_knn <- function(embd, knn_data, n_neighbours, evoc_params, seed, use_high_precision, verbose) .Call(wrap__rs_evoc_from_knn, embd, knn_data, n_neighbours, evoc_params, seed, use_high_precision, verbose)
+rs_evoc_from_knn <- function(embd, knn_data, n_neighbours, evoc_params, seed, verbose) .Call(wrap__rs_evoc_from_knn, embd, knn_data, n_neighbours, evoc_params, seed, verbose)
 
 #' K-means clustering (full)
 #'

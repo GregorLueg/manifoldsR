@@ -82,82 +82,6 @@ extendr_module! {
     fn rs_inertia;
 }
 
-////////////
-// Consts //
-////////////
-
-/// Sample count above which EVoC switches from fp32 to fp64.
-const SAMPLE_THRESHOLD_HIGH_PRECISION: usize = 100_000;
-
-///////////
-// Enums //
-///////////
-
-/// Enum defining the floating point operation precision. Some algorithms suffer
-/// from catastrophic cancellation and accumulation of precision errors
-#[derive(Debug, Clone, Copy, Default)]
-enum FloatingPointPrecision {
-    /// FP32
-    #[default]
-    FP32,
-    /// FP64
-    FP64,
-}
-
-/// Auto detection of the precision based on sensible thresholds
-///
-/// ### Params
-///
-/// * `n` - Number of samples
-///
-/// ### Returns
-///
-/// The [FloatingPointPrecision]
-fn auto_precision(n: usize) -> FloatingPointPrecision {
-    if n > SAMPLE_THRESHOLD_HIGH_PRECISION {
-        FloatingPointPrecision::FP64
-    } else {
-        FloatingPointPrecision::FP32
-    }
-}
-
-/// Function to parse the precision to use
-///
-/// ### Params
-///
-/// * `use_high_precision` - Nullable Rbool. If provided, will use that to
-///   determine precision to use
-/// * `n` - Number of samples in the data. Used to determine in an auto
-///   threshold which precision to use.
-///
-/// ### Returns
-///
-/// The determined [FloatingPointPrecision].
-fn parse_precision(use_high_precision: Nullable<Rbool>, n: usize) -> FloatingPointPrecision {
-    if use_high_precision != Nullable::Null {
-        // Rbool::to_bool() maps NA to true, so catch it explicitly. R_tryEval
-        // inside eval() keeps options(warn = 2) from longjmp-ing through Rust.
-        let val = match use_high_precision.into_option() {
-            Some(x) if !x.is_na() => x.to_bool(),
-            _ => {
-                let _ = lang!(
-                    "warning",
-                    "'use_high_precision' is NA. Function will assume 'TRUE'."
-                )
-                .eval();
-                true
-            }
-        };
-        if val {
-            FloatingPointPrecision::FP64
-        } else {
-            FloatingPointPrecision::FP32
-        }
-    } else {
-        auto_precision(n)
-    }
-}
-
 //////////
 // UMAP //
 //////////
@@ -1399,8 +1323,6 @@ fn rs_approx_nearest_neighbours(
 /// for EVoC clustering.
 /// @param return_knn Boolean. Shall the kNN graph be returned.
 /// @param seed Integer. Seed for reproducibility.
-/// @param use_high_precision Optional logical. Controls `fp32` vs `fp64` for.
-/// If `NULL` will use sensible default thresholding.
 /// @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
 /// for detailed verbosity.
 ///
@@ -1418,46 +1340,19 @@ fn rs_evoc(
     evoc_params: List,
     return_knn: bool,
     seed: usize,
-    use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> Result<List, extendr_api::Error> {
-    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
-    let precision = parse_precision(use_high_precision, embd.nrows());
+    let data = r_matrix_to_faer_fp32(&embd);
 
-    let (res, indices, dist) = match precision {
-        FloatingPointPrecision::FP32 => {
-            if verbosity.detailed_verbosity() {
-                rprintln!("Lower precision (fp32) path chosen.");
-            }
-
-            let embd = r_matrix_to_faer_fp32(&embd);
-            evoc_cluster(
-                embd.as_ref(),
-                None,
-                n_neighbours,
-                return_knn,
-                evoc_params,
-                seed,
-                verbose,
-            )
-        }
-        FloatingPointPrecision::FP64 => {
-            if verbosity.detailed_verbosity() {
-                rprintln!("Higher precision (fp64) path chosen.");
-            }
-
-            let embd = r_matrix_to_faer(&embd);
-            evoc_cluster(
-                embd.as_ref(),
-                None,
-                n_neighbours,
-                return_knn,
-                evoc_params,
-                seed,
-                verbose,
-            )
-        }
-    }?;
+    let (res, indices, dist) = evoc_cluster(
+        data.as_ref(),
+        None,
+        n_neighbours,
+        return_knn,
+        evoc_params,
+        seed,
+        verbose,
+    )?;
 
     let knn = match (indices, dist) {
         (Some(idx), Some(d)) => list!(
@@ -1489,8 +1384,6 @@ fn rs_evoc(
 /// @param evoc_params Named list. List that contains all of the key parameters
 /// for EVoC clustering.
 /// @param seed Integer. Seed for reproducibility.
-/// @param use_high_precision Optional logical. Controls `fp32` vs `fp64` for.
-/// If `NULL` will use sensible default thresholding.
 /// @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
 /// for detailed verbosity.
 ///
@@ -1505,48 +1398,20 @@ fn rs_evoc_from_knn(
     n_neighbours: usize,
     evoc_params: List,
     seed: usize,
-    use_high_precision: Nullable<Rbool>,
     verbose: usize,
 ) -> Result<List, extendr_api::Error> {
-    let verbosity = bixverse_r::prelude::parse_verbosity_level(verbose);
-    let precision = parse_precision(use_high_precision, embd.nrows());
+    let embd = r_matrix_to_faer_fp32(&embd);
+    let pre_computed_knn = nearest_neighbours_to_rust(knn_data);
 
-    let (res, _, _) = match precision {
-        FloatingPointPrecision::FP32 => {
-            if verbosity.detailed_verbosity() {
-                rprintln!("Lower precision (fp32) path chosen.");
-            }
-
-            let embd = r_matrix_to_faer_fp32(&embd);
-            let pre_computed_knn = nearest_neighbours_to_rust(knn_data);
-            evoc_cluster(
-                embd.as_ref(),
-                pre_computed_knn,
-                n_neighbours,
-                false,
-                evoc_params,
-                seed,
-                verbose,
-            )
-        }
-        FloatingPointPrecision::FP64 => {
-            if verbosity.detailed_verbosity() {
-                rprintln!("Higher precision (fp64) path chosen.");
-            }
-
-            let embd = r_matrix_to_faer(&embd);
-            let pre_computed_knn = nearest_neighbours_to_rust(knn_data);
-            evoc_cluster(
-                embd.as_ref(),
-                pre_computed_knn,
-                n_neighbours,
-                false,
-                evoc_params,
-                seed,
-                verbose,
-            )
-        }
-    }?;
+    let (res, _, _) = evoc_cluster(
+        embd.as_ref(),
+        pre_computed_knn,
+        n_neighbours,
+        false,
+        evoc_params,
+        seed,
+        verbose,
+    )?;
 
     Ok(res)
 }

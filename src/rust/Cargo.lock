@@ -19,9 +19,9 @@ checksum = "4b46cbb362ab8752921c97e041f5e366ee6297bd428a31275b9fcf1e380f7299"
 
 [[package]]
 name = "ann-search-rs"
-version = "0.12.1"
+version = "0.12.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "db6ff239ade3d62b71478947e89f022b4032bd3c85a44f8bcc385e1a93b7878c"
+checksum = "277e1b1e1ae3aff1ad937410e8f43891d5efaea2075b733ad1793164233ff315"
 dependencies = [
  "document-features",
  "faer",
@@ -104,7 +104,7 @@ checksum = "3ded4057c258ba199e2d26386d3af3780957ecaee6c4ef4041c6b4b8b97c0b06"
 [[package]]
 name = "bixverse-core"
 version = "0.10.0"
-source = "git+https://github.com/GregorLueg/bixverse-rs?rev=4aed8e96e49a052be256a68d2dd2b210480bb38b#4aed8e96e49a052be256a68d2dd2b210480bb38b"
+source = "git+https://github.com/GregorLueg/bixverse-rs?branch=feat-singlecell-py#4aed8e96e49a052be256a68d2dd2b210480bb38b"
 dependencies = [
  "ann-search-rs",
  "approx",
@@ -127,7 +127,7 @@ dependencies = [
 [[package]]
 name = "bixverse-methods"
 version = "0.10.0"
-source = "git+https://github.com/GregorLueg/bixverse-rs?rev=4aed8e96e49a052be256a68d2dd2b210480bb38b#4aed8e96e49a052be256a68d2dd2b210480bb38b"
+source = "git+https://github.com/GregorLueg/bixverse-rs?branch=feat-singlecell-py#4aed8e96e49a052be256a68d2dd2b210480bb38b"
 dependencies = [
  "ann-search-rs",
  "approx",
@@ -149,7 +149,7 @@ dependencies = [
 [[package]]
 name = "bixverse-r"
 version = "0.10.0"
-source = "git+https://github.com/GregorLueg/bixverse-rs?rev=4aed8e96e49a052be256a68d2dd2b210480bb38b#4aed8e96e49a052be256a68d2dd2b210480bb38b"
+source = "git+https://github.com/GregorLueg/bixverse-rs?branch=feat-singlecell-py#4aed8e96e49a052be256a68d2dd2b210480bb38b"
 dependencies = [
  "ann-search-rs",
  "bixverse-rs",
@@ -166,7 +166,7 @@ dependencies = [
 [[package]]
 name = "bixverse-rs"
 version = "0.10.0"
-source = "git+https://github.com/GregorLueg/bixverse-rs?rev=4aed8e96e49a052be256a68d2dd2b210480bb38b#4aed8e96e49a052be256a68d2dd2b210480bb38b"
+source = "git+https://github.com/GregorLueg/bixverse-rs?branch=feat-singlecell-py#4aed8e96e49a052be256a68d2dd2b210480bb38b"
 dependencies = [
  "bixverse-core",
  "bixverse-methods",
@@ -176,7 +176,7 @@ dependencies = [
 [[package]]
 name = "bixverse-sparse"
 version = "0.10.0"
-source = "git+https://github.com/GregorLueg/bixverse-rs?rev=4aed8e96e49a052be256a68d2dd2b210480bb38b#4aed8e96e49a052be256a68d2dd2b210480bb38b"
+source = "git+https://github.com/GregorLueg/bixverse-rs?branch=feat-singlecell-py#4aed8e96e49a052be256a68d2dd2b210480bb38b"
 dependencies = [
  "bincode",
  "num-traits",
@@ -540,8 +540,7 @@ checksum = "2b14b339eb76d07f052cdbad76ca7c1310e56173a138095d3bf42a23c06ef5d8"
 
 [[package]]
 name = "evoc-rs"
-version = "0.6.0"
-source = "git+https://github.com/GregorLueg/evoc-rs?rev=8067794fb5b2683d3664b2151f7ab16acf6e100a#8067794fb5b2683d3664b2151f7ab16acf6e100a"
+version = "0.7.0"
 dependencies = [
  "ann-search-rs",
  "approx",
@@ -973,7 +972,6 @@ dependencies = [
 [[package]]
 name = "manifolds-rs"
 version = "0.9.0"
-source = "git+https://github.com/GregorLueg/manifolds-rs?rev=572af534e92ee9c8022beba01457d9ea732f337a#572af534e92ee9c8022beba01457d9ea732f337a"
 dependencies = [
  "ann-search-rs",
  "approx",

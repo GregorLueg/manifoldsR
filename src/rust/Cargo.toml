@@ -10,10 +10,10 @@ crate-type = ['staticlib', 'rlib']
 name = 'manifoldsR'
 
 [dependencies]
-ann-search-rs = "0.12.1"
+ann-search-rs = "0.12.2"
 bixverse-r = { version = "0.10.0", default-features = false }
 extendr-api = "0.9.0"
-evoc-rs = "0.6.0"
+evoc-rs = "0.7.0"
 faer = "0.24.4"
 faer-entity = "0.20.1"
 num-traits = "0.2.19"
@@ -40,6 +40,6 @@ name = "document"
 path = "document.rs"
 
 [patch.crates-io]
-manifolds-rs = { git = "https://github.com/GregorLueg/manifolds-rs", rev = "572af534e92ee9c8022beba01457d9ea732f337a" }
-bixverse-r  = { git = "https://github.com/GregorLueg/bixverse-rs", rev = "4aed8e96e49a052be256a68d2dd2b210480bb38b" }
-evoc-rs = { git = "https://github.com/GregorLueg/evoc-rs", rev = "8067794fb5b2683d3664b2151f7ab16acf6e100a" }
+manifolds-rs = { path = "/Users/gregorlueg/repos/shared/manifolds-rs" }
+bixverse-r  = { git = "https://github.com/GregorLueg/bixverse-rs", branch = "feat-singlecell-py" }
+evoc-rs = { path = "/Users/gregorlueg/repos/shared/evoc-rs" }

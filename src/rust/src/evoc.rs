@@ -2,10 +2,7 @@
 
 #![warn(missing_docs)]
 
-use ann_search_rs::cpu::hnsw::{HnswIndex, HnswState};
-use ann_search_rs::cpu::nndescent::{NNDescent, NNDescentQuery};
 use ann_search_rs::prelude::AnnSearchFloat;
-use ann_search_rs::utils::nndescent_utils::ApplySortedUpdates;
 use bixverse_r::prelude::IntoExtendrErr;
 use bixverse_r::utils::vec_utils::flatten_vector;
 use evoc_rs::prelude::{EvocFloat, NearestNeighbourParamsEvoc};
@@ -52,7 +49,7 @@ where
         nn_params
             .get("dist_metric")
             .and_then(|v| v.as_str())
-            .unwrap_or("cosine"),
+            .unwrap_or("euclidean"),
     );
 
     // annoy
@@ -75,7 +72,7 @@ where
     let ef_construction = nn_params
         .get("ef_construction")
         .and_then(|v| v.as_integer())
-        .unwrap_or(100) as usize;
+        .unwrap_or(200) as usize;
 
     let ef_search = nn_params
         .get("ef_search")
@@ -286,8 +283,6 @@ pub fn evoc_cluster<T>(
 ) -> EvocResults
 where
     T: EvocFloat + AnnSearchFloat,
-    HnswIndex<T>: HnswState<T>,
-    NNDescent<T>: ApplySortedUpdates<T> + NNDescentQuery<T>,
     std::vec::Vec<T>: std::iter::FromIterator<T>,
 {
     let params = InternalEvocParams::from_r_list(evoc_params, n_neighbours)?;

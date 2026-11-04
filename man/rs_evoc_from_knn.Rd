@@ -4,15 +4,7 @@
 \alias{rs_evoc_from_knn}
 \title{EVoC clustering from pre-computed kNN}
 \usage{
-rs_evoc_from_knn(
-  embd,
-  knn_data,
-  n_neighbours,
-  evoc_params,
-  seed,
-  use_high_precision,
-  verbose
-)
+rs_evoc_from_knn(embd, knn_data, n_neighbours, evoc_params, seed, verbose)
 }
 \arguments{
 \item{embd}{Numerical matrix. The data to cluster. Should be of dimensions
@@ -28,9 +20,6 @@ construction.}
 for EVoC clustering.}
 
 \item{seed}{Integer. Seed for reproducibility.}
-
-\item{use_high_precision}{Optional logical. Controls \code{fp32} vs \code{fp64} for.
-If \code{NULL} will use sensible default thresholding.}
 
 \item{verbose}{Integer. If \code{0L} -> silent or \code{1L} for normal verbosity; \code{2L}
 for detailed verbosity.}
