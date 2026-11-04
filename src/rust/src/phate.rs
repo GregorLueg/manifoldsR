@@ -24,8 +24,8 @@ use crate::utils::get_params_nn_manifolds;
 /// Overall wrapper over various parameters needed for PHATE.
 #[derive(Debug)]
 pub struct InternalPhateParams<T> {
-    /// Method to symmetrise the affinity graph. One of `"average"` or `"add"`.
-    /// Defaults to `"average"`.
+    /// Method to symmetrise the affinity graph. One of `"additive"`,
+    /// `"multiplicative"`, `"mnn"` or `"none"`. Defaults to `"add"`.
     pub graph_symmetry: String,
     /// Alpha decay parameter controlling the kernel bandwidth.
     pub decay: Option<T>,
@@ -39,11 +39,13 @@ pub struct InternalPhateParams<T> {
     pub t_custom: Option<usize>,
     /// Informational distance parameter for the diffusion potential.
     pub gamma: Option<T>,
+    /// Sparsity threshold applied to the kernel entries.
+    pub thresh: T,
     /// Number of landmarks for compressed diffusion. `None` uses the full N × N
     /// diffusion operator.
     pub n_landmarks: Option<usize>,
     /// Method used to select landmarks. One of `"spectral"`, `"random"`, or
-    /// `"min_max"`.
+    /// `"density"`.
     pub landmark_method: String,
     /// Number of SVD components. `None` lets the library select a sensible
     /// default.
@@ -93,6 +95,7 @@ where
             t_max: phate_params.t_max,
             t_custom: phate_params.t_custom,
             gamma: phate_params.gamma,
+            thresh: phate_params.thresh,
             n_landmarks: phate_params.n_landmarks,
             landmark_method: phate_params.landmark_method,
             n_svd: phate_params.n_svd,
@@ -152,6 +155,11 @@ where
         .and_then(|v| v.as_real())
         .map(|v| T::from_f64(v).unwrap())
         .or(Some(T::from_f64(1.0).unwrap()));
+    let thresh = p
+        .get("thresh")
+        .and_then(|v| v.as_real())
+        .map(|v| T::from_f64(v).unwrap())
+        .unwrap_or(T::from_f64(1e-4).unwrap());
     let n_landmarks = p
         .get("n_landmarks")
         .and_then(|v| v.as_integer())
@@ -182,6 +190,7 @@ where
         t_max,
         t_custom,
         gamma,
+        thresh,
         n_landmarks,
         landmark_method,
         n_svd,
@@ -200,7 +209,7 @@ where
 ///
 /// Parses the R parameter list into `PhateParams`, runs the full PHATE
 /// pipeline including kNN search, and returns the embedding as a
-/// column-major `Mat<f32>`.
+/// column-major `Mat<T>`.
 ///
 /// ### Params
 ///
@@ -243,7 +252,7 @@ where
         internal
             .bandwidth_scale
             .unwrap_or(T::from_f64(1.0).unwrap()),
-        T::from_f64(1e-4).unwrap(),
+        internal.thresh,
         internal.graph_symmetry,
         internal.n_landmarks,
         internal.landmark_method,

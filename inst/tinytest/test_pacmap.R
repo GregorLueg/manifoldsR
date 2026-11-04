@@ -22,7 +22,7 @@ cluster_data_df <- as.data.frame(cluster_data)
 
 exhaustive <- generate_knn_graph(
   data = cluster_data,
-  k = 10L,
+  k = 60L,
   knn_method = "exhaustive"
 )
 

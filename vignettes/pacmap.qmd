@@ -59,10 +59,12 @@ A few things to keep in mind:
   initialisation works well, PaCMAP with random initialisation degrades global
   structure significantly. The default here is `"pca"` for this reason.
 - **`n_near` is less sensitive than `k` in UMAP.** The paper default of 10 works
-  well across a wide range of datasets. It also sets the kNN search size.
+  well across a wide range of datasets. The kNN search runs `n_near + 50` wide,
+  and the near pairs are the best of those by locally scaled distance.
 - **Mid-near pairs don't come from the kNN graph.** Each one is the second
-  closest of six random points, so a pre-computed graph only needs `n_near`
-  neighbours.
+  closest of six random points. A pre-computed graph needs at least `n_near`
+  neighbours, but the near pairs are ranked from what it holds, so build it
+  `n_near + 50` wide.
 
 ## Running PaCMAP
 
@@ -318,7 +320,7 @@ without repeating the kNN search, precompute the graph first.
 #| label: pacmap - pre-computed kNN
 precomputed_knn <- generate_knn_graph(
   data = cluster_data$data,
-  k = 10L,
+  k = 60L, # n_near + 50, as the internal search
   knn_method = "balltree",
   .verbose = FALSE
 )

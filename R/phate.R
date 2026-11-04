@@ -48,12 +48,12 @@
 #' @param knn Optional `NearestNeighbours` class. If provided, PHATE will skip
 #' the k-nearest neighbour graph generation and use this one instead. Every
 #' neighbour in the graph can join the kernel while its affinity clears
-#' `thresh`, so build the graph `3 * k + 2` wide to match the internal search.
+#' `thresh`, so build the graph `6 * k + 5` wide to match the internal search.
 #' Defaults to `NULL`.
 #' @param n_dim Integer. Number of dimensions in the embedding space.
 #' Currently only `2L` is supported. Defaults to `2L`.
 #' @param k Integer. Number of nearest neighbours that set the kernel bandwidth.
-#' The kNN search itself runs `3 * k + 2` wide. Defaults to `5L`.
+#' The kNN search itself runs `6 * k + 5` wide. Defaults to `5L`.
 #' @param knn_method Character. (Approximate) Nearest neighbour method to use.
 #' One of `"kmknn"`, `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, `"ivf"`
 #' or `"exhaustive"`. Defaults to `"nndescent"`.

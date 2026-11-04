@@ -590,7 +590,7 @@ params_kmeans <- function(
 #' `NULL`.
 #' @param m Integer. Number of bidirectional links for HNSW. Defaults to `16L`.
 #' @param ef_construction Integer. Size of the dynamic candidate list during
-#' HNSW construction. Defaults to `100L`.
+#' HNSW construction. Defaults to `200L`.
 #' @param ef_search Integer. Size of the dynamic candidate list during HNSW
 #' search. Defaults to `100L`.
 #' @param delta Numeric. Precision parameter for NN descent. Defaults to
@@ -611,7 +611,7 @@ params_kmeans <- function(
 #'  \item m - Integer. Number of bidirectional links for HNSW. Defaults to
 #'  `16L`.
 #'  \item ef_construction - Integer. Size of the dynamic candidate list during
-#'  HNSW construction. Defaults to `100L`.
+#'  HNSW construction. Defaults to `200L`.
 #'  \item ef_search - Integer. Size of the dynamic candidate list during HNSW
 #'  search. Defaults to `100L`.
 #'  \item delta - Numeric. Precision parameter for NN descent. Defaults to
@@ -629,7 +629,7 @@ params_nn <- function(
   n_tree = 50L,
   search_budget = NULL,
   m = 16L,
-  ef_construction = 100L,
+  ef_construction = 200L,
   ef_search = 100L,
   delta = 0.001,
   bt_budget = 0.1,
@@ -771,6 +771,8 @@ params_pacmap <- function(
 #' automatic time selection. Defaults to `NULL`.
 #' @param gamma Numeric. Informational distance parameter for the diffusion
 #' potential. Defaults to `1.0`.
+#' @param thresh Numeric. Sparsity threshold on the kernel. Neighbours past `k`
+#' join the kernel while their affinity clears it. Defaults to `1e-04`.
 #' @param n_landmarks Integer or `NULL`. Number of landmarks for compressed
 #' diffusion. If `NULL`, the full N x N diffusion operator is used. Defaults to
 #' `2048L`.
@@ -781,6 +783,9 @@ params_pacmap <- function(
 #' `NULL`.
 #' @param mds_method String. MDS algorithm used for the final embedding. One of
 #' `c("sgd_dense", "classic")`. Defaults to `"sgd_dense"`.
+#' @param mds_iter Integer or `NULL`. Number of SGD-MDS iterations. If `NULL`,
+#' scales with the number of points: `300` below 1000, `500` below 5000 and
+#' `800` otherwise. Defaults to `NULL`.
 #' @param graph_symmetry String. Method used to symmetrise the affinity graph.
 #' One of `c("additive", "multiplicative", "mnn", "none")`. Defaults to
 #' `"additive"`.
@@ -798,6 +803,8 @@ params_pacmap <- function(
 #'  automatic time selection. Defaults to `NULL`.
 #'  \item gamma - Numeric. Informational distance parameter for the diffusion
 #'  potential. Defaults to `1.0`.
+#'  \item thresh - Numeric. Sparsity threshold on the kernel. Neighbours past
+#'  `k` join the kernel while their affinity clears it. Defaults to `1e-04`.
 #'  \item n_landmarks - Integer or `NULL`. Number of landmarks for compressed
 #'  diffusion. If `NULL`, the full N x N diffusion operator is used. Defaults to
 #'  `2048L`.
@@ -808,6 +815,9 @@ params_pacmap <- function(
 #'  `NULL`.
 #'  \item mds_method - String. MDS algorithm used for the final embedding. One
 #'  of `c("sgd_dense", "classic")`. Defaults to `"sgd_dense"`.
+#'  \item mds_iter - Integer or `NULL`. Number of SGD-MDS iterations. If `NULL`,
+#'  scales with the number of points: `300` below 1000, `500` below 5000 and
+#'  `800` otherwise. Defaults to `NULL`.
 #'  \item graph_symmetry - String. Method used to symmetrise the affinity graph.
 #'  One of `c("additive", "multiplicative", "mnn", "none")`. Defaults to
 #'  `"additive"`.
@@ -820,10 +830,12 @@ params_phate <- function(
   t_max = 100L,
   t_custom = NULL,
   gamma = 1.0,
+  thresh = 1e-04,
   n_landmarks = 2048L,
   landmark_method = c("spectral", "random", "density"),
   n_svd = NULL,
   mds_method = c("sgd_dense", "classic"),
+  mds_iter = NULL,
   graph_symmetry = c("additive", "multiplicative", "mnn", "none")
 ) {
   landmark_method <- match.arg(landmark_method)
@@ -836,10 +848,12 @@ params_phate <- function(
   checkmate::qassert(t_max, "I1[1,)")
   checkmate::qassert(t_custom, c("I1[1,)", "0"))
   checkmate::qassert(gamma, "N1")
+  checkmate::qassert(thresh, "N1[0,)")
   checkmate::qassert(n_landmarks, c("I1[1,)", "0"))
   checkmate::assertChoice(landmark_method, c("spectral", "random", "density"))
   checkmate::qassert(n_svd, c("I1[1,)", "0"))
   checkmate::assertChoice(mds_method, c("sgd_dense", "classic"))
+  checkmate::qassert(mds_iter, c("I1[1,)", "0"))
   checkmate::assertChoice(
     graph_symmetry,
     c("additive", "multiplicative", "mnn", "none")
@@ -852,10 +866,12 @@ params_phate <- function(
     t_max = t_max,
     t_custom = t_custom,
     gamma = gamma,
+    thresh = thresh,
     n_landmarks = n_landmarks,
     landmark_method = landmark_method,
     n_svd = n_svd,
     mds_method = mds_method,
+    mds_iter = mds_iter,
     graph_symmetry = graph_symmetry
   )
 }
@@ -1079,7 +1095,7 @@ params_tsne <- function(
 #' @param init String. Embedding initialisation method. One of `c("spectral",
 #' "pca", "random")`. Defaults to `"spectral"`.
 #' @param randomised Boolean. Use randomised SVD for PCA initialisation.
-#' Defaults to `TRUE`.
+#' Defaults to `FALSE`.
 #'
 #' @returns A named list with the following elements:
 #' \itemize{
@@ -1100,7 +1116,7 @@ params_tsne <- function(
 #'  \item init - String. Embedding initialisation method. One of `c("spectral",
 #'  "pca", "random")`. Defaults to `"spectral"`.
 #'  \item randomised - Boolean. Use randomised SVD for PCA initialisation.
-#'  Defaults to `TRUE`.
+#'  Defaults to `FALSE`.
 #' }
 #'
 #' @export
@@ -1114,7 +1130,7 @@ params_umap <- function(
   gamma = 1.0,
   optimiser = c("adam_parallel", "sgd", "adam"),
   init = c("spectral", "pca", "random"),
-  randomised = TRUE
+  randomised = FALSE
 ) {
   optimiser <- match.arg(optimiser)
   init <- match.arg(init)

@@ -23,16 +23,6 @@ use std::collections::HashMap;
 ///
 /// The `NearestNeighbourParams` with sensible defaults if not found in the
 /// list.
-/// Helper function to generate the UMAP NN parameters
-///
-/// # Arguments
-///
-/// * `r_list` - The list that has the nearest neighbour graph generation
-///   parameters.
-///
-/// # Returns
-///
-/// `NearestNeighbourParams` with sensible defaults if not found in the list.
 pub fn get_params_nn_manifolds<T>(r_list: List) -> Result<NearestNeighbourParams<T>>
 where
     T: ManifoldsFloat,
@@ -42,7 +32,7 @@ where
         nn_params
             .get("dist_metric")
             .and_then(|v| v.as_str())
-            .unwrap_or("cosine"),
+            .unwrap_or("euclidean"),
     );
     let n_tree = nn_params
         .get("n_tree")
@@ -59,7 +49,7 @@ where
     let ef_construction = nn_params
         .get("ef_construction")
         .and_then(|v| v.as_integer())
-        .unwrap_or(100) as usize;
+        .unwrap_or(200) as usize;
     let ef_search = nn_params
         .get("ef_search")
         .and_then(|v| v.as_integer())

@@ -223,14 +223,14 @@ is the kind of data PHATE was designed for.
 As with t-SNE, if you want to explore multiple parameter combinations without
 repeating the kNN search, you can precompute the graph and pass it directly.
 PHATE needs a wider graph than `k`: neighbours past `k` join the kernel while
-their affinity clears `thresh`, so build it `3 * k + 2` wide like the internal
+their affinity clears `thresh`, so build it `6 * k + 5` wide like the internal
 search.
 
 ```{r}
 #| label: phate - pre-computed kNN
 precomputed_knn <- generate_knn_graph(
   data = trajectory_data$data,
-  k = 47L, # 3 * k + 2 for k = 15
+  k = 95L, # 6 * k + 5 for k = 15
   .verbose = FALSE
 )
 

@@ -63,18 +63,20 @@
 #' @param data Numerical matrix or data frame. The data to embed of shape
 #' samples x features. Will be coerced to a matrix.
 #' @param knn Optional `NearestNeighbours` class. If provided, PaCMAP will skip
-#' the k-nearest neighbour graph generation and use this one. Defaults to
-#' `NULL`.
+#' the k-nearest neighbour graph generation and use this one. Needs at least
+#' `n_near` neighbours, and the near pairs are ranked from what it holds, so
+#' build it `n_near + 50` wide to match the internal search. Defaults to `NULL`.
 #' @param n_dim Integer. Number of dimensions in the embedding space.
 #' Defaults to `2L`.
 #' @param knn_method Character. (Approximate) Nearest neighbour method to use.
 #' One of `"kmknn"`, `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, `"ivf"`
-#' or `"exhaustive"`. Defaults to `"nndescent"`.
+#' or `"exhaustive"`. Defaults to `"ivf"`.
 #' @param nn_params Named list. Nearest neighbour search parameters, see
 #' [params_nn()].
 #' @param pacmap_params Named list. PaCMAP algorithm parameters, see
 #' [params_pacmap()]. Controls near/mid-near/further pair counts. The kNN search
-#' size is `n_near`.
+#' runs `n_near + 50` wide and the near pairs are the best of those by locally
+#' scaled distance.
 #' @param seed Integer. Random seed for reproducibility. Defaults to `42L`.
 #' @param .verbose Logical. Controls verbosity. Defaults to `TRUE`.
 #'
@@ -92,13 +94,13 @@ pacmap <- function(
   knn = NULL,
   n_dim = 2L,
   knn_method = c(
+    "ivf",
     "nndescent",
     "kmknn",
     "balltree",
     "hnsw",
     "annoy",
-    "exhaustive",
-    "ivf"
+    "exhaustive"
   ),
   nn_params = params_nn(),
   pacmap_params = params_pacmap(),

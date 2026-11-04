@@ -14,7 +14,7 @@ params_umap(
   gamma = 1,
   optimiser = c("adam_parallel", "sgd", "adam"),
   init = c("spectral", "pca", "random"),
-  randomised = TRUE
+  randomised = FALSE
 )
 }
 \arguments{
@@ -42,7 +42,7 @@ sample. Defaults to \code{5L}.}
 \item{init}{String. Embedding initialisation method. One of \code{c("spectral", "pca", "random")}. Defaults to \code{"spectral"}.}
 
 \item{randomised}{Boolean. Use randomised SVD for PCA initialisation.
-Defaults to \code{TRUE}.}
+Defaults to \code{FALSE}.}
 }
 \value{
 A named list with the following elements:
@@ -62,7 +62,7 @@ sample. Defaults to \code{5L}.
 \item optimiser - String. The optimiser. One of \code{c("adam_parallel", "sgd", "adam")}. Defaults to \code{"adam_parallel"}.
 \item init - String. Embedding initialisation method. One of \code{c("spectral", "pca", "random")}. Defaults to \code{"spectral"}.
 \item randomised - Boolean. Use randomised SVD for PCA initialisation.
-Defaults to \code{TRUE}.
+Defaults to \code{FALSE}.
 }
 }
 \description{

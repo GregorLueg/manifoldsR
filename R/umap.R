@@ -66,7 +66,7 @@
     } else {
       if (.verbose) {
         message(
-          "Using n_epochs = 200 (dataset <=10k samples with sgd/adam optimiser)"
+          "Using n_epochs = 200 (dataset >10k samples with sgd/adam optimiser)"
         )
       }
       final_params$n_epochs <- 200L

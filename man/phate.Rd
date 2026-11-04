@@ -23,14 +23,14 @@ samples x features. Will be coerced to a matrix.}
 \item{knn}{Optional \code{NearestNeighbours} class. If provided, PHATE will skip
 the k-nearest neighbour graph generation and use this one instead. Every
 neighbour in the graph can join the kernel while its affinity clears
-\code{thresh}, so build the graph \code{3 * k + 2} wide to match the internal search.
+\code{thresh}, so build the graph \code{6 * k + 5} wide to match the internal search.
 Defaults to \code{NULL}.}
 
 \item{n_dim}{Integer. Number of dimensions in the embedding space.
 Currently only \code{2L} is supported. Defaults to \code{2L}.}
 
 \item{k}{Integer. Number of nearest neighbours that set the kernel bandwidth.
-The kNN search itself runs \code{3 * k + 2} wide. Defaults to \code{5L}.}
+The kNN search itself runs \code{6 * k + 5} wide. Defaults to \code{5L}.}
 
 \item{knn_method}{Character. (Approximate) Nearest neighbour method to use.
 One of \code{"kmknn"}, \code{"hnsw"}, \code{"annoy"}, \code{"nndescent"}, \code{"balltree"}, \code{"ivf"}

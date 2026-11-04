@@ -9,7 +9,7 @@ params_nn(
   n_tree = 50L,
   search_budget = NULL,
   m = 16L,
-  ef_construction = 100L,
+  ef_construction = 200L,
   ef_search = 100L,
   delta = 0.001,
   bt_budget = 0.1,
@@ -28,7 +28,7 @@ params_nn(
 \item{m}{Integer. Number of bidirectional links for HNSW. Defaults to \code{16L}.}
 
 \item{ef_construction}{Integer. Size of the dynamic candidate list during
-HNSW construction. Defaults to \code{100L}.}
+HNSW construction. Defaults to \code{200L}.}
 
 \item{ef_search}{Integer. Size of the dynamic candidate list during HNSW
 search. Defaults to \code{100L}.}
@@ -55,7 +55,7 @@ to \code{NULL}.
 \item m - Integer. Number of bidirectional links for HNSW. Defaults to
 \code{16L}.
 \item ef_construction - Integer. Size of the dynamic candidate list during
-HNSW construction. Defaults to \code{100L}.
+HNSW construction. Defaults to \code{200L}.
 \item ef_search - Integer. Size of the dynamic candidate list during HNSW
 search. Defaults to \code{100L}.
 \item delta - Numeric. Precision parameter for NN descent. Defaults to

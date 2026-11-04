@@ -18,7 +18,7 @@ spec_nn <- param_spec(
     ),
     m = p_int(16L, doc = "Number of bidirectional links for HNSW."),
     ef_construction = p_int(
-      100L,
+      200L,
       doc = "Size of the dynamic candidate list during HNSW construction."
     ),
     ef_search = p_int(
@@ -91,7 +91,7 @@ spec_umap <- param_spec(
       doc = "Embedding initialisation method."
     ),
     randomised = p_lgl(
-      TRUE,
+      FALSE,
       doc = "Use randomised SVD for PCA initialisation."
     )
   )
@@ -401,6 +401,14 @@ spec_phate <- param_spec(
       1.0,
       doc = "Informational distance parameter for the diffusion potential."
     ),
+    thresh = p_dbl(
+      1e-4,
+      range = "[0,)",
+      doc = paste(
+        "Sparsity threshold on the kernel. Neighbours past `k` join the kernel",
+        "while their affinity clears it."
+      )
+    ),
     n_landmarks = p_int(
       2048L,
       range = "[1,)",
@@ -428,6 +436,15 @@ spec_phate <- param_spec(
       "sgd_dense",
       c("sgd_dense", "classic"),
       doc = "MDS algorithm used for the final embedding."
+    ),
+    mds_iter = p_int(
+      NULL,
+      range = "[1,)",
+      null_ok = TRUE,
+      doc = paste(
+        "Number of SGD-MDS iterations. If `NULL`, scales with the number of",
+        "points: `300` below 1000, `500` below 5000 and `800` otherwise."
+      )
     ),
     graph_symmetry = p_choice(
       "additive",

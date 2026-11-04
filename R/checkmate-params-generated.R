@@ -664,10 +664,12 @@ checkPhateParams <- function(x) {
       "t_max",
       "t_custom",
       "gamma",
+      "thresh",
       "n_landmarks",
       "landmark_method",
       "n_svd",
       "mds_method",
+      "mds_iter",
       "graph_symmetry"
     )
   )
@@ -683,8 +685,10 @@ checkPhateParams <- function(x) {
       t_max = "I1[1,)",
       t_custom = c("I1[1,)", "0"),
       gamma = "N1",
+      thresh = "N1[0,)",
       n_landmarks = c("I1[1,)", "0"),
-      n_svd = c("I1[1,)", "0")
+      n_svd = c("I1[1,)", "0"),
+      mds_iter = c("I1[1,)", "0")
     ),
     label = "PHATE params"
   )

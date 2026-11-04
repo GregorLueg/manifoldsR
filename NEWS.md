@@ -9,27 +9,39 @@
   and no query.
 - `params_pacmap()` loses `mn_candidate_start` and `mn_candidate_end`. Mid-near
   pairs are now the second closest of six random points, not a window in the
-  kNN list, and the kNN search size is `n_near` rather than 50. Different
-  embeddings at the same seed.
+  kNN list. Different embeddings at the same seed.
+- `pacmap()` follows the reference. The kNN search runs `n_near + 50` wide and
+  the near pairs are the best of those by locally scaled distance, so build any
+  graph you pass via `knn` that wide too. Further pairs exclude the near pairs,
+  and PCA initialisation keeps the ratio between the components.
 - New `knn_method` defaults, in line with `manifolds-rs`: `"nndescent"` for
-  `umap()`, `densmap()`, `phate()`, `pacmap()`, `diffusion_maps()`,
-  `forceatlas2()` and `evoc()`, and `"ivf"` for `tsne()`, `densne()` and
-  `dreams()`. `generate_knn_graph()` stays on `"kmknn"`. Different results at
-  the same seed.
-- `phate()` follows the reference kernel. The kNN search runs `3 * k + 2` wide
+  `umap()`, `densmap()`, `phate()`, `diffusion_maps()`, `forceatlas2()` and
+  `evoc()`, and `"ivf"` for `tsne()`, `densne()`, `dreams()` and `pacmap()`.
+  `generate_knn_graph()` stays on `"kmknn"`. Different results at the same seed.
+- `params_nn()` `ef_construction` defaults to `200L` rather than `100L`, and
+  `params_umap()` `randomised` to `FALSE`, both in line with `manifolds-rs`.
+- `phate()` follows the reference kernel. The kNN search runs `6 * k + 5` wide
   and neighbours past `k` join the kernel while their affinity clears `thresh`,
   so build any graph you pass via `knn` that wide too. The kernel has a unit
-  diagonal and the landmark operator sums the kernel rather than `P`.
+  diagonal and the landmark operator sums the kernel rather than `P`. The log
+  potential of a zero entry is `-ln(1e-7)` rather than `0`, and SGD-MDS scales
+  its iterations with the number of points.
 - `f32` runs of PHATE and diffusion maps with spectral landmarks, and of classic
   MDS with `randomised`, give different coordinates than before at the same
   seed. The CPU kNN backends bar `"exhaustive"` now search in `f32` whatever the
   input precision.
-- The embeddings lose `use_high_precision` and the automatic switch to `f64`
-  above 100k samples. They now always run in `f32`, with `manifolds-rs` doing the
-  steps prone to catastrophic cancellation in `f64`. `evoc()` keeps the argument.
+- All functions lose `use_high_precision`, `evoc()` included, and the automatic
+  switch to `f64` above 100k samples. They now always run in `f32`, with
+  `manifolds-rs` and `evoc-rs` doing the steps prone to catastrophic
+  cancellation in `f64`.
 - One verbosity grammar across all embeddings. `.verbose = 1L` prints timed
   stages and epochs every 50, `.verbose = 2L` adds parameters, landmark
   selection and the kNN internals.
+
+## Features
+
+- `params_phate()` gains `thresh` and `mds_iter`. `n_svd` and `mds_iter` are now
+  honoured with landmarks.
 
 ## Bug fixes
 
@@ -42,8 +54,8 @@
 
 ## Internals
 
-- Backend bumps: `manifolds-rs` 0.9.0, `evoc-rs` 0.6.0, `bixverse-rs` 0.10.0 and
-  `ann-search-rs` 0.12.1.
+- Backend bumps: `manifolds-rs` 0.9.0, `evoc-rs` 0.7.0, `bixverse-rs` 0.10.0 and
+  `ann-search-rs` 0.12.2.
 
 # manifoldsR 0.5.0
 
