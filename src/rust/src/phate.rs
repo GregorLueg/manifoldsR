@@ -85,7 +85,7 @@ where
         let knn_method = std::string::String::from(
             base.get("knn_method")
                 .and_then(|v| v.as_str())
-                .unwrap_or("nndescent"),
+                .unwrap_or("ivf"),
         );
         Ok(Self {
             graph_symmetry: phate_params.graph_symmetry,
