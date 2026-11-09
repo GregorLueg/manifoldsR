@@ -49,8 +49,8 @@ Lanczos solver for spectral initialisation, and `"sgd"` for UMAP and densMAP.
 - Spectral initialisation uses a thick-restarted Lanczos solver, with half the
   memory on connected graphs and a quarter on disconnected ones.
 - PHATE powers the landmark operator as a dense matrix.
-- Software prefetch on Apple Silicon in the UMAP, FFT t-SNE and den-SNE hot
-  loops.
+- Software prefetch on aarch64 and x86_64 in the UMAP, FFT t-SNE and den-SNE
+  hot loops.
 
 ## Bug fixes
 
