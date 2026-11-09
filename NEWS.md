@@ -62,6 +62,10 @@
   to 8, so all of them were already near pairs.
 - Spectral landmark selection works at scale. It now runs seven power iterations
   on the symmetrically normalised kernel instead of two on the raw one.
+- `diffusion_maps()` errors when points have no edges left in the kernel
+  (`"multiplicative"` or `"mnn"` symmetry at small `k`, or a high `thresh`),
+  rather than silently returning `Inf` coordinates.
+- `t_max` below `3` is rejected up front rather than failing in the knee search.
 
 ## Internals
 
