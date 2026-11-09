@@ -88,7 +88,7 @@ generate_knn_graph <- function(
     data = data,
     k = k,
     ann_method = knn_method,
-    ann_params = nn_params,
+    nn_params = nn_params,
     seed = seed,
     verbose = parse_verbosity(.verbose)
   )

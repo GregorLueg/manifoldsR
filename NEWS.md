@@ -45,6 +45,7 @@
   and random. `tsne()` and `densne()` give different coordinates at the same
   seed. DREAMS starts from its reference, so it is unaffected.
 - `params_phate()` `gamma` must lie in `[-1, 1]`.
+- `rs_approx_nearest_neighbours()` renames `ann_params` to `nn_params`.
 - `diffusion_maps()` with spectral landmarks and `n_svd = NULL` takes 100
   singular vectors rather than 10.
 

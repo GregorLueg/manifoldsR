@@ -1260,8 +1260,9 @@ fn rs_data_hierarchical(
 /// (approximate) nearest neighbours
 /// @param k Integer. Number of neighbours to return
 /// @param ann_method String. Which of the methods to use. One of
-/// `c("hsnw", "balltree", "annoy", "nndescent")`
-/// @param ann_params Named list. Contains the nearest neighbour parameters.
+/// `c("exhaustive", "kmknn", "balltree", "annoy", "hnsw", "nndescent", "ivf")`
+/// @param nn_params Named list. Contains the nearest neighbour parameters, see
+/// [params_nn()].
 /// @param seed Integer. Seed for reproducibility
 /// @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
 /// for detailed verbosity.
@@ -1280,13 +1281,13 @@ fn rs_approx_nearest_neighbours(
     data: RMatrix<f64>,
     k: usize,
     ann_method: String,
-    ann_params: List,
+    nn_params: List,
     seed: usize,
     verbose: usize,
 ) -> Result<List, extendr_api::Error> {
     let data = r_matrix_to_faer_fp32(&data);
 
-    let mut nn_params = get_params_nn_manifolds(ann_params)?;
+    let mut nn_params = get_params_nn_manifolds(nn_params)?;
 
     // balltree underperforms on small data set as the budget is too small
     // and individual leafs hold too many data points
