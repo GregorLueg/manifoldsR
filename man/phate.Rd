@@ -9,7 +9,7 @@ phate(
   knn = NULL,
   n_dim = 2L,
   k = 5L,
-  knn_method = c("nndescent", "kmknn", "balltree", "hnsw", "annoy", "exhaustive", "ivf"),
+  knn_method = c("ivf", "kmknn", "balltree", "hnsw", "annoy", "nndescent", "exhaustive"),
   nn_params = params_nn(),
   phate_params = params_phate(),
   seed = 42L,
@@ -34,7 +34,7 @@ The kNN search itself runs \code{6 * k + 5} wide. Defaults to \code{5L}.}
 
 \item{knn_method}{Character. (Approximate) Nearest neighbour method to use.
 One of \code{"kmknn"}, \code{"hnsw"}, \code{"annoy"}, \code{"nndescent"}, \code{"balltree"}, \code{"ivf"}
-or \code{"exhaustive"}. Defaults to \code{"nndescent"}.}
+or \code{"exhaustive"}. Defaults to \code{"ivf"}.}
 
 \item{nn_params}{Named list. Nearest neighbour search parameters, see
 \code{\link[=params_nn]{params_nn()}}.}

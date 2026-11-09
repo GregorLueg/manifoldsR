@@ -56,7 +56,7 @@
 #' The kNN search itself runs `6 * k + 5` wide. Defaults to `5L`.
 #' @param knn_method Character. (Approximate) Nearest neighbour method to use.
 #' One of `"kmknn"`, `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, `"ivf"`
-#' or `"exhaustive"`. Defaults to `"nndescent"`.
+#' or `"exhaustive"`. Defaults to `"ivf"`.
 #' @param nn_params Named list. Nearest neighbour search parameters, see
 #' [params_nn()].
 #' @param phate_params Named list. PHATE algorithm parameters, see
@@ -81,13 +81,13 @@ phate <- function(
   n_dim = 2L,
   k = 5L,
   knn_method = c(
-    "nndescent",
+    "ivf",
     "kmknn",
     "balltree",
     "hnsw",
     "annoy",
-    "exhaustive",
-    "ivf"
+    "nndescent",
+    "exhaustive"
   ),
   nn_params = params_nn(),
   phate_params = params_phate(),

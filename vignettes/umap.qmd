@@ -339,7 +339,7 @@ umap_clusters_sgd <- umap(
   knn = precomputed_knn,
   umap_params = params_umap(optimiser = "sgd"),
   k = 15L,
-  .verbose = FALSE
+  .verbose = TRUE
 )
 
 umap_clusters_sgd_par <- umap(
@@ -347,7 +347,7 @@ umap_clusters_sgd_par <- umap(
   knn = precomputed_knn,
   umap_params = params_umap(optimiser = "sgd_parallel"),
   k = 15L,
-  .verbose = FALSE
+  .verbose = TRUE
 )
 
 umap_sgd_df <- rbind(

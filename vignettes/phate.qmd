@@ -473,7 +473,6 @@ microbenchmark::microbenchmark(
     phate(
       data = benchmark_data_large$data,
       k = 5L,
-      knn_method = "nndescent", # good allrounder for larger data sets
       seed = 42L,
       .verbose = FALSE
     )
@@ -482,7 +481,6 @@ microbenchmark::microbenchmark(
     phate(
       data = benchmark_data_large$data,
       k = 5L,
-      knn_method = "nndescent", # good allrounder for larger data sets
       phate_params = params_phate(landmark_method = "random"),
       seed = 42L,
       .verbose = FALSE
