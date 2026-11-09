@@ -34,18 +34,17 @@ library(data.table)
 
 PaCMAP constructs its embedding through three types of point pairs, each
 targeting a different aspect of structure. **Near pairs** (k-nearest neighbours)
-preserve local neighbourhoods. **Mid-near pairs** are sampled from a window
-further out in the kNN list - beyond the immediate neighbours but not arbitrary
-— and act as a medium-range attractive force that anchors global structure.
-**Further pairs** are random distant points that contribute a repulsive force
-preventing collapse.
+preserve local neighbourhoods. **Mid-near pairs** are the second closest of six
+random points, and act as a medium-range attractive force that anchors global
+structure. **Further pairs** are random distant points, excluding the near
+pairs, that contribute a repulsive force preventing collapse.
 
 The key insight in PaCMAP is its **phased optimisation schedule**. In the first
-phase, the mid-near weight is dominant, pulling points into a globally coherent
-arrangement before local structure is resolved. In the second phase, the 
-mid-near weight decays to zero while the near pair weight increases, allowing 
-fine local structure to emerge without destroying the global layout established 
-in phase 1. The third and last phase runs with near and further pairs only, 
+phase, the mid-near weight decays from 1000 to 3, pulling points into a globally
+coherent arrangement before local structure is resolved. In the second phase,
+the mid-near weight holds at 3 while the near pair weight rises to 3, allowing
+fine local structure to emerge without destroying the global layout established
+in phase 1. The third and last phase runs with near and further pairs only,
 refining the local structure.
 
 This stands in contrast to UMAP, which optimises a single objective from the

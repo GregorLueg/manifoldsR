@@ -313,8 +313,10 @@ data.table(
 ## Using pre-computed kNN graphs
 
 Both take a `NearestNeighbours` object, same as their plain counterparts. Build
-it once, reuse it across methods and parameter sweeps. Watch the `k` if you are
-feeding den-SNE.
+it once, reuse it across methods and parameter sweeps. Watch the `k`: den-SNE
+needs more neighbours than `perplexity` and uses all of them, while densMAP cuts
+a wider graph to its own `k` and warns on stderr. So the `90L` below is for
+den-SNE, and densMAP only looks at the first `15L`.
 
 ```{r}
 #| label: precomputed knn
@@ -372,7 +374,7 @@ data.table(
 #| label: knn of small data
 knn_small <- generate_knn_graph(
   data = cluster_data_small$data,
-  k = 90L,
+  k = 15L,
   knn_method = "kmknn",
   .verbose = FALSE
 )

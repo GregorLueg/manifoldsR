@@ -36,7 +36,17 @@
   cancellation in `f64`.
 - One verbosity grammar across all embeddings. `.verbose = 1L` prints timed
   stages and epochs every 50, `.verbose = 2L` adds parameters, landmark
-  selection and the kNN internals.
+  selection and the kNN internals. The R-side `"Using provided kNN graph."`
+  message is gone, as the backend reports that stage itself.
+- `umap()`, `densmap()` and `forceatlas2()` cut a `knn` graph wider than `k` to
+  `k`, with a warning on stderr. They used to take every neighbour given.
+- `tsne()`, `densne()` and `dreams()` lose the hard-coded `0.01` initialisation
+  scale and use the `manifolds-rs` defaults: `1.0` for PCA, `10.0` for spectral
+  and random. `tsne()` and `densne()` give different coordinates at the same
+  seed. DREAMS starts from its reference, so it is unaffected.
+- `params_phate()` `gamma` must lie in `[-1, 1]`.
+- `diffusion_maps()` with spectral landmarks and `n_svd = NULL` takes 100
+  singular vectors rather than 10.
 
 ## Features
 
