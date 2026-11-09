@@ -385,10 +385,11 @@ spec_phate <- param_spec(
     ),
     t_max = p_int(
       100L,
-      range = "[1,)",
+      range = "[3,)",
       doc = paste(
         "Maximum diffusion time considered during automatic selection via Von",
-        "Neumann entropy knee point detection."
+        "Neumann entropy knee point detection. At least `3`, as the knee",
+        "search needs three points."
       )
     ),
     t_custom = p_int(
@@ -563,10 +564,11 @@ spec_diffusion_maps <- param_spec(
     ),
     t_max = p_int(
       100L,
-      range = "[1,)",
+      range = "[3,)",
       doc = paste(
         "Maximum diffusion time considered during automatic selection via Von",
-        "Neumann entropy knee point detection."
+        "Neumann entropy knee point detection. At least `3`, as the knee",
+        "search needs three points."
       )
     ),
     t_custom = p_int(
@@ -583,7 +585,10 @@ spec_diffusion_maps <- param_spec(
         "Number of landmarks for compressed diffusion. If `NULL`, or at least",
         "the number of samples, the full N x N diffusion operator is used. The",
         "default is specific to this package; `manifolds-rs` defaults to the",
-        "full operator."
+        "full operator. Keep `k` a small fraction of the landmark count: when",
+        "`k` covers a large share of the landmarks, the landmark kernel turns",
+        "broad and the later coordinates shrink towards a line. On small data,",
+        "prefer the full operator."
       )
     ),
     landmark_method = p_choice(

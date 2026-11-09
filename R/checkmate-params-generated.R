@@ -127,7 +127,7 @@ checkDiffusionMapsParams <- function(x) {
       bandwidth_scale = "N1(0,)",
       thresh = "N1[0,)",
       alpha_norm = "N1[0,1]",
-      t_max = "I1[1,)",
+      t_max = "I1[3,)",
       t_custom = c("I1[1,)", "0"),
       n_landmarks = c("I1[1,)", "0"),
       n_svd = c("I1[1,)", "0")
@@ -682,7 +682,7 @@ checkPhateParams <- function(x) {
     list(
       decay = "N1(0,)",
       bandwidth_scale = c("N1(0,)", "0"),
-      t_max = "I1[1,)",
+      t_max = "I1[3,)",
       t_custom = c("I1[1,)", "0"),
       gamma = "N1[-1,1]",
       thresh = "N1[0,)",

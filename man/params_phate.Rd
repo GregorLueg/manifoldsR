@@ -27,7 +27,8 @@ Higher values create sharper transitions. Defaults to \code{40.0}.}
 kernel bandwidth. If \code{NULL}, uses \code{1.0}. Defaults to \code{NULL}.}
 
 \item{t_max}{Integer. Maximum diffusion time considered during automatic
-selection via Von Neumann entropy knee point detection. Defaults to \code{100L}.}
+selection via Von Neumann entropy knee point detection. At least \code{3}, as the
+knee search needs three points. Defaults to \code{100L}.}
 
 \item{t_custom}{Integer or \code{NULL}. Fixed diffusion time. If set, overrides
 automatic time selection. Defaults to \code{NULL}.}
@@ -68,7 +69,8 @@ bandwidth. Higher values create sharper transitions. Defaults to \code{40.0}.
 \item bandwidth_scale - Numeric or \code{NULL}. Scaling factor applied to the
 kernel bandwidth. If \code{NULL}, uses \code{1.0}. Defaults to \code{NULL}.
 \item t_max - Integer. Maximum diffusion time considered during automatic
-selection via Von Neumann entropy knee point detection. Defaults to \code{100L}.
+selection via Von Neumann entropy knee point detection. At least \code{3}, as the
+knee search needs three points. Defaults to \code{100L}.
 \item t_custom - Integer or \code{NULL}. Fixed diffusion time. If set, overrides
 automatic time selection. Defaults to \code{NULL}.
 \item gamma - Numeric. Informational distance parameter for the diffusion

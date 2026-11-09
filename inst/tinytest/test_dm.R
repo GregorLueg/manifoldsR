@@ -250,8 +250,8 @@ expect_equal(
 
 ### graph symmetry -------------------------------------------------------------
 
-# Multiplicative and MNN drop one-sided edges. Without a diagonal in the kernel,
-# a point with no mutual neighbour has degree zero and goes to Inf at smaller k.
+# Multiplicative and MNN drop one-sided edges, so at k = 15 some points have no
+# mutual neighbour left (tested below). The reference checks need a wider graph.
 exhaustive_wide <- generate_knn_graph(
   data = trajectory_data,
   k = 150L,
@@ -279,7 +279,43 @@ for (symmetry in c("multiplicative", "mnn")) {
       symmetry
     )
   )
+  expect_error(
+    current = diffusion_maps(
+      data = trajectory_data,
+      k = 15L,
+      dm_params = params_diffusion_maps(
+        n_landmarks = NULL,
+        graph_symmetry = symmetry
+      ),
+      .verbose = FALSE
+    ),
+    pattern = "no edges",
+    info = sprintf(
+      "dm with graph_symmetry = '%s' errors on isolated points",
+      symmetry
+    )
+  )
 }
+
+expect_error(
+  current = diffusion_maps(
+    data = trajectory_data,
+    k = 15L,
+    dm_params = params_diffusion_maps(
+      n_landmarks = 50L,
+      graph_symmetry = "mnn"
+    ),
+    .verbose = FALSE
+  ),
+  pattern = "no edges",
+  info = "dm landmarks with graph_symmetry = 'mnn' errors on isolated points"
+)
+
+expect_error(
+  current = dm_exact(thresh = 0.6),
+  pattern = "no edges",
+  info = "dm errors when thresh leaves points without edges"
+)
 
 expect_true(
   current = is_embedding(dm_exact(graph_symmetry = "none")),
@@ -356,19 +392,12 @@ expect_true(
   info = "dm with cosine distance returns an embedding"
 )
 
-### automatic diffusion time ---------------------------------------------------
+## input validation ------------------------------------------------------------
 
 expect_error(
-  current = diffusion_maps(
-    data = trajectory_data,
-    k = 15L,
-    dm_params = params_diffusion_maps(n_landmarks = NULL, t_max = 2L),
-    .verbose = FALSE
-  ),
-  info = "dm errors if t_max is too small to find a knee point"
+  current = params_diffusion_maps(t_max = 2L),
+  info = "dm t_max below 3 is rejected"
 )
-
-## input validation ------------------------------------------------------------
 
 expect_error(
   current = params_diffusion_maps(alpha_norm = 2),

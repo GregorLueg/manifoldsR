@@ -133,13 +133,17 @@ params_densne <- function(
 #' the normalised graph Laplacian, `0.5` the Fokker-Planck operator, `1` the
 #' Laplace-Beltrami operator. Defaults to `1.0`.
 #' @param t_max Integer. Maximum diffusion time considered during automatic
-#' selection via Von Neumann entropy knee point detection. Defaults to `100L`.
+#' selection via Von Neumann entropy knee point detection. At least `3`, as the
+#' knee search needs three points. Defaults to `100L`.
 #' @param t_custom Integer or `NULL`. Fixed diffusion time. If set, overrides
 #' automatic time selection. Defaults to `NULL`.
 #' @param n_landmarks Integer or `NULL`. Number of landmarks for compressed
 #' diffusion. If `NULL`, or at least the number of samples, the full N x N
 #' diffusion operator is used. The default is specific to this package;
-#' `manifolds-rs` defaults to the full operator. Defaults to `2048L`.
+#' `manifolds-rs` defaults to the full operator. Keep `k` a small fraction of
+#' the landmark count: when `k` covers a large share of the landmarks, the
+#' landmark kernel turns broad and the later coordinates shrink towards a line.
+#' On small data, prefer the full operator. Defaults to `2048L`.
 #' @param landmark_method String. Method used to select landmarks. One of
 #' `c("spectral", "random", "density")`. Defaults to `"spectral"`.
 #' @param n_svd Integer or `NULL`. Number of singular vectors for spectral
@@ -159,13 +163,17 @@ params_densne <- function(
 #'  gives the normalised graph Laplacian, `0.5` the Fokker-Planck operator, `1`
 #'  the Laplace-Beltrami operator. Defaults to `1.0`.
 #'  \item t_max - Integer. Maximum diffusion time considered during automatic
-#'  selection via Von Neumann entropy knee point detection. Defaults to `100L`.
+#'  selection via Von Neumann entropy knee point detection. At least `3`, as the
+#'  knee search needs three points. Defaults to `100L`.
 #'  \item t_custom - Integer or `NULL`. Fixed diffusion time. If set, overrides
 #'  automatic time selection. Defaults to `NULL`.
 #'  \item n_landmarks - Integer or `NULL`. Number of landmarks for compressed
 #'  diffusion. If `NULL`, or at least the number of samples, the full N x N
 #'  diffusion operator is used. The default is specific to this package;
-#'  `manifolds-rs` defaults to the full operator. Defaults to `2048L`.
+#'  `manifolds-rs` defaults to the full operator. Keep `k` a small fraction of
+#'  the landmark count: when `k` covers a large share of the landmarks, the
+#'  landmark kernel turns broad and the later coordinates shrink towards a line.
+#'  On small data, prefer the full operator. Defaults to `2048L`.
 #'  \item landmark_method - String. Method used to select landmarks. One of
 #'  `c("spectral", "random", "density")`. Defaults to `"spectral"`.
 #'  \item n_svd - Integer or `NULL`. Number of singular vectors for spectral
@@ -196,7 +204,7 @@ params_diffusion_maps <- function(
     c("additive", "multiplicative", "mnn", "none")
   )
   checkmate::qassert(alpha_norm, "N1[0,1]")
-  checkmate::qassert(t_max, "I1[1,)")
+  checkmate::qassert(t_max, "I1[3,)")
   checkmate::qassert(t_custom, c("I1[1,)", "0"))
   checkmate::qassert(n_landmarks, c("I1[1,)", "0"))
   checkmate::assertChoice(landmark_method, c("spectral", "random", "density"))
@@ -774,7 +782,8 @@ params_pacmap <- function(
 #' @param bandwidth_scale Numeric or `NULL`. Scaling factor applied to the
 #' kernel bandwidth. If `NULL`, uses `1.0`. Defaults to `NULL`.
 #' @param t_max Integer. Maximum diffusion time considered during automatic
-#' selection via Von Neumann entropy knee point detection. Defaults to `100L`.
+#' selection via Von Neumann entropy knee point detection. At least `3`, as the
+#' knee search needs three points. Defaults to `100L`.
 #' @param t_custom Integer or `NULL`. Fixed diffusion time. If set, overrides
 #' automatic time selection. Defaults to `NULL`.
 #' @param gamma Numeric. Informational distance parameter for the diffusion
@@ -805,7 +814,8 @@ params_pacmap <- function(
 #'  \item bandwidth_scale - Numeric or `NULL`. Scaling factor applied to the
 #'  kernel bandwidth. If `NULL`, uses `1.0`. Defaults to `NULL`.
 #'  \item t_max - Integer. Maximum diffusion time considered during automatic
-#'  selection via Von Neumann entropy knee point detection. Defaults to `100L`.
+#'  selection via Von Neumann entropy knee point detection. At least `3`, as the
+#'  knee search needs three points. Defaults to `100L`.
 #'  \item t_custom - Integer or `NULL`. Fixed diffusion time. If set, overrides
 #'  automatic time selection. Defaults to `NULL`.
 #'  \item gamma - Numeric. Informational distance parameter for the diffusion
@@ -852,7 +862,7 @@ params_phate <- function(
   # Checks
   checkmate::qassert(decay, "N1(0,)")
   checkmate::qassert(bandwidth_scale, c("N1(0,)", "0"))
-  checkmate::qassert(t_max, "I1[1,)")
+  checkmate::qassert(t_max, "I1[3,)")
   checkmate::qassert(t_custom, c("I1[1,)", "0"))
   checkmate::qassert(gamma, "N1[-1,1]")
   checkmate::qassert(thresh, "N1[0,)")
