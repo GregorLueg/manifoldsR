@@ -48,9 +48,15 @@
 - `rs_approx_nearest_neighbours()` renames `ann_params` to `nn_params`.
 - `diffusion_maps()` with spectral landmarks and `n_svd = NULL` takes 100
   singular vectors rather than 10.
+- With `n_epochs = NULL`, only the SGD optimisers drop to 200 epochs above 10k
+  samples, as in `umap-learn`. Sequential `"adam"` now always gets 500, so its
+  embeddings change at the same seed.
 
 ## Features
 
+- `params_umap()` gains `optimiser = "sgd_parallel"`, a lock-free Hogwild!
+  style SGD for `umap()` and `densmap()`. Not reproducible run to run with more
+  than one thread.
 - `params_phate()` gains `thresh` and `mds_iter`. `n_svd` and `mds_iter` are now
   honoured with landmarks.
 
