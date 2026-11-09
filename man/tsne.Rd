@@ -22,8 +22,9 @@ tsne(
 samples x features. Will be coerced to a matrix.}
 
 \item{knn}{Optional \code{NearestNeighbours} class. If provided, t-SNE will skip
-the k-nearest neighbour graph generation and use this one. Defaults to
-\code{NULL}.}
+the k-nearest neighbour graph generation and use this one. Needs more
+neighbours than \code{perplexity}; the internal search uses \code{3 * perplexity}.
+Defaults to \code{NULL}.}
 
 \item{n_dim}{Integer. Number of dimensions in the embedding space.
 Currently only \code{2L} is supported. Defaults to \code{2L}.}
@@ -52,7 +53,9 @@ or \code{"exhaustive"}. Defaults to \code{"ivf"}.}
 
 \item{seed}{Integer. Random seed for reproducibility.}
 
-\item{.verbose}{Logical. Controls verbosity. Defaults to \code{TRUE}.}
+\item{.verbose}{Logical or integer. Controls verbosity. \code{TRUE} or \code{1L} prints
+timed stages and epochs every 50, \code{2L} adds parameters and the kNN internals,
+\code{FALSE} or \code{0L} is silent. Defaults to \code{TRUE}.}
 }
 \value{
 A numerical matrix with dimensions samples x n_dim containing

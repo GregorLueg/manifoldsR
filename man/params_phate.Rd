@@ -24,8 +24,7 @@ params_phate(
 Higher values create sharper transitions. Defaults to \code{40.0}.}
 
 \item{bandwidth_scale}{Numeric or \code{NULL}. Scaling factor applied to the
-kernel bandwidth. If \code{NULL}, the library selects a sensible default. Defaults
-to \code{NULL}.}
+kernel bandwidth. If \code{NULL}, uses \code{1.0}. Defaults to \code{NULL}.}
 
 \item{t_max}{Integer. Maximum diffusion time considered during automatic
 selection via Von Neumann entropy knee point detection. Defaults to \code{100L}.}
@@ -34,21 +33,21 @@ selection via Von Neumann entropy knee point detection. Defaults to \code{100L}.
 automatic time selection. Defaults to \code{NULL}.}
 
 \item{gamma}{Numeric. Informational distance parameter for the diffusion
-potential. Defaults to \code{1.0}.}
+potential. \code{1} is the log potential. Defaults to \code{1.0}.}
 
 \item{thresh}{Numeric. Sparsity threshold on the kernel. Neighbours past \code{k}
 join the kernel while their affinity clears it. Defaults to \code{1e-04}.}
 
 \item{n_landmarks}{Integer or \code{NULL}. Number of landmarks for compressed
-diffusion. If \code{NULL}, the full N x N diffusion operator is used. Defaults to
-\code{2048L}.}
+diffusion. If \code{NULL}, or at least the number of samples, the full N x N
+diffusion operator is used. Defaults to \code{2048L}.}
 
 \item{landmark_method}{String. Method used to select landmarks. One of
 \code{c("spectral", "random", "density")}. Defaults to \code{"spectral"}.}
 
-\item{n_svd}{Integer or \code{NULL}. Number of SVD components used in landmark
-construction. If \code{NULL}, the library selects a sensible default. Defaults to
-\code{NULL}.}
+\item{n_svd}{Integer or \code{NULL}. Number of singular vectors for spectral
+landmark selection. If \code{NULL}, uses \code{100}. Ignored by the other landmark
+methods. Defaults to \code{NULL}.}
 
 \item{mds_method}{String. MDS algorithm used for the final embedding. One of
 \code{c("sgd_dense", "classic")}. Defaults to \code{"sgd_dense"}.}
@@ -67,24 +66,23 @@ A named list with the following elements:
 \item decay - Numeric. Alpha decay parameter controlling the kernel
 bandwidth. Higher values create sharper transitions. Defaults to \code{40.0}.
 \item bandwidth_scale - Numeric or \code{NULL}. Scaling factor applied to the
-kernel bandwidth. If \code{NULL}, the library selects a sensible default.
-Defaults to \code{NULL}.
+kernel bandwidth. If \code{NULL}, uses \code{1.0}. Defaults to \code{NULL}.
 \item t_max - Integer. Maximum diffusion time considered during automatic
 selection via Von Neumann entropy knee point detection. Defaults to \code{100L}.
 \item t_custom - Integer or \code{NULL}. Fixed diffusion time. If set, overrides
 automatic time selection. Defaults to \code{NULL}.
 \item gamma - Numeric. Informational distance parameter for the diffusion
-potential. Defaults to \code{1.0}.
+potential. \code{1} is the log potential. Defaults to \code{1.0}.
 \item thresh - Numeric. Sparsity threshold on the kernel. Neighbours past
 \code{k} join the kernel while their affinity clears it. Defaults to \code{1e-04}.
 \item n_landmarks - Integer or \code{NULL}. Number of landmarks for compressed
-diffusion. If \code{NULL}, the full N x N diffusion operator is used. Defaults to
-\code{2048L}.
+diffusion. If \code{NULL}, or at least the number of samples, the full N x N
+diffusion operator is used. Defaults to \code{2048L}.
 \item landmark_method - String. Method used to select landmarks. One of
 \code{c("spectral", "random", "density")}. Defaults to \code{"spectral"}.
-\item n_svd - Integer or \code{NULL}. Number of SVD components used in landmark
-construction. If \code{NULL}, the library selects a sensible default. Defaults to
-\code{NULL}.
+\item n_svd - Integer or \code{NULL}. Number of singular vectors for spectral
+landmark selection. If \code{NULL}, uses \code{100}. Ignored by the other landmark
+methods. Defaults to \code{NULL}.
 \item mds_method - String. MDS algorithm used for the final embedding. One
 of \code{c("sgd_dense", "classic")}. Defaults to \code{"sgd_dense"}.
 \item mds_iter - Integer or \code{NULL}. Number of SGD-MDS iterations. If \code{NULL},

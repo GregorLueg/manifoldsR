@@ -49,7 +49,8 @@
 #' @param data Numerical matrix or data frame. The data to embed of shape
 #' samples x features. Will be coerced to a matrix.
 #' @param knn Optional `NearestNeighbours` class. If provided, the k-nearest
-#' neighbour search is skipped and this one is used. Defaults to `NULL`.
+#' neighbour search is skipped and this one is used. A wider graph is cut to
+#' `k`, with a warning on stderr. Defaults to `NULL`.
 #' @param k Integer. Number of nearest neighbours. Defaults to `15L`.
 #' @param knn_method Character. (Approximate) Nearest neighbour method to use.
 #' One of `"kmknn"`, `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, `"ivf"`
@@ -58,7 +59,9 @@
 #' [params_nn()].
 #' @param fa2_params Named list. ForceAtlas2 parameters, see [params_fa2()].
 #' @param seed Integer. Random seed for reproducibility. Defaults to `42L`.
-#' @param .verbose Logical. Controls verbosity. Defaults to `TRUE`.
+#' @param .verbose Logical or integer. Controls verbosity. `TRUE` or `1L` prints
+#' timed stages and epochs every 50, `2L` adds parameters and the kNN internals,
+#' `FALSE` or `0L` is silent. Defaults to `TRUE`.
 #'
 #' @return A numerical matrix with dimensions samples x 2 containing the
 #' ForceAtlas2 layout.
@@ -117,9 +120,6 @@ forceatlas2 <- function(
   )
 
   res <- if (!is.null(knn)) {
-    if (.verbose) {
-      message("Using provided kNN graph.")
-    }
     rs_forceatlas2_from_knn(
       embd = data,
       knn_data = knn,
@@ -158,7 +158,9 @@ forceatlas2 <- function(
 #' layout is used. Defaults to `NULL`.
 #' @param fa2_params Named list. ForceAtlas2 parameters, see [params_fa2()].
 #' @param seed Integer. Random seed for reproducibility. Defaults to `42L`.
-#' @param .verbose Logical. Controls verbosity. Defaults to `TRUE`.
+#' @param .verbose Logical or integer. Controls verbosity. `TRUE` or `1L` prints
+#' timed stages and epochs every 50, `2L` adds parameters and the kNN internals,
+#' `FALSE` or `0L` is silent. Defaults to `TRUE`.
 #'
 #' @return A numerical matrix with dimensions `vcount(graph) x 2` containing
 #' the ForceAtlas2 layout, rows in vertex order.

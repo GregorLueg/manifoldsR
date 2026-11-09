@@ -41,7 +41,8 @@ provided, it is returned as-is. Defaults to \code{FALSE}.}
 
 \item{seed}{Integer. Random seed for reproducibility. Defaults to \code{42L}.}
 
-\item{.verbose}{Logical. Controls verbosity. Defaults to \code{TRUE}.}
+\item{.verbose}{Logical or integer \code{0L} to \code{2L}. Controls verbosity. Defaults
+to \code{TRUE}.}
 }
 \value{
 An \code{Evoc} S3 object (see \link{print.Evoc}, \link{best_membership},

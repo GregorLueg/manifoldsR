@@ -13,7 +13,8 @@ features.}
 \item{n_dim}{Integer. Number of PHATE dimensions to return. Currently only
 \code{2L} is supported.}
 
-\item{k}{Integer. Number of nearest neighbours for graph construction.}
+\item{k}{Integer. Number of nearest neighbours that set the kernel bandwidth.
+The kNN search itself runs \code{6 * k + 5} wide.}
 
 \item{phate_params}{Named list. Contains all key parameters for PHATE,
 see \code{\link[=params_phate]{params_phate()}} and \code{\link[=params_nn]{params_nn()}}.}

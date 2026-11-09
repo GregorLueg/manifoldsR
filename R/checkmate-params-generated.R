@@ -684,7 +684,7 @@ checkPhateParams <- function(x) {
       bandwidth_scale = c("N1(0,)", "0"),
       t_max = "I1[1,)",
       t_custom = c("I1[1,)", "0"),
-      gamma = "N1",
+      gamma = "N1[-1,1]",
       thresh = "N1[0,)",
       n_landmarks = c("I1[1,)", "0"),
       n_svd = c("I1[1,)", "0"),

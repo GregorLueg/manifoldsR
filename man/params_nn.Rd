@@ -22,8 +22,8 @@ params_nn(
 
 \item{n_tree}{Integer. Number of trees for Annoy. Defaults to \code{50L}.}
 
-\item{search_budget}{Integer or \code{NULL}. Search budget for Annoy. Defaults to
-\code{NULL}.}
+\item{search_budget}{Integer or \code{NULL}. Search budget for Annoy. If \code{NULL},
+uses \code{k * n_tree * 20}. Defaults to \code{NULL}.}
 
 \item{m}{Integer. Number of bidirectional links for HNSW. Defaults to \code{16L}.}
 
@@ -50,8 +50,8 @@ A named list with the following elements:
 \item dist_metric - String. The distance metric to use. One of
 \code{c("euclidean", "cosine")}. Defaults to \code{"euclidean"}.
 \item n_tree - Integer. Number of trees for Annoy. Defaults to \code{50L}.
-\item search_budget - Integer or \code{NULL}. Search budget for Annoy. Defaults
-to \code{NULL}.
+\item search_budget - Integer or \code{NULL}. Search budget for Annoy. If \code{NULL},
+uses \code{k * n_tree * 20}. Defaults to \code{NULL}.
 \item m - Integer. Number of bidirectional links for HNSW. Defaults to
 \code{16L}.
 \item ef_construction - Integer. Size of the dynamic candidate list during

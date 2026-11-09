@@ -41,7 +41,9 @@ scaled distance.}
 
 \item{seed}{Integer. Random seed for reproducibility. Defaults to \code{42L}.}
 
-\item{.verbose}{Logical. Controls verbosity. Defaults to \code{TRUE}.}
+\item{.verbose}{Logical or integer. Controls verbosity. \code{TRUE} or \code{1L} prints
+timed stages and epochs every 50, \code{2L} adds parameters and the kNN internals,
+\code{FALSE} or \code{0L} is silent. Defaults to \code{TRUE}.}
 }
 \value{
 A numerical matrix with dimensions samples x n_dim containing

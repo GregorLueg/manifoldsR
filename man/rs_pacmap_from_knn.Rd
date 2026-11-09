@@ -10,7 +10,8 @@ rs_pacmap_from_knn(embd, knn_data, n_dim, pacmap_params, seed, verbose)
 \item{embd}{Numerical matrix. The data to use to generate the embeddings.
 Should be of dimensions samples x features.}
 
-\item{knn_data}{\code{NearestNeighbours} class from R.}
+\item{knn_data}{\code{NearestNeighbours} class from R. Needs at least \code{n_near}
+neighbours, and should be \code{n_near + 50} wide to match the internal search.}
 
 \item{n_dim}{Integer. Number of dimensions to return.}
 

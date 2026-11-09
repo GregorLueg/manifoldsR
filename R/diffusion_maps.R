@@ -50,8 +50,8 @@
 #' @param data Numerical matrix or data frame. The data to embed of shape
 #' samples x features. Will be coerced to a matrix.
 #' @param knn Optional `NearestNeighbours` class. If provided, diffusion maps
-#' will skip the k-nearest neighbour graph generation and use this one.
-#' Defaults to `NULL`.
+#' will skip the k-nearest neighbour graph generation and use this one. Every
+#' neighbour in the graph is used, whatever `k` is. Defaults to `NULL`.
 #' @param n_dim Integer. Number of dimensions in the embedding space.
 #' Defaults to `2L`.
 #' @param k Integer. Number of nearest neighbours to consider for the
@@ -64,7 +64,9 @@
 #' @param dm_params Named list. Diffusion maps algorithm parameters, see
 #' [params_diffusion_maps()].
 #' @param seed Integer. Random seed for reproducibility. Defaults to `42L`.
-#' @param .verbose Logical. Controls verbosity. Defaults to `TRUE`.
+#' @param .verbose Logical or integer. Controls verbosity. `TRUE` or `1L` prints
+#' timed stages and epochs every 50, `2L` adds parameters and the kNN internals,
+#' `FALSE` or `0L` is silent. Defaults to `TRUE`.
 #'
 #' @return A numerical matrix with dimensions samples x n_dim containing the
 #' diffusion maps embedding.
@@ -122,9 +124,6 @@ diffusion_maps <- function(
   )
 
   res <- if (!is.null(knn)) {
-    if (.verbose) {
-      message("Using provided kNN graph.")
-    }
     rs_diffusion_maps_from_knn(
       embd = data,
       knn_data = knn,

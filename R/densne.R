@@ -55,8 +55,9 @@
 #' @param data Numerical matrix or data frame. The data to embed of shape
 #' samples x features. Will be coerced to a matrix.
 #' @param knn Optional `NearestNeighbours` class. If provided, den-SNE will skip
-#' the k-nearest neighbour graph generation and use this one. Defaults to
-#' `NULL`.
+#' the k-nearest neighbour graph generation and use this one. Needs more
+#' neighbours than `perplexity`; the internal search uses `3 * perplexity`.
+#' Defaults to `NULL`.
 #' @param n_dim Integer. Number of dimensions in the embedding space.
 #' Currently only `2L` is supported. Defaults to `2L`.
 #' @param perplexity Numeric. Perplexity parameter, related to the number of
@@ -79,7 +80,9 @@
 #' @param dens_params Named list. Density-preservation parameters, see
 #' [params_densne()].
 #' @param seed Integer. Random seed for reproducibility.
-#' @param .verbose Logical. Controls verbosity. Defaults to `TRUE`.
+#' @param .verbose Logical or integer. Controls verbosity. `TRUE` or `1L` prints
+#' timed stages and epochs every 50, `2L` adds parameters and the kNN internals,
+#' `FALSE` or `0L` is silent. Defaults to `TRUE`.
 #'
 #' @return A numerical matrix with dimensions samples x n_dim containing
 #' the den-SNE embedding.
@@ -154,9 +157,6 @@ densne <- function(
   )
 
   res <- if (!is.null(knn)) {
-    if (.verbose) {
-      message("Using provided kNN graph.")
-    }
     rs_densne_from_knn(
       embd = data,
       knn_data = knn,

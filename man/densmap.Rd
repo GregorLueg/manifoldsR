@@ -24,8 +24,8 @@ densmap(
 samples x features. Will be coerced to a matrix.}
 
 \item{knn}{Optional \code{NearestNeighbours} class. If provided, densMAP will
-skip the k-nearest neighbour graph generation and use this one. Defaults to
-\code{NULL}.}
+skip the k-nearest neighbour graph generation and use this one. A wider graph
+is cut to \code{k}, with a warning on stderr. Defaults to \code{NULL}.}
 
 \item{n_dim}{Integer. Number of dimensions in the embedding space.
 Defaults to \code{2L}.}
@@ -57,7 +57,9 @@ or \code{"exhaustive"}. Defaults to \code{"nndescent"}.}
 
 \item{seed}{Integer. Random seed for reproducibility. Defaults to \code{42L}.}
 
-\item{.verbose}{Logical. Controls verbosity. Defaults to \code{TRUE}.}
+\item{.verbose}{Logical or integer. Controls verbosity. \code{TRUE} or \code{1L} prints
+timed stages and epochs every 50, \code{2L} adds parameters and the kNN internals,
+\code{FALSE} or \code{0L} is silent. Defaults to \code{TRUE}.}
 }
 \value{
 A numerical matrix with dimensions samples x n_dim containing

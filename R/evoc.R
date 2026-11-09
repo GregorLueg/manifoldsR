@@ -63,7 +63,8 @@
 #' @param return_knn Logical. Whether to return the kNN graph. If `knn` is
 #' provided, it is returned as-is. Defaults to `FALSE`.
 #' @param seed Integer. Random seed for reproducibility. Defaults to `42L`.
-#' @param .verbose Logical. Controls verbosity. Defaults to `TRUE`.
+#' @param .verbose Logical or integer `0L` to `2L`. Controls verbosity. Defaults
+#' to `TRUE`.
 #'
 #' @return An `Evoc` S3 object (see [print.Evoc], [best_membership],
 #' [get_layer]).
@@ -120,9 +121,6 @@ evoc <- function(
   )
 
   if (!is.null(knn)) {
-    if (.verbose) {
-      message("Using provided kNN graph.")
-    }
     raw <- rs_evoc_from_knn(
       embd = data,
       knn_data = knn,

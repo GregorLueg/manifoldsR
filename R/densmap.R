@@ -15,7 +15,7 @@
 #' @param nn_params Named list. The nearest neighbour search parameters.
 #' @param umap_params Named list. The UMAP-specific parameters.
 #' @param dens_params Named list. The density-preservation parameters.
-#' @param .verbose Boolean. Controls verbosity
+#' @param .verbose Logical or integer `0L` to `2L`. Controls verbosity.
 #'
 #' @return Returns the list of final parameters.
 #'
@@ -66,8 +66,8 @@
 #' @param data Numerical matrix or data frame. The data to embed of shape
 #' samples x features. Will be coerced to a matrix.
 #' @param knn Optional `NearestNeighbours` class. If provided, densMAP will
-#' skip the k-nearest neighbour graph generation and use this one. Defaults to
-#' `NULL`.
+#' skip the k-nearest neighbour graph generation and use this one. A wider graph
+#' is cut to `k`, with a warning on stderr. Defaults to `NULL`.
 #' @param n_dim Integer. Number of dimensions in the embedding space.
 #' Defaults to `2L`.
 #' @param k Integer. Number of nearest neighbours to consider for manifold
@@ -89,7 +89,9 @@
 #' @param dens_params Named list. Density-preservation parameters, see
 #' [params_densmap()].
 #' @param seed Integer. Random seed for reproducibility. Defaults to `42L`.
-#' @param .verbose Logical. Controls verbosity. Defaults to `TRUE`.
+#' @param .verbose Logical or integer. Controls verbosity. `TRUE` or `1L` prints
+#' timed stages and epochs every 50, `2L` adds parameters and the kNN internals,
+#' `FALSE` or `0L` is silent. Defaults to `TRUE`.
 #'
 #' @return A numerical matrix with dimensions samples x n_dim containing
 #' the densMAP embedding.
@@ -162,9 +164,6 @@ densmap <- function(
 
   # check if knn was provided
   res <- if (!is.null(knn)) {
-    if (.verbose) {
-      message("Using provided kNN graph.")
-    }
     rs_densmap_from_knn(
       embd = data,
       knn_data = knn,

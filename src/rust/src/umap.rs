@@ -59,7 +59,7 @@ where
     ///
     /// ### Returns
     ///
-    /// The `BixverseUmapParams`.
+    /// The `InternalUmapParams`.
     pub fn from_r_list(
         r_list: List,
         min_dist: f64,
@@ -239,19 +239,13 @@ where
 {
     let internal = InternalUmapParams::from_r_list(umap_params, min_dist, spread)?;
 
-    let init_range = if internal.init == "pca" {
-        Some(T::from_f64(1.0).unwrap())
-    } else {
-        None
-    };
-
     Ok(UmapParams::new(
         n_dim,
         k,
         internal.optimiser,
         internal.knn_method,
         internal.init,
-        init_range,
+        None,
         internal.param_knn,
         internal.param_optimiser,
         internal.umap_graph,

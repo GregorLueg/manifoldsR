@@ -137,13 +137,14 @@ params_densne <- function(
 #' @param t_custom Integer or `NULL`. Fixed diffusion time. If set, overrides
 #' automatic time selection. Defaults to `NULL`.
 #' @param n_landmarks Integer or `NULL`. Number of landmarks for compressed
-#' diffusion. If `NULL`, the full N x N diffusion operator is used. Defaults to
-#' `2048L`.
+#' diffusion. If `NULL`, or at least the number of samples, the full N x N
+#' diffusion operator is used. The default is specific to this package;
+#' `manifolds-rs` defaults to the full operator. Defaults to `2048L`.
 #' @param landmark_method String. Method used to select landmarks. One of
 #' `c("spectral", "random", "density")`. Defaults to `"spectral"`.
-#' @param n_svd Integer or `NULL`. Number of SVD components used in landmark
-#' construction. If `NULL`, the library selects a sensible default. Defaults to
-#' `NULL`.
+#' @param n_svd Integer or `NULL`. Number of singular vectors for spectral
+#' landmark selection. If `NULL`, uses `100`. Ignored by the other landmark
+#' methods. Defaults to `NULL`.
 #'
 #' @returns A named list with the following elements:
 #' \itemize{
@@ -162,13 +163,14 @@ params_densne <- function(
 #'  \item t_custom - Integer or `NULL`. Fixed diffusion time. If set, overrides
 #'  automatic time selection. Defaults to `NULL`.
 #'  \item n_landmarks - Integer or `NULL`. Number of landmarks for compressed
-#'  diffusion. If `NULL`, the full N x N diffusion operator is used. Defaults to
-#'  `2048L`.
+#'  diffusion. If `NULL`, or at least the number of samples, the full N x N
+#'  diffusion operator is used. The default is specific to this package;
+#'  `manifolds-rs` defaults to the full operator. Defaults to `2048L`.
 #'  \item landmark_method - String. Method used to select landmarks. One of
 #'  `c("spectral", "random", "density")`. Defaults to `"spectral"`.
-#'  \item n_svd - Integer or `NULL`. Number of SVD components used in landmark
-#'  construction. If `NULL`, the library selects a sensible default. Defaults to
-#'  `NULL`.
+#'  \item n_svd - Integer or `NULL`. Number of singular vectors for spectral
+#'  landmark selection. If `NULL`, uses `100`. Ignored by the other landmark
+#'  methods. Defaults to `NULL`.
 #' }
 #'
 #' @export
@@ -586,8 +588,8 @@ params_kmeans <- function(
 #' @param dist_metric String. The distance metric to use. One of `c("euclidean",
 #' "cosine")`. Defaults to `"euclidean"`.
 #' @param n_tree Integer. Number of trees for Annoy. Defaults to `50L`.
-#' @param search_budget Integer or `NULL`. Search budget for Annoy. Defaults to
-#' `NULL`.
+#' @param search_budget Integer or `NULL`. Search budget for Annoy. If `NULL`,
+#' uses `k * n_tree * 20`. Defaults to `NULL`.
 #' @param m Integer. Number of bidirectional links for HNSW. Defaults to `16L`.
 #' @param ef_construction Integer. Size of the dynamic candidate list during
 #' HNSW construction. Defaults to `200L`.
@@ -606,8 +608,8 @@ params_kmeans <- function(
 #'  \item dist_metric - String. The distance metric to use. One of
 #'  `c("euclidean", "cosine")`. Defaults to `"euclidean"`.
 #'  \item n_tree - Integer. Number of trees for Annoy. Defaults to `50L`.
-#'  \item search_budget - Integer or `NULL`. Search budget for Annoy. Defaults
-#'  to `NULL`.
+#'  \item search_budget - Integer or `NULL`. Search budget for Annoy. If `NULL`,
+#'  uses `k * n_tree * 20`. Defaults to `NULL`.
 #'  \item m - Integer. Number of bidirectional links for HNSW. Defaults to
 #'  `16L`.
 #'  \item ef_construction - Integer. Size of the dynamic candidate list during
@@ -667,12 +669,16 @@ params_nn <- function(
 
 #' Wrapper function to generate PaCMAP parameters
 #'
-#' @param n_near Integer. Near pairs per point (attractive). Defaults to `10L`.
-#' @param n_mid_near Integer. Mid-near pairs per point. Defaults to `5L`.
-#' @param n_further Integer. Further (random) pairs per point. Defaults to
-#' `20L`.
-#' @param init String. Embedding initialisation. One of `c("pca", "random")`.
-#' Defaults to `"pca"`.
+#' @param n_near Integer. Near pairs per point (attractive). The kNN search runs
+#' `n_near + 50` wide and the pairs are the best of those by locally scaled
+#' distance. Defaults to `10L`.
+#' @param n_mid_near Integer. Mid-near pairs per point. Each one is the second
+#' closest of six random points. Defaults to `5L`.
+#' @param n_further Integer. Further (random) pairs per point. These exclude the
+#' near pairs. Defaults to `20L`.
+#' @param init String. Embedding initialisation. `"pca"` uses the PC scores
+#' times `0.01`, so the ratio between the components survives. One of `c("pca",
+#' "random")`. Defaults to `"pca"`.
 #' @param optimiser String. The optimiser. One of `c("adam_parallel", "adam")`.
 #' Defaults to `"adam_parallel"`.
 #' @param lr Numeric. Adam learning rate. Defaults to `1.0`.
@@ -688,13 +694,16 @@ params_nn <- function(
 #'
 #' @returns A named list with the following elements:
 #' \itemize{
-#'  \item n_near - Integer. Near pairs per point (attractive). Defaults to
-#'  `10L`.
-#'  \item n_mid_near - Integer. Mid-near pairs per point. Defaults to `5L`.
-#'  \item n_further - Integer. Further (random) pairs per point. Defaults to
-#'  `20L`.
-#'  \item init - String. Embedding initialisation. One of `c("pca", "random")`.
-#'  Defaults to `"pca"`.
+#'  \item n_near - Integer. Near pairs per point (attractive). The kNN search
+#'  runs `n_near + 50` wide and the pairs are the best of those by locally
+#'  scaled distance. Defaults to `10L`.
+#'  \item n_mid_near - Integer. Mid-near pairs per point. Each one is the second
+#'  closest of six random points. Defaults to `5L`.
+#'  \item n_further - Integer. Further (random) pairs per point. These exclude
+#'  the near pairs. Defaults to `20L`.
+#'  \item init - String. Embedding initialisation. `"pca"` uses the PC scores
+#'  times `0.01`, so the ratio between the components survives. One of `c("pca",
+#'  "random")`. Defaults to `"pca"`.
 #'  \item optimiser - String. The optimiser. One of `c("adam_parallel",
 #'  "adam")`. Defaults to `"adam_parallel"`.
 #'  \item lr - Numeric. Adam learning rate. Defaults to `1.0`.
@@ -763,24 +772,23 @@ params_pacmap <- function(
 #' @param decay Numeric. Alpha decay parameter controlling the kernel bandwidth.
 #' Higher values create sharper transitions. Defaults to `40.0`.
 #' @param bandwidth_scale Numeric or `NULL`. Scaling factor applied to the
-#' kernel bandwidth. If `NULL`, the library selects a sensible default. Defaults
-#' to `NULL`.
+#' kernel bandwidth. If `NULL`, uses `1.0`. Defaults to `NULL`.
 #' @param t_max Integer. Maximum diffusion time considered during automatic
 #' selection via Von Neumann entropy knee point detection. Defaults to `100L`.
 #' @param t_custom Integer or `NULL`. Fixed diffusion time. If set, overrides
 #' automatic time selection. Defaults to `NULL`.
 #' @param gamma Numeric. Informational distance parameter for the diffusion
-#' potential. Defaults to `1.0`.
+#' potential. `1` is the log potential. Defaults to `1.0`.
 #' @param thresh Numeric. Sparsity threshold on the kernel. Neighbours past `k`
 #' join the kernel while their affinity clears it. Defaults to `1e-04`.
 #' @param n_landmarks Integer or `NULL`. Number of landmarks for compressed
-#' diffusion. If `NULL`, the full N x N diffusion operator is used. Defaults to
-#' `2048L`.
+#' diffusion. If `NULL`, or at least the number of samples, the full N x N
+#' diffusion operator is used. Defaults to `2048L`.
 #' @param landmark_method String. Method used to select landmarks. One of
 #' `c("spectral", "random", "density")`. Defaults to `"spectral"`.
-#' @param n_svd Integer or `NULL`. Number of SVD components used in landmark
-#' construction. If `NULL`, the library selects a sensible default. Defaults to
-#' `NULL`.
+#' @param n_svd Integer or `NULL`. Number of singular vectors for spectral
+#' landmark selection. If `NULL`, uses `100`. Ignored by the other landmark
+#' methods. Defaults to `NULL`.
 #' @param mds_method String. MDS algorithm used for the final embedding. One of
 #' `c("sgd_dense", "classic")`. Defaults to `"sgd_dense"`.
 #' @param mds_iter Integer or `NULL`. Number of SGD-MDS iterations. If `NULL`,
@@ -795,24 +803,23 @@ params_pacmap <- function(
 #'  \item decay - Numeric. Alpha decay parameter controlling the kernel
 #'  bandwidth. Higher values create sharper transitions. Defaults to `40.0`.
 #'  \item bandwidth_scale - Numeric or `NULL`. Scaling factor applied to the
-#'  kernel bandwidth. If `NULL`, the library selects a sensible default.
-#'  Defaults to `NULL`.
+#'  kernel bandwidth. If `NULL`, uses `1.0`. Defaults to `NULL`.
 #'  \item t_max - Integer. Maximum diffusion time considered during automatic
 #'  selection via Von Neumann entropy knee point detection. Defaults to `100L`.
 #'  \item t_custom - Integer or `NULL`. Fixed diffusion time. If set, overrides
 #'  automatic time selection. Defaults to `NULL`.
 #'  \item gamma - Numeric. Informational distance parameter for the diffusion
-#'  potential. Defaults to `1.0`.
+#'  potential. `1` is the log potential. Defaults to `1.0`.
 #'  \item thresh - Numeric. Sparsity threshold on the kernel. Neighbours past
 #'  `k` join the kernel while their affinity clears it. Defaults to `1e-04`.
 #'  \item n_landmarks - Integer or `NULL`. Number of landmarks for compressed
-#'  diffusion. If `NULL`, the full N x N diffusion operator is used. Defaults to
-#'  `2048L`.
+#'  diffusion. If `NULL`, or at least the number of samples, the full N x N
+#'  diffusion operator is used. Defaults to `2048L`.
 #'  \item landmark_method - String. Method used to select landmarks. One of
 #'  `c("spectral", "random", "density")`. Defaults to `"spectral"`.
-#'  \item n_svd - Integer or `NULL`. Number of SVD components used in landmark
-#'  construction. If `NULL`, the library selects a sensible default. Defaults to
-#'  `NULL`.
+#'  \item n_svd - Integer or `NULL`. Number of singular vectors for spectral
+#'  landmark selection. If `NULL`, uses `100`. Ignored by the other landmark
+#'  methods. Defaults to `NULL`.
 #'  \item mds_method - String. MDS algorithm used for the final embedding. One
 #'  of `c("sgd_dense", "classic")`. Defaults to `"sgd_dense"`.
 #'  \item mds_iter - Integer or `NULL`. Number of SGD-MDS iterations. If `NULL`,
@@ -847,7 +854,7 @@ params_phate <- function(
   checkmate::qassert(bandwidth_scale, c("N1(0,)", "0"))
   checkmate::qassert(t_max, "I1[1,)")
   checkmate::qassert(t_custom, c("I1[1,)", "0"))
-  checkmate::qassert(gamma, "N1")
+  checkmate::qassert(gamma, "N1[-1,1]")
   checkmate::qassert(thresh, "N1[0,)")
   checkmate::qassert(n_landmarks, c("I1[1,)", "0"))
   checkmate::assertChoice(landmark_method, c("spectral", "random", "density"))

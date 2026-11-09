@@ -62,7 +62,9 @@
 #' @param phate_params Named list. PHATE algorithm parameters, see
 #' [params_phate()].
 #' @param seed Integer. Random seed for reproducibility. Defaults to `42L`.
-#' @param .verbose Logical. Controls verbosity. Defaults to `TRUE`.
+#' @param .verbose Logical or integer. Controls verbosity. `TRUE` or `1L` prints
+#' timed stages and epochs every 50, `2L` adds parameters and the kNN internals,
+#' `FALSE` or `0L` is silent. Defaults to `TRUE`.
 #'
 #' @return A numerical matrix with dimensions samples x n_dim containing
 #' the PHATE embedding.
@@ -143,9 +145,6 @@ phate <- function(
   }
 
   res <- if (!is.null(knn)) {
-    if (.verbose) {
-      message("Using provided kNN graph.")
-    }
     rs_phate_from_knn(
       embd = data,
       knn_data = knn,

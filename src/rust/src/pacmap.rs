@@ -166,7 +166,7 @@ where
 ///
 /// * `data` - Input data matrix of shape samples × features.
 /// * `pre_computed_knn` - Optional pre-computed kNN to be used.
-/// * `n_dim` - Number of output dimensions. Currently only `2` is supported.
+/// * `n_dim` - Number of output dimensions.
 /// * `pacmap_params` - R list that contains the Pacmap parameters.
 /// * `seed` - Seed for reproducibility
 /// * `verbose` - If `0` -> silent or `1` for normal verbosity, `2` for detailed

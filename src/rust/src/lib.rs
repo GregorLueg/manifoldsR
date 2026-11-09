@@ -827,7 +827,8 @@ fn rs_dreams_from_knn(
 /// features.
 /// @param n_dim Integer. Number of PHATE dimensions to return. Currently only
 /// `2L` is supported.
-/// @param k Integer. Number of nearest neighbours for graph construction.
+/// @param k Integer. Number of nearest neighbours that set the kernel bandwidth.
+/// The kNN search itself runs `6 * k + 5` wide.
 /// @param phate_params Named list. Contains all key parameters for PHATE,
 /// see [params_phate()] and [params_nn()].
 /// @param seed Integer. Seed for reproducibility.
@@ -866,8 +867,9 @@ fn rs_phate(
 /// @param knn_data `NearestNeighbours` class from R.
 /// @param n_dim Integer. Number of PHATE dimensions to return. Currently only
 /// `2L` is supported.
-/// @param k Integer. Number of nearest neighbours used during graph
-/// construction. Must match the k used to generate `knn_data`.
+/// @param k Integer. Number of nearest neighbours that set the kernel bandwidth.
+/// Every neighbour in `knn_data` can join the kernel while its affinity clears
+/// `thresh`, so build it `6 * k + 5` wide to match the internal search.
 /// @param phate_params Named list. Contains all key parameters for PHATE,
 /// see [params_phate()] and [params_nn()].
 /// @param seed Integer. Seed for reproducibility.
@@ -945,7 +947,8 @@ fn rs_pacmap(
 ///
 /// @param embd Numerical matrix. The data to use to generate the embeddings.
 /// Should be of dimensions samples x features.
-/// @param knn_data `NearestNeighbours` class from R.
+/// @param knn_data `NearestNeighbours` class from R. Needs at least `n_near`
+/// neighbours, and should be `n_near + 50` wide to match the internal search.
 /// @param n_dim Integer. Number of dimensions to return.
 /// @param pacmap_params Named list. List that contains all of the key
 /// parameters for the PaCMAP generation.

@@ -29,8 +29,7 @@ pub struct InternalPhateParams<T> {
     pub graph_symmetry: String,
     /// Alpha decay parameter controlling the kernel bandwidth.
     pub decay: Option<T>,
-    /// Scaling factor for the bandwidth. `None` lets the library select a
-    /// sensible default.
+    /// Scaling factor for the bandwidth. `None` uses `1.0`.
     pub bandwidth_scale: Option<T>,
     /// Maximum diffusion time considered during automatic selection via
     /// Von Neumann entropy knee point detection.
@@ -41,14 +40,14 @@ pub struct InternalPhateParams<T> {
     pub gamma: Option<T>,
     /// Sparsity threshold applied to the kernel entries.
     pub thresh: T,
-    /// Number of landmarks for compressed diffusion. `None` uses the full N × N
-    /// diffusion operator.
+    /// Number of landmarks for compressed diffusion. `None`, or a value of at
+    /// least the number of samples, uses the full N × N diffusion operator.
     pub n_landmarks: Option<usize>,
     /// Method used to select landmarks. One of `"spectral"`, `"random"`, or
     /// `"density"`.
     pub landmark_method: String,
-    /// Number of SVD components. `None` lets the library select a sensible
-    /// default.
+    /// Singular vectors for spectral landmark selection. `None` uses
+    /// `LANDMARK_DEFAULT_N_SVD` from `manifolds-rs`.
     pub n_svd: Option<usize>,
     /// MDS algorithm. One of `"sgd_dense"` or `"classic"`.
     pub mds_method: String,
@@ -66,7 +65,7 @@ where
 {
     /// Construct `InternalPhateParams` from an R named list.
     ///
-    /// Delegates to `get_params_nn` and `get_params_phate` for their
+    /// Delegates to `get_params_nn_manifolds` and `get_params_phate` for their
     /// respective parameter subsets, then extracts `knn_method` directly
     /// from the top-level list.
     ///
@@ -216,7 +215,8 @@ where
 /// * `data` - Input data matrix of shape samples × features.
 /// * `pre_computed_knn` - Optional pre-computed kNN to be used.
 /// * `n_dim` - Number of output dimensions. Currently only `2` is supported.
-/// * `k` - Number of nearest neighbours for graph construction.
+/// * `k` - Neighbours that set the kernel bandwidth. The kNN search itself runs
+///   `6 * k + 5` wide.
 /// * `phate_params` - Named R list of parameters, as produced by
 ///   `params_phate()` and `params_nn()` on the R side.
 /// * `seed` - Random seed for reproducibility.

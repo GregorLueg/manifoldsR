@@ -33,7 +33,7 @@
 #' @param nn_params List. Output of [manifoldsR::params_nn()]. Controls
 #' algorithm-specific parameters.
 #' @param seed Integer. For reproducibility. Defaults to `42L`.
-#' @param .verbose Boolean. Controls verbosity.
+#' @param .verbose Logical or integer `0L` to `2L`. Controls verbosity.
 #'
 #' @return A nearest neighbours class object with 1-indexed neighbour indices
 #' and distances. Distances are on the scale of the metric they are named

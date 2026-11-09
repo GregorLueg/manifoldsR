@@ -972,6 +972,7 @@ dependencies = [
 [[package]]
 name = "manifolds-rs"
 version = "0.9.0"
+source = "git+https://github.com/GregorLueg/manifolds-rs?branch=doc-param-clean#1d6a0983a62afc9246f9364f0a5901d4787ce437"
 dependencies = [
  "ann-search-rs",
  "approx",

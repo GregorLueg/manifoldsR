@@ -55,8 +55,9 @@
 #' @param data Numerical matrix or data frame. The data to embed of shape
 #' samples x features. Will be coerced to a matrix.
 #' @param knn Optional `NearestNeighbours` class. If provided, DREAMS will skip
-#' the k-nearest neighbour graph generation and use this one. Defaults to
-#' `NULL`.
+#' the k-nearest neighbour graph generation and use this one. Needs more
+#' neighbours than `perplexity`; the internal search uses `3 * perplexity`.
+#' Defaults to `NULL`.
 #' @param reference Optional numerical matrix or data frame of shape
 #' samples x 2. Global reference embedding to regularise towards, e.g. a PHATE
 #' or MDS result. If `NULL`, the first two principal components are used.
@@ -82,7 +83,9 @@
 #' [params_tsne()].
 #' @param dreams_params Named list. DREAMS parameters, see [params_dreams()].
 #' @param seed Integer. Random seed for reproducibility.
-#' @param .verbose Logical. Controls verbosity. Defaults to `TRUE`.
+#' @param .verbose Logical or integer. Controls verbosity. `TRUE` or `1L` prints
+#' timed stages and epochs every 50, `2L` adds parameters and the kNN internals,
+#' `FALSE` or `0L` is silent. Defaults to `TRUE`.
 #'
 #' @return A numerical matrix with dimensions samples x n_dim containing
 #' the DREAMS embedding.
@@ -175,9 +178,6 @@ dreams <- function(
   )
 
   res <- if (!is.null(knn)) {
-    if (.verbose) {
-      message("Using provided kNN graph.")
-    }
     rs_dreams_from_knn(
       embd = data,
       knn_data = knn,

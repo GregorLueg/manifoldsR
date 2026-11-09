@@ -29,7 +29,7 @@ algorithm-specific parameters.}
 
 \item{seed}{Integer. For reproducibility. Defaults to \code{42L}.}
 
-\item{.verbose}{Boolean. Controls verbosity.}
+\item{.verbose}{Logical or integer \code{0L} to \code{2L}. Controls verbosity.}
 }
 \value{
 A nearest neighbours class object with 1-indexed neighbour indices

@@ -94,8 +94,8 @@ where
 /// Helper function to generate the density-preservation parameters
 ///
 /// Shared by densMAP and den-SNE. A missing key falls through to the default
-/// in `manifolds-rs`, which is `lambda = 2.0` (the densMAP weight) - den-SNE
-/// wants `0.1`, so the R layer always supplies all three.
+/// in `manifolds-rs`, which is `lambda = 2.0` (the densMAP weight). den-SNE
+/// needs a smaller one, so the R layer always supplies all three.
 ///
 /// ### Params
 ///
