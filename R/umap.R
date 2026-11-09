@@ -51,25 +51,24 @@
   final_params[["spread"]] <- spread
   final_params[["knn_method"]] <- knn_method
 
-  # determine n_epochs if not specified
+  # determine n_epochs if not specified; SGD drops to 200 on large data like
+  # umap-learn, Adam always gets 500
   if (is.null(final_params$n_epochs)) {
-    if (final_params$optimiser == "adam_parallel" | n <= 10000L) {
+    sgd <- final_params$optimiser %in% c("sgd", "sgd_parallel")
+    if (sgd && n > 10000L) {
       if (.verbose) {
         message(
-          paste(
-            "Using n_epochs = 500",
-            "(dataset <10k samples or adam_parallel optimiser)"
-          )
-        )
-      }
-      final_params$n_epochs <- 500L
-    } else {
-      if (.verbose) {
-        message(
-          "Using n_epochs = 200 (dataset >10k samples with sgd/adam optimiser)"
+          "Using n_epochs = 200 (dataset >10k samples with an SGD optimiser)"
         )
       }
       final_params$n_epochs <- 200L
+    } else {
+      if (.verbose) {
+        message(
+          "Using n_epochs = 500 (Adam optimiser or dataset <=10k samples)"
+        )
+      }
+      final_params$n_epochs <- 500L
     }
   } else {
     if (.verbose) {

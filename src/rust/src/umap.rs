@@ -38,8 +38,8 @@ pub struct InternalUmapParams<T> {
     /// When setting initialisation to `"pca"` shall randomised SVD be used (can
     /// make it faster on large data sets).
     pub randomised: bool,
-    /// Which of the possible optimisers to use. One of `"sgd"`, `"adam"` or
-    /// `"adam_parallel"`.
+    /// Which of the possible optimisers to use. One of `"sgd"`,
+    /// `"sgd_parallel"`, `"adam"` or `"adam_parallel"`.
     pub optimiser: String,
     /// The UMAP optimisation parameters.
     pub param_optimiser: UmapOptimParams<T>,

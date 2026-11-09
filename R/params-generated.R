@@ -1107,8 +1107,10 @@ params_tsne <- function(
 #' @param neg_sample_rate Integer. Number of negative samples per positive
 #' sample. Defaults to `5L`.
 #' @param gamma Numeric. Repulsion strength. Defaults to `1.0`.
-#' @param optimiser String. The optimiser. One of `c("adam_parallel", "sgd",
-#' "adam")`. Defaults to `"adam_parallel"`.
+#' @param optimiser String. The optimiser. `"sgd_parallel"` is lock-free
+#' (Hogwild!) and not reproducible run to run with more than one thread. One of
+#' `c("adam_parallel", "sgd", "sgd_parallel", "adam")`. Defaults to
+#' `"adam_parallel"`.
 #' @param init String. Embedding initialisation method. One of `c("spectral",
 #' "pca", "random")`. Defaults to `"spectral"`.
 #' @param randomised Boolean. Use randomised SVD for PCA initialisation.
@@ -1128,8 +1130,10 @@ params_tsne <- function(
 #'  \item neg_sample_rate - Integer. Number of negative samples per positive
 #'  sample. Defaults to `5L`.
 #'  \item gamma - Numeric. Repulsion strength. Defaults to `1.0`.
-#'  \item optimiser - String. The optimiser. One of `c("adam_parallel", "sgd",
-#'  "adam")`. Defaults to `"adam_parallel"`.
+#'  \item optimiser - String. The optimiser. `"sgd_parallel"` is lock-free
+#'  (Hogwild!) and not reproducible run to run with more than one thread. One of
+#'  `c("adam_parallel", "sgd", "sgd_parallel", "adam")`. Defaults to
+#'  `"adam_parallel"`.
 #'  \item init - String. Embedding initialisation method. One of `c("spectral",
 #'  "pca", "random")`. Defaults to `"spectral"`.
 #'  \item randomised - Boolean. Use randomised SVD for PCA initialisation.
@@ -1145,7 +1149,7 @@ params_umap <- function(
   n_epochs = NULL,
   neg_sample_rate = 5L,
   gamma = 1.0,
-  optimiser = c("adam_parallel", "sgd", "adam"),
+  optimiser = c("adam_parallel", "sgd", "sgd_parallel", "adam"),
   init = c("spectral", "pca", "random"),
   randomised = FALSE
 ) {
@@ -1160,7 +1164,10 @@ params_umap <- function(
   checkmate::qassert(n_epochs, c("I1[1,)", "0"))
   checkmate::qassert(neg_sample_rate, "I1")
   checkmate::qassert(gamma, "N1")
-  checkmate::assertChoice(optimiser, c("adam_parallel", "sgd", "adam"))
+  checkmate::assertChoice(
+    optimiser,
+    c("adam_parallel", "sgd", "sgd_parallel", "adam")
+  )
   checkmate::assertChoice(init, c("spectral", "pca", "random"))
   checkmate::qassert(randomised, "B1")
 

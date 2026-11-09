@@ -1005,7 +1005,7 @@ checkUmapParams <- function(x) {
   res <- apply_choice_rules(
     x,
     list(
-      optimiser = c("adam_parallel", "sgd", "adam"),
+      optimiser = c("adam_parallel", "sgd", "sgd_parallel", "adam"),
       init = c("spectral", "pca", "random")
     ),
     label = "UMAP params"

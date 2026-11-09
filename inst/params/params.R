@@ -82,8 +82,11 @@ spec_umap <- param_spec(
     gamma = p_dbl(1.0, doc = "Repulsion strength."),
     optimiser = p_choice(
       "adam_parallel",
-      c("adam_parallel", "sgd", "adam"),
-      doc = "The optimiser."
+      c("adam_parallel", "sgd", "sgd_parallel", "adam"),
+      doc = paste(
+        "The optimiser. `\"sgd_parallel\"` is lock-free (Hogwild!) and not",
+        "reproducible run to run with more than one thread."
+      )
     ),
     init = p_choice(
       "spectral",

@@ -125,6 +125,36 @@ expect_true(
   info = "umap correctly separates clusters (sgd)"
 )
 
+#### sgd_parallel --------------------------------------------------------------
+
+umap_res_sgd_par <- umap(
+  data = cluster_data,
+  k = 5L,
+  umap_params = params_umap(optimiser = "sgd_parallel"),
+  .verbose = FALSE
+)
+
+umap_res_tests_sgd_par <- check_cluster_separation(
+  embd = umap_res_sgd_par,
+  cluster_membership = cluster_membership
+)
+
+expect_true(
+  current = checkmate::testMatrix(
+    x = umap_res_sgd_par,
+    mode = "numeric",
+    ncols = 2L,
+    nrow = n_samples
+  ),
+  info = "umap result correctly returned (sgd_parallel also working)"
+)
+
+expect_true(
+  current = mean(umap_res_tests_sgd_par$within_dists) <
+    mean(umap_res_tests_sgd_par$between_dists),
+  info = "umap correctly separates clusters (sgd_parallel)"
+)
+
 #### adam ----------------------------------------------------------------------
 
 umap_res_adam <- umap(
@@ -205,6 +235,38 @@ expect_equal(
   current = prep_sgd_large$n_epochs,
   target = 200L,
   info = "sgd with n > 10000 gets n_epochs = 200"
+)
+
+prep_sgd_par_large <- .prepare_umap_params(
+  n = 20000L,
+  min_dist = 0.1,
+  spread = 1.0,
+  knn_method = "hnsw",
+  nn_params = params_nn(),
+  umap_params = params_umap(optimiser = "sgd_parallel"),
+  .verbose = FALSE
+)
+
+expect_equal(
+  current = prep_sgd_par_large$n_epochs,
+  target = 200L,
+  info = "sgd_parallel with n > 10000 gets n_epochs = 200"
+)
+
+prep_adam_large <- .prepare_umap_params(
+  n = 20000L,
+  min_dist = 0.1,
+  spread = 1.0,
+  knn_method = "hnsw",
+  nn_params = params_nn(),
+  umap_params = params_umap(optimiser = "adam"),
+  .verbose = FALSE
+)
+
+expect_equal(
+  current = prep_adam_large$n_epochs,
+  target = 500L,
+  info = "sequential adam with n > 10000 keeps n_epochs = 500"
 )
 
 prep_user_epochs <- .prepare_umap_params(
