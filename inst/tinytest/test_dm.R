@@ -221,3 +221,213 @@ for (method in symmetry_methods) {
     )
   )
 }
+
+## diffusion maps landmarks ----------------------------------------------------
+
+dm_full <- diffusion_maps(
+  data = trajectory_data,
+  k = 15L,
+  dm_params = params_diffusion_maps(n_landmarks = NULL),
+  .verbose = FALSE
+)
+
+### full operator fallback -----------------------------------------------------
+
+expect_equal(
+  current = diffusion_maps(
+    data = trajectory_data,
+    k = 15L,
+    dm_params = params_diffusion_maps(n_landmarks = n_samples),
+    .verbose = FALSE
+  ),
+  target = dm_full,
+  info = "dm with n_landmarks = n falls back to the full operator"
+)
+
+expect_equal(
+  current = diffusion_maps(data = trajectory_data, k = 15L, .verbose = FALSE),
+  target = dm_full,
+  info = "dm default landmarks above n fall back to the full operator"
+)
+
+### landmark methods -----------------------------------------------------------
+
+branch_pairs <- list(c(0L, 1L), c(1L, 2L), c(1L, 3L), c(3L, 4L), c(3L, 5L))
+
+for (method in c("spectral", "random", "density")) {
+  landmark_params <- params_diffusion_maps(
+    n_landmarks = 50L,
+    landmark_method = method
+  )
+
+  res <- diffusion_maps(
+    data = trajectory_data,
+    k = 15L,
+    dm_params = landmark_params,
+    seed = 42L,
+    .verbose = FALSE
+  )
+
+  res_sep <- check_cluster_separation(
+    embd = res,
+    cluster_membership = branch_membership
+  )
+
+  expect_true(
+    current = checkmate::testMatrix(
+      x = res,
+      mode = "numeric",
+      any.missing = FALSE,
+      ncols = 2L,
+      nrow = n_samples
+    ),
+    info = sprintf("dm with '%s' landmarks returns correct shape", method)
+  )
+
+  expect_true(
+    current = mean(res_sep$within_dists) < mean(res_sep$between_dists),
+    info = sprintf("dm with '%s' landmarks separates branches", method)
+  )
+
+  expect_true(
+    current = check_branch_topology(
+      embd = res,
+      membership = branch_membership,
+      connected_pairs = branch_pairs
+    )$preserved,
+    info = sprintf("dm with '%s' landmarks preserves the topology", method)
+  )
+
+  expect_false(
+    current = isTRUE(all.equal(res, dm_full)),
+    info = sprintf("dm with '%s' landmarks differs from the full run", method)
+  )
+
+  expect_equal(
+    current = diffusion_maps(
+      data = trajectory_data,
+      k = 15L,
+      dm_params = landmark_params,
+      seed = 42L,
+      .verbose = FALSE
+    ),
+    target = res,
+    info = sprintf("dm with '%s' landmarks is reproducible per seed", method)
+  )
+
+  expect_false(
+    current = isTRUE(all.equal(
+      diffusion_maps(
+        data = trajectory_data,
+        k = 15L,
+        dm_params = landmark_params,
+        seed = 7L,
+        .verbose = FALSE
+      ),
+      res
+    )),
+    info = sprintf("dm with '%s' landmarks depends on the seed", method)
+  )
+}
+
+### n_svd ----------------------------------------------------------------------
+
+dm_spectral <- diffusion_maps(
+  data = trajectory_data,
+  k = 15L,
+  dm_params = params_diffusion_maps(n_landmarks = 50L),
+  .verbose = FALSE
+)
+
+expect_false(
+  current = isTRUE(all.equal(
+    diffusion_maps(
+      data = trajectory_data,
+      k = 15L,
+      dm_params = params_diffusion_maps(n_landmarks = 50L, n_svd = 5L),
+      .verbose = FALSE
+    ),
+    dm_spectral
+  )),
+  info = "dm honours n_svd with spectral landmarks"
+)
+
+expect_equal(
+  current = diffusion_maps(
+    data = trajectory_data,
+    k = 15L,
+    dm_params = params_diffusion_maps(n_landmarks = 50L, n_svd = 100L),
+    .verbose = FALSE
+  ),
+  target = dm_spectral,
+  info = "dm n_svd = NULL takes 100 singular vectors"
+)
+
+expect_equal(
+  current = diffusion_maps(
+    data = trajectory_data,
+    k = 15L,
+    dm_params = params_diffusion_maps(
+      n_landmarks = 50L,
+      landmark_method = "random",
+      n_svd = 5L
+    ),
+    .verbose = FALSE
+  ),
+  target = diffusion_maps(
+    data = trajectory_data,
+    k = 15L,
+    dm_params = params_diffusion_maps(
+      n_landmarks = 50L,
+      landmark_method = "random"
+    ),
+    .verbose = FALSE
+  ),
+  info = "dm ignores n_svd with random landmarks"
+)
+
+### number of dimensions -------------------------------------------------------
+
+expect_true(
+  current = checkmate::testMatrix(
+    x = diffusion_maps(
+      data = trajectory_data,
+      n_dim = 3L,
+      k = 15L,
+      dm_params = params_diffusion_maps(n_landmarks = 50L),
+      .verbose = FALSE
+    ),
+    mode = "numeric",
+    any.missing = FALSE,
+    ncols = 3L,
+    nrow = n_samples
+  ),
+  info = "dm with landmarks returns the requested number of dimensions"
+)
+
+### precomputed knn ------------------------------------------------------------
+
+exhaustive_dm <- generate_knn_graph(
+  data = trajectory_data,
+  k = 15L,
+  knn_method = "exhaustive",
+  .verbose = FALSE
+)
+
+expect_equal(
+  current = diffusion_maps(
+    data = trajectory_data,
+    knn = exhaustive_dm,
+    k = 15L,
+    dm_params = params_diffusion_maps(n_landmarks = 50L),
+    .verbose = FALSE
+  ),
+  target = diffusion_maps(
+    data = trajectory_data,
+    k = 15L,
+    knn_method = "exhaustive",
+    dm_params = params_diffusion_maps(n_landmarks = 50L),
+    .verbose = FALSE
+  ),
+  info = "dm landmarks from a precomputed knn match the internal search"
+)
