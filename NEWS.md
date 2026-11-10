@@ -22,8 +22,8 @@ Expect different coordinates than 0.5.0 at the same seed for most methods.
 - `diffusion_maps()` with spectral landmarks takes 100 singular vectors by
   default, was 10. `t_max` must be at least `3`.
 - `params_diffusion_maps()` `n_landmarks` defaults to `NULL`, the full
-  operator. Was `2048L`. Up to 25k samples the full operator is 2.5x to 7x
-  faster than 2048 landmarks; set `n_landmarks` to go back.
+  operator. Was `2048L`. The full operator is faster on small to medium data
+  sets.
 - `rs_approx_nearest_neighbours()` renames `ann_params` to `nn_params`.
 
 ## Features
