@@ -55,8 +55,9 @@
 #' @param data Numerical matrix or data frame. The data to embed of shape
 #' samples x features. Will be coerced to a matrix.
 #' @param knn Optional `NearestNeighbours` class. If provided, DREAMS will skip
-#' the k-nearest neighbour graph generation and use this one. Defaults to
-#' `NULL`.
+#' the k-nearest neighbour graph generation and use this one. Needs more
+#' neighbours than `perplexity`; the internal search uses `3 * perplexity`.
+#' Defaults to `NULL`.
 #' @param reference Optional numerical matrix or data frame of shape
 #' samples x 2. Global reference embedding to regularise towards, e.g. a PHATE
 #' or MDS result. If `NULL`, the first two principal components are used.
@@ -75,16 +76,16 @@
 #' `"bh"`.
 #' @param knn_method Character. (Approximate) Nearest neighbour method to use.
 #' One of `"kmknn"`, `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, `"ivf"`
-#' or `"exhaustive"`. Defaults to `"kmknn"`.
+#' or `"exhaustive"`. Defaults to `"ivf"`.
 #' @param nn_params Named list. Nearest neighbour search parameters, see
 #' [params_nn()].
 #' @param tsne_params Named list. t-SNE algorithm parameters, see
 #' [params_tsne()].
 #' @param dreams_params Named list. DREAMS parameters, see [params_dreams()].
 #' @param seed Integer. Random seed for reproducibility.
-#' @param use_high_precision Optional boolean. Gives fine-grained control over
-#' `fp32` vs `fp64` usage.
-#' @param .verbose Logical. Controls verbosity. Defaults to `TRUE`.
+#' @param .verbose Logical or integer. Controls verbosity. `TRUE` or `1L` prints
+#' timed stages and epochs every 50, `2L` adds parameters and the kNN internals,
+#' `FALSE` or `0L` is silent. Defaults to `TRUE`.
 #'
 #' @return A numerical matrix with dimensions samples x n_dim containing
 #' the DREAMS embedding.
@@ -106,19 +107,18 @@ dreams <- function(
   perplexity = 20.0,
   approx_type = c("bh", "bh_qd", "fft", "fft_3k"),
   knn_method = c(
+    "ivf",
     "kmknn",
     "balltree",
     "hnsw",
     "annoy",
     "nndescent",
-    "exhaustive",
-    "ivf"
+    "exhaustive"
   ),
   nn_params = params_nn(),
   tsne_params = params_tsne(),
   dreams_params = params_dreams(),
   seed = 42L,
-  use_high_precision = NULL,
   .verbose = TRUE
 ) {
   if (is.data.frame(data)) {
@@ -163,7 +163,6 @@ dreams <- function(
   assertTsneParams(tsne_params)
   assertDreamsParams(dreams_params)
   checkmate::qassert(seed, "I1")
-  checkmate::qassert(use_high_precision, c("B1", "0"))
   checkmate::qassert(.verbose, c("B1", "I1[0, 2]"))
 
   # Rust expects a double matrix; an integer one would fail the conversion
@@ -179,9 +178,6 @@ dreams <- function(
   )
 
   res <- if (!is.null(knn)) {
-    if (.verbose) {
-      message("Using provided kNN graph.")
-    }
     rs_dreams_from_knn(
       embd = data,
       knn_data = knn,
@@ -191,7 +187,6 @@ dreams <- function(
       approx_type = approx_type,
       dreams_params = final_dreams_params,
       seed = seed,
-      use_high_precision = use_high_precision,
       verbose = parse_verbosity(.verbose)
     )
   } else {
@@ -203,7 +198,6 @@ dreams <- function(
       approx_type = approx_type,
       dreams_params = final_dreams_params,
       seed = seed,
-      use_high_precision = use_high_precision,
       verbose = parse_verbosity(.verbose)
     )
   }

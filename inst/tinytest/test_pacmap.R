@@ -22,7 +22,7 @@ cluster_data_df <- as.data.frame(cluster_data)
 
 exhaustive <- generate_knn_graph(
   data = cluster_data,
-  k = 10L,
+  k = 60L,
   knn_method = "exhaustive"
 )
 
@@ -30,17 +30,10 @@ exhaustive <- generate_knn_graph(
 
 ## pacmac general --------------------------------------------------------------
 
-# reduced numbers because very small test data set
-pacmap_test_params <- params_pacmap(
-  mn_candidate_start = 3L,
-  mn_candidate_end = 10L
-)
-
 ### general wrapper ------------------------------------------------------------
 
 pacmap_res <- pacmap(
   data = cluster_data,
-  pacmap_params = pacmap_test_params,
   .verbose = FALSE
 )
 
@@ -67,7 +60,6 @@ expect_true(
 
 pacmap_res_from_df <- pacmap(
   data = cluster_data_df,
-  pacmap_params = pacmap_test_params,
   .verbose = FALSE
 )
 
@@ -82,7 +74,6 @@ expect_equal(
 pacmap_res_knn <- pacmap(
   data = cluster_data,
   knn = exhaustive,
-  pacmap_params = pacmap_test_params,
   .verbose = FALSE
 )
 

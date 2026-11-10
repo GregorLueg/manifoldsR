@@ -4,21 +4,14 @@
 \alias{rs_pacmap_from_knn}
 \title{PaCMAP implementation with pre-computed kNN}
 \usage{
-rs_pacmap_from_knn(
-  embd,
-  knn_data,
-  n_dim,
-  pacmap_params,
-  seed,
-  use_high_precision,
-  verbose
-)
+rs_pacmap_from_knn(embd, knn_data, n_dim, pacmap_params, seed, verbose)
 }
 \arguments{
 \item{embd}{Numerical matrix. The data to use to generate the embeddings.
 Should be of dimensions samples x features.}
 
-\item{knn_data}{\code{NearestNeighbours} class from R.}
+\item{knn_data}{\code{NearestNeighbours} class from R. Needs at least \code{n_near}
+neighbours, and should be \code{n_near + 50} wide to match the internal search.}
 
 \item{n_dim}{Integer. Number of dimensions to return.}
 
@@ -26,9 +19,6 @@ Should be of dimensions samples x features.}
 parameters for the PaCMAP generation.}
 
 \item{seed}{Integer. Seed for reproducibility.}
-
-\item{use_high_precision}{Optional logical. Controls \code{fp32} vs \code{fp64} for.
-If \code{NULL} will use sensible default thresholding.}
 
 \item{verbose}{Integer. If \code{0L} -> silent or \code{1L} for normal verbosity; \code{2L}
 for detailed verbosity.}

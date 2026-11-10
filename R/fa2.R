@@ -49,18 +49,19 @@
 #' @param data Numerical matrix or data frame. The data to embed of shape
 #' samples x features. Will be coerced to a matrix.
 #' @param knn Optional `NearestNeighbours` class. If provided, the k-nearest
-#' neighbour search is skipped and this one is used. Defaults to `NULL`.
+#' neighbour search is skipped and this one is used. A wider graph is cut to
+#' `k`, with a warning on stderr. Defaults to `NULL`.
 #' @param k Integer. Number of nearest neighbours. Defaults to `15L`.
 #' @param knn_method Character. (Approximate) Nearest neighbour method to use.
 #' One of `"kmknn"`, `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, `"ivf"`
-#' or `"exhaustive"`. Defaults to `"kmknn"`.
+#' or `"exhaustive"`. Defaults to `"nndescent"`.
 #' @param nn_params Named list. Nearest neighbour search parameters, see
 #' [params_nn()].
 #' @param fa2_params Named list. ForceAtlas2 parameters, see [params_fa2()].
 #' @param seed Integer. Random seed for reproducibility. Defaults to `42L`.
-#' @param use_high_precision Optional boolean. Gives fine-grained control over
-#' `fp32` vs `fp64` usage.
-#' @param .verbose Logical. Controls verbosity. Defaults to `TRUE`.
+#' @param .verbose Logical or integer. Controls verbosity. `TRUE` or `1L` prints
+#' timed stages and epochs every 50, `2L` adds parameters and the kNN internals,
+#' `FALSE` or `0L` is silent. Defaults to `TRUE`.
 #'
 #' @return A numerical matrix with dimensions samples x 2 containing the
 #' ForceAtlas2 layout.
@@ -78,18 +79,17 @@ forceatlas2 <- function(
   knn = NULL,
   k = 15L,
   knn_method = c(
+    "nndescent",
     "kmknn",
     "balltree",
     "hnsw",
     "annoy",
-    "nndescent",
     "exhaustive",
     "ivf"
   ),
   nn_params = params_nn(),
   fa2_params = params_fa2(),
   seed = 42L,
-  use_high_precision = NULL,
   .verbose = TRUE
 ) {
   # transformation
@@ -111,7 +111,6 @@ forceatlas2 <- function(
   )
   checkmate::qassert(k, "I1[2,)")
   checkmate::qassert(.verbose, c("B1", "I1[0, 2]"))
-  checkmate::qassert(use_high_precision, c("0", "B1"))
   checkmate::qassert(seed, "I1")
 
   final_fa2_params <- .prepare_fa2_params(
@@ -121,16 +120,12 @@ forceatlas2 <- function(
   )
 
   res <- if (!is.null(knn)) {
-    if (.verbose) {
-      message("Using provided kNN graph.")
-    }
     rs_forceatlas2_from_knn(
       embd = data,
       knn_data = knn,
       k = k,
       fa2_params = final_fa2_params,
       seed = seed,
-      use_high_precision = use_high_precision,
       verbose = parse_verbosity(.verbose)
     )
   } else {
@@ -139,7 +134,6 @@ forceatlas2 <- function(
       k = k,
       fa2_params = final_fa2_params,
       seed = seed,
-      use_high_precision = use_high_precision,
       verbose = parse_verbosity(.verbose)
     )
   }
@@ -164,9 +158,9 @@ forceatlas2 <- function(
 #' layout is used. Defaults to `NULL`.
 #' @param fa2_params Named list. ForceAtlas2 parameters, see [params_fa2()].
 #' @param seed Integer. Random seed for reproducibility. Defaults to `42L`.
-#' @param use_high_precision Optional boolean. Gives fine-grained control over
-#' `fp32` vs `fp64` usage.
-#' @param .verbose Logical. Controls verbosity. Defaults to `TRUE`.
+#' @param .verbose Logical or integer. Controls verbosity. `TRUE` or `1L` prints
+#' timed stages and epochs every 50, `2L` adds parameters and the kNN internals,
+#' `FALSE` or `0L` is silent. Defaults to `TRUE`.
 #'
 #' @return A numerical matrix with dimensions `vcount(graph) x 2` containing
 #' the ForceAtlas2 layout, rows in vertex order.
@@ -186,7 +180,6 @@ forceatlas2_from_graph <- function(
   init = NULL,
   fa2_params = params_fa2(),
   seed = 42L,
-  use_high_precision = NULL,
   .verbose = TRUE
 ) {
   checkmate::assertClass(graph, "igraph")
@@ -215,7 +208,6 @@ forceatlas2_from_graph <- function(
   )
   assertFa2Params(fa2_params)
   checkmate::qassert(.verbose, c("B1", "I1[0, 2]"))
-  checkmate::qassert(use_high_precision, c("0", "B1"))
   checkmate::qassert(seed, "I1")
 
   if (!is.null(init)) {
@@ -242,7 +234,6 @@ forceatlas2_from_graph <- function(
     init = init,
     fa2_params = fa2_params,
     seed = seed,
-    use_high_precision = use_high_precision,
     verbose = parse_verbosity(.verbose)
   )
 }

@@ -10,7 +10,7 @@
 #' @param knn_method String. Method to use to generate the kNN graph.
 #' @param nn_params Named list. The nearest neighbour search parameters.
 #' @param umap_params Named list. The UMAP-specific parameters.
-#' @param .verbose Boolean. Controls verbosity
+#' @param .verbose Logical or integer `0L` to `2L`. Controls verbosity.
 #'
 #' @return Returns the list of final parameters.
 #'
@@ -51,25 +51,24 @@
   final_params[["spread"]] <- spread
   final_params[["knn_method"]] <- knn_method
 
-  # determine n_epochs if not specified
+  # determine n_epochs if not specified; SGD drops to 200 on large data like
+  # umap-learn, Adam always gets 500
   if (is.null(final_params$n_epochs)) {
-    if (final_params$optimiser == "adam_parallel" | n <= 10000L) {
+    sgd <- final_params$optimiser %in% c("sgd", "sgd_parallel")
+    if (sgd && n > 10000L) {
       if (.verbose) {
         message(
-          paste(
-            "Using n_epochs = 500",
-            "(dataset <10k samples or adam_parallel optimiser)"
-          )
-        )
-      }
-      final_params$n_epochs <- 500L
-    } else {
-      if (.verbose) {
-        message(
-          "Using n_epochs = 200 (dataset <=10k samples with sgd/adam optimiser)"
+          "Using n_epochs = 200 (dataset >10k samples with an SGD optimiser)"
         )
       }
       final_params$n_epochs <- 200L
+    } else {
+      if (.verbose) {
+        message(
+          "Using n_epochs = 500 (Adam optimiser or dataset <=10k samples)"
+        )
+      }
+      final_params$n_epochs <- 500L
     }
   } else {
     if (.verbose) {
@@ -94,8 +93,8 @@
 #' @param data Numerical matrix or data frame. The data to embed of shape
 #' samples x features. Will be coerced to a matrix.
 #' @param knn Optional `NearestNeighbours` class. If provided, UMAP will skip
-#' the k-nearest neighbour graph generation and use this one. Defaults to
-#' `NULL`.
+#' the k-nearest neighbour graph generation and use this one. A wider graph is
+#' cut to `k`, with a warning on stderr. Defaults to `NULL`.
 #' @param n_dim Integer. Number of dimensions in the embedding space.
 #' Defaults to `2L`.
 #' @param k Integer. Number of nearest neighbours to consider for manifold
@@ -109,15 +108,15 @@
 #' scale at which embedded points will be spread out. Defaults to `1.0`.
 #' @param knn_method Character. (Approximate) Nearest neighbour method to use.
 #' One of `"kmknn"`, `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, `"ivf"`
-#' or `"exhaustive"`. Defaults to `"kmknn"`.
+#' or `"exhaustive"`. Defaults to `"nndescent"`.
 #' @param nn_params Named list. Nearest neighbour search parameters, see
 #' [params_nn()].
 #' @param umap_params Named list. UMAP algorithm parameters, see
 #' [params_umap()].
 #' @param seed Integer. Random seed for reproducibility. Defaults to `42L`.
-#' @param use_high_precision Optional boolean. Gives fine-grained control over
-#' `fp32` vs `fp64` usage.
-#' @param .verbose Logical. Controls verbosity. Defaults to `TRUE`.
+#' @param .verbose Logical or integer. Controls verbosity. `TRUE` or `1L` prints
+#' timed stages and epochs every 50, `2L` adds parameters and the kNN internals,
+#' `FALSE` or `0L` is silent. Defaults to `TRUE`.
 #'
 #' @return A numerical matrix with dimensions samples x n_dim containing
 #' the UMAP embedding.
@@ -140,18 +139,17 @@ umap <- function(
   min_dist = 0.5,
   spread = 1.0,
   knn_method = c(
+    "nndescent",
     "kmknn",
     "balltree",
     "hnsw",
     "annoy",
-    "nndescent",
     "exhaustive",
     "ivf"
   ),
   nn_params = params_nn(),
   umap_params = params_umap(),
   seed = 42L,
-  use_high_precision = NULL,
   .verbose = TRUE
 ) {
   # transformation
@@ -176,7 +174,6 @@ umap <- function(
   checkmate::qassert(min_dist, "N1[0,)")
   checkmate::qassert(spread, "N1[0,)")
   checkmate::qassert(.verbose, c("B1", "I1[0, 2]"))
-  checkmate::qassert(use_high_precision, c("0", "B1"))
   checkmate::qassert(seed, "I1")
 
   final_umap_params <- .prepare_umap_params(
@@ -191,9 +188,6 @@ umap <- function(
 
   # check if knn was provided
   res <- if (!is.null(knn)) {
-    if (.verbose) {
-      message("Using provided kNN graph.")
-    }
     rs_umap_from_knn(
       embd = data,
       knn_data = knn,
@@ -203,7 +197,6 @@ umap <- function(
       k = k,
       umap_params = final_umap_params,
       seed = seed,
-      use_high_precision = use_high_precision,
       verbose = parse_verbosity(.verbose)
     )
   } else {
@@ -215,7 +208,6 @@ umap <- function(
       k = k,
       umap_params = final_umap_params,
       seed = seed,
-      use_high_precision = use_high_precision,
       verbose = parse_verbosity(.verbose)
     )
   }

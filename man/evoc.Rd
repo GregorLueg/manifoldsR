@@ -8,12 +8,11 @@ evoc(
   data,
   knn = NULL,
   n_neighbours = 15L,
-  knn_method = c("kmknn", "hnsw", "annoy", "nndescent", "balltree", "ivf", "exhaustive"),
+  knn_method = c("nndescent", "kmknn", "hnsw", "annoy", "balltree", "ivf", "exhaustive"),
   nn_params = params_nn(),
   evoc_params = params_evoc(),
   return_knn = FALSE,
   seed = 42L,
-  use_high_precision = NULL,
   .verbose = TRUE
 )
 }
@@ -29,7 +28,7 @@ construction. Defaults to \code{15L}.}
 
 \item{knn_method}{Character. (Approximate) Nearest neighbour method to use.
 One of \code{"kmknn"}, \code{"hnsw"}, \code{"annoy"}, \code{"nndescent"}, \code{"balltree"}, \code{"ivf"}
-or \code{"exhaustive"}. Defaults to \code{"kmknn"}.}
+or \code{"exhaustive"}. Defaults to \code{"nndescent"}.}
 
 \item{nn_params}{Named list. Nearest neighbour search parameters, see
 \code{\link[=params_nn]{params_nn()}}.}
@@ -42,10 +41,8 @@ provided, it is returned as-is. Defaults to \code{FALSE}.}
 
 \item{seed}{Integer. Random seed for reproducibility. Defaults to \code{42L}.}
 
-\item{use_high_precision}{Optional boolean. Gives fine-grained control over
-\code{fp32} vs \code{fp64} usage.}
-
-\item{.verbose}{Logical. Controls verbosity. Defaults to \code{TRUE}.}
+\item{.verbose}{Logical or integer \code{0L} to \code{2L}. Controls verbosity. Defaults
+to \code{TRUE}.}
 }
 \value{
 An \code{Evoc} S3 object (see \link{print.Evoc}, \link{best_membership},

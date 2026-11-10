@@ -4,17 +4,7 @@
 \alias{rs_forceatlas2_from_graph}
 \title{ForceAtlas2 on a pre-computed graph}
 \usage{
-rs_forceatlas2_from_graph(
-  from,
-  to,
-  weight,
-  n,
-  init,
-  fa2_params,
-  seed,
-  use_high_precision,
-  verbose
-)
+rs_forceatlas2_from_graph(from, to, weight, n, init, fa2_params, seed, verbose)
 }
 \arguments{
 \item{from}{Integer vector. 1-based source vertex of each edge.}
@@ -32,9 +22,6 @@ layout. If \code{NULL}, a random layout is used.}
 optimisation parameters.}
 
 \item{seed}{Integer. Seed for reproducibility.}
-
-\item{use_high_precision}{Optional logical. Controls \code{fp32} vs \code{fp64}.
-If \code{NULL} will use sensible default thresholding.}
 
 \item{verbose}{Integer. If \code{0L} -> silent or \code{1L} for normal verbosity; \code{2L}
 for detailed verbosity.}

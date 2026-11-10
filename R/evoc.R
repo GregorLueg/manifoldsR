@@ -55,7 +55,7 @@
 #' construction. Defaults to `15L`.
 #' @param knn_method Character. (Approximate) Nearest neighbour method to use.
 #' One of `"kmknn"`, `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, `"ivf"`
-#' or `"exhaustive"`. Defaults to `"kmknn"`.
+#' or `"exhaustive"`. Defaults to `"nndescent"`.
 #' @param nn_params Named list. Nearest neighbour search parameters, see
 #' [params_nn()].
 #' @param evoc_params Named list. EVoC algorithm parameters, see
@@ -63,9 +63,8 @@
 #' @param return_knn Logical. Whether to return the kNN graph. If `knn` is
 #' provided, it is returned as-is. Defaults to `FALSE`.
 #' @param seed Integer. Random seed for reproducibility. Defaults to `42L`.
-#' @param use_high_precision Optional boolean. Gives fine-grained control over
-#' `fp32` vs `fp64` usage.
-#' @param .verbose Logical. Controls verbosity. Defaults to `TRUE`.
+#' @param .verbose Logical or integer `0L` to `2L`. Controls verbosity. Defaults
+#' to `TRUE`.
 #'
 #' @return An `Evoc` S3 object (see [print.Evoc], [best_membership],
 #' [get_layer]).
@@ -81,10 +80,10 @@ evoc <- function(
   knn = NULL,
   n_neighbours = 15L,
   knn_method = c(
+    "nndescent",
     "kmknn",
     "hnsw",
     "annoy",
-    "nndescent",
     "balltree",
     "ivf",
     "exhaustive"
@@ -93,7 +92,6 @@ evoc <- function(
   evoc_params = params_evoc(),
   return_knn = FALSE,
   seed = 42L,
-  use_high_precision = NULL,
   .verbose = TRUE
 ) {
   if (is.data.frame(data)) {
@@ -114,7 +112,6 @@ evoc <- function(
   checkmate::qassert(n_neighbours, "I1[2,)")
   checkmate::qassert(return_knn, "B1")
   checkmate::qassert(seed, "I1")
-  checkmate::qassert(use_high_precision, c("0", "B1"))
   checkmate::qassert(.verbose, c("B1", "I1[0, 2]"))
 
   final_params <- .prepare_evoc_params(
@@ -124,16 +121,12 @@ evoc <- function(
   )
 
   if (!is.null(knn)) {
-    if (.verbose) {
-      message("Using provided kNN graph.")
-    }
     raw <- rs_evoc_from_knn(
       embd = data,
       knn_data = knn,
       n_neighbours = n_neighbours,
       evoc_params = final_params,
       seed = seed,
-      use_high_precision = use_high_precision,
       verbose = parse_verbosity(.verbose)
     )
 
@@ -145,7 +138,6 @@ evoc <- function(
       evoc_params = final_params,
       return_knn = return_knn,
       seed = seed,
-      use_high_precision = use_high_precision,
       verbose = parse_verbosity(.verbose)
     )
 

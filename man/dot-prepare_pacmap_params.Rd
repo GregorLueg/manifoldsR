@@ -13,7 +13,7 @@
 
 \item{pacmap_params}{Named list. The PaCMAP-specific parameters.}
 
-\item{.verbose}{Boolean. Controls verbosity.}
+\item{.verbose}{Logical or integer \code{0L} to \code{2L}. Controls verbosity.}
 }
 \value{
 Returns the list of final parameters.

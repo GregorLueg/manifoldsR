@@ -4,16 +4,7 @@
 \alias{rs_phate_from_knn}
 \title{Run PHATE dimensionality reduction from a precomputed kNN graph}
 \usage{
-rs_phate_from_knn(
-  embd,
-  knn_data,
-  n_dim,
-  k,
-  phate_params,
-  seed,
-  use_high_precision,
-  verbose
-)
+rs_phate_from_knn(embd, knn_data, n_dim, k, phate_params, seed, verbose)
 }
 \arguments{
 \item{embd}{Numerical matrix. The data to embed of shape samples x
@@ -24,16 +15,14 @@ features.}
 \item{n_dim}{Integer. Number of PHATE dimensions to return. Currently only
 \code{2L} is supported.}
 
-\item{k}{Integer. Number of nearest neighbours used during graph
-construction. Must match the k used to generate \code{knn_data}.}
+\item{k}{Integer. Number of nearest neighbours that set the kernel bandwidth.
+Every neighbour in \code{knn_data} can join the kernel while its affinity clears
+\code{thresh}, so build it \code{6 * k + 5} wide to match the internal search.}
 
 \item{phate_params}{Named list. Contains all key parameters for PHATE,
 see \code{\link[=params_phate]{params_phate()}} and \code{\link[=params_nn]{params_nn()}}.}
 
 \item{seed}{Integer. Seed for reproducibility.}
-
-\item{use_high_precision}{Optional logical. Controls \code{fp32} vs \code{fp64} for.
-If \code{NULL} will use sensible default thresholding.}
 
 \item{verbose}{Integer. If \code{0L} -> silent or \code{1L} for normal verbosity; \code{2L}
 for detailed verbosity.}

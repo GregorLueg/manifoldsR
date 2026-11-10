@@ -127,7 +127,7 @@ checkDiffusionMapsParams <- function(x) {
       bandwidth_scale = "N1(0,)",
       thresh = "N1[0,)",
       alpha_norm = "N1[0,1]",
-      t_max = "I1[1,)",
+      t_max = "I1[3,)",
       t_custom = c("I1[1,)", "0"),
       n_landmarks = c("I1[1,)", "0"),
       n_svd = c("I1[1,)", "0")
@@ -509,10 +509,7 @@ checkNnParams <- function(x) {
       "m",
       "ef_construction",
       "ef_search",
-      "diversify_prob",
       "delta",
-      "ef_budget",
-      "extract_knn",
       "bt_budget",
       "n_list",
       "n_probes"
@@ -530,10 +527,7 @@ checkNnParams <- function(x) {
       m = "I1",
       ef_construction = "I1",
       ef_search = "I1",
-      diversify_prob = "N1",
       delta = "N1",
-      ef_budget = c("I1", "0"),
-      extract_knn = "B1",
       bt_budget = "N1",
       n_list = c("I1", "0"),
       n_probes = c("I1", "0")
@@ -588,8 +582,6 @@ checkPacmapParams <- function(x) {
       "n_near",
       "n_mid_near",
       "n_further",
-      "mn_candidate_start",
-      "mn_candidate_end",
       "init",
       "optimiser",
       "lr",
@@ -611,8 +603,6 @@ checkPacmapParams <- function(x) {
       n_near = "I1",
       n_mid_near = "I1",
       n_further = "I1",
-      mn_candidate_start = "I1",
-      mn_candidate_end = "I1",
       lr = "N1",
       n_epochs = c("I1[1,)", "0"),
       beta1 = "N1",
@@ -674,10 +664,12 @@ checkPhateParams <- function(x) {
       "t_max",
       "t_custom",
       "gamma",
+      "thresh",
       "n_landmarks",
       "landmark_method",
       "n_svd",
       "mds_method",
+      "mds_iter",
       "graph_symmetry"
     )
   )
@@ -690,11 +682,13 @@ checkPhateParams <- function(x) {
     list(
       decay = "N1(0,)",
       bandwidth_scale = c("N1(0,)", "0"),
-      t_max = "I1[1,)",
+      t_max = "I1[3,)",
       t_custom = c("I1[1,)", "0"),
-      gamma = "N1",
+      gamma = "N1[-1,1]",
+      thresh = "N1[0,)",
       n_landmarks = c("I1[1,)", "0"),
-      n_svd = c("I1[1,)", "0")
+      n_svd = c("I1[1,)", "0"),
+      mds_iter = c("I1[1,)", "0")
     ),
     label = "PHATE params"
   )
@@ -1011,7 +1005,7 @@ checkUmapParams <- function(x) {
   res <- apply_choice_rules(
     x,
     list(
-      optimiser = c("adam_parallel", "sgd", "adam"),
+      optimiser = c("adam_parallel", "sgd", "sgd_parallel", "adam"),
       init = c("spectral", "pca", "random")
     ),
     label = "UMAP params"

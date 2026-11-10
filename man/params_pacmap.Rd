@@ -8,8 +8,6 @@ params_pacmap(
   n_near = 10L,
   n_mid_near = 5L,
   n_further = 20L,
-  mn_candidate_start = 4L,
-  mn_candidate_end = 50L,
   init = c("pca", "random"),
   optimiser = c("adam_parallel", "adam"),
   lr = 1,
@@ -22,21 +20,18 @@ params_pacmap(
 )
 }
 \arguments{
-\item{n_near}{Integer. Near pairs per point (attractive). Defaults to \code{10L}.}
+\item{n_near}{Integer. Near pairs per point (attractive). The kNN search runs
+\code{n_near + 50} wide and the pairs are the best of those by locally scaled
+distance. Defaults to \code{10L}.}
 
-\item{n_mid_near}{Integer. Mid-near pairs per point. Defaults to \code{5L}.}
+\item{n_mid_near}{Integer. Mid-near pairs per point. Each one is the second
+closest of six random points. Defaults to \code{5L}.}
 
-\item{n_further}{Integer. Further (random) pairs per point. Defaults to
-\code{20L}.}
+\item{n_further}{Integer. Further (random) pairs per point. These exclude the
+near pairs. Defaults to \code{20L}.}
 
-\item{mn_candidate_start}{Integer. Start index into kNN list for mid-near
-candidate window. Defaults to \code{4L}.}
-
-\item{mn_candidate_end}{Integer. End index into kNN list for mid-near
-candidate window. Also determines the kNN search size. Defaults to \code{50L}.}
-
-\item{init}{String. Embedding initialisation. One of \code{c("pca", "random")}.
-Defaults to \code{"pca"}.}
+\item{init}{String. Embedding initialisation. \code{"pca"} uses the PC scores
+times \code{0.01}, so the ratio between the components survives. One of \code{c("pca", "random")}. Defaults to \code{"pca"}.}
 
 \item{optimiser}{String. The optimiser. One of \code{c("adam_parallel", "adam")}.
 Defaults to \code{"adam_parallel"}.}
@@ -61,17 +56,15 @@ resolved downstream to \code{200}. Defaults to \code{NULL}.}
 \value{
 A named list with the following elements:
 \itemize{
-\item n_near - Integer. Near pairs per point (attractive). Defaults to
-\code{10L}.
-\item n_mid_near - Integer. Mid-near pairs per point. Defaults to \code{5L}.
-\item n_further - Integer. Further (random) pairs per point. Defaults to
-\code{20L}.
-\item mn_candidate_start - Integer. Start index into kNN list for mid-near
-candidate window. Defaults to \code{4L}.
-\item mn_candidate_end - Integer. End index into kNN list for mid-near
-candidate window. Also determines the kNN search size. Defaults to \code{50L}.
-\item init - String. Embedding initialisation. One of \code{c("pca", "random")}.
-Defaults to \code{"pca"}.
+\item n_near - Integer. Near pairs per point (attractive). The kNN search
+runs \code{n_near + 50} wide and the pairs are the best of those by locally
+scaled distance. Defaults to \code{10L}.
+\item n_mid_near - Integer. Mid-near pairs per point. Each one is the second
+closest of six random points. Defaults to \code{5L}.
+\item n_further - Integer. Further (random) pairs per point. These exclude
+the near pairs. Defaults to \code{20L}.
+\item init - String. Embedding initialisation. \code{"pca"} uses the PC scores
+times \code{0.01}, so the ratio between the components survives. One of \code{c("pca", "random")}. Defaults to \code{"pca"}.
 \item optimiser - String. The optimiser. One of \code{c("adam_parallel", "adam")}. Defaults to \code{"adam_parallel"}.
 \item lr - Numeric. Adam learning rate. Defaults to \code{1.0}.
 \item n_epochs - Integer or \code{NULL}. Total optimisation epochs. If \code{NULL},

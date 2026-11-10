@@ -32,21 +32,26 @@ the normalised graph Laplacian, \code{0.5} the Fokker-Planck operator, \code{1} 
 Laplace-Beltrami operator. Defaults to \code{1.0}.}
 
 \item{t_max}{Integer. Maximum diffusion time considered during automatic
-selection via Von Neumann entropy knee point detection. Defaults to \code{100L}.}
+selection via Von Neumann entropy knee point detection. At least \code{3}, as the
+knee search needs three points. Defaults to \code{100L}.}
 
 \item{t_custom}{Integer or \code{NULL}. Fixed diffusion time. If set, overrides
 automatic time selection. Defaults to \code{NULL}.}
 
 \item{n_landmarks}{Integer or \code{NULL}. Number of landmarks for compressed
-diffusion. If \code{NULL}, the full N x N diffusion operator is used. Defaults to
-\code{2048L}.}
+diffusion. If \code{NULL}, or at least the number of samples, the full N x N
+diffusion operator is used. The default is specific to this package;
+\code{manifolds-rs} defaults to the full operator. Keep \code{k} a small fraction of
+the landmark count: when \code{k} covers a large share of the landmarks, the
+landmark kernel turns broad and the later coordinates shrink towards a line.
+On small data, prefer the full operator. Defaults to \code{2048L}.}
 
 \item{landmark_method}{String. Method used to select landmarks. One of
 \code{c("spectral", "random", "density")}. Defaults to \code{"spectral"}.}
 
-\item{n_svd}{Integer or \code{NULL}. Number of SVD components used in landmark
-construction. If \code{NULL}, the library selects a sensible default. Defaults to
-\code{NULL}.}
+\item{n_svd}{Integer or \code{NULL}. Number of singular vectors for spectral
+landmark selection. If \code{NULL}, uses \code{100}. Ignored by the other landmark
+methods. Defaults to \code{NULL}.}
 }
 \value{
 A named list with the following elements:
@@ -62,17 +67,22 @@ One of \code{c("additive", "multiplicative", "mnn", "none")}. Defaults to
 gives the normalised graph Laplacian, \code{0.5} the Fokker-Planck operator, \code{1}
 the Laplace-Beltrami operator. Defaults to \code{1.0}.
 \item t_max - Integer. Maximum diffusion time considered during automatic
-selection via Von Neumann entropy knee point detection. Defaults to \code{100L}.
+selection via Von Neumann entropy knee point detection. At least \code{3}, as the
+knee search needs three points. Defaults to \code{100L}.
 \item t_custom - Integer or \code{NULL}. Fixed diffusion time. If set, overrides
 automatic time selection. Defaults to \code{NULL}.
 \item n_landmarks - Integer or \code{NULL}. Number of landmarks for compressed
-diffusion. If \code{NULL}, the full N x N diffusion operator is used. Defaults to
-\code{2048L}.
+diffusion. If \code{NULL}, or at least the number of samples, the full N x N
+diffusion operator is used. The default is specific to this package;
+\code{manifolds-rs} defaults to the full operator. Keep \code{k} a small fraction of
+the landmark count: when \code{k} covers a large share of the landmarks, the
+landmark kernel turns broad and the later coordinates shrink towards a line.
+On small data, prefer the full operator. Defaults to \code{2048L}.
 \item landmark_method - String. Method used to select landmarks. One of
 \code{c("spectral", "random", "density")}. Defaults to \code{"spectral"}.
-\item n_svd - Integer or \code{NULL}. Number of SVD components used in landmark
-construction. If \code{NULL}, the library selects a sensible default. Defaults to
-\code{NULL}.
+\item n_svd - Integer or \code{NULL}. Number of singular vectors for spectral
+landmark selection. If \code{NULL}, uses \code{100}. Ignored by the other landmark
+methods. Defaults to \code{NULL}.
 }
 }
 \description{

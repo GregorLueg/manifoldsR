@@ -222,12 +222,15 @@ is the kind of data PHATE was designed for.
 
 As with t-SNE, if you want to explore multiple parameter combinations without
 repeating the kNN search, you can precompute the graph and pass it directly.
+PHATE needs a wider graph than `k`: neighbours past `k` join the kernel while
+their affinity clears `thresh`, so build it `6 * k + 5` wide like the internal
+search.
 
 ```{r}
 #| label: phate - pre-computed kNN
 precomputed_knn <- generate_knn_graph(
   data = trajectory_data$data,
-  k = 15L,
+  k = 95L, # 6 * k + 5 for k = 15
   .verbose = FALSE
 )
 
@@ -470,7 +473,6 @@ microbenchmark::microbenchmark(
     phate(
       data = benchmark_data_large$data,
       k = 5L,
-      knn_method = "nndescent", # good allrounder for larger data sets
       seed = 42L,
       .verbose = FALSE
     )
@@ -479,7 +481,6 @@ microbenchmark::microbenchmark(
     phate(
       data = benchmark_data_large$data,
       k = 5L,
-      knn_method = "nndescent", # good allrounder for larger data sets
       phate_params = params_phate(landmark_method = "random"),
       seed = 42L,
       .verbose = FALSE

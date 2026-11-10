@@ -50,23 +50,23 @@
 #' @param data Numerical matrix or data frame. The data to embed of shape
 #' samples x features. Will be coerced to a matrix.
 #' @param knn Optional `NearestNeighbours` class. If provided, diffusion maps
-#' will skip the k-nearest neighbour graph generation and use this one.
-#' Defaults to `NULL`.
+#' will skip the k-nearest neighbour graph generation and use this one. Every
+#' neighbour in the graph is used, whatever `k` is. Defaults to `NULL`.
 #' @param n_dim Integer. Number of dimensions in the embedding space.
 #' Defaults to `2L`.
 #' @param k Integer. Number of nearest neighbours to consider for the
 #' affinity graph. Defaults to `5L`.
 #' @param knn_method Character. (Approximate) Nearest neighbour method to use.
 #' One of `"kmknn"`, `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, `"ivf"`
-#' or `"exhaustive"`. Defaults to `"kmknn"`.
+#' or `"exhaustive"`. Defaults to `"nndescent"`.
 #' @param nn_params Named list. Nearest neighbour search parameters, see
 #' [params_nn()].
 #' @param dm_params Named list. Diffusion maps algorithm parameters, see
 #' [params_diffusion_maps()].
 #' @param seed Integer. Random seed for reproducibility. Defaults to `42L`.
-#' @param use_high_precision Optional boolean. Gives fine-grained control over
-#' `fp32` vs `fp64` usage.
-#' @param .verbose Logical. Controls verbosity. Defaults to `TRUE`.
+#' @param .verbose Logical or integer. Controls verbosity. `TRUE` or `1L` prints
+#' timed stages and epochs every 50, `2L` adds parameters and the kNN internals,
+#' `FALSE` or `0L` is silent. Defaults to `TRUE`.
 #'
 #' @return A numerical matrix with dimensions samples x n_dim containing the
 #' diffusion maps embedding.
@@ -83,18 +83,17 @@ diffusion_maps <- function(
   n_dim = 2L,
   k = 5L,
   knn_method = c(
+    "nndescent",
     "kmknn",
     "balltree",
     "hnsw",
     "annoy",
-    "nndescent",
     "exhaustive",
     "ivf"
   ),
   nn_params = params_nn(),
   dm_params = params_diffusion_maps(),
   seed = 42L,
-  use_high_precision = NULL,
   .verbose = TRUE
 ) {
   if (is.data.frame(data)) {
@@ -116,7 +115,6 @@ diffusion_maps <- function(
   checkmate::assert_int(n_dim, lower = 1, upper = ncol(data))
   checkmate::qassert(k, "I1[2,)")
   checkmate::qassert(.verbose, c("B1", "I1[0, 2]"))
-  checkmate::qassert(use_high_precision, c("0", "B1"))
   checkmate::qassert(seed, "I1")
 
   final_dm_params <- .prepare_diffusion_maps_params(
@@ -126,9 +124,6 @@ diffusion_maps <- function(
   )
 
   res <- if (!is.null(knn)) {
-    if (.verbose) {
-      message("Using provided kNN graph.")
-    }
     rs_diffusion_maps_from_knn(
       embd = data,
       knn_data = knn,
@@ -136,7 +131,6 @@ diffusion_maps <- function(
       k = k,
       dm_params = final_dm_params,
       seed = seed,
-      use_high_precision = use_high_precision,
       verbose = parse_verbosity(.verbose)
     )
   } else {
@@ -146,7 +140,6 @@ diffusion_maps <- function(
       k = k,
       dm_params = final_dm_params,
       seed = seed,
-      use_high_precision = use_high_precision,
       verbose = parse_verbosity(.verbose)
     )
   }

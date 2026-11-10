@@ -4,7 +4,7 @@
 \alias{rs_approx_nearest_neighbours}
 \title{Wrapper around some nearest neighbour searches integrated into manifold-rs}
 \usage{
-rs_approx_nearest_neighbours(data, k, ann_method, ann_params, seed, verbose)
+rs_approx_nearest_neighbours(data, k, ann_method, nn_params, seed, verbose)
 }
 \arguments{
 \item{data}{Numeric matrix. Shape of samples x n_dim for which to get the
@@ -13,9 +13,10 @@ rs_approx_nearest_neighbours(data, k, ann_method, ann_params, seed, verbose)
 \item{k}{Integer. Number of neighbours to return}
 
 \item{ann_method}{String. Which of the methods to use. One of
-\code{c("hsnw", "balltree", "annoy", "nndescent")}}
+\code{c("exhaustive", "kmknn", "balltree", "annoy", "hnsw", "nndescent", "ivf")}}
 
-\item{ann_params}{Named list. Contains the nearest neighbour parameters.}
+\item{nn_params}{Named list. Contains the nearest neighbour parameters, see
+\code{\link[=params_nn]{params_nn()}}.}
 
 \item{seed}{Integer. Seed for reproducibility}
 

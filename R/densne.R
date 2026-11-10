@@ -55,8 +55,9 @@
 #' @param data Numerical matrix or data frame. The data to embed of shape
 #' samples x features. Will be coerced to a matrix.
 #' @param knn Optional `NearestNeighbours` class. If provided, den-SNE will skip
-#' the k-nearest neighbour graph generation and use this one. Defaults to
-#' `NULL`.
+#' the k-nearest neighbour graph generation and use this one. Needs more
+#' neighbours than `perplexity`; the internal search uses `3 * perplexity`.
+#' Defaults to `NULL`.
 #' @param n_dim Integer. Number of dimensions in the embedding space.
 #' Currently only `2L` is supported. Defaults to `2L`.
 #' @param perplexity Numeric. Perplexity parameter, related to the number of
@@ -71,7 +72,7 @@
 #' `"bh"`.
 #' @param knn_method Character. (Approximate) Nearest neighbour method to use.
 #' One of `"kmknn"`, `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, `"ivf"`
-#' or `"exhaustive"`. Defaults to `"kmknn"`.
+#' or `"exhaustive"`. Defaults to `"ivf"`.
 #' @param nn_params Named list. Nearest neighbour search parameters, see
 #' [params_nn()].
 #' @param tsne_params Named list. t-SNE algorithm parameters, see
@@ -79,9 +80,9 @@
 #' @param dens_params Named list. Density-preservation parameters, see
 #' [params_densne()].
 #' @param seed Integer. Random seed for reproducibility.
-#' @param use_high_precision Optional boolean. Gives fine-grained control over
-#' `fp32` vs `fp64` usage.
-#' @param .verbose Logical. Controls verbosity. Defaults to `TRUE`.
+#' @param .verbose Logical or integer. Controls verbosity. `TRUE` or `1L` prints
+#' timed stages and epochs every 50, `2L` adds parameters and the kNN internals,
+#' `FALSE` or `0L` is silent. Defaults to `TRUE`.
 #'
 #' @return A numerical matrix with dimensions samples x n_dim containing
 #' the den-SNE embedding.
@@ -101,19 +102,18 @@ densne <- function(
   perplexity = 20.0,
   approx_type = c("bh", "bh_qd", "fft", "fft_3k"),
   knn_method = c(
+    "ivf",
     "kmknn",
     "balltree",
     "hnsw",
     "annoy",
     "nndescent",
-    "exhaustive",
-    "ivf"
+    "exhaustive"
   ),
   nn_params = params_nn(),
   tsne_params = params_tsne(),
   dens_params = params_densne(),
   seed = 42L,
-  use_high_precision = NULL,
   .verbose = TRUE
 ) {
   if (is.data.frame(data)) {
@@ -147,7 +147,6 @@ densne <- function(
   assertTsneParams(tsne_params)
   assertDensParams(dens_params)
   checkmate::qassert(seed, "I1")
-  checkmate::qassert(use_high_precision, c("B1", "0"))
   checkmate::qassert(.verbose, c("B1", "I1[0, 2]"))
 
   final_densne_params <- .prepare_densne_params(
@@ -158,9 +157,6 @@ densne <- function(
   )
 
   res <- if (!is.null(knn)) {
-    if (.verbose) {
-      message("Using provided kNN graph.")
-    }
     rs_densne_from_knn(
       embd = data,
       knn_data = knn,
@@ -169,7 +165,6 @@ densne <- function(
       approx_type = approx_type,
       densne_params = final_densne_params,
       seed = seed,
-      use_high_precision = use_high_precision,
       verbose = parse_verbosity(.verbose)
     )
   } else {
@@ -180,7 +175,6 @@ densne <- function(
       approx_type = approx_type,
       densne_params = final_densne_params,
       seed = seed,
-      use_high_precision = use_high_precision,
       verbose = parse_verbosity(.verbose)
     )
   }

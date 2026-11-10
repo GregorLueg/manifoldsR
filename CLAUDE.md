@@ -9,7 +9,7 @@ den-SNE, DREAMS, PHATE, PacMAP, diffusion maps, ForceAtlas2, EVoC, k-means)
 lives in external crates
 (`manifolds-rs`, `ann-search-rs`, `evoc-rs`, `bixverse-rs`). The Rust code in
 `src/rust/src/` is a translation layer only: it parses R lists into the crates'
-parameter structs, dispatches fp32/fp64, and converts matrices. If an algorithm
+parameter structs and converts matrices. If an algorithm
 needs a real change, it belongs upstream in the crate, not here.
 
 ## Commands
@@ -88,16 +88,16 @@ default unless the parser also tries `as_integer()`.
 - `manifolds-rs` is built with `fft_tsne` (pure Rust `rustfft`/`realfft`), so the
   FFT t-SNE variants work on every platform. No `cfg(windows)` splits.
 - Unreleased crate versions come in via `[patch.crates-io]` entries in
-  `src/rust/Cargo.toml` pointing at GitHub branches. Drop them before a release.
+  `src/rust/Cargo.toml` pointing at GitHub branches or local paths. Local paths
+  must go before a push, as they break CI. Drop all of them before a release.
 - `ann-search-rs`, `faer` and `evoc-rs` must line up with what `manifolds-rs` and
   `bixverse-rs` use, or the types do not unify. Check with `cargo tree -d`.
 
 ## Cross-cutting conventions
 
-- **Precision**: `parse_precision(use_high_precision, nrows)` in `lib.rs` picks
-  fp32 below `SAMPLE_THRESHOLD_HIGH_PRECISION` (100k samples) and fp64 above,
-  unless the user forces it. Every `rs_*` embedding function duplicates its body
-  across an fp32 and an fp64 match arm. Keep both in sync.
+- **Precision**: every `rs_*` function converts its input with
+  `r_matrix_to_faer_fp32()` and runs in `f32`. There is no switch on the R side.
+  The crates do the steps prone to catastrophic cancellation in `f64` internally.
 - **Verbosity**: R side accepts `TRUE`/`FALSE` or `0L`/`1L`/`2L`, converted by
   `parse_verbosity()` in `R/utils.R` to an integer passed to Rust as `verbose`.
 - **kNN reuse**: `generate_knn_graph()` returns a `NearestNeighbours` S3 object
@@ -114,8 +114,7 @@ tinytest, in `inst/tinytest/`. Each file sources `./utils_test.R` for the shared
 helpers (`check_cluster_separation()`, `density_preservation()`,
 `check_branch_topology()`, `global_preservation()`). Tests use synthetic data from `rs_data_*` with a fixed
 seed and assert structural/topological properties (cluster separation, density
-correlation, branch ordering) rather than exact coordinates. Embeddings aren't
-bit-reproducible across the fp32/fp64 paths.
+correlation, branch ordering) rather than exact coordinates.
 
 `misc/workbench.R` is a scratch file for benchmarking against `phateR`, `uwot`,
 `Rtsne`. Not part of the build.

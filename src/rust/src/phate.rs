@@ -24,13 +24,12 @@ use crate::utils::get_params_nn_manifolds;
 /// Overall wrapper over various parameters needed for PHATE.
 #[derive(Debug)]
 pub struct InternalPhateParams<T> {
-    /// Method to symmetrise the affinity graph. One of `"average"` or `"add"`.
-    /// Defaults to `"average"`.
+    /// Method to symmetrise the affinity graph. One of `"additive"`,
+    /// `"multiplicative"`, `"mnn"` or `"none"`. Defaults to `"add"`.
     pub graph_symmetry: String,
     /// Alpha decay parameter controlling the kernel bandwidth.
     pub decay: Option<T>,
-    /// Scaling factor for the bandwidth. `None` lets the library select a
-    /// sensible default.
+    /// Scaling factor for the bandwidth. `None` uses `1.0`.
     pub bandwidth_scale: Option<T>,
     /// Maximum diffusion time considered during automatic selection via
     /// Von Neumann entropy knee point detection.
@@ -39,14 +38,16 @@ pub struct InternalPhateParams<T> {
     pub t_custom: Option<usize>,
     /// Informational distance parameter for the diffusion potential.
     pub gamma: Option<T>,
-    /// Number of landmarks for compressed diffusion. `None` uses the full N × N
-    /// diffusion operator.
+    /// Sparsity threshold applied to the kernel entries.
+    pub thresh: T,
+    /// Number of landmarks for compressed diffusion. `None`, or a value of at
+    /// least the number of samples, uses the full N × N diffusion operator.
     pub n_landmarks: Option<usize>,
     /// Method used to select landmarks. One of `"spectral"`, `"random"`, or
-    /// `"min_max"`.
+    /// `"density"`.
     pub landmark_method: String,
-    /// Number of SVD components. `None` lets the library select a sensible
-    /// default.
+    /// Singular vectors for spectral landmark selection. `None` uses
+    /// `LANDMARK_DEFAULT_N_SVD` from `manifolds-rs`.
     pub n_svd: Option<usize>,
     /// MDS algorithm. One of `"sgd_dense"` or `"classic"`.
     pub mds_method: String,
@@ -64,7 +65,7 @@ where
 {
     /// Construct `InternalPhateParams` from an R named list.
     ///
-    /// Delegates to `get_params_nn` and `get_params_phate` for their
+    /// Delegates to `get_params_nn_manifolds` and `get_params_phate` for their
     /// respective parameter subsets, then extracts `knn_method` directly
     /// from the top-level list.
     ///
@@ -84,7 +85,7 @@ where
         let knn_method = std::string::String::from(
             base.get("knn_method")
                 .and_then(|v| v.as_str())
-                .unwrap_or("kmknn"),
+                .unwrap_or("ivf"),
         );
         Ok(Self {
             graph_symmetry: phate_params.graph_symmetry,
@@ -93,6 +94,7 @@ where
             t_max: phate_params.t_max,
             t_custom: phate_params.t_custom,
             gamma: phate_params.gamma,
+            thresh: phate_params.thresh,
             n_landmarks: phate_params.n_landmarks,
             landmark_method: phate_params.landmark_method,
             n_svd: phate_params.n_svd,
@@ -152,6 +154,11 @@ where
         .and_then(|v| v.as_real())
         .map(|v| T::from_f64(v).unwrap())
         .or(Some(T::from_f64(1.0).unwrap()));
+    let thresh = p
+        .get("thresh")
+        .and_then(|v| v.as_real())
+        .map(|v| T::from_f64(v).unwrap())
+        .unwrap_or(T::from_f64(1e-4).unwrap());
     let n_landmarks = p
         .get("n_landmarks")
         .and_then(|v| v.as_integer())
@@ -182,6 +189,7 @@ where
         t_max,
         t_custom,
         gamma,
+        thresh,
         n_landmarks,
         landmark_method,
         n_svd,
@@ -200,14 +208,15 @@ where
 ///
 /// Parses the R parameter list into `PhateParams`, runs the full PHATE
 /// pipeline including kNN search, and returns the embedding as a
-/// column-major `Mat<f32>`.
+/// column-major `Mat<T>`.
 ///
 /// ### Params
 ///
 /// * `data` - Input data matrix of shape samples × features.
 /// * `pre_computed_knn` - Optional pre-computed kNN to be used.
 /// * `n_dim` - Number of output dimensions. Currently only `2` is supported.
-/// * `k` - Number of nearest neighbours for graph construction.
+/// * `k` - Neighbours that set the kernel bandwidth. The kNN search itself runs
+///   `6 * k + 5` wide.
 /// * `phate_params` - Named R list of parameters, as produced by
 ///   `params_phate()` and `params_nn()` on the R side.
 /// * `seed` - Random seed for reproducibility.
@@ -243,7 +252,7 @@ where
         internal
             .bandwidth_scale
             .unwrap_or(T::from_f64(1.0).unwrap()),
-        T::from_f64(1e-4).unwrap(),
+        internal.thresh,
         internal.graph_symmetry,
         internal.n_landmarks,
         internal.landmark_method,

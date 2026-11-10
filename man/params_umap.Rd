@@ -12,9 +12,9 @@ params_umap(
   n_epochs = NULL,
   neg_sample_rate = 5L,
   gamma = 1,
-  optimiser = c("adam_parallel", "sgd", "adam"),
+  optimiser = c("adam_parallel", "sgd", "sgd_parallel", "adam"),
   init = c("spectral", "pca", "random"),
-  randomised = TRUE
+  randomised = FALSE
 )
 }
 \arguments{
@@ -37,12 +37,15 @@ sample. Defaults to \code{5L}.}
 
 \item{gamma}{Numeric. Repulsion strength. Defaults to \code{1.0}.}
 
-\item{optimiser}{String. The optimiser. One of \code{c("adam_parallel", "sgd", "adam")}. Defaults to \code{"adam_parallel"}.}
+\item{optimiser}{String. The optimiser. \code{"sgd_parallel"} is lock-free
+(Hogwild!) and not reproducible run to run with more than one thread. One of
+\code{c("adam_parallel", "sgd", "sgd_parallel", "adam")}. Defaults to
+\code{"adam_parallel"}.}
 
 \item{init}{String. Embedding initialisation method. One of \code{c("spectral", "pca", "random")}. Defaults to \code{"spectral"}.}
 
 \item{randomised}{Boolean. Use randomised SVD for PCA initialisation.
-Defaults to \code{TRUE}.}
+Defaults to \code{FALSE}.}
 }
 \value{
 A named list with the following elements:
@@ -59,10 +62,13 @@ during symmetrisation. Defaults to \code{1.0}.
 \item neg_sample_rate - Integer. Number of negative samples per positive
 sample. Defaults to \code{5L}.
 \item gamma - Numeric. Repulsion strength. Defaults to \code{1.0}.
-\item optimiser - String. The optimiser. One of \code{c("adam_parallel", "sgd", "adam")}. Defaults to \code{"adam_parallel"}.
+\item optimiser - String. The optimiser. \code{"sgd_parallel"} is lock-free
+(Hogwild!) and not reproducible run to run with more than one thread. One of
+\code{c("adam_parallel", "sgd", "sgd_parallel", "adam")}. Defaults to
+\code{"adam_parallel"}.
 \item init - String. Embedding initialisation method. One of \code{c("spectral", "pca", "random")}. Defaults to \code{"spectral"}.
 \item randomised - Boolean. Use randomised SVD for PCA initialisation.
-Defaults to \code{TRUE}.
+Defaults to \code{FALSE}.
 }
 }
 \description{

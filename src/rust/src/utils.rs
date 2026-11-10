@@ -23,16 +23,6 @@ use std::collections::HashMap;
 ///
 /// The `NearestNeighbourParams` with sensible defaults if not found in the
 /// list.
-/// Helper function to generate the UMAP NN parameters
-///
-/// # Arguments
-///
-/// * `r_list` - The list that has the nearest neighbour graph generation
-///   parameters.
-///
-/// # Returns
-///
-/// `NearestNeighbourParams` with sensible defaults if not found in the list.
 pub fn get_params_nn_manifolds<T>(r_list: List) -> Result<NearestNeighbourParams<T>>
 where
     T: ManifoldsFloat,
@@ -42,7 +32,7 @@ where
         nn_params
             .get("dist_metric")
             .and_then(|v| v.as_str())
-            .unwrap_or("cosine"),
+            .unwrap_or("euclidean"),
     );
     let n_tree = nn_params
         .get("n_tree")
@@ -59,29 +49,16 @@ where
     let ef_construction = nn_params
         .get("ef_construction")
         .and_then(|v| v.as_integer())
-        .unwrap_or(100) as usize;
+        .unwrap_or(200) as usize;
     let ef_search = nn_params
         .get("ef_search")
         .and_then(|v| v.as_integer())
         .unwrap_or(100) as usize;
-    let diversify_prob = nn_params
-        .get("diversify_prob")
-        .and_then(|v| v.as_real())
-        .map(|v| T::from_f64(v).unwrap())
-        .unwrap_or(T::from_f64(0.0).unwrap());
     let delta = nn_params
         .get("delta")
         .and_then(|v| v.as_real())
         .map(|v| T::from_f64(v).unwrap())
         .unwrap_or(T::from_f64(0.001).unwrap());
-    let ef_budget = nn_params
-        .get("ef_budget")
-        .and_then(|v| v.as_integer())
-        .map(|v| v as usize);
-    let extract_knn = nn_params
-        .get("extract_knn")
-        .and_then(|v| v.as_bool())
-        .unwrap_or(true);
     let bt_budget = nn_params
         .get("bt_budget")
         .and_then(|v| v.as_real())
@@ -102,11 +79,8 @@ where
         search_budget,
         m,
         ef_construction,
-        ef_budget,
         ef_search,
-        diversify_prob,
         delta,
-        extract_knn,
         bt_budget,
         n_list,
         n_probes,
@@ -120,8 +94,8 @@ where
 /// Helper function to generate the density-preservation parameters
 ///
 /// Shared by densMAP and den-SNE. A missing key falls through to the default
-/// in `manifolds-rs`, which is `lambda = 2.0` (the densMAP weight) - den-SNE
-/// wants `0.1`, so the R layer always supplies all three.
+/// in `manifolds-rs`, which is `lambda = 2.0` (the densMAP weight). den-SNE
+/// needs a smaller one, so the R layer always supplies all three.
 ///
 /// ### Params
 ///

@@ -9,11 +9,10 @@ phate(
   knn = NULL,
   n_dim = 2L,
   k = 5L,
-  knn_method = c("kmknn", "balltree", "hnsw", "annoy", "nndescent", "exhaustive", "ivf"),
+  knn_method = c("ivf", "kmknn", "balltree", "hnsw", "annoy", "nndescent", "exhaustive"),
   nn_params = params_nn(),
   phate_params = params_phate(),
   seed = 42L,
-  use_high_precision = NULL,
   .verbose = TRUE
 )
 }
@@ -22,18 +21,20 @@ phate(
 samples x features. Will be coerced to a matrix.}
 
 \item{knn}{Optional \code{NearestNeighbours} class. If provided, PHATE will skip
-the k-nearest neighbour graph generation and use this one instead. The \code{k}
-argument must match the k used to generate this graph. Defaults to \code{NULL}.}
+the k-nearest neighbour graph generation and use this one instead. Every
+neighbour in the graph can join the kernel while its affinity clears
+\code{thresh}, so build the graph \code{6 * k + 5} wide to match the internal search.
+Defaults to \code{NULL}.}
 
 \item{n_dim}{Integer. Number of dimensions in the embedding space.
 Currently only \code{2L} is supported. Defaults to \code{2L}.}
 
-\item{k}{Integer. Number of nearest neighbours for graph construction.
-Defaults to \code{5L}.}
+\item{k}{Integer. Number of nearest neighbours that set the kernel bandwidth.
+The kNN search itself runs \code{6 * k + 5} wide. Defaults to \code{5L}.}
 
 \item{knn_method}{Character. (Approximate) Nearest neighbour method to use.
 One of \code{"kmknn"}, \code{"hnsw"}, \code{"annoy"}, \code{"nndescent"}, \code{"balltree"}, \code{"ivf"}
-or \code{"exhaustive"}. Defaults to \code{"kmknn"}.}
+or \code{"exhaustive"}. Defaults to \code{"ivf"}.}
 
 \item{nn_params}{Named list. Nearest neighbour search parameters, see
 \code{\link[=params_nn]{params_nn()}}.}
@@ -43,10 +44,9 @@ or \code{"exhaustive"}. Defaults to \code{"kmknn"}.}
 
 \item{seed}{Integer. Random seed for reproducibility. Defaults to \code{42L}.}
 
-\item{use_high_precision}{Optional boolean. Gives fine-grained control over
-\code{fp32} vs \code{fp64} usage.}
-
-\item{.verbose}{Logical. Controls verbosity. Defaults to \code{TRUE}.}
+\item{.verbose}{Logical or integer. Controls verbosity. \code{TRUE} or \code{1L} prints
+timed stages and epochs every 50, \code{2L} adds parameters and the kNN internals,
+\code{FALSE} or \code{0L} is silent. Defaults to \code{TRUE}.}
 }
 \value{
 A numerical matrix with dimensions samples x n_dim containing

@@ -15,7 +15,7 @@
 #' @param nn_params Named list. The nearest neighbour search parameters.
 #' @param umap_params Named list. The UMAP-specific parameters.
 #' @param dens_params Named list. The density-preservation parameters.
-#' @param .verbose Boolean. Controls verbosity
+#' @param .verbose Logical or integer `0L` to `2L`. Controls verbosity.
 #'
 #' @return Returns the list of final parameters.
 #'
@@ -66,8 +66,8 @@
 #' @param data Numerical matrix or data frame. The data to embed of shape
 #' samples x features. Will be coerced to a matrix.
 #' @param knn Optional `NearestNeighbours` class. If provided, densMAP will
-#' skip the k-nearest neighbour graph generation and use this one. Defaults to
-#' `NULL`.
+#' skip the k-nearest neighbour graph generation and use this one. A wider graph
+#' is cut to `k`, with a warning on stderr. Defaults to `NULL`.
 #' @param n_dim Integer. Number of dimensions in the embedding space.
 #' Defaults to `2L`.
 #' @param k Integer. Number of nearest neighbours to consider for manifold
@@ -81,7 +81,7 @@
 #' scale at which embedded points will be spread out. Defaults to `1.0`.
 #' @param knn_method Character. (Approximate) Nearest neighbour method to use.
 #' One of `"kmknn"`, `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, `"ivf"`
-#' or `"exhaustive"`. Defaults to `"kmknn"`.
+#' or `"exhaustive"`. Defaults to `"nndescent"`.
 #' @param nn_params Named list. Nearest neighbour search parameters, see
 #' [params_nn()].
 #' @param umap_params Named list. UMAP algorithm parameters, see
@@ -89,9 +89,9 @@
 #' @param dens_params Named list. Density-preservation parameters, see
 #' [params_densmap()].
 #' @param seed Integer. Random seed for reproducibility. Defaults to `42L`.
-#' @param use_high_precision Optional boolean. Gives fine-grained control over
-#' `fp32` vs `fp64` usage.
-#' @param .verbose Logical. Controls verbosity. Defaults to `TRUE`.
+#' @param .verbose Logical or integer. Controls verbosity. `TRUE` or `1L` prints
+#' timed stages and epochs every 50, `2L` adds parameters and the kNN internals,
+#' `FALSE` or `0L` is silent. Defaults to `TRUE`.
 #'
 #' @return A numerical matrix with dimensions samples x n_dim containing
 #' the densMAP embedding.
@@ -112,11 +112,11 @@ densmap <- function(
   min_dist = 0.5,
   spread = 1.0,
   knn_method = c(
+    "nndescent",
     "kmknn",
     "balltree",
     "hnsw",
     "annoy",
-    "nndescent",
     "exhaustive",
     "ivf"
   ),
@@ -124,7 +124,6 @@ densmap <- function(
   umap_params = params_umap(),
   dens_params = params_densmap(),
   seed = 42L,
-  use_high_precision = NULL,
   .verbose = TRUE
 ) {
   # transformation
@@ -150,7 +149,6 @@ densmap <- function(
   checkmate::qassert(spread, "N1[0,)")
   assertDensParams(dens_params)
   checkmate::qassert(.verbose, c("B1", "I1[0, 2]"))
-  checkmate::qassert(use_high_precision, c("0", "B1"))
   checkmate::qassert(seed, "I1")
 
   final_densmap_params <- .prepare_densmap_params(
@@ -166,9 +164,6 @@ densmap <- function(
 
   # check if knn was provided
   res <- if (!is.null(knn)) {
-    if (.verbose) {
-      message("Using provided kNN graph.")
-    }
     rs_densmap_from_knn(
       embd = data,
       knn_data = knn,
@@ -178,7 +173,6 @@ densmap <- function(
       k = k,
       densmap_params = final_densmap_params,
       seed = seed,
-      use_high_precision = use_high_precision,
       verbose = parse_verbosity(.verbose)
     )
   } else {
@@ -190,7 +184,6 @@ densmap <- function(
       k = k,
       densmap_params = final_densmap_params,
       seed = seed,
-      use_high_precision = use_high_precision,
       verbose = parse_verbosity(.verbose)
     )
   }

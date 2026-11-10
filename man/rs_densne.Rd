@@ -4,16 +4,7 @@
 \alias{rs_densne}
 \title{den-SNE implementation}
 \usage{
-rs_densne(
-  embd,
-  n_dim,
-  perplexity,
-  approx_type,
-  densne_params,
-  seed,
-  use_high_precision,
-  verbose
-)
+rs_densne(embd, n_dim, perplexity, approx_type, densne_params, seed, verbose)
 }
 \arguments{
 \item{embd}{Numerical matrix. The data to use to generate the embeddings.
@@ -32,9 +23,6 @@ parameters for the den-SNE generation, i.e. the tSNE ones plus \code{lambda},
 \code{frac} and \code{var_shift}.}
 
 \item{seed}{Integer. Seed for reproducibility.}
-
-\item{use_high_precision}{Optional logical. Controls \code{fp32} vs \code{fp64} for.
-If \code{NULL} will use sensible default thresholding.}
 
 \item{verbose}{Integer. If \code{0L} -> silent or \code{1L} for normal verbosity; \code{2L}
 for detailed verbosity.}

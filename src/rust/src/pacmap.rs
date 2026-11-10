@@ -30,10 +30,6 @@ pub struct InternalPacmapParams<T> {
     pub n_mid_near: usize,
     /// Further (random) pairs per point.
     pub n_further: usize,
-    /// Start index into kNN list for mid-near candidate window.
-    pub mn_candidate_start: usize,
-    /// End index into kNN list for mid-near candidate window.
-    pub mn_candidate_end: usize,
     /// Which initialisation to use. One of `"pca"` or `"random"`.
     pub init: String,
     /// Which optimiser to use. One of `"adam"` or `"adam_parallel"`.
@@ -65,7 +61,7 @@ where
             params
                 .get("knn_method")
                 .and_then(|v| v.as_str())
-                .unwrap_or("kmknn"),
+                .unwrap_or("ivf"),
         );
 
         let init = String::from(params.get("init").and_then(|v| v.as_str()).unwrap_or("pca"));
@@ -92,24 +88,12 @@ where
             .and_then(|v| v.as_integer())
             .unwrap_or(20) as usize;
 
-        let mn_candidate_start = params
-            .get("mn_candidate_start")
-            .and_then(|v| v.as_integer())
-            .unwrap_or(4) as usize;
-
-        let mn_candidate_end = params
-            .get("mn_candidate_end")
-            .and_then(|v| v.as_integer())
-            .unwrap_or(50) as usize;
-
         Ok(Self {
             knn_method,
             param_knn: nn_params,
             n_near,
             n_mid_near,
             n_further,
-            mn_candidate_start,
-            mn_candidate_end,
             init,
             optimiser,
             param_optimiser: optim_params,
@@ -182,7 +166,7 @@ where
 ///
 /// * `data` - Input data matrix of shape samples × features.
 /// * `pre_computed_knn` - Optional pre-computed kNN to be used.
-/// * `n_dim` - Number of output dimensions. Currently only `2` is supported.
+/// * `n_dim` - Number of output dimensions.
 /// * `pacmap_params` - R list that contains the Pacmap parameters.
 /// * `seed` - Seed for reproducibility
 /// * `verbose` - If `0` -> silent or `1` for normal verbosity, `2` for detailed
@@ -214,8 +198,6 @@ where
         internal.n_near,
         internal.n_mid_near,
         internal.n_further,
-        internal.mn_candidate_start,
-        internal.mn_candidate_end,
         internal.init,
         None,
         internal.param_knn,

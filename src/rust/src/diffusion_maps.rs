@@ -74,7 +74,7 @@ where
             dm_params
                 .get("knn_method")
                 .and_then(|v| v.as_str())
-                .unwrap_or("kmknn"),
+                .unwrap_or("nndescent"),
         );
 
         let bandwidth_scale = dm_params

@@ -152,7 +152,7 @@ expect_true(
 
 ### optimisers -----------------------------------------------------------------
 
-for (optimiser in c("sgd", "adam", "adam_parallel")) {
+for (optimiser in c("sgd", "sgd_parallel", "adam", "adam_parallel")) {
   densmap_res_optim <- densmap(
     data = cluster_data,
     umap_params = params_umap(optimiser = optimiser),

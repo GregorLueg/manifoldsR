@@ -114,7 +114,7 @@ where
 
     Ok(Fa2Params::new(
         k,
-        get_string("knn_method", "kmknn"),
+        get_string("knn_method", "nndescent"),
         get_string("init", "spectral"),
         None,
         randomised,

@@ -1,3 +1,55 @@
+# manifoldsR 0.6.0
+
+## Breaking changes
+
+Expect different coordinates than 0.5.0 at the same seed for most methods.
+
+- Everything runs in `f32`. `use_high_precision` is gone, `evoc()` included.
+  The backends do the numerically touchy bits in `f64` themselves.
+- New `knn_method` defaults: `"ivf"` for `tsne()`, `densne()`, `dreams()`,
+  `pacmap()` and `phate()`, `"nndescent"` for the rest. `generate_knn_graph()`
+  stays on `"kmknn"`.
+- `params_nn()` drops `diversify_prob`, `ef_budget` and `extract_knn`.
+  `ef_construction` defaults to `200L`.
+- `pacmap()` and `phate()` now follow their reference implementations.
+  `params_pacmap()` drops `mn_candidate_start` and `mn_candidate_end`,
+  `params_phate()` gains `thresh` and `mds_iter`.
+- Precomputed graphs: `pacmap()` wants them `n_near + 50` wide, `phate()`
+  `6 * k + 5`. `umap()`, `densmap()` and `forceatlas2()` cut wider graphs to `k`
+  with a warning.
+- `params_umap()` `randomised` defaults to `FALSE`. With `n_epochs = NULL`,
+  only the SGD optimisers drop to 200 epochs above 10k samples.
+- `diffusion_maps()` with spectral landmarks takes 100 singular vectors by
+  default, was 10. `t_max` must be at least `3`.
+- `params_diffusion_maps()` `n_landmarks` defaults to `NULL`, the full
+  operator. Was `2048L`. The full operator is faster on small to medium data
+  sets.
+- `rs_approx_nearest_neighbours()` renames `ann_params` to `nn_params`.
+
+## Features
+
+- `optimiser = "sgd_parallel"` in `params_umap()`: lock-free Hogwild! SGD for
+  `umap()` and `densmap()`. Not reproducible with more than one thread.
+
+## Performance
+
+- `"sgd"` for UMAP and densMAP is about 2.4x faster.
+- Spectral initialisation needs half the memory on connected graphs and a
+  quarter on disconnected ones.
+
+## Bug fixes
+
+- PCA initialisation no longer collapses large `f32` layouts onto a few points.
+- PaCMAP no longer compresses the layout.
+- Spectral landmark selection works at scale.
+- `diffusion_maps()` errors on points that lose all their edges instead of
+  returning `Inf` coordinates.
+
+## Internals
+
+- Backend bumps: `manifolds-rs` 0.9.0, `evoc-rs` 0.7.0, `bixverse-rs` 0.10.0 and
+  `ann-search-rs` 0.12.2.
+
 # manifoldsR 0.5.0
 
 First CRAN release.

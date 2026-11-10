@@ -9,12 +9,9 @@ params_nn(
   n_tree = 50L,
   search_budget = NULL,
   m = 16L,
-  ef_construction = 100L,
+  ef_construction = 200L,
   ef_search = 100L,
-  diversify_prob = 0,
   delta = 0.001,
-  ef_budget = NULL,
-  extract_knn = TRUE,
   bt_budget = 0.1,
   n_list = NULL,
   n_probes = NULL
@@ -25,30 +22,19 @@ params_nn(
 
 \item{n_tree}{Integer. Number of trees for Annoy. Defaults to \code{50L}.}
 
-\item{search_budget}{Integer or \code{NULL}. Search budget for Annoy. Defaults to
-\code{NULL}.}
+\item{search_budget}{Integer or \code{NULL}. Search budget for Annoy. If \code{NULL},
+uses \code{k * n_tree * 20}. Defaults to \code{NULL}.}
 
 \item{m}{Integer. Number of bidirectional links for HNSW. Defaults to \code{16L}.}
 
 \item{ef_construction}{Integer. Size of the dynamic candidate list during
-HNSW construction. Defaults to \code{100L}.}
+HNSW construction. Defaults to \code{200L}.}
 
 \item{ef_search}{Integer. Size of the dynamic candidate list during HNSW
 search. Defaults to \code{100L}.}
 
-\item{diversify_prob}{Numeric. Diversification probability for NN descent.
-Defaults to \code{0.0}.}
-
 \item{delta}{Numeric. Precision parameter for NN descent. Defaults to
 \code{0.001}.}
-
-\item{ef_budget}{Integer or \code{NULL}. Effort budget for NN descent. Ignored
-when \code{extract_knn} is \code{TRUE}, as no search runs. Defaults to \code{NULL}.}
-
-\item{extract_knn}{Boolean. Only affects the \code{"nndescent"} backend. If
-\code{TRUE}, the descent hands back the graph it just built instead of running a
-beam search over it. Faster, at a recall of roughly \code{0.98} rather than
-\code{0.99}-\code{1.00}. Defaults to \code{TRUE}.}
 
 \item{bt_budget}{Numeric. Budget for ball tree search. Defaults to \code{0.1}.}
 
@@ -64,24 +50,16 @@ A named list with the following elements:
 \item dist_metric - String. The distance metric to use. One of
 \code{c("euclidean", "cosine")}. Defaults to \code{"euclidean"}.
 \item n_tree - Integer. Number of trees for Annoy. Defaults to \code{50L}.
-\item search_budget - Integer or \code{NULL}. Search budget for Annoy. Defaults
-to \code{NULL}.
+\item search_budget - Integer or \code{NULL}. Search budget for Annoy. If \code{NULL},
+uses \code{k * n_tree * 20}. Defaults to \code{NULL}.
 \item m - Integer. Number of bidirectional links for HNSW. Defaults to
 \code{16L}.
 \item ef_construction - Integer. Size of the dynamic candidate list during
-HNSW construction. Defaults to \code{100L}.
+HNSW construction. Defaults to \code{200L}.
 \item ef_search - Integer. Size of the dynamic candidate list during HNSW
 search. Defaults to \code{100L}.
-\item diversify_prob - Numeric. Diversification probability for NN descent.
-Defaults to \code{0.0}.
 \item delta - Numeric. Precision parameter for NN descent. Defaults to
 \code{0.001}.
-\item ef_budget - Integer or \code{NULL}. Effort budget for NN descent. Ignored
-when \code{extract_knn} is \code{TRUE}, as no search runs. Defaults to \code{NULL}.
-\item extract_knn - Boolean. Only affects the \code{"nndescent"} backend. If
-\code{TRUE}, the descent hands back the graph it just built instead of running a
-beam search over it. Faster, at a recall of roughly \code{0.98} rather than
-\code{0.99}-\code{1.00}. Defaults to \code{TRUE}.
 \item bt_budget - Numeric. Budget for ball tree search. Defaults to \code{0.1}.
 \item n_list - Integer or \code{NULL}. Number of clusters to use for IVF. If
 \code{NULL}, uses \code{sqrt(n)}. Defaults to \code{NULL}.

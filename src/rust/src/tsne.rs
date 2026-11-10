@@ -46,11 +46,11 @@ where
 {
     /// Generate t-SNE parameters from an R list
     ///
-    /// # Arguments
+    /// ### Params
     ///
     /// * `r_list` - R list with all needed parameters for t-SNE
     ///
-    /// # Returns
+    /// ### Returns
     ///
     /// The `InternalTsneParams`
     pub fn from_r_list(r_list: List) -> Result<Self, extendr_api::Error> {
@@ -70,7 +70,7 @@ where
             tsne_params
                 .get("knn_method")
                 .and_then(|v| v.as_str())
-                .unwrap_or("kmknn"),
+                .unwrap_or("ivf"),
         );
 
         let randomised = tsne_params
@@ -90,11 +90,11 @@ where
 
 /// Helper function to generate t-SNE optimisation parameters
 ///
-/// # Arguments
+/// ### Params
 ///
 /// * `r_list` - List with t-SNE optimisation parameters
 ///
-/// # Returns
+/// ### Returns
 ///
 /// `TsneOptimParams` with sensible defaults if not found in the list
 fn get_params_tsne_optim<T>(r_list: List) -> Result<TsneOptimParams<T>, extendr_api::Error>
@@ -189,8 +189,8 @@ where
         initialisation: internal.init,
         nn_params: internal.param_knn,
         optim_params: internal.param_optimiser,
-        randomised_init: internal.randomised,
-        init_range: Some(T::from_f64(1e-2).unwrap()),
+        randomised: internal.randomised,
+        init_range: None,
     })
 }
 
@@ -238,11 +238,6 @@ where
     StandardNormal: Distribution<T>,
     NNDescent<T>: ApplySortedUpdates<T> + NNDescentQuery<T>,
 {
-    assert!(
-        n_dim == 2,
-        "At the moment, this tSNE implementation only supports n_dim = 2"
-    );
-
     let tsne_params = build_tsne_params(tsne_params, n_dim, perplexity)?;
 
     let res = tsne(
@@ -311,11 +306,6 @@ where
     StandardNormal: Distribution<T>,
     NNDescent<T>: ApplySortedUpdates<T> + NNDescentQuery<T>,
 {
-    assert!(
-        n_dim == 2,
-        "At the moment, this den-SNE implementation only supports n_dim = 2"
-    );
-
     let dens_params = get_params_dens(densne_params.clone())?;
     let tsne_params = build_tsne_params(densne_params, n_dim, perplexity)?;
 

@@ -7,7 +7,7 @@
 #' @param knn_method String. Method to use to generate the kNN graph.
 #' @param nn_params Named list. The nearest neighbour search parameters.
 #' @param pacmap_params Named list. The PaCMAP-specific parameters.
-#' @param .verbose Boolean. Controls verbosity.
+#' @param .verbose Logical or integer `0L` to `2L`. Controls verbosity.
 #'
 #' @return Returns the list of final parameters.
 #'
@@ -63,22 +63,24 @@
 #' @param data Numerical matrix or data frame. The data to embed of shape
 #' samples x features. Will be coerced to a matrix.
 #' @param knn Optional `NearestNeighbours` class. If provided, PaCMAP will skip
-#' the k-nearest neighbour graph generation and use this one. Defaults to
-#' `NULL`.
+#' the k-nearest neighbour graph generation and use this one. Needs at least
+#' `n_near` neighbours, and the near pairs are ranked from what it holds, so
+#' build it `n_near + 50` wide to match the internal search. Defaults to `NULL`.
 #' @param n_dim Integer. Number of dimensions in the embedding space.
 #' Defaults to `2L`.
 #' @param knn_method Character. (Approximate) Nearest neighbour method to use.
 #' One of `"kmknn"`, `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, `"ivf"`
-#' or `"exhaustive"`. Defaults to `"kmknn"`.
+#' or `"exhaustive"`. Defaults to `"ivf"`.
 #' @param nn_params Named list. Nearest neighbour search parameters, see
 #' [params_nn()].
 #' @param pacmap_params Named list. PaCMAP algorithm parameters, see
-#' [params_pacmap()]. Controls near/mid-near/further pair counts and the kNN
-#' search size (via `mn_candidate_end`).
+#' [params_pacmap()]. Controls near/mid-near/further pair counts. The kNN search
+#' runs `n_near + 50` wide and the near pairs are the best of those by locally
+#' scaled distance.
 #' @param seed Integer. Random seed for reproducibility. Defaults to `42L`.
-#' @param use_high_precision Optional boolean. Gives fine-grained control over
-#' `fp32` vs `fp64` usage.
-#' @param .verbose Logical. Controls verbosity. Defaults to `TRUE`.
+#' @param .verbose Logical or integer. Controls verbosity. `TRUE` or `1L` prints
+#' timed stages and epochs every 50, `2L` adds parameters and the kNN internals,
+#' `FALSE` or `0L` is silent. Defaults to `TRUE`.
 #'
 #' @return A numerical matrix with dimensions samples x n_dim containing
 #' the PaCMAP embedding.
@@ -94,18 +96,17 @@ pacmap <- function(
   knn = NULL,
   n_dim = 2L,
   knn_method = c(
+    "ivf",
+    "nndescent",
     "kmknn",
     "balltree",
     "hnsw",
     "annoy",
-    "nndescent",
-    "exhaustive",
-    "ivf"
+    "exhaustive"
   ),
   nn_params = params_nn(),
   pacmap_params = params_pacmap(),
   seed = 42L,
-  use_high_precision = NULL,
   .verbose = TRUE
 ) {
   if (is.data.frame(data)) {
@@ -126,7 +127,6 @@ pacmap <- function(
   )
   checkmate::assert_int(n_dim, lower = 1, upper = ncol(data))
   checkmate::qassert(seed, "I1")
-  checkmate::qassert(use_high_precision, c("0", "B1"))
   checkmate::qassert(.verbose, c("B1", "I1[0, 2]"))
 
   final_pacmap_params <- .prepare_pacmap_params(
@@ -137,16 +137,12 @@ pacmap <- function(
   )
 
   res <- if (!is.null(knn)) {
-    if (.verbose) {
-      message("Using provided kNN graph.")
-    }
     rs_pacmap_from_knn(
       embd = data,
       knn_data = knn,
       n_dim = n_dim,
       pacmap_params = final_pacmap_params,
       seed = seed,
-      use_high_precision = use_high_precision,
       verbose = parse_verbosity(.verbose)
     )
   } else {
@@ -155,7 +151,6 @@ pacmap <- function(
       n_dim = n_dim,
       pacmap_params = final_pacmap_params,
       seed = seed,
-      use_high_precision = use_high_precision,
       verbose = parse_verbosity(.verbose)
     )
   }

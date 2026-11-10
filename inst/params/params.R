@@ -14,39 +14,18 @@ spec_nn <- param_spec(
     search_budget = p_int(
       NULL,
       null_ok = TRUE,
-      doc = "Search budget for Annoy."
+      doc = "Search budget for Annoy. If `NULL`, uses `k * n_tree * 20`."
     ),
     m = p_int(16L, doc = "Number of bidirectional links for HNSW."),
     ef_construction = p_int(
-      100L,
+      200L,
       doc = "Size of the dynamic candidate list during HNSW construction."
     ),
     ef_search = p_int(
       100L,
       doc = "Size of the dynamic candidate list during HNSW search."
     ),
-    diversify_prob = p_dbl(
-      0.0,
-      doc = "Diversification probability for NN descent."
-    ),
     delta = p_dbl(0.001, doc = "Precision parameter for NN descent."),
-    ef_budget = p_int(
-      NULL,
-      null_ok = TRUE,
-      doc = paste(
-        "Effort budget for NN descent. Ignored when `extract_knn` is `TRUE`,",
-        "as no search runs."
-      )
-    ),
-    extract_knn = p_lgl(
-      TRUE,
-      doc = paste(
-        "Only affects the `\"nndescent\"` backend. If `TRUE`, the descent",
-        "hands back the graph it just built instead of running a beam search",
-        "over it. Faster, at a recall of roughly `0.98` rather than",
-        "`0.99`-`1.00`."
-      )
-    ),
     bt_budget = p_dbl(0.1, doc = "Budget for ball tree search."),
     n_list = p_int(
       NULL,
@@ -103,8 +82,11 @@ spec_umap <- param_spec(
     gamma = p_dbl(1.0, doc = "Repulsion strength."),
     optimiser = p_choice(
       "adam_parallel",
-      c("adam_parallel", "sgd", "adam"),
-      doc = "The optimiser."
+      c("adam_parallel", "sgd", "sgd_parallel", "adam"),
+      doc = paste(
+        "The optimiser. `\"sgd_parallel\"` is lock-free (Hogwild!) and not",
+        "reproducible run to run with more than one thread."
+      )
     ),
     init = p_choice(
       "spectral",
@@ -112,7 +94,7 @@ spec_umap <- param_spec(
       doc = "Embedding initialisation method."
     ),
     randomised = p_lgl(
-      TRUE,
+      FALSE,
       doc = "Use randomised SVD for PCA initialisation."
     )
   )
@@ -400,16 +382,17 @@ spec_phate <- param_spec(
       range = "(0,)",
       null_ok = TRUE,
       doc = paste(
-        "Scaling factor applied to the kernel bandwidth. If `NULL`, the",
-        "library selects a sensible default."
+        "Scaling factor applied to the kernel bandwidth. If `NULL`, uses",
+        "`1.0`."
       )
     ),
     t_max = p_int(
       100L,
-      range = "[1,)",
+      range = "[3,)",
       doc = paste(
         "Maximum diffusion time considered during automatic selection via Von",
-        "Neumann entropy knee point detection."
+        "Neumann entropy knee point detection. At least `3`, as the knee",
+        "search needs three points."
       )
     ),
     t_custom = p_int(
@@ -420,15 +403,27 @@ spec_phate <- param_spec(
     ),
     gamma = p_dbl(
       1.0,
-      doc = "Informational distance parameter for the diffusion potential."
+      range = "[-1,1]",
+      doc = paste(
+        "Informational distance parameter for the diffusion potential. `1` is",
+        "the log potential."
+      )
+    ),
+    thresh = p_dbl(
+      1e-4,
+      range = "[0,)",
+      doc = paste(
+        "Sparsity threshold on the kernel. Neighbours past `k` join the kernel",
+        "while their affinity clears it."
+      )
     ),
     n_landmarks = p_int(
       2048L,
       range = "[1,)",
       null_ok = TRUE,
       doc = paste(
-        "Number of landmarks for compressed diffusion. If `NULL`, the full",
-        "N x N diffusion operator is used."
+        "Number of landmarks for compressed diffusion. If `NULL`, or at least",
+        "the number of samples, the full N x N diffusion operator is used."
       )
     ),
     landmark_method = p_choice(
@@ -441,14 +436,23 @@ spec_phate <- param_spec(
       range = "[1,)",
       null_ok = TRUE,
       doc = paste(
-        "Number of SVD components used in landmark construction. If `NULL`,",
-        "the library selects a sensible default."
+        "Number of singular vectors for spectral landmark selection. If",
+        "`NULL`, uses `100`. Ignored by the other landmark methods."
       )
     ),
     mds_method = p_choice(
       "sgd_dense",
       c("sgd_dense", "classic"),
       doc = "MDS algorithm used for the final embedding."
+    ),
+    mds_iter = p_int(
+      NULL,
+      range = "[1,)",
+      null_ok = TRUE,
+      doc = paste(
+        "Number of SGD-MDS iterations. If `NULL`, scales with the number of",
+        "points: `300` below 1000, `500` below 5000 and `800` otherwise."
+      )
     ),
     graph_symmetry = p_choice(
       "additive",
@@ -465,24 +469,31 @@ spec_pacmap <- param_spec(
   title = "Wrapper function to generate PaCMAP parameters",
   label = "PaCMAP params",
   fields = list(
-    n_near = p_int(10L, doc = "Near pairs per point (attractive)."),
-    n_mid_near = p_int(5L, doc = "Mid-near pairs per point."),
-    n_further = p_int(20L, doc = "Further (random) pairs per point."),
-    mn_candidate_start = p_int(
-      4L,
-      doc = "Start index into kNN list for mid-near candidate window."
-    ),
-    mn_candidate_end = p_int(
-      50L,
+    n_near = p_int(
+      10L,
       doc = paste(
-        "End index into kNN list for mid-near candidate window. Also",
-        "determines the kNN search size."
+        "Near pairs per point (attractive). The kNN search runs `n_near + 50`",
+        "wide and the pairs are the best of those by locally scaled distance."
       )
+    ),
+    n_mid_near = p_int(
+      5L,
+      doc = paste(
+        "Mid-near pairs per point. Each one is the second closest of six",
+        "random points."
+      )
+    ),
+    n_further = p_int(
+      20L,
+      doc = "Further (random) pairs per point. These exclude the near pairs."
     ),
     init = p_choice(
       "pca",
       c("pca", "random"),
-      doc = "Embedding initialisation."
+      doc = paste(
+        "Embedding initialisation. `\"pca\"` uses the PC scores times `0.01`, so",
+        "the ratio between the components survives."
+      )
     ),
     optimiser = p_choice(
       "adam_parallel",
@@ -556,10 +567,11 @@ spec_diffusion_maps <- param_spec(
     ),
     t_max = p_int(
       100L,
-      range = "[1,)",
+      range = "[3,)",
       doc = paste(
         "Maximum diffusion time considered during automatic selection via Von",
-        "Neumann entropy knee point detection."
+        "Neumann entropy knee point detection. At least `3`, as the knee",
+        "search needs three points."
       )
     ),
     t_custom = p_int(
@@ -569,12 +581,15 @@ spec_diffusion_maps <- param_spec(
       doc = "Fixed diffusion time. If set, overrides automatic time selection."
     ),
     n_landmarks = p_int(
-      2048L,
+      NULL,
       range = "[1,)",
       null_ok = TRUE,
       doc = paste(
-        "Number of landmarks for compressed diffusion. If `NULL`, the full",
-        "N x N diffusion operator is used."
+        "Number of landmarks for compressed diffusion. If `NULL`, or at least",
+        "the number of samples, the full N x N diffusion operator is used.",
+        "Keep `k` a small fraction of the landmark count: when",
+        "`k` covers a large share of the landmarks, the landmark kernel turns",
+        "broad and the later coordinates shrink towards a line."
       )
     ),
     landmark_method = p_choice(
@@ -587,8 +602,8 @@ spec_diffusion_maps <- param_spec(
       range = "[1,)",
       null_ok = TRUE,
       doc = paste(
-        "Number of SVD components used in landmark construction. If `NULL`,",
-        "the library selects a sensible default."
+        "Number of singular vectors for spectral landmark selection. If",
+        "`NULL`, uses `100`. Ignored by the other landmark methods."
       )
     )
   )

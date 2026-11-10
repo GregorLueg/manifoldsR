@@ -8,11 +8,10 @@ forceatlas2(
   data,
   knn = NULL,
   k = 15L,
-  knn_method = c("kmknn", "balltree", "hnsw", "annoy", "nndescent", "exhaustive", "ivf"),
+  knn_method = c("nndescent", "kmknn", "balltree", "hnsw", "annoy", "exhaustive", "ivf"),
   nn_params = params_nn(),
   fa2_params = params_fa2(),
   seed = 42L,
-  use_high_precision = NULL,
   .verbose = TRUE
 )
 }
@@ -21,13 +20,14 @@ forceatlas2(
 samples x features. Will be coerced to a matrix.}
 
 \item{knn}{Optional \code{NearestNeighbours} class. If provided, the k-nearest
-neighbour search is skipped and this one is used. Defaults to \code{NULL}.}
+neighbour search is skipped and this one is used. A wider graph is cut to
+\code{k}, with a warning on stderr. Defaults to \code{NULL}.}
 
 \item{k}{Integer. Number of nearest neighbours. Defaults to \code{15L}.}
 
 \item{knn_method}{Character. (Approximate) Nearest neighbour method to use.
 One of \code{"kmknn"}, \code{"hnsw"}, \code{"annoy"}, \code{"nndescent"}, \code{"balltree"}, \code{"ivf"}
-or \code{"exhaustive"}. Defaults to \code{"kmknn"}.}
+or \code{"exhaustive"}. Defaults to \code{"nndescent"}.}
 
 \item{nn_params}{Named list. Nearest neighbour search parameters, see
 \code{\link[=params_nn]{params_nn()}}.}
@@ -36,10 +36,9 @@ or \code{"exhaustive"}. Defaults to \code{"kmknn"}.}
 
 \item{seed}{Integer. Random seed for reproducibility. Defaults to \code{42L}.}
 
-\item{use_high_precision}{Optional boolean. Gives fine-grained control over
-\code{fp32} vs \code{fp64} usage.}
-
-\item{.verbose}{Logical. Controls verbosity. Defaults to \code{TRUE}.}
+\item{.verbose}{Logical or integer. Controls verbosity. \code{TRUE} or \code{1L} prints
+timed stages and epochs every 50, \code{2L} adds parameters and the kNN internals,
+\code{FALSE} or \code{0L} is silent. Defaults to \code{TRUE}.}
 }
 \value{
 A numerical matrix with dimensions samples x 2 containing the

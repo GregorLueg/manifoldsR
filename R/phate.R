@@ -46,23 +46,25 @@
 #' @param data Numerical matrix or data frame. The data to embed of shape
 #' samples x features. Will be coerced to a matrix.
 #' @param knn Optional `NearestNeighbours` class. If provided, PHATE will skip
-#' the k-nearest neighbour graph generation and use this one instead. The `k`
-#' argument must match the k used to generate this graph. Defaults to `NULL`.
+#' the k-nearest neighbour graph generation and use this one instead. Every
+#' neighbour in the graph can join the kernel while its affinity clears
+#' `thresh`, so build the graph `6 * k + 5` wide to match the internal search.
+#' Defaults to `NULL`.
 #' @param n_dim Integer. Number of dimensions in the embedding space.
 #' Currently only `2L` is supported. Defaults to `2L`.
-#' @param k Integer. Number of nearest neighbours for graph construction.
-#' Defaults to `5L`.
+#' @param k Integer. Number of nearest neighbours that set the kernel bandwidth.
+#' The kNN search itself runs `6 * k + 5` wide. Defaults to `5L`.
 #' @param knn_method Character. (Approximate) Nearest neighbour method to use.
 #' One of `"kmknn"`, `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, `"ivf"`
-#' or `"exhaustive"`. Defaults to `"kmknn"`.
+#' or `"exhaustive"`. Defaults to `"ivf"`.
 #' @param nn_params Named list. Nearest neighbour search parameters, see
 #' [params_nn()].
 #' @param phate_params Named list. PHATE algorithm parameters, see
 #' [params_phate()].
 #' @param seed Integer. Random seed for reproducibility. Defaults to `42L`.
-#' @param use_high_precision Optional boolean. Gives fine-grained control over
-#' `fp32` vs `fp64` usage.
-#' @param .verbose Logical. Controls verbosity. Defaults to `TRUE`.
+#' @param .verbose Logical or integer. Controls verbosity. `TRUE` or `1L` prints
+#' timed stages and epochs every 50, `2L` adds parameters and the kNN internals,
+#' `FALSE` or `0L` is silent. Defaults to `TRUE`.
 #'
 #' @return A numerical matrix with dimensions samples x n_dim containing
 #' the PHATE embedding.
@@ -79,18 +81,17 @@ phate <- function(
   n_dim = 2L,
   k = 5L,
   knn_method = c(
+    "ivf",
     "kmknn",
     "balltree",
     "hnsw",
     "annoy",
     "nndescent",
-    "exhaustive",
-    "ivf"
+    "exhaustive"
   ),
   nn_params = params_nn(),
   phate_params = params_phate(),
   seed = 42L,
-  use_high_precision = NULL,
   .verbose = TRUE
 ) {
   if (is.data.frame(data)) {
@@ -118,7 +119,6 @@ phate <- function(
   assertNnParams(nn_params)
   assertPhateParams(phate_params)
   checkmate::qassert(seed, "I1")
-  checkmate::qassert(use_high_precision, c("0", "B1"))
   checkmate::qassert(.verbose, c("B1", "I1[0, 2]"))
 
   final_phate_params <- .prepare_phate_params(
@@ -145,9 +145,6 @@ phate <- function(
   }
 
   res <- if (!is.null(knn)) {
-    if (.verbose) {
-      message("Using provided kNN graph.")
-    }
     rs_phate_from_knn(
       embd = data,
       knn_data = knn,
@@ -155,7 +152,6 @@ phate <- function(
       k = as.integer(k),
       phate_params = final_phate_params,
       seed = seed,
-      use_high_precision = use_high_precision,
       verbose = parse_verbosity(.verbose)
     )
   } else {
@@ -165,7 +161,6 @@ phate <- function(
       k = as.integer(k),
       phate_params = final_phate_params,
       seed = seed,
-      use_high_precision = use_high_precision,
       verbose = parse_verbosity(.verbose)
     )
   }
