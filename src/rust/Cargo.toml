@@ -39,6 +39,3 @@ non_snake_case = "allow"
 name = "document"
 path = "document.rs"
 
-[patch.crates-io]
-manifolds-rs = { git = "https://github.com/GregorLueg/manifolds-rs", branch = "feat-hogwild-umap" }
-bixverse-r  = { git = "https://github.com/GregorLueg/bixverse-rs", branch = "feat-singlecell-py" }
