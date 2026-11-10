@@ -581,17 +581,15 @@ spec_diffusion_maps <- param_spec(
       doc = "Fixed diffusion time. If set, overrides automatic time selection."
     ),
     n_landmarks = p_int(
-      2048L,
+      NULL,
       range = "[1,)",
       null_ok = TRUE,
       doc = paste(
         "Number of landmarks for compressed diffusion. If `NULL`, or at least",
-        "the number of samples, the full N x N diffusion operator is used. The",
-        "default is specific to this package; `manifolds-rs` defaults to the",
-        "full operator. Keep `k` a small fraction of the landmark count: when",
+        "the number of samples, the full N x N diffusion operator is used.",
+        "Keep `k` a small fraction of the landmark count: when",
         "`k` covers a large share of the landmarks, the landmark kernel turns",
-        "broad and the later coordinates shrink towards a line. On small data,",
-        "prefer the full operator."
+        "broad and the later coordinates shrink towards a line."
       )
     ),
     landmark_method = p_choice(

@@ -52,6 +52,7 @@ Suggests:
     zeallot
 Config/Needs/website:
     data.table,
+    destiny,
     ggplot2,
     gridExtra,
     knitr,
