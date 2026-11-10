@@ -2,39 +2,25 @@
 
 ## Breaking changes
 
-Most embeddings give different coordinates than 0.5.0 at the same seed: new
-kNN defaults, PaCMAP and PHATE rewritten to follow their references, a new
-Lanczos solver for spectral initialisation, and `"sgd"` for UMAP and densMAP.
+Expect different coordinates than 0.5.0 at the same seed for most methods.
 
-- Everything runs in `f32`. `use_high_precision` and the switch to `f64` above
-  100k samples are gone, `evoc()` included. The backends do the steps prone to
-  catastrophic cancellation in `f64` themselves.
-- New `knn_method` defaults, as in `manifolds-rs`: `"ivf"` for `tsne()`,
-  `densne()`, `dreams()`, `pacmap()` and `phate()`, `"nndescent"` for the rest.
-  `generate_knn_graph()` stays on `"kmknn"`.
-- `params_nn()` loses `diversify_prob`, `ef_budget` and `extract_knn`, as
-  NN-Descent now returns the graph directly. `ef_construction` defaults to
-  `200L`, was `100L`.
-- `pacmap()` follows the reference. Near pairs are the best `n_near` of an
-  `n_near + 50` wide search, mid-near pairs the second closest of six random
-  points, and PCA initialisation keeps the ratio between components.
-  `params_pacmap()` loses `mn_candidate_start` and `mn_candidate_end`.
-- `phate()` follows the reference. The kNN search runs `6 * k + 5` wide and
-  neighbours past `k` join the kernel while their affinity clears `thresh`.
-  `params_phate()` gains `thresh` and `mds_iter`, and `gamma` must lie in
-  `[-1, 1]`.
-- Precomputed graphs: build them `n_near + 50` wide for `pacmap()` and
-  `6 * k + 5` wide for `phate()`. `umap()`, `densmap()` and `forceatlas2()` cut
-  a graph wider than `k` to `k` with a warning.
-- `tsne()` and `densne()` drop the fixed `0.01` initialisation scale for `1.0`
-  (PCA) or `10.0` (spectral, random). `dreams()` is unaffected.
-- `params_umap()` `randomised` defaults to `FALSE`. With `n_epochs = NULL`, only
-  the SGD optimisers drop to 200 epochs above 10k samples; `"adam"` always gets
-  500.
-- `diffusion_maps()` with spectral landmarks and `n_svd = NULL` takes 100
-  singular vectors, was 10.
-- One verbosity grammar: `.verbose = 1L` prints timed stages and every 50th
-  epoch, `2L` adds parameters, landmarks and kNN internals.
+- Everything runs in `f32`. `use_high_precision` is gone, `evoc()` included.
+  The backends do the numerically touchy bits in `f64` themselves.
+- New `knn_method` defaults: `"ivf"` for `tsne()`, `densne()`, `dreams()`,
+  `pacmap()` and `phate()`, `"nndescent"` for the rest. `generate_knn_graph()`
+  stays on `"kmknn"`.
+- `params_nn()` drops `diversify_prob`, `ef_budget` and `extract_knn`.
+  `ef_construction` defaults to `200L`.
+- `pacmap()` and `phate()` now follow their reference implementations.
+  `params_pacmap()` drops `mn_candidate_start` and `mn_candidate_end`,
+  `params_phate()` gains `thresh` and `mds_iter`.
+- Precomputed graphs: `pacmap()` wants them `n_near + 50` wide, `phate()`
+  `6 * k + 5`. `umap()`, `densmap()` and `forceatlas2()` cut wider graphs to `k`
+  with a warning.
+- `params_umap()` `randomised` defaults to `FALSE`. With `n_epochs = NULL`,
+  only the SGD optimisers drop to 200 epochs above 10k samples.
+- `diffusion_maps()` with spectral landmarks takes 100 singular vectors by
+  default, was 10. `t_max` must be at least `3`.
 - `rs_approx_nearest_neighbours()` renames `ann_params` to `nn_params`.
 
 ## Features
@@ -44,25 +30,17 @@ Lanczos solver for spectral initialisation, and `"sgd"` for UMAP and densMAP.
 
 ## Performance
 
-- `"sgd"` for UMAP and densMAP is about 2.4x faster, and the UMAP optimisers use
-  25-40% less memory. Parallel Adam is about 5% slower.
-- Spectral initialisation uses a thick-restarted Lanczos solver, with half the
-  memory on connected graphs and a quarter on disconnected ones.
-- PHATE powers the landmark operator as a dense matrix.
-- Software prefetch on aarch64 and x86_64 in the UMAP, FFT t-SNE and den-SNE
-  hot loops.
+- `"sgd"` for UMAP and densMAP is about 2.4x faster.
+- Spectral initialisation needs half the memory on connected graphs and a
+  quarter on disconnected ones.
 
 ## Bug fixes
 
 - PCA initialisation no longer collapses large `f32` layouts onto a few points.
-- PaCMAP no longer compresses the layout. Mid-near pairs used to be kNN slots 4
-  to 8, so already near pairs.
+- PaCMAP no longer compresses the layout.
 - Spectral landmark selection works at scale.
-- PHATE honours `n_svd` and, with landmarks, `mds_iter`, and drops empty
-  landmarks instead of keeping them as zero rows.
-- `diffusion_maps()` errors when points lose all their edges in the kernel,
-  rather than returning `Inf` coordinates.
-- `t_max` below `3` is rejected up front.
+- `diffusion_maps()` errors on points that lose all their edges instead of
+  returning `Inf` coordinates.
 
 ## Internals
 
