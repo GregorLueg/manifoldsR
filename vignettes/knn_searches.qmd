@@ -274,7 +274,7 @@ microbenchmark::microbenchmark(
       data = benchmark_data$data,
       k = k,
       knn_method = "ivf",
-      nn_params = params_nn(n_probe = 25L),
+      nn_params = params_nn(n_probes = 25L),
       .verbose = FALSE
     )
   },
@@ -349,7 +349,7 @@ microbenchmark::microbenchmark(
       data = benchmark_data$data,
       k = k,
       knn_method = "ivf",
-      nn_params = params_nn(n_probe = 25L),
+      nn_params = params_nn(n_probes = 25L),
       .verbose = FALSE
     )
   },
@@ -360,8 +360,15 @@ microbenchmark::microbenchmark(
 ### Precision
 
 In the end, these are approximate methods. So, we need to understand how good
-they are at recovering the true neighbours. A typical metric is `Recall@k` 
-neighbours. Let's just have a look at the smaller data sets here:
+they are at recovering the true neighbours. Two metrics:
+
+- `Recall@k`: the fraction of the true `k` neighbours that the method found,
+  regardless of order.
+- Mean distance ratio: distance to the approximate neighbour divided by the
+  distance to the true neighbour at the same rank, averaged over everything.
+  1.0 means perfect. It tells you how *wrong* the misses are.
+
+Let's have a look at 25k samples:
 
 ```{r}
 #| label: approximate nearest neighbour searches - recall
@@ -375,30 +382,47 @@ benchmark_data <- manifold_synthetic_data(
 exhaustive <- generate_knn_graph(
   data = benchmark_data$data,
   k = k,
-  knn_method = "exhaustive"
+  knn_method = "exhaustive",
+  .verbose = FALSE
 )
+
+true_idx <- get_idx_mat(exhaustive)
+true_dist <- get_dist_mat(exhaustive)
 
 indices <- c("hnsw", "annoy", "nndescent", "balltree", "ivf", "kmknn")
 
-for (idx in indices) {
-  idx_i <- generate_knn_graph(
+precision <- purrr::map(indices, \(idx) {
+  knn_i <- generate_knn_graph(
     data = benchmark_data$data,
     k = k,
     nn_params = params_nn(n_probes = 25L),
     knn_method = idx,
     .verbose = FALSE
   )
+  idx_i <- get_idx_mat(knn_i)
 
-  recall_i <- sum(get_idx_flat(exhaustive) == get_idx_flat(idx_i)) /
-    (k * samples)
+  hits <- purrr::map_int(seq_len(samples), \(i) {
+    length(intersect(true_idx[i, ], idx_i[i, ]))
+  })
 
-  print(
-    sprintf("ANN method %s achieves a Recall of %.3f.", idx, recall_i)
+  data.frame(
+    method = idx,
+    recall = sum(hits) / (k * samples),
+    dist_ratio = mean(get_dist_mat(knn_i) / true_dist)
   )
-}
+})
+
+knitr::kable(
+  do.call(rbind, precision),
+  digits = 4,
+  col.names = c("Method", "Recall@k", "Mean distance ratio")
+)
 ```
 
-As you can see, all of these methods are able to (mostly) identify the right 
-neighbours (in the right order!). If you wish to understand more how these 
-methods work, how they compare, etc., please check this 
-[out](https://github.com/GregorLueg/ann-search-rs).
+NNDescent has the lowest recall here, but the distance ratio tells the real
+story: the neighbours it misses are basically as close as the true ones. The
+synthetic data has very tight clusters, so plenty of points sit at near
+identical distances and swapping one for another costs nothing. For manifold
+learning that is exactly the kind of miss you don't care about. If you wish to
+understand more how these methods work, how they compare, etc., please check
+this [out](https://github.com/GregorLueg/ann-search-rs).
