@@ -28,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -79,7 +79,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Using PHATE</h1>
 
       <p class="author">Gregor Lueg</p>
-      <p class="date">2026-10-27</p>
+      <p class="date">2026-11-10</p>
 
       <small class="dont-index">Source: <a href="https://github.com/GregorLueg/manifoldsR/blob/main/vignettes/phate.qmd" class="external-link"><code>vignettes/phate.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
@@ -268,12 +268,12 @@
 <p>PHATE recovers the branching structure cleanly. The continuous progression along each branch is preserved, and the branch points are identifiable. This is the kind of data PHATE was designed for.</p>
 </section></section><section class="level2"><h3 id="using-pre-computed-knn-graphs">Using pre-computed kNN graphs<a class="anchor" aria-label="anchor" href="#using-pre-computed-knn-graphs"></a>
 </h3>
-<p>As with t-SNE, if you want to explore multiple parameter combinations without repeating the kNN search, you can precompute the graph and pass it directly.</p>
+<p>As with t-SNE, if you want to explore multiple parameter combinations without repeating the kNN search, you can precompute the graph and pass it directly. PHATE needs a wider graph than <code>k</code>: neighbours past <code>k</code> join the kernel while their affinity clears <code>thresh</code>, so build it <code>6 * k + 5</code> wide like the internal search.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">precomputed_knn</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_knn_graph.html">generate_knn_graph</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">trajectory_data</span><span class="op">$</span><span class="va">data</span>,</span>
-<span>  k <span class="op">=</span> <span class="fl">15L</span>,</span>
+<span>  k <span class="op">=</span> <span class="fl">95L</span>, <span class="co"># 6 * k + 5 for k = 15</span></span>
 <span>  .verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -283,7 +283,6 @@
 <span>  k <span class="op">=</span> <span class="fl">15L</span>,</span>
 <span>  seed <span class="op">=</span> <span class="fl">42L</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; Using provided kNN graph.</span></span>
 <span></span>
 <span><span class="va">phate_from_knn_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/as.data.table.html" class="external-link">as.data.table</a></span><span class="op">(</span><span class="va">phate_from_knn</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu">`colnames&lt;-`</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PHATE1"</span>, <span class="st">"PHATE2"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -316,7 +315,6 @@
 <span>  phate_params <span class="op">=</span> <span class="fu"><a href="../reference/params_phate.html">params_phate</a></span><span class="op">(</span>t_custom <span class="op">=</span> <span class="fl">10L</span><span class="op">)</span>,</span>
 <span>  seed <span class="op">=</span> <span class="fl">42L</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; Using provided kNN graph.</span></span>
 <span></span>
 <span><span class="va">phate_from_knn_fixed_t_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/as.data.table.html" class="external-link">as.data.table</a></span><span class="op">(</span><span class="va">phate_from_knn_fixed_t</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu">`colnames&lt;-`</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PHATE1"</span>, <span class="st">"PHATE2"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -495,11 +493,11 @@
 <span>  <span class="op">}</span>,</span>
 <span>  times <span class="op">=</span> <span class="fl">1L</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt;     SGD-MDS may not have converged: stress changed by -1.7% in final iterations. Consider increasing n_iter or adjusting learning_rate.</span></span>
+<span><span class="co">#&gt;     SGD-MDS may not have converged: stress changed by 4.4% in final iterations. Consider increasing n_iter or adjusting learning_rate.</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;            expr       min        lq      mean    median        uq       max</span></span>
-<span><span class="co">#&gt;          phateR 10.417856 10.417856 10.417856 10.417856 10.417856 10.417856</span></span>
-<span><span class="co">#&gt;  manifold_phate  9.784525  9.784525  9.784525  9.784525  9.784525  9.784525</span></span>
+<span><span class="co">#&gt;          phateR 11.951384 11.951384 11.951384 11.951384 11.951384 11.951384</span></span>
+<span><span class="co">#&gt;  manifold_phate  3.587244  3.587244  3.587244  3.587244  3.587244  3.587244</span></span>
 <span><span class="co">#&gt;  neval</span></span>
 <span><span class="co">#&gt;      1</span></span>
 <span><span class="co">#&gt;      1</span></span></code></pre></div>
@@ -526,7 +524,6 @@
 <span>    <span class="fu"><a href="../reference/phate.html">phate</a></span><span class="op">(</span></span>
 <span>      data <span class="op">=</span> <span class="va">benchmark_data_large</span><span class="op">$</span><span class="va">data</span>,</span>
 <span>      k <span class="op">=</span> <span class="fl">5L</span>,</span>
-<span>      knn_method <span class="op">=</span> <span class="st">"nndescent"</span>, <span class="co"># good allrounder for larger data sets</span></span>
 <span>      seed <span class="op">=</span> <span class="fl">42L</span>,</span>
 <span>      .verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span>    <span class="op">)</span></span>
@@ -535,7 +532,6 @@
 <span>    <span class="fu"><a href="../reference/phate.html">phate</a></span><span class="op">(</span></span>
 <span>      data <span class="op">=</span> <span class="va">benchmark_data_large</span><span class="op">$</span><span class="va">data</span>,</span>
 <span>      k <span class="op">=</span> <span class="fl">5L</span>,</span>
-<span>      knn_method <span class="op">=</span> <span class="st">"nndescent"</span>, <span class="co"># good allrounder for larger data sets</span></span>
 <span>      phate_params <span class="op">=</span> <span class="fu"><a href="../reference/params_phate.html">params_phate</a></span><span class="op">(</span>landmark_method <span class="op">=</span> <span class="st">"random"</span><span class="op">)</span>,</span>
 <span>      seed <span class="op">=</span> <span class="fl">42L</span>,</span>
 <span>      .verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
@@ -544,14 +540,14 @@
 <span>  times <span class="op">=</span> <span class="fl">1L</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
-<span><span class="co">#&gt;                     expr      min       lq     mean   median       uq      max</span></span>
-<span><span class="co">#&gt;                   phateR 47.78267 47.78267 47.78267 47.78267 47.78267 47.78267</span></span>
-<span><span class="co">#&gt;  manifold_phate_spectral 24.71066 24.71066 24.71066 24.71066 24.71066 24.71066</span></span>
-<span><span class="co">#&gt;    manifold_phate_random 13.64334 13.64334 13.64334 13.64334 13.64334 13.64334</span></span>
-<span><span class="co">#&gt;  neval</span></span>
-<span><span class="co">#&gt;      1</span></span>
-<span><span class="co">#&gt;      1</span></span>
-<span><span class="co">#&gt;      1</span></span></code></pre></div>
+<span><span class="co">#&gt;                     expr       min        lq      mean    median        uq</span></span>
+<span><span class="co">#&gt;                   phateR 59.556950 59.556950 59.556950 59.556950 59.556950</span></span>
+<span><span class="co">#&gt;  manifold_phate_spectral 19.553364 19.553364 19.553364 19.553364 19.553364</span></span>
+<span><span class="co">#&gt;    manifold_phate_random  6.591977  6.591977  6.591977  6.591977  6.591977</span></span>
+<span><span class="co">#&gt;        max neval</span></span>
+<span><span class="co">#&gt;  59.556950     1</span></span>
+<span><span class="co">#&gt;  19.553364     1</span></span>
+<span><span class="co">#&gt;   6.591977     1</span></span></code></pre></div>
 </div>
 <p>As with t-SNE and UMAP, the speed advantage of the Rust implementation comes from the entire pipeline (kNN construction, kernel computation, diffusion and MDS) running within the Rust kernel without round-tripping through Python in this case. Usually, the differences become more pronounced with larger data sets.</p>
 </section></section><script id="quarto-html-after-body" type="application/javascript">
@@ -563,7 +559,8 @@
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
       // Inspect non-navigation links and adorn them if external
-     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      window.quartoDecorateExternalLinks = function (root) {
+     var links = (root || window.document).querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
       for (var i=0; i<links.length; i++) {
         const link = links[i];
         if (!isInternal(link.href)) {
@@ -572,8 +569,69 @@
           if (link.dataset.originalHref !== undefined) {
             link.href = link.dataset.originalHref;
           }
+          if (!link.classList.contains('no-external-icon')) {
+          }
         }
       }
+      };
+      window.quartoDecorateExternalLinks(window.document);
+    // Esc closes the popup (WCAG 1.4.13) and focus leaving both trigger and
+    // popup closes it (WCAG 2.4.11); tippy handles neither for interactive popups.
+    const hideOnEscAndFocusOut = {
+      name: 'hideOnEscAndFocusOut',
+      defaultValue: true,
+      fn(instance) {
+        const dismiss = () => {
+          // A show scheduled by the trigger delay would otherwise reopen it
+          instance.clearDelayTimeouts();
+          instance.hide();
+        };
+        const onKeyDown = (event) => {
+          if (event.key !== 'Escape') {
+            return;
+          }
+          // Keep Esc from also reaching page handlers (e.g. reveal.js overview),
+          // except an open reveal.js slide menu, which Esc should close too.
+          // The menu handles keys only when its keyboard option is on.
+          const menuHandlesEsc = window.Reveal?.getPlugin?.('menu')?.isOpen() &&
+            window.Reveal.getConfig().menu?.keyboard !== false;
+          if (!menuHandlesEsc) {
+            event.stopPropagation();
+          }
+          if (instance.popper.contains(window.document.activeElement)) {
+            // Disabled while refocusing so the focus trigger does not reopen it
+            instance.disable();
+            instance.reference.focus();
+            instance.enable();
+          }
+          dismiss();
+        };
+        const onFocusOut = (event) => {
+          const target = event.relatedTarget;
+          if (target && !instance.reference.contains(target) &&
+              !instance.popper.contains(target)) {
+            dismiss();
+          }
+        };
+        // On the trigger too: a click trigger (code-annotations: select) has no
+        // blur handling. Attached for the instance's lifetime so leaving the
+        // trigger also cancels a show still pending on the trigger delay.
+        instance.reference.addEventListener('focusout', onFocusOut);
+        return {
+          onShow() {
+            window.document.addEventListener('keydown', onKeyDown, true);
+            instance.popper.addEventListener('focusout', onFocusOut);
+          },
+          onHide() {
+            window.document.removeEventListener('keydown', onKeyDown, true);
+            instance.popper.removeEventListener('focusout', onFocusOut);
+          },
+          onDestroy() {
+            instance.reference.removeEventListener('focusout', onFocusOut);
+          },
+        };
+      },
+    };
     function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
       const config = {
         allowHTML: true,
@@ -587,6 +645,7 @@
         interactiveBorder: 10,
         theme: 'light-border',
         placement: 'bottom-start',
+        plugins: [hideOnEscAndFocusOut],
       };
       if (contentFn) {
         config.content = contentFn;

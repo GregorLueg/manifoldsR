@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,9 +65,9 @@
 <span>  n_epochs <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  neg_sample_rate <span class="op">=</span> <span class="fl">5L</span>,</span>
 <span>  gamma <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  optimiser <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"adam_parallel"</span>, <span class="st">"sgd"</span>, <span class="st">"adam"</span><span class="op">)</span>,</span>
+<span>  optimiser <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"adam_parallel"</span>, <span class="st">"sgd"</span>, <span class="st">"sgd_parallel"</span>, <span class="st">"adam"</span><span class="op">)</span>,</span>
 <span>  init <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"spectral"</span>, <span class="st">"pca"</span>, <span class="st">"random"</span><span class="op">)</span>,</span>
-<span>  randomised <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  randomised <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -109,7 +109,10 @@ sample. Defaults to <code>5L</code>.</p></dd>
 
 
 <dt id="arg-optimiser">optimiser<a class="anchor" aria-label="anchor" href="#arg-optimiser"></a></dt>
-<dd><p>String. The optimiser. One of <code>c("adam_parallel", "sgd", "adam")</code>. Defaults to <code>"adam_parallel"</code>.</p></dd>
+<dd><p>String. The optimiser. <code>"sgd_parallel"</code> is lock-free
+(Hogwild!) and not reproducible run to run with more than one thread. One of
+<code>c("adam_parallel", "sgd", "sgd_parallel", "adam")</code>. Defaults to
+<code>"adam_parallel"</code>.</p></dd>
 
 
 <dt id="arg-init">init<a class="anchor" aria-label="anchor" href="#arg-init"></a></dt>
@@ -118,7 +121,7 @@ sample. Defaults to <code>5L</code>.</p></dd>
 
 <dt id="arg-randomised">randomised<a class="anchor" aria-label="anchor" href="#arg-randomised"></a></dt>
 <dd><p>Boolean. Use randomised SVD for PCA initialisation.
-Defaults to <code>TRUE</code>.</p></dd>
+Defaults to <code>FALSE</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -135,10 +138,13 @@ during symmetrisation. Defaults to <code>1.0</code>.</p></li>
 <li><p>neg_sample_rate - Integer. Number of negative samples per positive
 sample. Defaults to <code>5L</code>.</p></li>
 <li><p>gamma - Numeric. Repulsion strength. Defaults to <code>1.0</code>.</p></li>
-<li><p>optimiser - String. The optimiser. One of <code>c("adam_parallel", "sgd", "adam")</code>. Defaults to <code>"adam_parallel"</code>.</p></li>
+<li><p>optimiser - String. The optimiser. <code>"sgd_parallel"</code> is lock-free
+(Hogwild!) and not reproducible run to run with more than one thread. One of
+<code>c("adam_parallel", "sgd", "sgd_parallel", "adam")</code>. Defaults to
+<code>"adam_parallel"</code>.</p></li>
 <li><p>init - String. Embedding initialisation method. One of <code>c("spectral", "pca", "random")</code>. Defaults to <code>"spectral"</code>.</p></li>
 <li><p>randomised - Boolean. Use randomised SVD for PCA initialisation.
-Defaults to <code>TRUE</code>.</p></li>
+Defaults to <code>FALSE</code>.</p></li>
 </ul></div>
 
     <div class="section level2">
@@ -172,7 +178,7 @@ Defaults to <code>TRUE</code>.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "spectral"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $randomised</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="fu">params_umap</span><span class="op">(</span>n_epochs <span class="op">=</span> <span class="fl">200L</span>, neg_sample_rate <span class="op">=</span> <span class="fl">10L</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $local_connectivity</span>
@@ -203,7 +209,7 @@ Defaults to <code>TRUE</code>.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "spectral"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $randomised</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>

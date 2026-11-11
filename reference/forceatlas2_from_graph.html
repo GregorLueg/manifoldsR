@@ -15,7 +15,7 @@ graph and initialisation ones do not apply here."><meta property="og:image" cont
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,7 +74,6 @@ graph and initialisation ones do not apply here.</p>
 <span>  init <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  fa2_params <span class="op">=</span> <span class="fu"><a href="params_fa2.html">params_fa2</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  seed <span class="op">=</span> <span class="fl">42L</span>,</span>
-<span>  use_high_precision <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  .verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -104,13 +103,10 @@ layout is used. Defaults to <code>NULL</code>.</p></dd>
 <dd><p>Integer. Random seed for reproducibility. Defaults to <code>42L</code>.</p></dd>
 
 
-<dt id="arg-use-high-precision">use_high_precision<a class="anchor" aria-label="anchor" href="#arg-use-high-precision"></a></dt>
-<dd><p>Optional boolean. Gives fine-grained control over
-<code>fp32</code> vs <code>fp64</code> usage.</p></dd>
-
-
 <dt id="arg--verbose">.verbose<a class="anchor" aria-label="anchor" href="#arg--verbose"></a></dt>
-<dd><p>Logical. Controls verbosity. Defaults to <code>TRUE</code>.</p></dd>
+<dd><p>Logical or integer. Controls verbosity. <code>TRUE</code> or <code>1L</code> prints
+timed stages and epochs every 50, <code>2L</code> adds parameters and the kNN internals,
+<code>FALSE</code> or <code>0L</code> is silent. Defaults to <code>TRUE</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

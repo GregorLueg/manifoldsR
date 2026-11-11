@@ -6,15 +6,7 @@ clustering.
 ## Usage
 
 ``` r
-rs_evoc(
-  embd,
-  n_neighbours,
-  evoc_params,
-  return_knn,
-  seed,
-  use_high_precision,
-  verbose
-)
+rs_evoc(embd, n_neighbours, evoc_params, return_knn, seed, verbose)
 ```
 
 ## Arguments
@@ -40,11 +32,6 @@ rs_evoc(
 - seed:
 
   Integer. Seed for reproducibility.
-
-- use_high_precision:
-
-  Optional logical. Controls `fp32` vs `fp64` for. If `NULL` will use
-  sensible default thresholding.
 
 - verbose:
 

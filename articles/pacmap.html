@@ -28,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -79,7 +79,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Using PaCMAP</h1>
 
       <p class="author">Gregor Lueg</p>
-      <p class="date">2026-10-27</p>
+      <p class="date">2026-11-10</p>
 
       <small class="dont-index">Source: <a href="https://github.com/GregorLueg/manifoldsR/blob/main/vignettes/pacmap.qmd" class="external-link"><code>vignettes/pacmap.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
@@ -107,17 +107,17 @@
 </div>
 <section class="level2"><h3 id="intro">Intro<a class="anchor" aria-label="anchor" href="#intro"></a>
 </h3>
-<p>PaCMAP constructs its embedding through three types of point pairs, each targeting a different aspect of structure. <strong>Near pairs</strong> (k-nearest neighbours) preserve local neighbourhoods. <strong>Mid-near pairs</strong> are sampled from a window further out in the kNN list - beyond the immediate neighbours but not arbitrary — and act as a medium-range attractive force that anchors global structure. <strong>Further pairs</strong> are random distant points that contribute a repulsive force preventing collapse.</p>
-<p>The key insight in PaCMAP is its <strong>phased optimisation schedule</strong>. In the first phase, the mid-near weight is dominant, pulling points into a globally coherent arrangement before local structure is resolved. In the second phase, the mid-near weight decays to zero while the near pair weight increases, allowing fine local structure to emerge without destroying the global layout established in phase 1. The third and last phase runs with near and further pairs only, refining the local structure.</p>
+<p>PaCMAP constructs its embedding through three types of point pairs, each targeting a different aspect of structure. <strong>Near pairs</strong> (k-nearest neighbours) preserve local neighbourhoods. <strong>Mid-near pairs</strong> are the second closest of six random points, and act as a medium-range attractive force that anchors global structure. <strong>Further pairs</strong> are random distant points, excluding the near pairs, that contribute a repulsive force preventing collapse.</p>
+<p>The key insight in PaCMAP is its <strong>phased optimisation schedule</strong>. In the first phase, the mid-near weight decays from 1000 to 3, pulling points into a globally coherent arrangement before local structure is resolved. In the second phase, the mid-near weight holds at 3 while the near pair weight rises to 3, allowing fine local structure to emerge without destroying the global layout established in phase 1. The third and last phase runs with near and further pairs only, refining the local structure.</p>
 <p>This stands in contrast to UMAP, which optimises a single objective from the start and consequently trades off local against global structure throughout. The practical effect is that PaCMAP tends to preserve inter-cluster distances more faithfully than UMAP, without sacrificing local separation.</p>
 <p>A few things to keep in mind:</p>
 <ul>
 <li>
 <strong>PCA initialisation is strongly recommended.</strong> Unlike UMAP, where spectral initialisation works well, PaCMAP with random initialisation degrades global structure significantly. The default here is <code>"pca"</code> for this reason.</li>
 <li>
-<strong>k is less sensitive than in UMAP.</strong> The paper default of 10 works well across a wide range of datasets. That said, the kNN search is actually run with <code>mn_candidate_end</code> neighbours (default 50) to have a sufficient pool for mid-near sampling; <code>k</code> only controls how many of those are used as near pairs in optimisation.</li>
+<strong><code>n_near</code> is less sensitive than <code>k</code> in UMAP.</strong> The paper default of 10 works well across a wide range of datasets. The kNN search runs <code>n_near + 50</code> wide, and the near pairs are the best of those by locally scaled distance.</li>
 <li>
-<strong>Mid-near candidates matter.</strong> The <code>mn_candidate_start</code> and <code>mn_candidate_end</code> parameters control the window in the kNN list from which mid-near pairs are drawn. The defaults (skip the 4 nearest, sample up to rank 50) reflect the paper’s recommendations and rarely need changing.</li>
+<strong>Mid-near pairs don’t come from the kNN graph.</strong> Each one is the second closest of six random points. A pre-computed graph needs at least <code>n_near</code> neighbours, but the near pairs are ranked from what it holds, so build it <code>n_near + 50</code> wide.</li>
 </ul></section><section class="level2"><h3 id="running-pacmap">Running PaCMAP<a class="anchor" aria-label="anchor" href="#running-pacmap"></a>
 </h3>
 <p>We use the same synthetic datasets as in the other vignettes.</p>
@@ -335,7 +335,7 @@
 <span>  seed <span class="op">=</span> <span class="fl">42L</span>,</span>
 <span>  .verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; Using n_epochs = 500 (dataset &lt;10k samples or adam_parallel optimiser)</span></span>
+<span><span class="co">#&gt; Using n_epochs = 500 (Adam optimiser or dataset &lt;=10k samples)</span></span>
 <span></span>
 <span><span class="va">umap_hierarchical_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/as.data.table.html" class="external-link">as.data.table</a></span><span class="op">(</span><span class="va">umap_hierarchical</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu">`colnames&lt;-`</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"UMAP1"</span>, <span class="st">"UMAP2"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -369,7 +369,7 @@
 <div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">precomputed_knn</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_knn_graph.html">generate_knn_graph</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">cluster_data</span><span class="op">$</span><span class="va">data</span>,</span>
-<span>  k <span class="op">=</span> <span class="fl">50L</span>, <span class="co"># we need to set this high for pacmap</span></span>
+<span>  k <span class="op">=</span> <span class="fl">60L</span>, <span class="co"># n_near + 50, as the internal search</span></span>
 <span>  knn_method <span class="op">=</span> <span class="st">"balltree"</span>,</span>
 <span>  .verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
@@ -378,8 +378,7 @@
 <span>  data <span class="op">=</span> <span class="va">cluster_data</span><span class="op">$</span><span class="va">data</span>,</span>
 <span>  knn <span class="op">=</span> <span class="va">precomputed_knn</span>,</span>
 <span>  seed <span class="op">=</span> <span class="fl">42L</span></span>
-<span><span class="op">)</span></span>
-<span><span class="co">#&gt; Using provided kNN graph.</span></span></code></pre></div>
+<span><span class="op">)</span></span></code></pre></div>
 </div>
 <p>With the kNN fixed, we can quickly vary the phase schedule. For example, extending phase 1 to give the global structure more time to settle:</p>
 <div class="cell">
@@ -388,15 +387,12 @@
 <span>  data <span class="op">=</span> <span class="va">cluster_data</span><span class="op">$</span><span class="va">data</span>,</span>
 <span>  knn <span class="op">=</span> <span class="va">precomputed_knn</span>,</span>
 <span>  pacmap_params <span class="op">=</span> <span class="fu"><a href="../reference/params_pacmap.html">params_pacmap</a></span><span class="op">(</span></span>
-<span>    mn_candidate_start <span class="op">=</span> <span class="fl">4L</span>,</span>
-<span>    mn_candidate_end <span class="op">=</span> <span class="fl">25L</span>,</span>
 <span>    n_further <span class="op">=</span> <span class="fl">5L</span>,</span>
 <span>    phase1_end <span class="op">=</span> <span class="fl">250L</span>,</span>
 <span>    phase2_end <span class="op">=</span> <span class="fl">400L</span></span>
 <span>  <span class="op">)</span>,</span>
 <span>  seed <span class="op">=</span> <span class="fl">42L</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; Using provided kNN graph.</span></span>
 <span></span>
 <span><span class="va">pacmap_long_phase1_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/as.data.table.html" class="external-link">as.data.table</a></span><span class="op">(</span><span class="va">pacmap_long_phase1</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu">`colnames&lt;-`</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PaCMAP1"</span>, <span class="st">"PaCMAP2"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -447,8 +443,8 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;             expr      min       lq     mean   median       uq      max neval</span></span>
-<span><span class="co">#&gt;    manifold_umap 1.213134 1.214782 1.217542 1.216430 1.219746 1.223063     3</span></span>
-<span><span class="co">#&gt;  manifold_pacmap 3.156260 3.157069 3.161024 3.157879 3.163407 3.168935     3</span></span></code></pre></div>
+<span><span class="co">#&gt;    manifold_umap 1.307816 1.308276 1.346881 1.308736 1.366414 1.424093     3</span></span>
+<span><span class="co">#&gt;  manifold_pacmap 2.400027 2.403240 2.498650 2.406454 2.547961 2.689468     3</span></span></code></pre></div>
 </div>
 <p>PaCMAP is generally slower than UMAP on the same data since it processes all pairs every epoch rather than sampling. The three-phase schedule with 450 epochs (vs UMAP’s 200 to 500) compounds this. For most datasets up to ~50k samples this is not a concern in practice, but on very large data the difference becomes noticeable.</p>
 </section></section><script id="quarto-html-after-body" type="application/javascript">
@@ -460,7 +456,8 @@
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
       // Inspect non-navigation links and adorn them if external
-     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      window.quartoDecorateExternalLinks = function (root) {
+     var links = (root || window.document).querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
       for (var i=0; i<links.length; i++) {
         const link = links[i];
         if (!isInternal(link.href)) {
@@ -469,8 +466,69 @@
           if (link.dataset.originalHref !== undefined) {
             link.href = link.dataset.originalHref;
           }
+          if (!link.classList.contains('no-external-icon')) {
+          }
         }
       }
+      };
+      window.quartoDecorateExternalLinks(window.document);
+    // Esc closes the popup (WCAG 1.4.13) and focus leaving both trigger and
+    // popup closes it (WCAG 2.4.11); tippy handles neither for interactive popups.
+    const hideOnEscAndFocusOut = {
+      name: 'hideOnEscAndFocusOut',
+      defaultValue: true,
+      fn(instance) {
+        const dismiss = () => {
+          // A show scheduled by the trigger delay would otherwise reopen it
+          instance.clearDelayTimeouts();
+          instance.hide();
+        };
+        const onKeyDown = (event) => {
+          if (event.key !== 'Escape') {
+            return;
+          }
+          // Keep Esc from also reaching page handlers (e.g. reveal.js overview),
+          // except an open reveal.js slide menu, which Esc should close too.
+          // The menu handles keys only when its keyboard option is on.
+          const menuHandlesEsc = window.Reveal?.getPlugin?.('menu')?.isOpen() &&
+            window.Reveal.getConfig().menu?.keyboard !== false;
+          if (!menuHandlesEsc) {
+            event.stopPropagation();
+          }
+          if (instance.popper.contains(window.document.activeElement)) {
+            // Disabled while refocusing so the focus trigger does not reopen it
+            instance.disable();
+            instance.reference.focus();
+            instance.enable();
+          }
+          dismiss();
+        };
+        const onFocusOut = (event) => {
+          const target = event.relatedTarget;
+          if (target && !instance.reference.contains(target) &&
+              !instance.popper.contains(target)) {
+            dismiss();
+          }
+        };
+        // On the trigger too: a click trigger (code-annotations: select) has no
+        // blur handling. Attached for the instance's lifetime so leaving the
+        // trigger also cancels a show still pending on the trigger delay.
+        instance.reference.addEventListener('focusout', onFocusOut);
+        return {
+          onShow() {
+            window.document.addEventListener('keydown', onKeyDown, true);
+            instance.popper.addEventListener('focusout', onFocusOut);
+          },
+          onHide() {
+            window.document.removeEventListener('keydown', onKeyDown, true);
+            instance.popper.removeEventListener('focusout', onFocusOut);
+          },
+          onDestroy() {
+            instance.reference.removeEventListener('focusout', onFocusOut);
+          },
+        };
+      },
+    };
     function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
       const config = {
         allowHTML: true,
@@ -484,6 +542,7 @@
         interactiveBorder: 10,
         theme: 'light-border',
         placement: 'bottom-start',
+        plugins: [hideOnEscAndFocusOut],
       };
       if (contentFn) {
         config.content = contentFn;

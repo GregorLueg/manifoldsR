@@ -7,15 +7,7 @@ clustering. This version uses a pre-computed kNN graph, please see
 ## Usage
 
 ``` r
-rs_evoc_from_knn(
-  embd,
-  knn_data,
-  n_neighbours,
-  evoc_params,
-  seed,
-  use_high_precision,
-  verbose
-)
+rs_evoc_from_knn(embd, knn_data, n_neighbours, evoc_params, seed, verbose)
 ```
 
 ## Arguments
@@ -42,11 +34,6 @@ rs_evoc_from_knn(
 - seed:
 
   Integer. Seed for reproducibility.
-
-- use_high_precision:
-
-  Optional logical. Controls `fp32` vs `fp64` for. If `NULL` will use
-  sensible default thresholding.
 
 - verbose:
 

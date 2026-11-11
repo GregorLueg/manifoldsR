@@ -14,7 +14,6 @@ forceatlas2_from_graph(
   init = NULL,
   fa2_params = params_fa2(),
   seed = 42L,
-  use_high_precision = NULL,
   .verbose = TRUE
 )
 ```
@@ -44,14 +43,11 @@ forceatlas2_from_graph(
 
   Integer. Random seed for reproducibility. Defaults to `42L`.
 
-- use_high_precision:
-
-  Optional boolean. Gives fine-grained control over `fp32` vs `fp64`
-  usage.
-
 - .verbose:
 
-  Logical. Controls verbosity. Defaults to `TRUE`.
+  Logical or integer. Controls verbosity. `TRUE` or `1L` prints timed
+  stages and epochs every 50, `2L` adds parameters and the kNN
+  internals, `FALSE` or `0L` is silent. Defaults to `TRUE`.
 
 ## Value
 

@@ -222,13 +222,15 @@ identifiable. This is the kind of data PHATE was designed for.
 
 As with t-SNE, if you want to explore multiple parameter combinations
 without repeating the kNN search, you can precompute the graph and pass
-it directly.
+it directly. PHATE needs a wider graph than `k`: neighbours past `k`
+join the kernel while their affinity clears `thresh`, so build it
+`6 * k + 5` wide like the internal search.
 
 ``` r
 
 precomputed_knn <- generate_knn_graph(
   data = trajectory_data$data,
-  k = 15L,
+  k = 95L, # 6 * k + 5 for k = 15
   .verbose = FALSE
 )
 
@@ -238,7 +240,6 @@ phate_from_knn <- phate(
   k = 15L,
   seed = 42L
 )
-#> Using provided kNN graph.
 
 phate_from_knn_df <- as.data.table(phate_from_knn) %>%
   `colnames<-`(c("PHATE1", "PHATE2")) %>%
@@ -271,7 +272,6 @@ phate_from_knn_fixed_t <- phate(
   phate_params = params_phate(t_custom = 10L),
   seed = 42L
 )
-#> Using provided kNN graph.
 
 phate_from_knn_fixed_t_df <- as.data.table(phate_from_knn_fixed_t) %>%
   `colnames<-`(c("PHATE1", "PHATE2")) %>%
@@ -469,11 +469,11 @@ microbenchmark::microbenchmark(
   },
   times = 1L
 )
-#>     SGD-MDS may not have converged: stress changed by -1.7% in final iterations. Consider increasing n_iter or adjusting learning_rate.
+#>     SGD-MDS may not have converged: stress changed by 4.4% in final iterations. Consider increasing n_iter or adjusting learning_rate.
 #> Unit: seconds
 #>            expr       min        lq      mean    median        uq       max
-#>          phateR 10.417856 10.417856 10.417856 10.417856 10.417856 10.417856
-#>  manifold_phate  9.784525  9.784525  9.784525  9.784525  9.784525  9.784525
+#>          phateR 11.951384 11.951384 11.951384 11.951384 11.951384 11.951384
+#>  manifold_phate  3.587244  3.587244  3.587244  3.587244  3.587244  3.587244
 #>  neval
 #>      1
 #>      1
@@ -502,7 +502,6 @@ microbenchmark::microbenchmark(
     phate(
       data = benchmark_data_large$data,
       k = 5L,
-      knn_method = "nndescent", # good allrounder for larger data sets
       seed = 42L,
       .verbose = FALSE
     )
@@ -511,7 +510,6 @@ microbenchmark::microbenchmark(
     phate(
       data = benchmark_data_large$data,
       k = 5L,
-      knn_method = "nndescent", # good allrounder for larger data sets
       phate_params = params_phate(landmark_method = "random"),
       seed = 42L,
       .verbose = FALSE
@@ -520,14 +518,14 @@ microbenchmark::microbenchmark(
   times = 1L
 )
 #> Unit: seconds
-#>                     expr      min       lq     mean   median       uq      max
-#>                   phateR 47.78267 47.78267 47.78267 47.78267 47.78267 47.78267
-#>  manifold_phate_spectral 24.71066 24.71066 24.71066 24.71066 24.71066 24.71066
-#>    manifold_phate_random 13.64334 13.64334 13.64334 13.64334 13.64334 13.64334
-#>  neval
-#>      1
-#>      1
-#>      1
+#>                     expr       min        lq      mean    median        uq
+#>                   phateR 59.556950 59.556950 59.556950 59.556950 59.556950
+#>  manifold_phate_spectral 19.553364 19.553364 19.553364 19.553364 19.553364
+#>    manifold_phate_random  6.591977  6.591977  6.591977  6.591977  6.591977
+#>        max neval
+#>  59.556950     1
+#>  19.553364     1
+#>   6.591977     1
 ```
 
 As with t-SNE and UMAP, the speed advantage of the Rust implementation

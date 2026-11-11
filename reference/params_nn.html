@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,12 +62,9 @@
 <span>  n_tree <span class="op">=</span> <span class="fl">50L</span>,</span>
 <span>  search_budget <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  m <span class="op">=</span> <span class="fl">16L</span>,</span>
-<span>  ef_construction <span class="op">=</span> <span class="fl">100L</span>,</span>
+<span>  ef_construction <span class="op">=</span> <span class="fl">200L</span>,</span>
 <span>  ef_search <span class="op">=</span> <span class="fl">100L</span>,</span>
-<span>  diversify_prob <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  delta <span class="op">=</span> <span class="fl">0.001</span>,</span>
-<span>  ef_budget <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  extract_knn <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  bt_budget <span class="op">=</span> <span class="fl">0.1</span>,</span>
 <span>  n_list <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  n_probes <span class="op">=</span> <span class="cn">NULL</span></span>
@@ -87,8 +84,8 @@
 
 
 <dt id="arg-search-budget">search_budget<a class="anchor" aria-label="anchor" href="#arg-search-budget"></a></dt>
-<dd><p>Integer or <code>NULL</code>. Search budget for Annoy. Defaults to
-<code>NULL</code>.</p></dd>
+<dd><p>Integer or <code>NULL</code>. Search budget for Annoy. If <code>NULL</code>,
+uses <code>k * n_tree * 20</code>. Defaults to <code>NULL</code>.</p></dd>
 
 
 <dt id="arg-m">m<a class="anchor" aria-label="anchor" href="#arg-m"></a></dt>
@@ -97,7 +94,7 @@
 
 <dt id="arg-ef-construction">ef_construction<a class="anchor" aria-label="anchor" href="#arg-ef-construction"></a></dt>
 <dd><p>Integer. Size of the dynamic candidate list during
-HNSW construction. Defaults to <code>100L</code>.</p></dd>
+HNSW construction. Defaults to <code>200L</code>.</p></dd>
 
 
 <dt id="arg-ef-search">ef_search<a class="anchor" aria-label="anchor" href="#arg-ef-search"></a></dt>
@@ -105,26 +102,9 @@ HNSW construction. Defaults to <code>100L</code>.</p></dd>
 search. Defaults to <code>100L</code>.</p></dd>
 
 
-<dt id="arg-diversify-prob">diversify_prob<a class="anchor" aria-label="anchor" href="#arg-diversify-prob"></a></dt>
-<dd><p>Numeric. Diversification probability for NN descent.
-Defaults to <code>0.0</code>.</p></dd>
-
-
 <dt id="arg-delta">delta<a class="anchor" aria-label="anchor" href="#arg-delta"></a></dt>
 <dd><p>Numeric. Precision parameter for NN descent. Defaults to
 <code>0.001</code>.</p></dd>
-
-
-<dt id="arg-ef-budget">ef_budget<a class="anchor" aria-label="anchor" href="#arg-ef-budget"></a></dt>
-<dd><p>Integer or <code>NULL</code>. Effort budget for NN descent. Ignored
-when <code>extract_knn</code> is <code>TRUE</code>, as no search runs. Defaults to <code>NULL</code>.</p></dd>
-
-
-<dt id="arg-extract-knn">extract_knn<a class="anchor" aria-label="anchor" href="#arg-extract-knn"></a></dt>
-<dd><p>Boolean. Only affects the <code>"nndescent"</code> backend. If
-<code>TRUE</code>, the descent hands back the graph it just built instead of running a
-beam search over it. Faster, at a recall of roughly <code>0.98</code> rather than
-<code>0.99</code>-<code>1.00</code>. Defaults to <code>TRUE</code>.</p></dd>
 
 
 <dt id="arg-bt-budget">bt_budget<a class="anchor" aria-label="anchor" href="#arg-bt-budget"></a></dt>
@@ -146,24 +126,16 @@ beam search over it. Faster, at a recall of roughly <code>0.98</code> rather tha
     <p>A named list with the following elements:</p><ul><li><p>dist_metric - String. The distance metric to use. One of
 <code>c("euclidean", "cosine")</code>. Defaults to <code>"euclidean"</code>.</p></li>
 <li><p>n_tree - Integer. Number of trees for Annoy. Defaults to <code>50L</code>.</p></li>
-<li><p>search_budget - Integer or <code>NULL</code>. Search budget for Annoy. Defaults
-to <code>NULL</code>.</p></li>
+<li><p>search_budget - Integer or <code>NULL</code>. Search budget for Annoy. If <code>NULL</code>,
+uses <code>k * n_tree * 20</code>. Defaults to <code>NULL</code>.</p></li>
 <li><p>m - Integer. Number of bidirectional links for HNSW. Defaults to
 <code>16L</code>.</p></li>
 <li><p>ef_construction - Integer. Size of the dynamic candidate list during
-HNSW construction. Defaults to <code>100L</code>.</p></li>
+HNSW construction. Defaults to <code>200L</code>.</p></li>
 <li><p>ef_search - Integer. Size of the dynamic candidate list during HNSW
 search. Defaults to <code>100L</code>.</p></li>
-<li><p>diversify_prob - Numeric. Diversification probability for NN descent.
-Defaults to <code>0.0</code>.</p></li>
 <li><p>delta - Numeric. Precision parameter for NN descent. Defaults to
 <code>0.001</code>.</p></li>
-<li><p>ef_budget - Integer or <code>NULL</code>. Effort budget for NN descent. Ignored
-when <code>extract_knn</code> is <code>TRUE</code>, as no search runs. Defaults to <code>NULL</code>.</p></li>
-<li><p>extract_knn - Boolean. Only affects the <code>"nndescent"</code> backend. If
-<code>TRUE</code>, the descent hands back the graph it just built instead of running a
-beam search over it. Faster, at a recall of roughly <code>0.98</code> rather than
-<code>0.99</code>-<code>1.00</code>. Defaults to <code>TRUE</code>.</p></li>
 <li><p>bt_budget - Numeric. Budget for ball tree search. Defaults to <code>0.1</code>.</p></li>
 <li><p>n_list - Integer or <code>NULL</code>. Number of clusters to use for IVF. If
 <code>NULL</code>, uses <code>sqrt(n)</code>. Defaults to <code>NULL</code>.</p></li>
@@ -187,22 +159,13 @@ beam search over it. Faster, at a recall of roughly <code>0.98</code> rather tha
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 16</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ef_construction</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 200</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ef_search</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 100</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $diversify_prob</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $delta</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.001</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ef_budget</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $extract_knn</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $bt_budget</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.1</span>
@@ -227,22 +190,13 @@ beam search over it. Faster, at a recall of roughly <code>0.98</code> rather tha
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 16</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ef_construction</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 200</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ef_search</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 200</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $diversify_prob</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $delta</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.001</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ef_budget</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $extract_knn</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $bt_budget</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.1</span>

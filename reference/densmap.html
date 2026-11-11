@@ -17,7 +17,7 @@ Rust implementation."><meta property="og:image" content="https://gregorlueg.gith
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -79,12 +79,11 @@ Rust implementation.</p>
 <span>  k <span class="op">=</span> <span class="fl">15L</span>,</span>
 <span>  min_dist <span class="op">=</span> <span class="fl">0.5</span>,</span>
 <span>  spread <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  knn_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"kmknn"</span>, <span class="st">"balltree"</span>, <span class="st">"hnsw"</span>, <span class="st">"annoy"</span>, <span class="st">"nndescent"</span>, <span class="st">"exhaustive"</span>, <span class="st">"ivf"</span><span class="op">)</span>,</span>
+<span>  knn_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"nndescent"</span>, <span class="st">"kmknn"</span>, <span class="st">"balltree"</span>, <span class="st">"hnsw"</span>, <span class="st">"annoy"</span>, <span class="st">"exhaustive"</span>, <span class="st">"ivf"</span><span class="op">)</span>,</span>
 <span>  nn_params <span class="op">=</span> <span class="fu"><a href="params_nn.html">params_nn</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  umap_params <span class="op">=</span> <span class="fu"><a href="params_umap.html">params_umap</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  dens_params <span class="op">=</span> <span class="fu"><a href="params_densmap.html">params_densmap</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  seed <span class="op">=</span> <span class="fl">42L</span>,</span>
-<span>  use_high_precision <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  .verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -100,8 +99,8 @@ samples x features. Will be coerced to a matrix.</p></dd>
 
 <dt id="arg-knn">knn<a class="anchor" aria-label="anchor" href="#arg-knn"></a></dt>
 <dd><p>Optional <code>NearestNeighbours</code> class. If provided, densMAP will
-skip the k-nearest neighbour graph generation and use this one. Defaults to
-<code>NULL</code>.</p></dd>
+skip the k-nearest neighbour graph generation and use this one. A wider graph
+is cut to <code>k</code>, with a warning on stderr. Defaults to <code>NULL</code>.</p></dd>
 
 
 <dt id="arg-n-dim">n_dim<a class="anchor" aria-label="anchor" href="#arg-n-dim"></a></dt>
@@ -130,7 +129,7 @@ scale at which embedded points will be spread out. Defaults to <code>1.0</code>.
 <dt id="arg-knn-method">knn_method<a class="anchor" aria-label="anchor" href="#arg-knn-method"></a></dt>
 <dd><p>Character. (Approximate) Nearest neighbour method to use.
 One of <code>"kmknn"</code>, <code>"hnsw"</code>, <code>"annoy"</code>, <code>"nndescent"</code>, <code>"balltree"</code>, <code>"ivf"</code>
-or <code>"exhaustive"</code>. Defaults to <code>"kmknn"</code>.</p></dd>
+or <code>"exhaustive"</code>. Defaults to <code>"nndescent"</code>.</p></dd>
 
 
 <dt id="arg-nn-params">nn_params<a class="anchor" aria-label="anchor" href="#arg-nn-params"></a></dt>
@@ -152,13 +151,10 @@ or <code>"exhaustive"</code>. Defaults to <code>"kmknn"</code>.</p></dd>
 <dd><p>Integer. Random seed for reproducibility. Defaults to <code>42L</code>.</p></dd>
 
 
-<dt id="arg-use-high-precision">use_high_precision<a class="anchor" aria-label="anchor" href="#arg-use-high-precision"></a></dt>
-<dd><p>Optional boolean. Gives fine-grained control over
-<code>fp32</code> vs <code>fp64</code> usage.</p></dd>
-
-
 <dt id="arg--verbose">.verbose<a class="anchor" aria-label="anchor" href="#arg--verbose"></a></dt>
-<dd><p>Logical. Controls verbosity. Defaults to <code>TRUE</code>.</p></dd>
+<dd><p>Logical or integer. Controls verbosity. <code>TRUE</code> or <code>1L</code> prints
+timed stages and epochs every 50, <code>2L</code> adds parameters and the kNN internals,
+<code>FALSE</code> or <code>0L</code> is silent. Defaults to <code>TRUE</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

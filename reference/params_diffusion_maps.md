@@ -45,7 +45,8 @@ params_diffusion_maps(
 - t_max:
 
   Integer. Maximum diffusion time considered during automatic selection
-  via Von Neumann entropy knee point detection. Defaults to `100L`.
+  via Von Neumann entropy knee point detection. At least `3`, as the
+  knee search needs three points. Defaults to `100L`.
 
 - t_custom:
 
@@ -55,8 +56,13 @@ params_diffusion_maps(
 - n_landmarks:
 
   Integer or `NULL`. Number of landmarks for compressed diffusion. If
-  `NULL`, the full N x N diffusion operator is used. Defaults to
-  `2048L`.
+  `NULL`, or at least the number of samples, the full N x N diffusion
+  operator is used. The default is specific to this package;
+  `manifolds-rs` defaults to the full operator. Keep `k` a small
+  fraction of the landmark count: when `k` covers a large share of the
+  landmarks, the landmark kernel turns broad and the later coordinates
+  shrink towards a line. On small data, prefer the full operator.
+  Defaults to `2048L`.
 
 - landmark_method:
 
@@ -65,9 +71,9 @@ params_diffusion_maps(
 
 - n_svd:
 
-  Integer or `NULL`. Number of SVD components used in landmark
-  construction. If `NULL`, the library selects a sensible default.
-  Defaults to `NULL`.
+  Integer or `NULL`. Number of singular vectors for spectral landmark
+  selection. If `NULL`, uses `100`. Ignored by the other landmark
+  methods. Defaults to `NULL`.
 
 ## Value
 
@@ -88,22 +94,27 @@ A named list with the following elements:
   operator, `1` the Laplace-Beltrami operator. Defaults to `1.0`.
 
 - t_max - Integer. Maximum diffusion time considered during automatic
-  selection via Von Neumann entropy knee point detection. Defaults to
-  `100L`.
+  selection via Von Neumann entropy knee point detection. At least `3`,
+  as the knee search needs three points. Defaults to `100L`.
 
 - t_custom - Integer or `NULL`. Fixed diffusion time. If set, overrides
   automatic time selection. Defaults to `NULL`.
 
 - n_landmarks - Integer or `NULL`. Number of landmarks for compressed
-  diffusion. If `NULL`, the full N x N diffusion operator is used.
+  diffusion. If `NULL`, or at least the number of samples, the full N x
+  N diffusion operator is used. The default is specific to this package;
+  `manifolds-rs` defaults to the full operator. Keep `k` a small
+  fraction of the landmark count: when `k` covers a large share of the
+  landmarks, the landmark kernel turns broad and the later coordinates
+  shrink towards a line. On small data, prefer the full operator.
   Defaults to `2048L`.
 
 - landmark_method - String. Method used to select landmarks. One of
   `c("spectral", "random", "density")`. Defaults to `"spectral"`.
 
-- n_svd - Integer or `NULL`. Number of SVD components used in landmark
-  construction. If `NULL`, the library selects a sensible default.
-  Defaults to `NULL`.
+- n_svd - Integer or `NULL`. Number of singular vectors for spectral
+  landmark selection. If `NULL`, uses `100`. Ignored by the other
+  landmark methods. Defaults to `NULL`.
 
 ## Examples
 
@@ -128,7 +139,7 @@ params_diffusion_maps()
 #> NULL
 #> 
 #> $n_landmarks
-#> [1] 2048
+#> NULL
 #> 
 #> $landmark_method
 #> [1] "spectral"
@@ -156,7 +167,7 @@ params_diffusion_maps(t_max = 50L)
 #> NULL
 #> 
 #> $n_landmarks
-#> [1] 2048
+#> NULL
 #> 
 #> $landmark_method
 #> [1] "spectral"

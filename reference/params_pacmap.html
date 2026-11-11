@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,8 +61,6 @@
 <span>  n_near <span class="op">=</span> <span class="fl">10L</span>,</span>
 <span>  n_mid_near <span class="op">=</span> <span class="fl">5L</span>,</span>
 <span>  n_further <span class="op">=</span> <span class="fl">20L</span>,</span>
-<span>  mn_candidate_start <span class="op">=</span> <span class="fl">4L</span>,</span>
-<span>  mn_candidate_end <span class="op">=</span> <span class="fl">50L</span>,</span>
 <span>  init <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"pca"</span>, <span class="st">"random"</span><span class="op">)</span>,</span>
 <span>  optimiser <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"adam_parallel"</span>, <span class="st">"adam"</span><span class="op">)</span>,</span>
 <span>  lr <span class="op">=</span> <span class="fl">1</span>,</span>
@@ -80,31 +78,24 @@
 
 
 <dl><dt id="arg-n-near">n_near<a class="anchor" aria-label="anchor" href="#arg-n-near"></a></dt>
-<dd><p>Integer. Near pairs per point (attractive). Defaults to <code>10L</code>.</p></dd>
+<dd><p>Integer. Near pairs per point (attractive). The kNN search runs
+<code>n_near + 50</code> wide and the pairs are the best of those by locally scaled
+distance. Defaults to <code>10L</code>.</p></dd>
 
 
 <dt id="arg-n-mid-near">n_mid_near<a class="anchor" aria-label="anchor" href="#arg-n-mid-near"></a></dt>
-<dd><p>Integer. Mid-near pairs per point. Defaults to <code>5L</code>.</p></dd>
+<dd><p>Integer. Mid-near pairs per point. Each one is the second
+closest of six random points. Defaults to <code>5L</code>.</p></dd>
 
 
 <dt id="arg-n-further">n_further<a class="anchor" aria-label="anchor" href="#arg-n-further"></a></dt>
-<dd><p>Integer. Further (random) pairs per point. Defaults to
-<code>20L</code>.</p></dd>
-
-
-<dt id="arg-mn-candidate-start">mn_candidate_start<a class="anchor" aria-label="anchor" href="#arg-mn-candidate-start"></a></dt>
-<dd><p>Integer. Start index into kNN list for mid-near
-candidate window. Defaults to <code>4L</code>.</p></dd>
-
-
-<dt id="arg-mn-candidate-end">mn_candidate_end<a class="anchor" aria-label="anchor" href="#arg-mn-candidate-end"></a></dt>
-<dd><p>Integer. End index into kNN list for mid-near
-candidate window. Also determines the kNN search size. Defaults to <code>50L</code>.</p></dd>
+<dd><p>Integer. Further (random) pairs per point. These exclude the
+near pairs. Defaults to <code>20L</code>.</p></dd>
 
 
 <dt id="arg-init">init<a class="anchor" aria-label="anchor" href="#arg-init"></a></dt>
-<dd><p>String. Embedding initialisation. One of <code>c("pca", "random")</code>.
-Defaults to <code>"pca"</code>.</p></dd>
+<dd><p>String. Embedding initialisation. <code>"pca"</code> uses the PC scores
+times <code>0.01</code>, so the ratio between the components survives. One of <code>c("pca", "random")</code>. Defaults to <code>"pca"</code>.</p></dd>
 
 
 <dt id="arg-optimiser">optimiser<a class="anchor" aria-label="anchor" href="#arg-optimiser"></a></dt>
@@ -145,17 +136,15 @@ resolved downstream to <code>200</code>. Defaults to <code>NULL</code>.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A named list with the following elements:</p><ul><li><p>n_near - Integer. Near pairs per point (attractive). Defaults to
-<code>10L</code>.</p></li>
-<li><p>n_mid_near - Integer. Mid-near pairs per point. Defaults to <code>5L</code>.</p></li>
-<li><p>n_further - Integer. Further (random) pairs per point. Defaults to
-<code>20L</code>.</p></li>
-<li><p>mn_candidate_start - Integer. Start index into kNN list for mid-near
-candidate window. Defaults to <code>4L</code>.</p></li>
-<li><p>mn_candidate_end - Integer. End index into kNN list for mid-near
-candidate window. Also determines the kNN search size. Defaults to <code>50L</code>.</p></li>
-<li><p>init - String. Embedding initialisation. One of <code>c("pca", "random")</code>.
-Defaults to <code>"pca"</code>.</p></li>
+    <p>A named list with the following elements:</p><ul><li><p>n_near - Integer. Near pairs per point (attractive). The kNN search
+runs <code>n_near + 50</code> wide and the pairs are the best of those by locally
+scaled distance. Defaults to <code>10L</code>.</p></li>
+<li><p>n_mid_near - Integer. Mid-near pairs per point. Each one is the second
+closest of six random points. Defaults to <code>5L</code>.</p></li>
+<li><p>n_further - Integer. Further (random) pairs per point. These exclude
+the near pairs. Defaults to <code>20L</code>.</p></li>
+<li><p>init - String. Embedding initialisation. <code>"pca"</code> uses the PC scores
+times <code>0.01</code>, so the ratio between the components survives. One of <code>c("pca", "random")</code>. Defaults to <code>"pca"</code>.</p></li>
 <li><p>optimiser - String. The optimiser. One of <code>c("adam_parallel", "adam")</code>. Defaults to <code>"adam_parallel"</code>.</p></li>
 <li><p>lr - Numeric. Adam learning rate. Defaults to <code>1.0</code>.</p></li>
 <li><p>n_epochs - Integer or <code>NULL</code>. Total optimisation epochs. If <code>NULL</code>,
@@ -180,12 +169,6 @@ resolved downstream to <code>450</code>. Defaults to <code>NULL</code>.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $n_further</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 20</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $mn_candidate_start</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $mn_candidate_end</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 50</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $init</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "pca"</span>
@@ -223,12 +206,6 @@ resolved downstream to <code>450</code>. Defaults to <code>NULL</code>.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $n_further</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 30</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $mn_candidate_start</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $mn_candidate_end</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 50</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $init</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "pca"</span>

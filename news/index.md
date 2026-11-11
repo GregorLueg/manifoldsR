@@ -1,5 +1,90 @@
 # Changelog
 
+## manifoldsR 0.6.0
+
+### Breaking changes
+
+Expect different coordinates than 0.5.0 at the same seed for most
+methods.
+
+- Everything runs in `f32`. `use_high_precision` is gone,
+  [`evoc()`](https://gregorlueg.github.io/manifoldsR/reference/evoc.md)
+  included. The backends do the numerically touchy bits in `f64`
+  themselves.
+- New `knn_method` defaults: `"ivf"` for
+  [`tsne()`](https://gregorlueg.github.io/manifoldsR/reference/tsne.md),
+  [`densne()`](https://gregorlueg.github.io/manifoldsR/reference/densne.md),
+  [`dreams()`](https://gregorlueg.github.io/manifoldsR/reference/dreams.md),
+  [`pacmap()`](https://gregorlueg.github.io/manifoldsR/reference/pacmap.md)
+  and
+  [`phate()`](https://gregorlueg.github.io/manifoldsR/reference/phate.md),
+  `"nndescent"` for the rest.
+  [`generate_knn_graph()`](https://gregorlueg.github.io/manifoldsR/reference/generate_knn_graph.md)
+  stays on `"kmknn"`.
+- [`params_nn()`](https://gregorlueg.github.io/manifoldsR/reference/params_nn.md)
+  drops `diversify_prob`, `ef_budget` and `extract_knn`.
+  `ef_construction` defaults to `200L`.
+- [`pacmap()`](https://gregorlueg.github.io/manifoldsR/reference/pacmap.md)
+  and
+  [`phate()`](https://gregorlueg.github.io/manifoldsR/reference/phate.md)
+  now follow their reference implementations.
+  [`params_pacmap()`](https://gregorlueg.github.io/manifoldsR/reference/params_pacmap.md)
+  drops `mn_candidate_start` and `mn_candidate_end`,
+  [`params_phate()`](https://gregorlueg.github.io/manifoldsR/reference/params_phate.md)
+  gains `thresh` and `mds_iter`.
+- Precomputed graphs:
+  [`pacmap()`](https://gregorlueg.github.io/manifoldsR/reference/pacmap.md)
+  wants them `n_near + 50` wide,
+  [`phate()`](https://gregorlueg.github.io/manifoldsR/reference/phate.md)
+  `6 * k + 5`.
+  [`umap()`](https://gregorlueg.github.io/manifoldsR/reference/umap.md),
+  [`densmap()`](https://gregorlueg.github.io/manifoldsR/reference/densmap.md)
+  and
+  [`forceatlas2()`](https://gregorlueg.github.io/manifoldsR/reference/forceatlas2.md)
+  cut wider graphs to `k` with a warning.
+- [`params_umap()`](https://gregorlueg.github.io/manifoldsR/reference/params_umap.md)
+  `randomised` defaults to `FALSE`. With `n_epochs = NULL`, only the SGD
+  optimisers drop to 200 epochs above 10k samples.
+- [`diffusion_maps()`](https://gregorlueg.github.io/manifoldsR/reference/diffusion_maps.md)
+  with spectral landmarks takes 100 singular vectors by default, was 10.
+  `t_max` must be at least `3`.
+- [`params_diffusion_maps()`](https://gregorlueg.github.io/manifoldsR/reference/params_diffusion_maps.md)
+  `n_landmarks` defaults to `NULL`, the full operator. Was `2048L`. The
+  full operator is faster on small to medium data sets.
+- [`rs_approx_nearest_neighbours()`](https://gregorlueg.github.io/manifoldsR/reference/rs_approx_nearest_neighbours.md)
+  renames `ann_params` to `nn_params`.
+
+### Features
+
+- `optimiser = "sgd_parallel"` in
+  [`params_umap()`](https://gregorlueg.github.io/manifoldsR/reference/params_umap.md):
+  lock-free Hogwild! SGD for
+  [`umap()`](https://gregorlueg.github.io/manifoldsR/reference/umap.md)
+  and
+  [`densmap()`](https://gregorlueg.github.io/manifoldsR/reference/densmap.md).
+  Not reproducible with more than one thread.
+
+### Performance
+
+- `"sgd"` for UMAP and densMAP is about 2.4x faster.
+- Spectral initialisation needs half the memory on connected graphs and
+  a quarter on disconnected ones.
+
+### Bug fixes
+
+- PCA initialisation no longer collapses large `f32` layouts onto a few
+  points.
+- PaCMAP no longer compresses the layout.
+- Spectral landmark selection works at scale.
+- [`diffusion_maps()`](https://gregorlueg.github.io/manifoldsR/reference/diffusion_maps.md)
+  errors on points that lose all their edges instead of returning `Inf`
+  coordinates.
+
+### Internals
+
+- Backend bumps: `manifolds-rs` 0.9.0, `evoc-rs` 0.7.0, `bixverse-rs`
+  0.10.0 and `ann-search-rs` 0.12.2.
+
 ## manifoldsR 0.5.0
 
 First CRAN release.

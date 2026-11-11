@@ -8,16 +8,7 @@ a pre-computed kNN graph, please see
 ## Usage
 
 ``` r
-rs_phate_from_knn(
-  embd,
-  knn_data,
-  n_dim,
-  k,
-  phate_params,
-  seed,
-  use_high_precision,
-  verbose
-)
+rs_phate_from_knn(embd, knn_data, n_dim, k, phate_params, seed, verbose)
 ```
 
 ## Arguments
@@ -37,8 +28,10 @@ rs_phate_from_knn(
 
 - k:
 
-  Integer. Number of nearest neighbours used during graph construction.
-  Must match the k used to generate `knn_data`.
+  Integer. Number of nearest neighbours that set the kernel bandwidth.
+  Every neighbour in `knn_data` can join the kernel while its affinity
+  clears `thresh`, so build it `6 * k + 5` wide to match the internal
+  search.
 
 - phate_params:
 
@@ -50,11 +43,6 @@ rs_phate_from_knn(
 - seed:
 
   Integer. Seed for reproducibility.
-
-- use_high_precision:
-
-  Optional logical. Controls `fp32` vs `fp64` for. If `NULL` will use
-  sensible default thresholding.
 
 - verbose:
 

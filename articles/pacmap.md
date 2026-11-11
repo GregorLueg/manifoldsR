@@ -25,19 +25,19 @@ library(data.table)
 
 PaCMAP constructs its embedding through three types of point pairs, each
 targeting a different aspect of structure. **Near pairs** (k-nearest
-neighbours) preserve local neighbourhoods. **Mid-near pairs** are
-sampled from a window further out in the kNN list - beyond the immediate
-neighbours but not arbitrary — and act as a medium-range attractive
-force that anchors global structure. **Further pairs** are random
-distant points that contribute a repulsive force preventing collapse.
+neighbours) preserve local neighbourhoods. **Mid-near pairs** are the
+second closest of six random points, and act as a medium-range
+attractive force that anchors global structure. **Further pairs** are
+random distant points, excluding the near pairs, that contribute a
+repulsive force preventing collapse.
 
 The key insight in PaCMAP is its **phased optimisation schedule**. In
-the first phase, the mid-near weight is dominant, pulling points into a
-globally coherent arrangement before local structure is resolved. In the
-second phase, the mid-near weight decays to zero while the near pair
-weight increases, allowing fine local structure to emerge without
-destroying the global layout established in phase 1. The third and last
-phase runs with near and further pairs only, refining the local
+the first phase, the mid-near weight decays from 1000 to 3, pulling
+points into a globally coherent arrangement before local structure is
+resolved. In the second phase, the mid-near weight holds at 3 while the
+near pair weight rises to 3, allowing fine local structure to emerge
+without destroying the global layout established in phase 1. The third
+and last phase runs with near and further pairs only, refining the local
 structure.
 
 This stands in contrast to UMAP, which optimises a single objective from
@@ -52,16 +52,14 @@ A few things to keep in mind:
   spectral initialisation works well, PaCMAP with random initialisation
   degrades global structure significantly. The default here is `"pca"`
   for this reason.
-- **k is less sensitive than in UMAP.** The paper default of 10 works
-  well across a wide range of datasets. That said, the kNN search is
-  actually run with `mn_candidate_end` neighbours (default 50) to have a
-  sufficient pool for mid-near sampling; `k` only controls how many of
-  those are used as near pairs in optimisation.
-- **Mid-near candidates matter.** The `mn_candidate_start` and
-  `mn_candidate_end` parameters control the window in the kNN list from
-  which mid-near pairs are drawn. The defaults (skip the 4 nearest,
-  sample up to rank 50) reflect the paper’s recommendations and rarely
-  need changing.
+- **`n_near` is less sensitive than `k` in UMAP.** The paper default of
+  10 works well across a wide range of datasets. The kNN search runs
+  `n_near + 50` wide, and the near pairs are the best of those by
+  locally scaled distance.
+- **Mid-near pairs don’t come from the kNN graph.** Each one is the
+  second closest of six random points. A pre-computed graph needs at
+  least `n_near` neighbours, but the near pairs are ranked from what it
+  holds, so build it `n_near + 50` wide.
 
 ### Running PaCMAP
 
@@ -294,7 +292,7 @@ umap_hierarchical <- umap(
   seed = 42L,
   .verbose = TRUE
 )
-#> Using n_epochs = 500 (dataset <10k samples or adam_parallel optimiser)
+#> Using n_epochs = 500 (Adam optimiser or dataset <=10k samples)
 
 umap_hierarchical_df <- as.data.table(umap_hierarchical) %>%
   `colnames<-`(c("UMAP1", "UMAP2")) %>%
@@ -334,7 +332,7 @@ parameters without repeating the kNN search, precompute the graph first.
 
 precomputed_knn <- generate_knn_graph(
   data = cluster_data$data,
-  k = 50L, # we need to set this high for pacmap
+  k = 60L, # n_near + 50, as the internal search
   knn_method = "balltree",
   .verbose = FALSE
 )
@@ -344,7 +342,6 @@ pacmap_from_knn <- pacmap(
   knn = precomputed_knn,
   seed = 42L
 )
-#> Using provided kNN graph.
 ```
 
 With the kNN fixed, we can quickly vary the phase schedule. For example,
@@ -356,15 +353,12 @@ pacmap_long_phase1 <- pacmap(
   data = cluster_data$data,
   knn = precomputed_knn,
   pacmap_params = params_pacmap(
-    mn_candidate_start = 4L,
-    mn_candidate_end = 25L,
     n_further = 5L,
     phase1_end = 250L,
     phase2_end = 400L
   ),
   seed = 42L
 )
-#> Using provided kNN graph.
 
 pacmap_long_phase1_df <- as.data.table(pacmap_long_phase1) %>%
   `colnames<-`(c("PaCMAP1", "PaCMAP2")) %>%
@@ -414,8 +408,8 @@ microbenchmark::microbenchmark(
 )
 #> Unit: seconds
 #>             expr      min       lq     mean   median       uq      max neval
-#>    manifold_umap 1.213134 1.214782 1.217542 1.216430 1.219746 1.223063     3
-#>  manifold_pacmap 3.156260 3.157069 3.161024 3.157879 3.163407 3.168935     3
+#>    manifold_umap 1.307816 1.308276 1.346881 1.308736 1.366414 1.424093     3
+#>  manifold_pacmap 2.400027 2.403240 2.498650 2.406454 2.547961 2.689468     3
 ```
 
 PaCMAP is generally slower than UMAP on the same data since it processes

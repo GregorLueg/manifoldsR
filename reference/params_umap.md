@@ -13,9 +13,9 @@ params_umap(
   n_epochs = NULL,
   neg_sample_rate = 5L,
   gamma = 1,
-  optimiser = c("adam_parallel", "sgd", "adam"),
+  optimiser = c("adam_parallel", "sgd", "sgd_parallel", "adam"),
   init = c("spectral", "pca", "random"),
-  randomised = TRUE
+  randomised = FALSE
 )
 ```
 
@@ -56,8 +56,10 @@ params_umap(
 
 - optimiser:
 
-  String. The optimiser. One of `c("adam_parallel", "sgd", "adam")`.
-  Defaults to `"adam_parallel"`.
+  String. The optimiser. `"sgd_parallel"` is lock-free (Hogwild!) and
+  not reproducible run to run with more than one thread. One of
+  `c("adam_parallel", "sgd", "sgd_parallel", "adam")`. Defaults to
+  `"adam_parallel"`.
 
 - init:
 
@@ -67,7 +69,7 @@ params_umap(
 - randomised:
 
   Boolean. Use randomised SVD for PCA initialisation. Defaults to
-  `TRUE`.
+  `FALSE`.
 
 ## Value
 
@@ -92,14 +94,16 @@ A named list with the following elements:
 
 - gamma - Numeric. Repulsion strength. Defaults to `1.0`.
 
-- optimiser - String. The optimiser. One of
-  `c("adam_parallel", "sgd", "adam")`. Defaults to `"adam_parallel"`.
+- optimiser - String. The optimiser. `"sgd_parallel"` is lock-free
+  (Hogwild!) and not reproducible run to run with more than one thread.
+  One of `c("adam_parallel", "sgd", "sgd_parallel", "adam")`. Defaults
+  to `"adam_parallel"`.
 
 - init - String. Embedding initialisation method. One of
   `c("spectral", "pca", "random")`. Defaults to `"spectral"`.
 
 - randomised - Boolean. Use randomised SVD for PCA initialisation.
-  Defaults to `TRUE`.
+  Defaults to `FALSE`.
 
 ## Examples
 
@@ -133,7 +137,7 @@ params_umap()
 #> [1] "spectral"
 #> 
 #> $randomised
-#> [1] TRUE
+#> [1] FALSE
 #> 
 params_umap(n_epochs = 200L, neg_sample_rate = 10L)
 #> $local_connectivity
@@ -164,6 +168,6 @@ params_umap(n_epochs = 200L, neg_sample_rate = 10L)
 #> [1] "spectral"
 #> 
 #> $randomised
-#> [1] TRUE
+#> [1] FALSE
 #> 
 ```

@@ -8,15 +8,7 @@ a pre-computed kNN graph, please see
 ## Usage
 
 ``` r
-rs_pacmap_from_knn(
-  embd,
-  knn_data,
-  n_dim,
-  pacmap_params,
-  seed,
-  use_high_precision,
-  verbose
-)
+rs_pacmap_from_knn(embd, knn_data, n_dim, pacmap_params, seed, verbose)
 ```
 
 ## Arguments
@@ -28,7 +20,8 @@ rs_pacmap_from_knn(
 
 - knn_data:
 
-  `NearestNeighbours` class from R.
+  `NearestNeighbours` class from R. Needs at least `n_near` neighbours,
+  and should be `n_near + 50` wide to match the internal search.
 
 - n_dim:
 
@@ -42,11 +35,6 @@ rs_pacmap_from_knn(
 - seed:
 
   Integer. Seed for reproducibility.
-
-- use_high_precision:
-
-  Optional logical. Controls `fp32` vs `fp64` for. If `NULL` will use
-  sensible default thresholding.
 
 - verbose:
 

@@ -186,7 +186,6 @@ microbenchmark::microbenchmark(
       data = cluster_data$data,
       k = k,
       knn_method = "nndescent",
-      nn_params = params_nn(extract_knn = TRUE),
       .verbose = FALSE
     )
   },
@@ -203,13 +202,13 @@ microbenchmark::microbenchmark(
 )
 #> Unit: milliseconds
 #>        expr       min        lq      mean    median        uq       max neval
-#>  exhaustive  3.583373  3.583373  3.583373  3.583373  3.583373  3.583373     1
-#>       kmknn  4.626288  4.626288  4.626288  4.626288  4.626288  4.626288     1
-#>       annoy 25.138277 25.138277 25.138277 25.138277 25.138277 25.138277     1
-#>        hnsw 19.723473 19.723473 19.723473 19.723473 19.723473 19.723473     1
-#>    balltree  3.439224  3.439224  3.439224  3.439224  3.439224  3.439224     1
-#>   nndescent 42.850520 42.850520 42.850520 42.850520 42.850520 42.850520     1
-#>         ivf  4.428237  4.428237  4.428237  4.428237  4.428237  4.428237     1
+#>  exhaustive  3.375896  3.375896  3.375896  3.375896  3.375896  3.375896     1
+#>       kmknn  4.299863  4.299863  4.299863  4.299863  4.299863  4.299863     1
+#>       annoy 23.737760 23.737760 23.737760 23.737760 23.737760 23.737760     1
+#>        hnsw 23.963762 23.963762 23.963762 23.963762 23.963762 23.963762     1
+#>    balltree  2.707329  2.707329  2.707329  2.707329  2.707329  2.707329     1
+#>   nndescent  6.074022  6.074022  6.074022  6.074022  6.074022  6.074022     1
+#>         ivf  5.019250  5.019250  5.019250  5.019250  5.019250  5.019250     1
 ```
 
 On small datasets, the exhaustive search beats everything. We need to
@@ -279,7 +278,7 @@ microbenchmark::microbenchmark(
       data = benchmark_data$data,
       k = k,
       knn_method = "ivf",
-      nn_params = params_nn(n_probe = 25L),
+      nn_params = params_nn(n_probes = 25L),
       .verbose = FALSE
     )
   },
@@ -287,13 +286,13 @@ microbenchmark::microbenchmark(
 )
 #> Unit: milliseconds
 #>        expr       min        lq      mean    median        uq       max neval
-#>  exhaustive 2966.5269 2966.5269 2966.5269 2966.5269 2966.5269 2966.5269     1
-#>       kmknn  989.0513  989.0513  989.0513  989.0513  989.0513  989.0513     1
-#>       annoy 3082.6628 3082.6628 3082.6628 3082.6628 3082.6628 3082.6628     1
-#>        hnsw 2235.0627 2235.0627 2235.0627 2235.0627 2235.0627 2235.0627     1
-#>    balltree  837.6259  837.6259  837.6259  837.6259  837.6259  837.6259     1
-#>   nndescent 1774.5388 1774.5388 1774.5388 1774.5388 1774.5388 1774.5388     1
-#>         ivf  929.4710  929.4710  929.4710  929.4710  929.4710  929.4710     1
+#>  exhaustive 3744.1832 3744.1832 3744.1832 3744.1832 3744.1832 3744.1832     1
+#>       kmknn 1147.6764 1147.6764 1147.6764 1147.6764 1147.6764 1147.6764     1
+#>       annoy 2750.9655 2750.9655 2750.9655 2750.9655 2750.9655 2750.9655     1
+#>        hnsw 2790.6163 2790.6163 2790.6163 2790.6163 2790.6163 2790.6163     1
+#>    balltree  992.4286  992.4286  992.4286  992.4286  992.4286  992.4286     1
+#>   nndescent  368.2299  368.2299  368.2299  368.2299  368.2299  368.2299     1
+#>         ivf  967.4620  967.4620  967.4620  967.4620  967.4620  967.4620     1
 ```
 
 We start observing the first pattern, that the approximate nearest
@@ -354,7 +353,6 @@ microbenchmark::microbenchmark(
       data = benchmark_data$data,
       k = k,
       knn_method = "nndescent",
-      nn_params = params_nn(extract_knn = TRUE),
       .verbose = FALSE
     )
   },
@@ -363,29 +361,44 @@ microbenchmark::microbenchmark(
       data = benchmark_data$data,
       k = k,
       knn_method = "ivf",
-      nn_params = params_nn(n_probe = 25L),
+      nn_params = params_nn(n_probes = 25L),
       .verbose = FALSE
     )
   },
   times = 1L # single comparison for speed
 )
-#> Unit: seconds
-#>        expr       min        lq      mean    median        uq       max neval
-#>  exhaustive 11.946254 11.946254 11.946254 11.946254 11.946254 11.946254     1
-#>       kmknn  3.607264  3.607264  3.607264  3.607264  3.607264  3.607264     1
-#>       annoy  8.250832  8.250832  8.250832  8.250832  8.250832  8.250832     1
-#>        hnsw  5.283421  5.283421  5.283421  5.283421  5.283421  5.283421     1
-#>    balltree  3.194081  3.194081  3.194081  3.194081  3.194081  3.194081     1
-#>   nndescent  3.717979  3.717979  3.717979  3.717979  3.717979  3.717979     1
-#>         ivf  2.469673  2.469673  2.469673  2.469673  2.469673  2.469673     1
+#> Unit: milliseconds
+#>        expr        min         lq       mean     median         uq        max
+#>  exhaustive 14989.6973 14989.6973 14989.6973 14989.6973 14989.6973 14989.6973
+#>       kmknn  3823.4036  3823.4036  3823.4036  3823.4036  3823.4036  3823.4036
+#>       annoy  7490.5006  7490.5006  7490.5006  7490.5006  7490.5006  7490.5006
+#>        hnsw  7229.3590  7229.3590  7229.3590  7229.3590  7229.3590  7229.3590
+#>    balltree  3618.6593  3618.6593  3618.6593  3618.6593  3618.6593  3618.6593
+#>   nndescent   876.1291   876.1291   876.1291   876.1291   876.1291   876.1291
+#>         ivf  2541.8064  2541.8064  2541.8064  2541.8064  2541.8064  2541.8064
+#>  neval
+#>      1
+#>      1
+#>      1
+#>      1
+#>      1
+#>      1
+#>      1
 ```
 
 #### Precision
 
 In the end, these are approximate methods. So, we need to understand how
-good they are at recovering the true neighbours. A typical metric is
-`Recall@k` neighbours. Let’s just have a look at the smaller data sets
-here:
+good they are at recovering the true neighbours. Two metrics:
+
+- `Recall@k`: the fraction of the true `k` neighbours that the method
+  found, regardless of order.
+- Mean distance ratio: distance to the approximate neighbour divided by
+  the distance to the true neighbour at the same rank, averaged over
+  everything. 1.0 means perfect. It tells you how *wrong* the misses
+  are.
+
+Let’s have a look at 25k samples:
 
 ``` r
 
@@ -399,36 +412,57 @@ benchmark_data <- manifold_synthetic_data(
 exhaustive <- generate_knn_graph(
   data = benchmark_data$data,
   k = k,
-  knn_method = "exhaustive"
+  knn_method = "exhaustive",
+  .verbose = FALSE
 )
+
+true_idx <- get_idx_mat(exhaustive)
+true_dist <- get_dist_mat(exhaustive)
 
 indices <- c("hnsw", "annoy", "nndescent", "balltree", "ivf", "kmknn")
 
-for (idx in indices) {
-  idx_i <- generate_knn_graph(
+precision <- purrr::map(indices, \(idx) {
+  knn_i <- generate_knn_graph(
     data = benchmark_data$data,
     k = k,
-    nn_params = params_nn(extract_knn = TRUE, n_probe = 25L),
+    nn_params = params_nn(n_probes = 25L),
     knn_method = idx,
     .verbose = FALSE
   )
+  idx_i <- get_idx_mat(knn_i)
 
-  recall_i <- sum(get_idx_flat(exhaustive) == get_idx_flat(idx_i)) /
-    (k * samples)
+  hits <- purrr::map_int(seq_len(samples), \(i) {
+    length(intersect(true_idx[i, ], idx_i[i, ]))
+  })
 
-  print(
-    sprintf("ANN method %s achieves a Recall of %.3f.", idx, recall_i)
+  data.frame(
+    method = idx,
+    recall = sum(hits) / (k * samples),
+    dist_ratio = mean(get_dist_mat(knn_i) / true_dist)
   )
-}
-#> [1] "ANN method hnsw achieves a Recall of 0.999."
-#> [1] "ANN method annoy achieves a Recall of 1.000."
-#> [1] "ANN method nndescent achieves a Recall of 1.000."
-#> [1] "ANN method balltree achieves a Recall of 0.974."
-#> [1] "ANN method ivf achieves a Recall of 0.967."
-#> [1] "ANN method kmknn achieves a Recall of 1.000."
+})
+
+knitr::kable(
+  do.call(rbind, precision),
+  digits = 4,
+  col.names = c("Method", "Recall@k", "Mean distance ratio")
+)
 ```
 
-As you can see, all of these methods are able to (mostly) identify the
-right neighbours (in the right order!). If you wish to understand more
-how these methods work, how they compare, etc., please check this
+| Method    | Recall@k | Mean distance ratio |
+|:----------|---------:|--------------------:|
+| hnsw      |   0.9998 |              1.0000 |
+| annoy     |   1.0000 |              1.0000 |
+| nndescent |   0.9651 |              1.0011 |
+| balltree  |   0.9942 |              1.0002 |
+| ivf       |   0.9920 |              1.0003 |
+| kmknn     |   1.0000 |              1.0000 |
+
+NNDescent has the lowest recall here, but the distance ratio tells the
+real story: the neighbours it misses are basically as close as the true
+ones. The synthetic data has very tight clusters, so plenty of points
+sit at near identical distances and swapping one for another costs
+nothing. For manifold learning that is exactly the kind of miss you
+don’t care about. If you wish to understand more how these methods work,
+how they compare, etc., please check this
 [out](https://github.com/GregorLueg/ann-search-rs).

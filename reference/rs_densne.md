@@ -9,16 +9,7 @@ recovers plain tSNE.
 ## Usage
 
 ``` r
-rs_densne(
-  embd,
-  n_dim,
-  perplexity,
-  approx_type,
-  densne_params,
-  seed,
-  use_high_precision,
-  verbose
-)
+rs_densne(embd, n_dim, perplexity, approx_type, densne_params, seed, verbose)
 ```
 
 ## Arguments
@@ -51,11 +42,6 @@ rs_densne(
 - seed:
 
   Integer. Seed for reproducibility.
-
-- use_high_precision:
-
-  Optional logical. Controls `fp32` vs `fp64` for. If `NULL` will use
-  sensible default thresholding.
 
 - verbose:
 

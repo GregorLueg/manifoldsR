@@ -101,7 +101,7 @@ umap_clusters <- umap(
   data = cluster_data$data,
   k = 15L
 )
-#> Using n_epochs = 500 (dataset <10k samples or adam_parallel optimiser)
+#> Using n_epochs = 500 (Adam optimiser or dataset <=10k samples)
 
 umap_clusters_df <- as.data.table(umap_clusters) %>%
   `colnames<-`(c("UMAP1", "UMAP2")) %>%
@@ -233,8 +233,8 @@ knn_graph <- igraph::graph_from_edgelist(
   igraph::simplify()
 
 knn_graph
-#> IGRAPH 8899fbc U--- 25000 323921 -- 
-#> + edges from 8899fbc:
+#> IGRAPH 3e8ce55 U--- 25000 323921 -- 
+#> + edges from 3e8ce55:
 #>  [1] 1-- 114 1-- 133 1-- 309 1-- 528 1-- 643 1--1003 1--1081 1--1100 1--1213
 #> [10] 1--1219 1--1274 1--1477 1--1478 1--1577 1--2246 1--2260 1--2495 1--2541
 #> [19] 1--2601 1--2784 1--3249 1--3279 1--3843 1--4052 1--4080 2--  82 2-- 118
@@ -280,8 +280,7 @@ umap_init <- umap(
   knn = knn,
   k = 15L
 )
-#> Using n_epochs = 500 (dataset <10k samples or adam_parallel optimiser)
-#> Using provided kNN graph.
+#> Using n_epochs = 500 (Adam optimiser or dataset <=10k samples)
 
 fa2_graph_warm <- forceatlas2_from_graph(
   graph = knn_graph,

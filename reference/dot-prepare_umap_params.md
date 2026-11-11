@@ -44,7 +44,7 @@ Internal helper to prepare the UMAP parameters
 
 - .verbose:
 
-  Boolean. Controls verbosity
+  Logical or integer `0L` to `2L`. Controls verbosity.
 
 ## Value
 

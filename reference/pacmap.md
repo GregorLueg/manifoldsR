@@ -11,11 +11,10 @@ pacmap(
   data,
   knn = NULL,
   n_dim = 2L,
-  knn_method = c("kmknn", "balltree", "hnsw", "annoy", "nndescent", "exhaustive", "ivf"),
+  knn_method = c("ivf", "nndescent", "kmknn", "balltree", "hnsw", "annoy", "exhaustive"),
   nn_params = params_nn(),
   pacmap_params = params_pacmap(),
   seed = 42L,
-  use_high_precision = NULL,
   .verbose = TRUE
 )
 ```
@@ -30,8 +29,10 @@ pacmap(
 - knn:
 
   Optional `NearestNeighbours` class. If provided, PaCMAP will skip the
-  k-nearest neighbour graph generation and use this one. Defaults to
-  `NULL`.
+  k-nearest neighbour graph generation and use this one. Needs at least
+  `n_near` neighbours, and the near pairs are ranked from what it holds,
+  so build it `n_near + 50` wide to match the internal search. Defaults
+  to `NULL`.
 
 - n_dim:
 
@@ -42,7 +43,7 @@ pacmap(
 
   Character. (Approximate) Nearest neighbour method to use. One of
   `"kmknn"`, `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, `"ivf"`
-  or `"exhaustive"`. Defaults to `"kmknn"`.
+  or `"exhaustive"`. Defaults to `"ivf"`.
 
 - nn_params:
 
@@ -53,21 +54,19 @@ pacmap(
 
   Named list. PaCMAP algorithm parameters, see
   [`params_pacmap()`](https://gregorlueg.github.io/manifoldsR/reference/params_pacmap.md).
-  Controls near/mid-near/further pair counts and the kNN search size
-  (via `mn_candidate_end`).
+  Controls near/mid-near/further pair counts. The kNN search runs
+  `n_near + 50` wide and the near pairs are the best of those by locally
+  scaled distance.
 
 - seed:
 
   Integer. Random seed for reproducibility. Defaults to `42L`.
 
-- use_high_precision:
-
-  Optional boolean. Gives fine-grained control over `fp32` vs `fp64`
-  usage.
-
 - .verbose:
 
-  Logical. Controls verbosity. Defaults to `TRUE`.
+  Logical or integer. Controls verbosity. `TRUE` or `1L` prints timed
+  stages and epochs every 50, `2L` adds parameters and the kNN
+  internals, `FALSE` or `0L` is silent. Defaults to `TRUE`.
 
 ## Value
 

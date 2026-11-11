@@ -6,17 +6,7 @@ a very fast Rust-based implementation.
 ## Usage
 
 ``` r
-rs_umap(
-  embd,
-  n_dim,
-  min_dist,
-  spread,
-  k,
-  umap_params,
-  seed,
-  use_high_precision,
-  verbose
-)
+rs_umap(embd, n_dim, min_dist, spread, k, umap_params, seed, verbose)
 ```
 
 ## Arguments
@@ -50,11 +40,6 @@ rs_umap(
 - seed:
 
   Integer. Seed for reproducibility.
-
-- use_high_precision:
-
-  Optional logical. Controls `fp32` vs `fp64` for. If `NULL` will use
-  sensible default thresholding.
 
 - verbose:
 

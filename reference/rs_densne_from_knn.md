@@ -18,7 +18,6 @@ rs_densne_from_knn(
   approx_type,
   densne_params,
   seed,
-  use_high_precision,
   verbose
 )
 ```
@@ -57,11 +56,6 @@ rs_densne_from_knn(
 - seed:
 
   Integer. Seed for reproducibility.
-
-- use_high_precision:
-
-  Optional logical. Controls `fp32` vs `fp64` for. If `NULL` will use
-  sensible default thresholding.
 
 - verbose:
 

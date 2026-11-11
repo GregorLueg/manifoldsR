@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -55,7 +55,7 @@
 <p>This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.</p>
 <div class="section level2">
 <h2 id="what-this-package-is">What this package is<a class="anchor" aria-label="anchor" href="#what-this-package-is"></a></h2>
-<p><code>manifoldsR</code> is a thin R wrapper over Rust. Every algorithm (UMAP, tSNE, densMAP, den-SNE, DREAMS, PHATE, PacMAP, diffusion maps, ForceAtlas2, EVoC, k-means) lives in external crates (<code>manifolds-rs</code>, <code>ann-search-rs</code>, <code>evoc-rs</code>, <code>bixverse-rs</code>). The Rust code in <code>src/rust/src/</code> is a translation layer only: it parses R lists into the crates’ parameter structs, dispatches fp32/fp64, and converts matrices. If an algorithm needs a real change, it belongs upstream in the crate, not here.</p>
+<p><code>manifoldsR</code> is a thin R wrapper over Rust. Every algorithm (UMAP, tSNE, densMAP, den-SNE, DREAMS, PHATE, PacMAP, diffusion maps, ForceAtlas2, EVoC, k-means) lives in external crates (<code>manifolds-rs</code>, <code>ann-search-rs</code>, <code>evoc-rs</code>, <code>bixverse-rs</code>). The Rust code in <code>src/rust/src/</code> is a translation layer only: it parses R lists into the crates’ parameter structs and converts matrices. If an algorithm needs a real change, it belongs upstream in the crate, not here.</p>
 </div>
 <div class="section level2">
 <h2 id="commands">Commands<a class="anchor" aria-label="anchor" href="#commands"></a></h2>
@@ -102,14 +102,14 @@
 <code>bixverse-rs</code> needs <code>features = ["r"]</code> for the extendr helpers (<code>IntoExtendrErr</code>, <code>r_matrix_to_faer</code>, …).</li>
 <li>
 <code>manifolds-rs</code> is built with <code>fft_tsne</code> (pure Rust <code>rustfft</code>/<code>realfft</code>), so the FFT t-SNE variants work on every platform. No <code>cfg(windows)</code> splits.</li>
-<li>Unreleased crate versions come in via <code>[patch.crates-io]</code> entries in <code>src/rust/Cargo.toml</code> pointing at GitHub branches. Drop them before a release.</li>
+<li>Unreleased crate versions come in via <code>[patch.crates-io]</code> entries in <code>src/rust/Cargo.toml</code> pointing at GitHub branches or local paths. Local paths must go before a push, as they break CI. Drop all of them before a release.</li>
 <li>
 <code>ann-search-rs</code>, <code>faer</code> and <code>evoc-rs</code> must line up with what <code>manifolds-rs</code> and <code>bixverse-rs</code> use, or the types do not unify. Check with <code>cargo tree -d</code>.</li>
 </ul></div>
 <div class="section level2">
 <h2 id="cross-cutting-conventions">Cross-cutting conventions<a class="anchor" aria-label="anchor" href="#cross-cutting-conventions"></a></h2>
 <ul><li>
-<strong>Precision</strong>: <code>parse_precision(use_high_precision, nrows)</code> in <code>lib.rs</code> picks fp32 below <code>SAMPLE_THRESHOLD_HIGH_PRECISION</code> (100k samples) and fp64 above, unless the user forces it. Every <code>rs_*</code> embedding function duplicates its body across an fp32 and an fp64 match arm. Keep both in sync.</li>
+<strong>Precision</strong>: every <code>rs_*</code> function converts its input with <code>r_matrix_to_faer_fp32()</code> and runs in <code>f32</code>. There is no switch on the R side. The crates do the steps prone to catastrophic cancellation in <code>f64</code> internally.</li>
 <li>
 <strong>Verbosity</strong>: R side accepts <code>TRUE</code>/<code>FALSE</code> or <code>0L</code>/<code>1L</code>/<code>2L</code>, converted by <code><a href="reference/parse_verbosity.html">parse_verbosity()</a></code> in <code>R/utils.R</code> to an integer passed to Rust as <code>verbose</code>.</li>
 <li>
@@ -120,7 +120,7 @@
 </ul></div>
 <div class="section level2">
 <h2 id="tests">Tests<a class="anchor" aria-label="anchor" href="#tests"></a></h2>
-<p>tinytest, in <code>inst/tinytest/</code>. Each file sources <code>./utils_test.R</code> for the shared helpers (<code>check_cluster_separation()</code>, <code>density_preservation()</code>, <code>check_branch_topology()</code>, <code>global_preservation()</code>). Tests use synthetic data from <code>rs_data_*</code> with a fixed seed and assert structural/topological properties (cluster separation, density correlation, branch ordering) rather than exact coordinates. Embeddings aren’t bit-reproducible across the fp32/fp64 paths.</p>
+<p>tinytest, in <code>inst/tinytest/</code>. Each file sources <code>./utils_test.R</code> for the shared helpers (<code>check_cluster_separation()</code>, <code>density_preservation()</code>, <code>check_branch_topology()</code>, <code>global_preservation()</code>). Tests use synthetic data from <code>rs_data_*</code> with a fixed seed and assert structural/topological properties (cluster separation, density correlation, branch ordering) rather than exact coordinates.</p>
 <p><code>misc/workbench.R</code> is a scratch file for benchmarking against <code>phateR</code>, <code>uwot</code>, <code>Rtsne</code>. Not part of the build.</p>
 </div>
 </div>

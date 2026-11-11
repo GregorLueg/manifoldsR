@@ -17,12 +17,11 @@ densmap(
   k = 15L,
   min_dist = 0.5,
   spread = 1,
-  knn_method = c("kmknn", "balltree", "hnsw", "annoy", "nndescent", "exhaustive", "ivf"),
+  knn_method = c("nndescent", "kmknn", "balltree", "hnsw", "annoy", "exhaustive", "ivf"),
   nn_params = params_nn(),
   umap_params = params_umap(),
   dens_params = params_densmap(),
   seed = 42L,
-  use_high_precision = NULL,
   .verbose = TRUE
 )
 ```
@@ -37,8 +36,8 @@ densmap(
 - knn:
 
   Optional `NearestNeighbours` class. If provided, densMAP will skip the
-  k-nearest neighbour graph generation and use this one. Defaults to
-  `NULL`.
+  k-nearest neighbour graph generation and use this one. A wider graph
+  is cut to `k`, with a warning on stderr. Defaults to `NULL`.
 
 - n_dim:
 
@@ -67,7 +66,7 @@ densmap(
 
   Character. (Approximate) Nearest neighbour method to use. One of
   `"kmknn"`, `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, `"ivf"`
-  or `"exhaustive"`. Defaults to `"kmknn"`.
+  or `"exhaustive"`. Defaults to `"nndescent"`.
 
 - nn_params:
 
@@ -88,14 +87,11 @@ densmap(
 
   Integer. Random seed for reproducibility. Defaults to `42L`.
 
-- use_high_precision:
-
-  Optional boolean. Gives fine-grained control over `fp32` vs `fp64`
-  usage.
-
 - .verbose:
 
-  Logical. Controls verbosity. Defaults to `TRUE`.
+  Logical or integer. Controls verbosity. `TRUE` or `1L` prints timed
+  stages and epochs every 50, `2L` adds parameters and the kNN
+  internals, `FALSE` or `0L` is silent. Defaults to `TRUE`.
 
 ## Value
 

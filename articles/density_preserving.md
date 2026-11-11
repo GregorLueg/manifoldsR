@@ -120,14 +120,14 @@ umap_clusters <- umap(
   seed = 42L,
   .verbose = TRUE
 )
-#> Using n_epochs = 500 (dataset <10k samples or adam_parallel optimiser)
+#> Using n_epochs = 500 (Adam optimiser or dataset <=10k samples)
 
 densmap_clusters <- densmap(
   data = cluster_data$data,
   seed = 42L,
   .verbose = TRUE
 )
-#> Using n_epochs = 500 (dataset <10k samples or adam_parallel optimiser)
+#> Using n_epochs = 500 (Adam optimiser or dataset <=10k samples)
 ```
 
 Colour both by the *input-space* radius. If the method preserved
@@ -186,8 +186,8 @@ data.table(
 )
 #>     method    rho
 #>     <char>  <num>
-#> 1:    UMAP -0.006
-#> 2: densMAP  0.919
+#> 1:    UMAP -0.004
+#> 2: densMAP  0.921
 ```
 
 Set `lambda = 0` and you are back to plain UMAP, which is a handy sanity
@@ -264,8 +264,8 @@ data.table(
 )
 #>     method   rho
 #>     <char> <num>
-#> 1:   t-SNE 0.082
-#> 2: den-SNE 0.825
+#> 1:   t-SNE 0.078
+#> 2: den-SNE 0.828
 ```
 
 t-SNE starts from a marginally better place than UMAP, since the
@@ -357,15 +357,18 @@ data.table(
 )
 #>     method   rho
 #>     <char> <num>
-#> 1:    UMAP 0.232
-#> 2: densMAP 0.795
+#> 1:    UMAP 0.187
+#> 2: densMAP 0.698
 ```
 
 ### Using pre-computed kNN graphs
 
 Both take a `NearestNeighbours` object, same as their plain
 counterparts. Build it once, reuse it across methods and parameter
-sweeps. Watch the `k` if you are feeding den-SNE.
+sweeps. Watch the `k`: den-SNE needs more neighbours than `perplexity`
+and uses all of them, while densMAP cuts a wider graph to its own `k`
+and warns on stderr. So the `90L` below is for den-SNE, and densMAP only
+looks at the first `15L`.
 
 ``` r
 
@@ -382,8 +385,7 @@ densmap_from_knn <- densmap(
   seed = 42L,
   .verbose = TRUE
 )
-#> Using n_epochs = 500 (dataset <10k samples or adam_parallel optimiser)
-#> Using provided kNN graph.
+#> Using n_epochs = 500 (Adam optimiser or dataset <=10k samples)
 
 densne_from_knn <- densne(
   data = cluster_data$data,
@@ -392,7 +394,6 @@ densne_from_knn <- densne(
   seed = 42L,
   .verbose = TRUE
 )
-#> Using provided kNN graph.
 
 data.table(
   method = c("densMAP (kNN)", "den-SNE (kNN)"),
@@ -400,7 +401,7 @@ data.table(
 )
 #>           method   rho
 #>           <char> <num>
-#> 1: densMAP (kNN) 0.922
+#> 1: densMAP (kNN) 0.919
 #> 2: den-SNE (kNN) 0.890
 ```
 
@@ -440,7 +441,7 @@ data.table(
 
 knn_small <- generate_knn_graph(
   data = cluster_data_small$data,
-  k = 90L,
+  k = 15L,
   knn_method = "kmknn",
   .verbose = FALSE
 )
@@ -470,25 +471,20 @@ lambda_sweep <- rbindlist(lapply(c(0, 0.5, 2, 5, 10), \(l) {
     separation = round(mean(sep$between_dists) / mean(sep$within_dists), 2)
   )
 }))
-#> Using n_epochs = 500 (dataset <10k samples or adam_parallel optimiser)
-#> Using provided kNN graph.
-#> Using n_epochs = 500 (dataset <10k samples or adam_parallel optimiser)
-#> Using provided kNN graph.
-#> Using n_epochs = 500 (dataset <10k samples or adam_parallel optimiser)
-#> Using provided kNN graph.
-#> Using n_epochs = 500 (dataset <10k samples or adam_parallel optimiser)
-#> Using provided kNN graph.
-#> Using n_epochs = 500 (dataset <10k samples or adam_parallel optimiser)
-#> Using provided kNN graph.
+#> Using n_epochs = 500 (Adam optimiser or dataset <=10k samples)
+#> Using n_epochs = 500 (Adam optimiser or dataset <=10k samples)
+#> Using n_epochs = 500 (Adam optimiser or dataset <=10k samples)
+#> Using n_epochs = 500 (Adam optimiser or dataset <=10k samples)
+#> Using n_epochs = 500 (Adam optimiser or dataset <=10k samples)
 
 lambda_sweep
-#>    lambda    rho separation
-#>     <num>  <num>      <num>
-#> 1:    0.0 -0.007      17.94
-#> 2:    0.5  0.919      31.57
-#> 3:    2.0  0.929      30.78
-#> 4:    5.0  0.940      27.39
-#> 5:   10.0  0.945      23.72
+#>    lambda   rho separation
+#>     <num> <num>      <num>
+#> 1:    0.0 0.018      12.74
+#> 2:    0.5 0.907      19.47
+#> 3:    2.0 0.933      20.71
+#> 4:    5.0 0.938      19.20
+#> 5:   10.0 0.942      16.63
 ```
 
 ``` r

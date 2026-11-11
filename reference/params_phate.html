@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,10 +63,12 @@
 <span>  t_max <span class="op">=</span> <span class="fl">100L</span>,</span>
 <span>  t_custom <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  gamma <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  thresh <span class="op">=</span> <span class="fl">1e-04</span>,</span>
 <span>  n_landmarks <span class="op">=</span> <span class="fl">2048L</span>,</span>
 <span>  landmark_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"spectral"</span>, <span class="st">"random"</span>, <span class="st">"density"</span><span class="op">)</span>,</span>
 <span>  n_svd <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  mds_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sgd_dense"</span>, <span class="st">"classic"</span><span class="op">)</span>,</span>
+<span>  mds_iter <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  graph_symmetry <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"additive"</span>, <span class="st">"multiplicative"</span>, <span class="st">"mnn"</span>, <span class="st">"none"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -82,13 +84,13 @@ Higher values create sharper transitions. Defaults to <code>40.0</code>.</p></dd
 
 <dt id="arg-bandwidth-scale">bandwidth_scale<a class="anchor" aria-label="anchor" href="#arg-bandwidth-scale"></a></dt>
 <dd><p>Numeric or <code>NULL</code>. Scaling factor applied to the
-kernel bandwidth. If <code>NULL</code>, the library selects a sensible default. Defaults
-to <code>NULL</code>.</p></dd>
+kernel bandwidth. If <code>NULL</code>, uses <code>1.0</code>. Defaults to <code>NULL</code>.</p></dd>
 
 
 <dt id="arg-t-max">t_max<a class="anchor" aria-label="anchor" href="#arg-t-max"></a></dt>
 <dd><p>Integer. Maximum diffusion time considered during automatic
-selection via Von Neumann entropy knee point detection. Defaults to <code>100L</code>.</p></dd>
+selection via Von Neumann entropy knee point detection. At least <code>3</code>, as the
+knee search needs three points. Defaults to <code>100L</code>.</p></dd>
 
 
 <dt id="arg-t-custom">t_custom<a class="anchor" aria-label="anchor" href="#arg-t-custom"></a></dt>
@@ -98,13 +100,18 @@ automatic time selection. Defaults to <code>NULL</code>.</p></dd>
 
 <dt id="arg-gamma">gamma<a class="anchor" aria-label="anchor" href="#arg-gamma"></a></dt>
 <dd><p>Numeric. Informational distance parameter for the diffusion
-potential. Defaults to <code>1.0</code>.</p></dd>
+potential. <code>1</code> is the log potential. Defaults to <code>1.0</code>.</p></dd>
+
+
+<dt id="arg-thresh">thresh<a class="anchor" aria-label="anchor" href="#arg-thresh"></a></dt>
+<dd><p>Numeric. Sparsity threshold on the kernel. Neighbours past <code>k</code>
+join the kernel while their affinity clears it. Defaults to <code>1e-04</code>.</p></dd>
 
 
 <dt id="arg-n-landmarks">n_landmarks<a class="anchor" aria-label="anchor" href="#arg-n-landmarks"></a></dt>
 <dd><p>Integer or <code>NULL</code>. Number of landmarks for compressed
-diffusion. If <code>NULL</code>, the full N x N diffusion operator is used. Defaults to
-<code>2048L</code>.</p></dd>
+diffusion. If <code>NULL</code>, or at least the number of samples, the full N x N
+diffusion operator is used. Defaults to <code>2048L</code>.</p></dd>
 
 
 <dt id="arg-landmark-method">landmark_method<a class="anchor" aria-label="anchor" href="#arg-landmark-method"></a></dt>
@@ -113,14 +120,20 @@ diffusion. If <code>NULL</code>, the full N x N diffusion operator is used. Defa
 
 
 <dt id="arg-n-svd">n_svd<a class="anchor" aria-label="anchor" href="#arg-n-svd"></a></dt>
-<dd><p>Integer or <code>NULL</code>. Number of SVD components used in landmark
-construction. If <code>NULL</code>, the library selects a sensible default. Defaults to
-<code>NULL</code>.</p></dd>
+<dd><p>Integer or <code>NULL</code>. Number of singular vectors for spectral
+landmark selection. If <code>NULL</code>, uses <code>100</code>. Ignored by the other landmark
+methods. Defaults to <code>NULL</code>.</p></dd>
 
 
 <dt id="arg-mds-method">mds_method<a class="anchor" aria-label="anchor" href="#arg-mds-method"></a></dt>
 <dd><p>String. MDS algorithm used for the final embedding. One of
 <code>c("sgd_dense", "classic")</code>. Defaults to <code>"sgd_dense"</code>.</p></dd>
+
+
+<dt id="arg-mds-iter">mds_iter<a class="anchor" aria-label="anchor" href="#arg-mds-iter"></a></dt>
+<dd><p>Integer or <code>NULL</code>. Number of SGD-MDS iterations. If <code>NULL</code>,
+scales with the number of points: <code>300</code> below 1000, <code>500</code> below 5000 and
+<code>800</code> otherwise. Defaults to <code>NULL</code>.</p></dd>
 
 
 <dt id="arg-graph-symmetry">graph_symmetry<a class="anchor" aria-label="anchor" href="#arg-graph-symmetry"></a></dt>
@@ -134,24 +147,29 @@ One of <code>c("additive", "multiplicative", "mnn", "none")</code>. Defaults to
     <p>A named list with the following elements:</p><ul><li><p>decay - Numeric. Alpha decay parameter controlling the kernel
 bandwidth. Higher values create sharper transitions. Defaults to <code>40.0</code>.</p></li>
 <li><p>bandwidth_scale - Numeric or <code>NULL</code>. Scaling factor applied to the
-kernel bandwidth. If <code>NULL</code>, the library selects a sensible default.
-Defaults to <code>NULL</code>.</p></li>
+kernel bandwidth. If <code>NULL</code>, uses <code>1.0</code>. Defaults to <code>NULL</code>.</p></li>
 <li><p>t_max - Integer. Maximum diffusion time considered during automatic
-selection via Von Neumann entropy knee point detection. Defaults to <code>100L</code>.</p></li>
+selection via Von Neumann entropy knee point detection. At least <code>3</code>, as the
+knee search needs three points. Defaults to <code>100L</code>.</p></li>
 <li><p>t_custom - Integer or <code>NULL</code>. Fixed diffusion time. If set, overrides
 automatic time selection. Defaults to <code>NULL</code>.</p></li>
 <li><p>gamma - Numeric. Informational distance parameter for the diffusion
-potential. Defaults to <code>1.0</code>.</p></li>
+potential. <code>1</code> is the log potential. Defaults to <code>1.0</code>.</p></li>
+<li><p>thresh - Numeric. Sparsity threshold on the kernel. Neighbours past
+<code>k</code> join the kernel while their affinity clears it. Defaults to <code>1e-04</code>.</p></li>
 <li><p>n_landmarks - Integer or <code>NULL</code>. Number of landmarks for compressed
-diffusion. If <code>NULL</code>, the full N x N diffusion operator is used. Defaults to
-<code>2048L</code>.</p></li>
+diffusion. If <code>NULL</code>, or at least the number of samples, the full N x N
+diffusion operator is used. Defaults to <code>2048L</code>.</p></li>
 <li><p>landmark_method - String. Method used to select landmarks. One of
 <code>c("spectral", "random", "density")</code>. Defaults to <code>"spectral"</code>.</p></li>
-<li><p>n_svd - Integer or <code>NULL</code>. Number of SVD components used in landmark
-construction. If <code>NULL</code>, the library selects a sensible default. Defaults to
-<code>NULL</code>.</p></li>
+<li><p>n_svd - Integer or <code>NULL</code>. Number of singular vectors for spectral
+landmark selection. If <code>NULL</code>, uses <code>100</code>. Ignored by the other landmark
+methods. Defaults to <code>NULL</code>.</p></li>
 <li><p>mds_method - String. MDS algorithm used for the final embedding. One
 of <code>c("sgd_dense", "classic")</code>. Defaults to <code>"sgd_dense"</code>.</p></li>
+<li><p>mds_iter - Integer or <code>NULL</code>. Number of SGD-MDS iterations. If <code>NULL</code>,
+scales with the number of points: <code>300</code> below 1000, <code>500</code> below 5000 and
+<code>800</code> otherwise. Defaults to <code>NULL</code>.</p></li>
 <li><p>graph_symmetry - String. Method used to symmetrise the affinity graph.
 One of <code>c("additive", "multiplicative", "mnn", "none")</code>. Defaults to
 <code>"additive"</code>.</p></li>
@@ -175,6 +193,9 @@ One of <code>c("additive", "multiplicative", "mnn", "none")</code>. Defaults to
 <span class="r-out co"><span class="r-pr">#&gt;</span> $gamma</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $thresh</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $n_landmarks</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2048</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -186,6 +207,9 @@ One of <code>c("additive", "multiplicative", "mnn", "none")</code>. Defaults to
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $mds_method</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "sgd_dense"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $mds_iter</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $graph_symmetry</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "additive"</span>
@@ -206,6 +230,9 @@ One of <code>c("additive", "multiplicative", "mnn", "none")</code>. Defaults to
 <span class="r-out co"><span class="r-pr">#&gt;</span> $gamma</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $thresh</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $n_landmarks</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 500</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -217,6 +244,9 @@ One of <code>c("additive", "multiplicative", "mnn", "none")</code>. Defaults to
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $mds_method</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "sgd_dense"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $mds_iter</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $graph_symmetry</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "additive"</span>

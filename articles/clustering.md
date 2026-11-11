@@ -112,7 +112,7 @@ umap_embd <- umap(
   k = 15L,
   .verbose = TRUE
 )
-#> Using n_epochs = 500 (dataset <10k samples or adam_parallel optimiser)
+#> Using n_epochs = 500 (Adam optimiser or dataset <=10k samples)
 
 base_df <- as.data.table(umap_embd) %>%
   `colnames<-`(c("UMAP1", "UMAP2")) %>%
@@ -245,7 +245,7 @@ true structure.
 cat("Full k-means:\n")
 #> Full k-means:
 cat("  ARI:", calc_ari(cluster_data$membership, membership(km_full)), "\n")
-#>   ARI: 0.7085234
+#>   ARI: 0.7086227
 cat("  Effective clusters:", length(unique(membership(km_full))), "\n")
 #>   Effective clusters: 25
 cat(
@@ -256,7 +256,7 @@ cat(
   )$mean_silhouette,
   "\n"
 )
-#>   Silhouette: 0.4139893
+#>   Silhouette: 0.4140061
 
 cat("\nMini-batch k-means:\n")
 #> 
@@ -353,9 +353,9 @@ evoc_res <- evoc(
 
 evoc_res
 #> Evoc
-#>   layers:               4 
-#>   best layer:           3 
-#>   best persistence:     2646.579 
+#>   layers:               2 
+#>   best layer:           2 
+#>   best persistence:     2593.49 
 #>   knn:                  not stored
 ```
 
@@ -364,9 +364,9 @@ evoc_res
 evoc_best <- best_membership(evoc_res)
 
 cat("Selected layer:", evoc_best$layer, "\n")
-#> Selected layer: 3
+#> Selected layer: 2
 cat("Persistence score:", round(evoc_best$persistence, 4), "\n")
-#> Persistence score: 2646.579
+#> Persistence score: 2593.49
 cat(
   "Clusters found:",
   length(unique(evoc_best$labels[evoc_best$labels != -1L])),

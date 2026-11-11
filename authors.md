@@ -16,14 +16,14 @@ Source:
 [`DESCRIPTION`](https://github.com/GregorLueg/manifoldsR/blob/main/DESCRIPTION)
 
 Lueg G, Neilson G (2026). *manifoldsR: Fast Low-Dimensional Embeddings
-and Clustering via 'Rust'*. R package version 0.5.0,
+and Clustering via 'Rust'*. R package version 0.6.0,
 <https://gregorlueg.github.io/manifoldsR/>.
 
     @Manual{,
       title = {manifoldsR: Fast Low-Dimensional Embeddings and Clustering via 'Rust'},
       author = {Gregor Lueg and Grant Neilson},
       year = {2026},
-      note = {R package version 0.5.0},
+      note = {R package version 0.6.0},
       url = {https://gregorlueg.github.io/manifoldsR/},
     }
 

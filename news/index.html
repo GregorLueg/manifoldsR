@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -50,6 +50,51 @@
       <small>Source: <a href="https://github.com/GregorLueg/manifoldsR/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.6.0" id="manifoldsr-060">manifoldsR 0.6.0<a class="anchor" aria-label="anchor" href="#manifoldsr-060"></a></h2>
+<div class="section level3">
+<h3 id="breaking-changes-0-6-0">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-6-0"></a></h3>
+<p>Expect different coordinates than 0.5.0 at the same seed for most methods.</p>
+<ul><li>Everything runs in <code>f32</code>. <code>use_high_precision</code> is gone, <code><a href="../reference/evoc.html">evoc()</a></code> included. The backends do the numerically touchy bits in <code>f64</code> themselves.</li>
+<li>New <code>knn_method</code> defaults: <code>"ivf"</code> for <code><a href="../reference/tsne.html">tsne()</a></code>, <code><a href="../reference/densne.html">densne()</a></code>, <code><a href="../reference/dreams.html">dreams()</a></code>, <code><a href="../reference/pacmap.html">pacmap()</a></code> and <code><a href="../reference/phate.html">phate()</a></code>, <code>"nndescent"</code> for the rest. <code><a href="../reference/generate_knn_graph.html">generate_knn_graph()</a></code> stays on <code>"kmknn"</code>.</li>
+<li>
+<code><a href="../reference/params_nn.html">params_nn()</a></code> drops <code>diversify_prob</code>, <code>ef_budget</code> and <code>extract_knn</code>. <code>ef_construction</code> defaults to <code>200L</code>.</li>
+<li>
+<code><a href="../reference/pacmap.html">pacmap()</a></code> and <code><a href="../reference/phate.html">phate()</a></code> now follow their reference implementations. <code><a href="../reference/params_pacmap.html">params_pacmap()</a></code> drops <code>mn_candidate_start</code> and <code>mn_candidate_end</code>, <code><a href="../reference/params_phate.html">params_phate()</a></code> gains <code>thresh</code> and <code>mds_iter</code>.</li>
+<li>Precomputed graphs: <code><a href="../reference/pacmap.html">pacmap()</a></code> wants them <code>n_near + 50</code> wide, <code><a href="../reference/phate.html">phate()</a></code> <code>6 * k + 5</code>. <code><a href="../reference/umap.html">umap()</a></code>, <code><a href="../reference/densmap.html">densmap()</a></code> and <code><a href="../reference/forceatlas2.html">forceatlas2()</a></code> cut wider graphs to <code>k</code> with a warning.</li>
+<li>
+<code><a href="../reference/params_umap.html">params_umap()</a></code> <code>randomised</code> defaults to <code>FALSE</code>. With <code>n_epochs = NULL</code>, only the SGD optimisers drop to 200 epochs above 10k samples.</li>
+<li>
+<code><a href="../reference/diffusion_maps.html">diffusion_maps()</a></code> with spectral landmarks takes 100 singular vectors by default, was 10. <code>t_max</code> must be at least <code>3</code>.</li>
+<li>
+<code><a href="../reference/params_diffusion_maps.html">params_diffusion_maps()</a></code> <code>n_landmarks</code> defaults to <code>NULL</code>, the full operator. Was <code>2048L</code>. The full operator is faster on small to medium data sets.</li>
+<li>
+<code><a href="../reference/rs_approx_nearest_neighbours.html">rs_approx_nearest_neighbours()</a></code> renames <code>ann_params</code> to <code>nn_params</code>.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="features-0-6-0">Features<a class="anchor" aria-label="anchor" href="#features-0-6-0"></a></h3>
+<ul><li>
+<code>optimiser = "sgd_parallel"</code> in <code><a href="../reference/params_umap.html">params_umap()</a></code>: lock-free Hogwild! SGD for <code><a href="../reference/umap.html">umap()</a></code> and <code><a href="../reference/densmap.html">densmap()</a></code>. Not reproducible with more than one thread.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="performance-0-6-0">Performance<a class="anchor" aria-label="anchor" href="#performance-0-6-0"></a></h3>
+<ul><li>
+<code>"sgd"</code> for UMAP and densMAP is about 2.4x faster.</li>
+<li>Spectral initialisation needs half the memory on connected graphs and a quarter on disconnected ones.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-0-6-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-6-0"></a></h3>
+<ul><li>PCA initialisation no longer collapses large <code>f32</code> layouts onto a few points.</li>
+<li>PaCMAP no longer compresses the layout.</li>
+<li>Spectral landmark selection works at scale.</li>
+<li>
+<code><a href="../reference/diffusion_maps.html">diffusion_maps()</a></code> errors on points that lose all their edges instead of returning <code>Inf</code> coordinates.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="internals-0-6-0">Internals<a class="anchor" aria-label="anchor" href="#internals-0-6-0"></a></h3>
+<ul><li>Backend bumps: <code>manifolds-rs</code> 0.9.0, <code>evoc-rs</code> 0.7.0, <code>bixverse-rs</code> 0.10.0 and <code>ann-search-rs</code> 0.12.2.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.0" id="manifoldsr-050">manifoldsR 0.5.0<a class="anchor" aria-label="anchor" href="#manifoldsr-050"></a></h2>
 <p>First CRAN release.</p>

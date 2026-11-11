@@ -11,12 +11,11 @@ evoc(
   data,
   knn = NULL,
   n_neighbours = 15L,
-  knn_method = c("kmknn", "hnsw", "annoy", "nndescent", "balltree", "ivf", "exhaustive"),
+  knn_method = c("nndescent", "kmknn", "hnsw", "annoy", "balltree", "ivf", "exhaustive"),
   nn_params = params_nn(),
   evoc_params = params_evoc(),
   return_knn = FALSE,
   seed = 42L,
-  use_high_precision = NULL,
   .verbose = TRUE
 )
 ```
@@ -42,7 +41,7 @@ evoc(
 
   Character. (Approximate) Nearest neighbour method to use. One of
   `"kmknn"`, `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, `"ivf"`
-  or `"exhaustive"`. Defaults to `"kmknn"`.
+  or `"exhaustive"`. Defaults to `"nndescent"`.
 
 - nn_params:
 
@@ -63,14 +62,10 @@ evoc(
 
   Integer. Random seed for reproducibility. Defaults to `42L`.
 
-- use_high_precision:
-
-  Optional boolean. Gives fine-grained control over `fp32` vs `fp64`
-  usage.
-
 - .verbose:
 
-  Logical. Controls verbosity. Defaults to `TRUE`.
+  Logical or integer `0L` to `2L`. Controls verbosity. Defaults to
+  `TRUE`.
 
 ## Value
 
@@ -88,6 +83,6 @@ res
 #> Evoc
 #>   layers:               2 
 #>   best layer:           2 
-#>   best persistence:     76.7277 
+#>   best persistence:     76.7282 
 #>   knn:                  not stored 
 ```

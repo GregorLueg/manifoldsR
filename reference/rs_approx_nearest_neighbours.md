@@ -8,7 +8,7 @@ for kNN generation.
 ## Usage
 
 ``` r
-rs_approx_nearest_neighbours(data, k, ann_method, ann_params, seed, verbose)
+rs_approx_nearest_neighbours(data, k, ann_method, nn_params, seed, verbose)
 ```
 
 ## Arguments
@@ -25,11 +25,12 @@ rs_approx_nearest_neighbours(data, k, ann_method, ann_params, seed, verbose)
 - ann_method:
 
   String. Which of the methods to use. One of
-  `c("hsnw", "balltree", "annoy", "nndescent")`
+  `c("exhaustive", "kmknn", "balltree", "annoy", "hnsw", "nndescent", "ivf")`
 
-- ann_params:
+- nn_params:
 
-  Named list. Contains the nearest neighbour parameters.
+  Named list. Contains the nearest neighbour parameters, see
+  [`params_nn()`](https://gregorlueg.github.io/manifoldsR/reference/params_nn.md).
 
 - seed:
 

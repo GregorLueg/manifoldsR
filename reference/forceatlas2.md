@@ -14,11 +14,10 @@ forceatlas2(
   data,
   knn = NULL,
   k = 15L,
-  knn_method = c("kmknn", "balltree", "hnsw", "annoy", "nndescent", "exhaustive", "ivf"),
+  knn_method = c("nndescent", "kmknn", "balltree", "hnsw", "annoy", "exhaustive", "ivf"),
   nn_params = params_nn(),
   fa2_params = params_fa2(),
   seed = 42L,
-  use_high_precision = NULL,
   .verbose = TRUE
 )
 ```
@@ -33,7 +32,8 @@ forceatlas2(
 - knn:
 
   Optional `NearestNeighbours` class. If provided, the k-nearest
-  neighbour search is skipped and this one is used. Defaults to `NULL`.
+  neighbour search is skipped and this one is used. A wider graph is cut
+  to `k`, with a warning on stderr. Defaults to `NULL`.
 
 - k:
 
@@ -43,7 +43,7 @@ forceatlas2(
 
   Character. (Approximate) Nearest neighbour method to use. One of
   `"kmknn"`, `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, `"ivf"`
-  or `"exhaustive"`. Defaults to `"kmknn"`.
+  or `"exhaustive"`. Defaults to `"nndescent"`.
 
 - nn_params:
 
@@ -59,14 +59,11 @@ forceatlas2(
 
   Integer. Random seed for reproducibility. Defaults to `42L`.
 
-- use_high_precision:
-
-  Optional boolean. Gives fine-grained control over `fp32` vs `fp64`
-  usage.
-
 - .verbose:
 
-  Logical. Controls verbosity. Defaults to `TRUE`.
+  Logical or integer. Controls verbosity. `TRUE` or `1L` prints timed
+  stages and epochs every 50, `2L` adds parameters and the kNN
+  internals, `FALSE` or `0L` is silent. Defaults to `TRUE`.
 
 ## Value
 

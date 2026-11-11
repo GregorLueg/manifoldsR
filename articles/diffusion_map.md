@@ -146,8 +146,8 @@ your data looks like, reach for t-SNE, UMAP or PaCMAP instead.
 
 #### Swiss roll
 
-The swiss roll is a textbook example for diffusion maps — it was one of
-the canonical test cases in the original literature. The anisotropic
+The swiss roll is a textbook example for diffusion maps, one of the
+canonical test cases in the original literature. The anisotropic
 normalisation should recover the underlying 2D manifold cleanly.
 
 ``` r
@@ -243,7 +243,6 @@ dm_from_knn <- diffusion_maps(
   k = 15L,
   seed = 42L
 )
-#> Using provided kNN graph.
 
 dm_from_knn_df <- as.data.table(dm_from_knn) %>%
   `colnames<-`(c("DM1", "DM2")) %>%
@@ -268,12 +267,14 @@ With the graph fixed, you can iterate on `alpha_norm`, `t_custom`,
 
 ### Landmark diffusion maps
 
-For large datasets the N x N diffusion operator and its
-eigendecomposition become prohibitive. The same landmark approach as in
-PHATE applies: select a representative subset, eigendecompose the L x L
-landmark operator, and Nystroem-extend the result back to the full
-dataset. Default is `2048L` landmarks, same rationale as PHATE
-(SIMD-friendly 2^x number downstream in the k-means landmark selection).
+The same landmark approach as in PHATE is available: select a
+representative subset, eigendecompose the L x L landmark operator, and
+Nystroem-extend the result back to the full dataset. Unlike PHATE, it is
+off by default (`n_landmarks = NULL`). The full operator stays sparse
+and is eigendecomposed with a sparse solver, while the landmark operator
+is dense. On moderate data the full operator is usually the faster of
+the two (see the benchmarks below), so reach for landmarks on very large
+data.
 
 `landmark_method` accepts the same three options as PHATE:
 
@@ -356,38 +357,125 @@ differences in how uniformly the branches are sampled.
 
 ### Benchmarks
 
+#### Against destiny
+
 The most widely used R implementation of diffusion maps is
 [`destiny`](https://bioconductor.org/packages/destiny/) (Bioconductor),
 which implements the Haghverdi et al. variant aimed at single-cell data.
-However, the installation of
-[`smoother`](https://cran.r-project.org/package=smoother), a needed
-dependency of the package is not behaving at the moment. Hence, a
-comparison could not be made here. We can still compare two different
-landmark methods here on a larger data set.
+Its defaults line up with ours: a local (adaptive) Gaussian kernel and
+density normalisation, which corresponds to `alpha_norm = 1`. We match
+`k` and ask destiny for two eigenvectors only, and skip its diffusion
+pseudotime step.
 
 ``` r
 
-benchmark_data_large <- manifold_synthetic_data(
-  type = "trajectory",
-  n_samples = 50000L
+dm_destiny <- destiny::DiffusionMap(
+  data = trajectory_data$data,
+  k = 15L,
+  n_eigs = 2L,
+  suppress_dpt = TRUE,
+  verbose = FALSE
 )
 
+comparison_df <- rbind(
+  data.table(
+    DM1 = destiny::eigenvectors(dm_destiny)[, 1],
+    DM2 = destiny::eigenvectors(dm_destiny)[, 2],
+    branch = trajectory_data$membership,
+    method = "destiny"
+  ),
+  data.table(
+    DM1 = dm_trajectory[, 1],
+    DM2 = dm_trajectory[, 2],
+    branch = trajectory_data$membership,
+    method = "manifoldsR"
+  )
+)
+
+ggplot(
+  data = comparison_df[sample(1:nrow(comparison_df), nrow(comparison_df)), ],
+  mapping = aes(x = DM1, y = DM2)
+) +
+  geom_point(mapping = aes(colour = branch), alpha = 0.5, size = 0.75) +
+  facet_wrap(~method, scales = "free") +
+  theme_bw() +
+  scale_colour_viridis_c(option = "turbo") +
+  ggtitle("destiny vs manifoldsR on trajectory data")
+```
+
+![](diffusion_map_files/figure-html/dm%20-%20destiny%20comparison-1.png)
+
+Same picture, up to sign and scale: eigenvectors have no fixed sign, and
+`manifoldsR` scales them by lambda^t while destiny returns them
+unscaled. Now the timings:
+
+``` r
+
 microbenchmark::microbenchmark(
-  manifold_dm_spectral = {
-    diffusion_maps(
-      data = benchmark_data_large$data,
+  destiny = {
+    destiny::DiffusionMap(
+      data = trajectory_data$data,
       k = 15L,
-      knn_method = "nndescent",
+      n_eigs = 2L,
+      suppress_dpt = TRUE,
+      verbose = FALSE
+    )
+  },
+  manifoldsR = {
+    diffusion_maps(
+      data = trajectory_data$data,
+      k = 15L,
       seed = 42L,
       .verbose = FALSE
     )
   },
-  manifold_dm_random = {
+  times = 1L
+)
+#> Unit: milliseconds
+#>        expr        min         lq       mean     median         uq        max
+#>     destiny 23721.3970 23721.3970 23721.3970 23721.3970 23721.3970 23721.3970
+#>  manifoldsR   501.4878   501.4878   501.4878   501.4878   501.4878   501.4878
+#>  neval
+#>      1
+#>      1
+```
+
+As elsewhere in `manifoldsR`, the whole pipeline (kNN, kernel, choosing
+t, eigendecomposition) stays inside Rust.
+
+#### Full operator vs landmarks
+
+On the larger trajectory data from above, the full operator against the
+two landmark methods:
+
+``` r
+
+microbenchmark::microbenchmark(
+  full_operator = {
     diffusion_maps(
-      data = benchmark_data_large$data,
+      data = large_trajectory$data,
       k = 15L,
-      knn_method = "nndescent",
-      dm_params = params_diffusion_maps(landmark_method = "random"),
+      seed = 42L,
+      .verbose = FALSE
+    )
+  },
+  landmarks_spectral = {
+    diffusion_maps(
+      data = large_trajectory$data,
+      k = 15L,
+      dm_params = params_diffusion_maps(n_landmarks = 2048L),
+      seed = 42L,
+      .verbose = FALSE
+    )
+  },
+  landmarks_random = {
+    diffusion_maps(
+      data = large_trajectory$data,
+      k = 15L,
+      dm_params = params_diffusion_maps(
+        n_landmarks = 2048L,
+        landmark_method = "random"
+      ),
       seed = 42L,
       .verbose = FALSE
     )
@@ -395,16 +483,13 @@ microbenchmark::microbenchmark(
   times = 1L
 )
 #> Unit: seconds
-#>                  expr      min       lq     mean   median       uq      max
-#>  manifold_dm_spectral 20.37932 20.37932 20.37932 20.37932 20.37932 20.37932
-#>    manifold_dm_random  2.83124  2.83124  2.83124  2.83124  2.83124  2.83124
-#>  neval
-#>      1
-#>      1
+#>                expr      min       lq     mean   median       uq      max neval
+#>       full_operator 1.311865 1.311865 1.311865 1.311865 1.311865 1.311865     1
+#>  landmarks_spectral 4.870463 4.870463 4.870463 4.870463 4.870463 4.870463     1
+#>    landmarks_random 1.483210 1.483210 1.483210 1.483210 1.483210 1.483210     1
 ```
 
-As elsewhere in `manifoldsR`, the speed gains come from keeping the
-whole pipeline (kNN, kernel, diffusion, eigendecomposition, Nystroem
-extension) inside the Rust kernel without bouncing through interpreted
-code. The gap widens on larger data and becomes particularly pronounced
-once landmarks are enabled.
+The landmark path pays a fixed cost for choosing t on the dense landmark
+operator, and spectral selection adds to it. The Nystroem extension
+itself is cheap. Landmarks are there for data where the full operator no
+longer fits comfortably.

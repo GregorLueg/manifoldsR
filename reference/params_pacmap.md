@@ -9,8 +9,6 @@ params_pacmap(
   n_near = 10L,
   n_mid_near = 5L,
   n_further = 20L,
-  mn_candidate_start = 4L,
-  mn_candidate_end = 50L,
   init = c("pca", "random"),
   optimiser = c("adam_parallel", "adam"),
   lr = 1,
@@ -27,30 +25,25 @@ params_pacmap(
 
 - n_near:
 
-  Integer. Near pairs per point (attractive). Defaults to `10L`.
+  Integer. Near pairs per point (attractive). The kNN search runs
+  `n_near + 50` wide and the pairs are the best of those by locally
+  scaled distance. Defaults to `10L`.
 
 - n_mid_near:
 
-  Integer. Mid-near pairs per point. Defaults to `5L`.
+  Integer. Mid-near pairs per point. Each one is the second closest of
+  six random points. Defaults to `5L`.
 
 - n_further:
 
-  Integer. Further (random) pairs per point. Defaults to `20L`.
-
-- mn_candidate_start:
-
-  Integer. Start index into kNN list for mid-near candidate window.
-  Defaults to `4L`.
-
-- mn_candidate_end:
-
-  Integer. End index into kNN list for mid-near candidate window. Also
-  determines the kNN search size. Defaults to `50L`.
+  Integer. Further (random) pairs per point. These exclude the near
+  pairs. Defaults to `20L`.
 
 - init:
 
-  String. Embedding initialisation. One of `c("pca", "random")`.
-  Defaults to `"pca"`.
+  String. Embedding initialisation. `"pca"` uses the PC scores times
+  `0.01`, so the ratio between the components survives. One of
+  `c("pca", "random")`. Defaults to `"pca"`.
 
 - optimiser:
 
@@ -92,23 +85,19 @@ params_pacmap(
 
 A named list with the following elements:
 
-- n_near - Integer. Near pairs per point (attractive). Defaults to
-  `10L`.
+- n_near - Integer. Near pairs per point (attractive). The kNN search
+  runs `n_near + 50` wide and the pairs are the best of those by locally
+  scaled distance. Defaults to `10L`.
 
-- n_mid_near - Integer. Mid-near pairs per point. Defaults to `5L`.
+- n_mid_near - Integer. Mid-near pairs per point. Each one is the second
+  closest of six random points. Defaults to `5L`.
 
-- n_further - Integer. Further (random) pairs per point. Defaults to
-  `20L`.
+- n_further - Integer. Further (random) pairs per point. These exclude
+  the near pairs. Defaults to `20L`.
 
-- mn_candidate_start - Integer. Start index into kNN list for mid-near
-  candidate window. Defaults to `4L`.
-
-- mn_candidate_end - Integer. End index into kNN list for mid-near
-  candidate window. Also determines the kNN search size. Defaults to
-  `50L`.
-
-- init - String. Embedding initialisation. One of `c("pca", "random")`.
-  Defaults to `"pca"`.
+- init - String. Embedding initialisation. `"pca"` uses the PC scores
+  times `0.01`, so the ratio between the components survives. One of
+  `c("pca", "random")`. Defaults to `"pca"`.
 
 - optimiser - String. The optimiser. One of
   `c("adam_parallel", "adam")`. Defaults to `"adam_parallel"`.
@@ -142,12 +131,6 @@ params_pacmap()
 #> 
 #> $n_further
 #> [1] 20
-#> 
-#> $mn_candidate_start
-#> [1] 4
-#> 
-#> $mn_candidate_end
-#> [1] 50
 #> 
 #> $init
 #> [1] "pca"
@@ -185,12 +168,6 @@ params_pacmap(n_near = 15L, n_further = 30L)
 #> 
 #> $n_further
 #> [1] 30
-#> 
-#> $mn_candidate_start
-#> [1] 4
-#> 
-#> $mn_candidate_end
-#> [1] 50
 #> 
 #> $init
 #> [1] "pca"

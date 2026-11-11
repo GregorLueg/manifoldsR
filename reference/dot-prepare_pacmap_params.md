@@ -24,7 +24,7 @@ Internal helper to prepare the PaCMAP parameters
 
 - .verbose:
 
-  Boolean. Controls verbosity.
+  Logical or integer `0L` to `2L`. Controls verbosity.
 
 ## Value
 

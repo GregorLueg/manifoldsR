@@ -295,7 +295,6 @@ tsne_from_knn <- tsne(
   perplexity = 10,
   seed = 42L
 )
-#> Using provided kNN graph.
 
 tsne_from_knn_df <- as.data.table(tsne_from_knn) %>%
   `colnames<-`(c("tSNE1", "tSNE2")) %>%
@@ -324,7 +323,6 @@ tsne_from_knn_highperplex <- tsne(
   tsne_params = params_tsne(n_epochs = 300L, lr = 100.0), # we will stop early to show a weirder embedding
   seed = 42L
 )
-#> Using provided kNN graph.
 
 tsne_from_knn_highperplex_df <- as.data.table(tsne_from_knn_highperplex) %>%
   `colnames<-`(c("tSNE1", "tSNE2")) %>%
@@ -511,9 +509,9 @@ microbenchmark::microbenchmark(
 )
 #> Unit: seconds
 #>            expr       min        lq      mean    median        uq       max
-#>           Rtsne 10.870708 10.870708 10.870708 10.870708 10.870708 10.870708
-#>     manifold_bh  3.852311  3.852311  3.852311  3.852311  3.852311  3.852311
-#>  manifold_bh_qd  1.624094  1.624094  1.624094  1.624094  1.624094  1.624094
+#>           Rtsne 11.880382 11.880382 11.880382 11.880382 11.880382 11.880382
+#>     manifold_bh  3.689037  3.689037  3.689037  3.689037  3.689037  3.689037
+#>  manifold_bh_qd  1.687184  1.687184  1.687184  1.687184  1.687184  1.687184
 #>  neval
 #>      1
 #>      1
@@ -572,10 +570,10 @@ microbenchmark::microbenchmark(
 )
 #> Unit: seconds
 #>             expr      min       lq     mean   median       uq      max neval
-#>      manifold_bh 98.78622 98.78622 98.78622 98.78622 98.78622 98.78622     1
-#>   manifold_bh_qd 21.86926 21.86926 21.86926 21.86926 21.86926 21.86926     1
-#>     manifold_fft 25.31798 25.31798 25.31798 25.31798 25.31798 25.31798     1
-#>  manifold_fft_3k 21.92009 21.92009 21.92009 21.92009 21.92009 21.92009     1
+#>      manifold_bh 93.40329 93.40329 93.40329 93.40329 93.40329 93.40329     1
+#>   manifold_bh_qd 23.06206 23.06206 23.06206 23.06206 23.06206 23.06206     1
+#>     manifold_fft 27.50303 27.50303 27.50303 27.50303 27.50303 27.50303     1
+#>  manifold_fft_3k 23.52349 23.52349 23.52349 23.52349 23.52349 23.52349     1
 ```
 
 The speed advantage of the Rust implementation comes from a combination

@@ -7,15 +7,7 @@ manifolds-rs. This version uses a pre-computed kNN graph, please see
 ## Usage
 
 ``` r
-rs_forceatlas2_from_knn(
-  embd,
-  knn_data,
-  k,
-  fa2_params,
-  seed,
-  use_high_precision,
-  verbose
-)
+rs_forceatlas2_from_knn(embd, knn_data, k, fa2_params, seed, verbose)
 ```
 
 ## Arguments
@@ -41,11 +33,6 @@ rs_forceatlas2_from_knn(
 - seed:
 
   Integer. Seed for reproducibility.
-
-- use_high_precision:
-
-  Optional logical. Controls `fp32` vs `fp64`. If `NULL` will use
-  sensible default thresholding.
 
 - verbose:
 

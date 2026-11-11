@@ -7,7 +7,7 @@ it out with ForceAtlas2.
 ## Usage
 
 ``` r
-rs_forceatlas2(embd, k, fa2_params, seed, use_high_precision, verbose)
+rs_forceatlas2(embd, k, fa2_params, seed, verbose)
 ```
 
 ## Arguments
@@ -29,11 +29,6 @@ rs_forceatlas2(embd, k, fa2_params, seed, use_high_precision, verbose)
 - seed:
 
   Integer. Seed for reproducibility.
-
-- use_high_precision:
-
-  Optional logical. Controls `fp32` vs `fp64`. If `NULL` will use
-  sensible default thresholding.
 
 - verbose:
 

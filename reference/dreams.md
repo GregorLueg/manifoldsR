@@ -17,12 +17,11 @@ dreams(
   n_dim = 2L,
   perplexity = 20,
   approx_type = c("bh", "bh_qd", "fft", "fft_3k"),
-  knn_method = c("kmknn", "balltree", "hnsw", "annoy", "nndescent", "exhaustive", "ivf"),
+  knn_method = c("ivf", "kmknn", "balltree", "hnsw", "annoy", "nndescent", "exhaustive"),
   nn_params = params_nn(),
   tsne_params = params_tsne(),
   dreams_params = params_dreams(),
   seed = 42L,
-  use_high_precision = NULL,
   .verbose = TRUE
 )
 ```
@@ -37,8 +36,9 @@ dreams(
 - knn:
 
   Optional `NearestNeighbours` class. If provided, DREAMS will skip the
-  k-nearest neighbour graph generation and use this one. Defaults to
-  `NULL`.
+  k-nearest neighbour graph generation and use this one. Needs more
+  neighbours than `perplexity`; the internal search uses
+  `3 * perplexity`. Defaults to `NULL`.
 
 - reference:
 
@@ -73,7 +73,7 @@ dreams(
 
   Character. (Approximate) Nearest neighbour method to use. One of
   `"kmknn"`, `"hnsw"`, `"annoy"`, `"nndescent"`, `"balltree"`, `"ivf"`
-  or `"exhaustive"`. Defaults to `"kmknn"`.
+  or `"exhaustive"`. Defaults to `"ivf"`.
 
 - nn_params:
 
@@ -94,14 +94,11 @@ dreams(
 
   Integer. Random seed for reproducibility.
 
-- use_high_precision:
-
-  Optional boolean. Gives fine-grained control over `fp32` vs `fp64`
-  usage.
-
 - .verbose:
 
-  Logical. Controls verbosity. Defaults to `TRUE`.
+  Logical or integer. Controls verbosity. `TRUE` or `1L` prints timed
+  stages and epochs every 50, `2L` adds parameters and the kNN
+  internals, `FALSE` or `0L` is silent. Defaults to `TRUE`.
 
 ## Value
 
