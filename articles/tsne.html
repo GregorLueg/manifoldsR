@@ -79,7 +79,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Using t-SNE</h1>
 
       <p class="author">Gregor Lueg</p>
-      <p class="date">2026-11-10</p>
+      <p class="date">2026-11-11</p>
 
       <small class="dont-index">Source: <a href="https://github.com/GregorLueg/manifoldsR/blob/main/vignettes/tsne.qmd" class="external-link"><code>vignettes/tsne.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
@@ -523,9 +523,9 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;            expr       min        lq      mean    median        uq       max</span></span>
-<span><span class="co">#&gt;           Rtsne 11.880382 11.880382 11.880382 11.880382 11.880382 11.880382</span></span>
-<span><span class="co">#&gt;     manifold_bh  3.689037  3.689037  3.689037  3.689037  3.689037  3.689037</span></span>
-<span><span class="co">#&gt;  manifold_bh_qd  1.687184  1.687184  1.687184  1.687184  1.687184  1.687184</span></span>
+<span><span class="co">#&gt;           Rtsne 12.393457 12.393457 12.393457 12.393457 12.393457 12.393457</span></span>
+<span><span class="co">#&gt;     manifold_bh  3.712011  3.712011  3.712011  3.712011  3.712011  3.712011</span></span>
+<span><span class="co">#&gt;  manifold_bh_qd  1.687907  1.687907  1.687907  1.687907  1.687907  1.687907</span></span>
 <span><span class="co">#&gt;  neval</span></span>
 <span><span class="co">#&gt;      1</span></span>
 <span><span class="co">#&gt;      1</span></span>
@@ -580,10 +580,10 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;             expr      min       lq     mean   median       uq      max neval</span></span>
-<span><span class="co">#&gt;      manifold_bh 93.40329 93.40329 93.40329 93.40329 93.40329 93.40329     1</span></span>
-<span><span class="co">#&gt;   manifold_bh_qd 23.06206 23.06206 23.06206 23.06206 23.06206 23.06206     1</span></span>
-<span><span class="co">#&gt;     manifold_fft 27.50303 27.50303 27.50303 27.50303 27.50303 27.50303     1</span></span>
-<span><span class="co">#&gt;  manifold_fft_3k 23.52349 23.52349 23.52349 23.52349 23.52349 23.52349     1</span></span></code></pre></div>
+<span><span class="co">#&gt;      manifold_bh 93.15398 93.15398 93.15398 93.15398 93.15398 93.15398     1</span></span>
+<span><span class="co">#&gt;   manifold_bh_qd 22.96116 22.96116 22.96116 22.96116 22.96116 22.96116     1</span></span>
+<span><span class="co">#&gt;     manifold_fft 26.54798 26.54798 26.54798 26.54798 26.54798 26.54798     1</span></span>
+<span><span class="co">#&gt;  manifold_fft_3k 23.44569 23.44569 23.44569 23.44569 23.44569 23.44569     1</span></span></code></pre></div>
 </div>
 <p>The speed advantage of the Rust implementation comes from a combination of optimised memory layout, aggressive inlining, and the fact that the entire pipeline (kNN construction, probability computation and gradient descent) runs within the Rust kernel without round-tripping through R. If you like tSNE, but thought it’s too slow… we got you.</p>
 </section></section><script id="quarto-html-after-body" type="application/javascript">
