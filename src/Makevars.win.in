@@ -1,4 +1,6 @@
-TARGET = $(subst 64,x86_64,$(subst 32,i686,$(WIN)))-pc-windows-gnu
+# r-universe sets CARGO_BUILD_TARGET to `aarch64-pc-windows-gnullvm` for the
+# arm64 job, where $(WIN) is empty and the derivation would give `-pc-windows-gnu`.
+TARGET = $(if $(CARGO_BUILD_TARGET),$(CARGO_BUILD_TARGET),$(subst 64,x86_64,$(subst 32,i686,$(WIN)))-pc-windows-gnu)
 
 TARGET_DIR = ./rust/target
 LIBDIR = $(TARGET_DIR)/$(TARGET)/@LIBDIR@
