@@ -12,7 +12,7 @@ params_diffusion_maps(
   alpha_norm = 1,
   t_max = 100L,
   t_custom = NULL,
-  n_landmarks = 2048L,
+  n_landmarks = NULL,
   landmark_method = c("spectral", "random", "density"),
   n_svd = NULL
 )
@@ -57,12 +57,10 @@ params_diffusion_maps(
 
   Integer or `NULL`. Number of landmarks for compressed diffusion. If
   `NULL`, or at least the number of samples, the full N x N diffusion
-  operator is used. The default is specific to this package;
-  `manifolds-rs` defaults to the full operator. Keep `k` a small
-  fraction of the landmark count: when `k` covers a large share of the
-  landmarks, the landmark kernel turns broad and the later coordinates
-  shrink towards a line. On small data, prefer the full operator.
-  Defaults to `2048L`.
+  operator is used. Keep `k` a small fraction of the landmark count:
+  when `k` covers a large share of the landmarks, the landmark kernel
+  turns broad and the later coordinates shrink towards a line. Defaults
+  to `NULL`.
 
 - landmark_method:
 
@@ -102,12 +100,10 @@ A named list with the following elements:
 
 - n_landmarks - Integer or `NULL`. Number of landmarks for compressed
   diffusion. If `NULL`, or at least the number of samples, the full N x
-  N diffusion operator is used. The default is specific to this package;
-  `manifolds-rs` defaults to the full operator. Keep `k` a small
-  fraction of the landmark count: when `k` covers a large share of the
-  landmarks, the landmark kernel turns broad and the later coordinates
-  shrink towards a line. On small data, prefer the full operator.
-  Defaults to `2048L`.
+  N diffusion operator is used. Keep `k` a small fraction of the
+  landmark count: when `k` covers a large share of the landmarks, the
+  landmark kernel turns broad and the later coordinates shrink towards a
+  line. Defaults to `NULL`.
 
 - landmark_method - String. Method used to select landmarks. One of
   `c("spectral", "random", "density")`. Defaults to `"spectral"`.

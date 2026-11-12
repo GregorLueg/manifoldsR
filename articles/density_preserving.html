@@ -79,7 +79,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Density-preserving embeddings</h1>
 
       <p class="author">Gregor Lueg</p>
-      <p class="date">2026-11-11</p>
+      <p class="date">2026-11-12</p>
 
       <small class="dont-index">Source: <a href="https://github.com/GregorLueg/manifoldsR/blob/main/vignettes/density_preserving.qmd" class="external-link"><code>vignettes/density_preserving.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
@@ -232,10 +232,10 @@
 <span>  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"UMAP"</span>, <span class="st">"densMAP"</span><span class="op">)</span>,</span>
 <span>  rho <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu">dens_cor</span><span class="op">(</span><span class="va">umap_clusters</span><span class="op">)</span>, <span class="fu">dens_cor</span><span class="op">(</span><span class="va">densmap_clusters</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt;     method    rho</span></span>
-<span><span class="co">#&gt;     &lt;char&gt;  &lt;num&gt;</span></span>
-<span><span class="co">#&gt; 1:    UMAP -0.004</span></span>
-<span><span class="co">#&gt; 2: densMAP  0.921</span></span></code></pre></div>
+<span><span class="co">#&gt;     method   rho</span></span>
+<span><span class="co">#&gt;     &lt;char&gt; &lt;num&gt;</span></span>
+<span><span class="co">#&gt; 1:    UMAP 0.011</span></span>
+<span><span class="co">#&gt; 2: densMAP 0.920</span></span></code></pre></div>
 </div>
 <p>Set <code>lambda = 0</code> and you are back to plain UMAP, which is a handy sanity check and also the cheapest way to A/B the thing:</p>
 <div class="cell">
@@ -310,8 +310,8 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt;     method   rho</span></span>
 <span><span class="co">#&gt;     &lt;char&gt; &lt;num&gt;</span></span>
-<span><span class="co">#&gt; 1:   t-SNE 0.078</span></span>
-<span><span class="co">#&gt; 2: den-SNE 0.828</span></span></code></pre></div>
+<span><span class="co">#&gt; 1:   t-SNE 0.081</span></span>
+<span><span class="co">#&gt; 2: den-SNE 0.836</span></span></code></pre></div>
 </div>
 <p>t-SNE starts from a marginally better place than UMAP, since the exaggeration schedule leaves a little size variation intact, but it is still close to nothing. den-SNE pulls well clear of it, though it does not reach densMAP. That gap is real and expected: the default <code>lambda</code> is four times smaller, and the t-SNE repulsion fights the density term harder.</p>
 <p><strong>Note:</strong> den-SNE inherits every t-SNE constraint. Two dimensions only, and if you hand it a pre-computed kNN graph the <code>k</code> has to exceed the perplexity. It also takes the same <code>approx_type</code> options, including the quick-and-dirty Barnes-Hut (<code>"bh_qd"</code>) if you want it faster.</p>
@@ -393,7 +393,7 @@
 <span><span class="co">#&gt;     method   rho</span></span>
 <span><span class="co">#&gt;     &lt;char&gt; &lt;num&gt;</span></span>
 <span><span class="co">#&gt; 1:    UMAP 0.187</span></span>
-<span><span class="co">#&gt; 2: densMAP 0.698</span></span></code></pre></div>
+<span><span class="co">#&gt; 2: densMAP 0.692</span></span></code></pre></div>
 </div>
 </section><section class="level2"><h3 id="using-pre-computed-knn-graphs">Using pre-computed kNN graphs<a class="anchor" aria-label="anchor" href="#using-pre-computed-knn-graphs"></a>
 </h3>
@@ -430,7 +430,7 @@
 <span><span class="co">#&gt;           method   rho</span></span>
 <span><span class="co">#&gt;           &lt;char&gt; &lt;num&gt;</span></span>
 <span><span class="co">#&gt; 1: densMAP (kNN) 0.919</span></span>
-<span><span class="co">#&gt; 2: den-SNE (kNN) 0.890</span></span></code></pre></div>
+<span><span class="co">#&gt; 2: den-SNE (kNN) 0.887</span></span></code></pre></div>
 </div>
 </section><section class="level2"><h3 id="tuning-lambda">Tuning lambda<a class="anchor" aria-label="anchor" href="#tuning-lambda"></a>
 </h3>
@@ -501,11 +501,11 @@
 <span><span class="va">lambda_sweep</span></span>
 <span><span class="co">#&gt;    lambda   rho separation</span></span>
 <span><span class="co">#&gt;     &lt;num&gt; &lt;num&gt;      &lt;num&gt;</span></span>
-<span><span class="co">#&gt; 1:    0.0 0.018      12.74</span></span>
-<span><span class="co">#&gt; 2:    0.5 0.907      19.47</span></span>
-<span><span class="co">#&gt; 3:    2.0 0.933      20.71</span></span>
-<span><span class="co">#&gt; 4:    5.0 0.938      19.20</span></span>
-<span><span class="co">#&gt; 5:   10.0 0.942      16.63</span></span></code></pre></div>
+<span><span class="co">#&gt; 1:    0.0 0.025      12.11</span></span>
+<span><span class="co">#&gt; 2:    0.5 0.905      18.99</span></span>
+<span><span class="co">#&gt; 3:    2.0 0.934      20.17</span></span>
+<span><span class="co">#&gt; 4:    5.0 0.931      18.61</span></span>
+<span><span class="co">#&gt; 5:   10.0 0.937      16.27</span></span></code></pre></div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb21"><pre class="downlit sourceCode r">

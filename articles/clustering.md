@@ -245,7 +245,7 @@ true structure.
 cat("Full k-means:\n")
 #> Full k-means:
 cat("  ARI:", calc_ari(cluster_data$membership, membership(km_full)), "\n")
-#>   ARI: 0.7086227
+#>   ARI: 0.7085234
 cat("  Effective clusters:", length(unique(membership(km_full))), "\n")
 #>   Effective clusters: 25
 cat(
@@ -256,7 +256,7 @@ cat(
   )$mean_silhouette,
   "\n"
 )
-#>   Silhouette: 0.4140061
+#>   Silhouette: 0.4139893
 
 cat("\nMini-batch k-means:\n")
 #> 
@@ -353,9 +353,9 @@ evoc_res <- evoc(
 
 evoc_res
 #> Evoc
-#>   layers:               2 
-#>   best layer:           2 
-#>   best persistence:     2593.49 
+#>   layers:               3 
+#>   best layer:           3 
+#>   best persistence:     2592.68 
 #>   knn:                  not stored
 ```
 
@@ -364,9 +364,9 @@ evoc_res
 evoc_best <- best_membership(evoc_res)
 
 cat("Selected layer:", evoc_best$layer, "\n")
-#> Selected layer: 2
+#> Selected layer: 3
 cat("Persistence score:", round(evoc_best$persistence, 4), "\n")
-#> Persistence score: 2593.49
+#> Persistence score: 2592.68
 cat(
   "Clusters found:",
   length(unique(evoc_best$labels[evoc_best$labels != -1L])),

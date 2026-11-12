@@ -64,7 +64,7 @@
 <span>  alpha_norm <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  t_max <span class="op">=</span> <span class="fl">100L</span>,</span>
 <span>  t_custom <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  n_landmarks <span class="op">=</span> <span class="fl">2048L</span>,</span>
+<span>  n_landmarks <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  landmark_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"spectral"</span>, <span class="st">"random"</span>, <span class="st">"density"</span><span class="op">)</span>,</span>
 <span>  n_svd <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -110,11 +110,9 @@ automatic time selection. Defaults to <code>NULL</code>.</p></dd>
 <dt id="arg-n-landmarks">n_landmarks<a class="anchor" aria-label="anchor" href="#arg-n-landmarks"></a></dt>
 <dd><p>Integer or <code>NULL</code>. Number of landmarks for compressed
 diffusion. If <code>NULL</code>, or at least the number of samples, the full N x N
-diffusion operator is used. The default is specific to this package;
-<code>manifolds-rs</code> defaults to the full operator. Keep <code>k</code> a small fraction of
-the landmark count: when <code>k</code> covers a large share of the landmarks, the
-landmark kernel turns broad and the later coordinates shrink towards a line.
-On small data, prefer the full operator. Defaults to <code>2048L</code>.</p></dd>
+diffusion operator is used. Keep <code>k</code> a small fraction of the landmark count:
+when <code>k</code> covers a large share of the landmarks, the landmark kernel turns
+broad and the later coordinates shrink towards a line. Defaults to <code>NULL</code>.</p></dd>
 
 
 <dt id="arg-landmark-method">landmark_method<a class="anchor" aria-label="anchor" href="#arg-landmark-method"></a></dt>
@@ -147,11 +145,9 @@ knee search needs three points. Defaults to <code>100L</code>.</p></li>
 automatic time selection. Defaults to <code>NULL</code>.</p></li>
 <li><p>n_landmarks - Integer or <code>NULL</code>. Number of landmarks for compressed
 diffusion. If <code>NULL</code>, or at least the number of samples, the full N x N
-diffusion operator is used. The default is specific to this package;
-<code>manifolds-rs</code> defaults to the full operator. Keep <code>k</code> a small fraction of
-the landmark count: when <code>k</code> covers a large share of the landmarks, the
-landmark kernel turns broad and the later coordinates shrink towards a line.
-On small data, prefer the full operator. Defaults to <code>2048L</code>.</p></li>
+diffusion operator is used. Keep <code>k</code> a small fraction of the landmark count:
+when <code>k</code> covers a large share of the landmarks, the landmark kernel turns
+broad and the later coordinates shrink towards a line. Defaults to <code>NULL</code>.</p></li>
 <li><p>landmark_method - String. Method used to select landmarks. One of
 <code>c("spectral", "random", "density")</code>. Defaults to <code>"spectral"</code>.</p></li>
 <li><p>n_svd - Integer or <code>NULL</code>. Number of singular vectors for spectral

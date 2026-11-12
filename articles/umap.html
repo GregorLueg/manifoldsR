@@ -79,7 +79,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Using UMAP</h1>
 
       <p class="author">Gregor Lueg</p>
-      <p class="date">2026-11-11</p>
+      <p class="date">2026-11-12</p>
 
       <small class="dont-index">Source: <a href="https://github.com/GregorLueg/manifoldsR/blob/main/vignettes/umap.qmd" class="external-link"><code>vignettes/umap.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
@@ -554,17 +554,17 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: milliseconds</span></span>
 <span><span class="co">#&gt;             expr        min         lq       mean     median         uq</span></span>
-<span><span class="co">#&gt;             umap 20911.9972 20911.9972 20911.9972 20911.9972 20911.9972</span></span>
-<span><span class="co">#&gt;  umap_reticulate 31600.9635 31600.9635 31600.9635 31600.9635 31600.9635</span></span>
-<span><span class="co">#&gt;             uwot  5481.0745  5481.0745  5481.0745  5481.0745  5481.0745</span></span>
-<span><span class="co">#&gt;          uwot_v2  2784.9848  2784.9848  2784.9848  2784.9848  2784.9848</span></span>
-<span><span class="co">#&gt;    manifold_umap   663.2931   663.2931   663.2931   663.2931   663.2931</span></span>
+<span><span class="co">#&gt;             umap 18197.1950 18197.1950 18197.1950 18197.1950 18197.1950</span></span>
+<span><span class="co">#&gt;  umap_reticulate 25137.8395 25137.8395 25137.8395 25137.8395 25137.8395</span></span>
+<span><span class="co">#&gt;             uwot  5042.3204  5042.3204  5042.3204  5042.3204  5042.3204</span></span>
+<span><span class="co">#&gt;          uwot_v2  2404.6079  2404.6079  2404.6079  2404.6079  2404.6079</span></span>
+<span><span class="co">#&gt;    manifold_umap   546.2257   546.2257   546.2257   546.2257   546.2257</span></span>
 <span><span class="co">#&gt;         max neval</span></span>
-<span><span class="co">#&gt;  20911.9972     1</span></span>
-<span><span class="co">#&gt;  31600.9635     1</span></span>
-<span><span class="co">#&gt;   5481.0745     1</span></span>
-<span><span class="co">#&gt;   2784.9848     1</span></span>
-<span><span class="co">#&gt;    663.2931     1</span></span></code></pre></div>
+<span><span class="co">#&gt;  18197.1950     1</span></span>
+<span><span class="co">#&gt;  25137.8395     1</span></span>
+<span><span class="co">#&gt;   5042.3204     1</span></span>
+<span><span class="co">#&gt;   2404.6079     1</span></span>
+<span><span class="co">#&gt;    546.2257     1</span></span></code></pre></div>
 </div>
 <p>The standard R version is slow (as expected). The Python version (with numba behind the scenes) via reticulate gives some speed-up, once the numba parts are JIT compiled. <code><a href="https://jlmelville.github.io/uwot/reference/umap2.html" class="external-link">uwot::umap2()</a></code> and <code>manifoldsR</code> are the fastest here. Let’s pit them against each other on a larger data set, Adam against Adam and SGD against SGD. <code><a href="https://jlmelville.github.io/uwot/reference/umap.html" class="external-link">uwot::umap()</a></code> gets all cores for the SGD step, which makes it lock-free and non-reproducible too, so the comparison is fair.</p>
 <div class="cell">
@@ -608,15 +608,15 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;                    expr       min        lq      mean    median        uq</span></span>
-<span><span class="co">#&gt;                 uwot_v2 20.903542 20.903542 20.903542 20.903542 20.903542</span></span>
-<span><span class="co">#&gt;  manifold_adam_parallel  6.817477  6.817477  6.817477  6.817477  6.817477</span></span>
-<span><span class="co">#&gt;                uwot_sgd 12.698544 12.698544 12.698544 12.698544 12.698544</span></span>
-<span><span class="co">#&gt;   manifold_sgd_parallel  4.202088  4.202088  4.202088  4.202088  4.202088</span></span>
+<span><span class="co">#&gt;                 uwot_v2 16.398679 16.398679 16.398679 16.398679 16.398679</span></span>
+<span><span class="co">#&gt;  manifold_adam_parallel  5.432820  5.432820  5.432820  5.432820  5.432820</span></span>
+<span><span class="co">#&gt;                uwot_sgd 11.141610 11.141610 11.141610 11.141610 11.141610</span></span>
+<span><span class="co">#&gt;   manifold_sgd_parallel  3.508255  3.508255  3.508255  3.508255  3.508255</span></span>
 <span><span class="co">#&gt;        max neval</span></span>
-<span><span class="co">#&gt;  20.903542     1</span></span>
-<span><span class="co">#&gt;   6.817477     1</span></span>
-<span><span class="co">#&gt;  12.698544     1</span></span>
-<span><span class="co">#&gt;   4.202088     1</span></span></code></pre></div>
+<span><span class="co">#&gt;  16.398679     1</span></span>
+<span><span class="co">#&gt;   5.432820     1</span></span>
+<span><span class="co">#&gt;  11.141610     1</span></span>
+<span><span class="co">#&gt;   3.508255     1</span></span></code></pre></div>
 </div>
 <p>Optimised memory layouts, aggressive in-lining, heavy parallelism and look-up tables (LUTs) make this version <strong>fast</strong>: likely(?) the fastest UMAP available in R. Memory stays minimal too, as the data lives in Rust from the moment it enters the kernel until the embedding is fitted. No round tripping through R, just compiled code throughout. The different nearest neighbour search algorithms give additional flexibility.</p>
 </section></section><script id="quarto-html-after-body" type="application/javascript">
