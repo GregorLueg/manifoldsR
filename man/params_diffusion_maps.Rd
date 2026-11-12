@@ -11,7 +11,7 @@ params_diffusion_maps(
   alpha_norm = 1,
   t_max = 100L,
   t_custom = NULL,
-  n_landmarks = 2048L,
+  n_landmarks = NULL,
   landmark_method = c("spectral", "random", "density"),
   n_svd = NULL
 )
@@ -40,11 +40,9 @@ automatic time selection. Defaults to \code{NULL}.}
 
 \item{n_landmarks}{Integer or \code{NULL}. Number of landmarks for compressed
 diffusion. If \code{NULL}, or at least the number of samples, the full N x N
-diffusion operator is used. The default is specific to this package;
-\code{manifolds-rs} defaults to the full operator. Keep \code{k} a small fraction of
-the landmark count: when \code{k} covers a large share of the landmarks, the
-landmark kernel turns broad and the later coordinates shrink towards a line.
-On small data, prefer the full operator. Defaults to \code{2048L}.}
+diffusion operator is used. Keep \code{k} a small fraction of the landmark count:
+when \code{k} covers a large share of the landmarks, the landmark kernel turns
+broad and the later coordinates shrink towards a line. Defaults to \code{NULL}.}
 
 \item{landmark_method}{String. Method used to select landmarks. One of
 \code{c("spectral", "random", "density")}. Defaults to \code{"spectral"}.}
@@ -73,11 +71,9 @@ knee search needs three points. Defaults to \code{100L}.
 automatic time selection. Defaults to \code{NULL}.
 \item n_landmarks - Integer or \code{NULL}. Number of landmarks for compressed
 diffusion. If \code{NULL}, or at least the number of samples, the full N x N
-diffusion operator is used. The default is specific to this package;
-\code{manifolds-rs} defaults to the full operator. Keep \code{k} a small fraction of
-the landmark count: when \code{k} covers a large share of the landmarks, the
-landmark kernel turns broad and the later coordinates shrink towards a line.
-On small data, prefer the full operator. Defaults to \code{2048L}.
+diffusion operator is used. Keep \code{k} a small fraction of the landmark count:
+when \code{k} covers a large share of the landmarks, the landmark kernel turns
+broad and the later coordinates shrink towards a line. Defaults to \code{NULL}.
 \item landmark_method - String. Method used to select landmarks. One of
 \code{c("spectral", "random", "density")}. Defaults to \code{"spectral"}.
 \item n_svd - Integer or \code{NULL}. Number of singular vectors for spectral
