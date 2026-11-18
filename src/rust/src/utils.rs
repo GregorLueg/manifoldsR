@@ -8,6 +8,26 @@ use manifolds_rs::prelude::*;
 use manifolds_rs::PreComputedKnn;
 use std::collections::HashMap;
 
+/////////////
+// Parsing //
+/////////////
+
+/// Read a numeric R scalar as `f64`, accepting doubles and integers
+///
+/// `Robj::as_real()` returns `None` on an integer, so a `p_dbl` field passed
+/// as `1L` would otherwise fall back to the Rust default.
+///
+/// ### Params
+///
+/// * `v` - The R object
+///
+/// ### Returns
+///
+/// The value as `f64`, or `None` if it is neither a double nor an integer.
+pub fn robj_to_f64(v: &Robj) -> Option<f64> {
+    v.as_real().or_else(|| v.as_integer().map(f64::from))
+}
+
 ////////////////////////
 // Nearest neighbours //
 ////////////////////////
@@ -72,6 +92,16 @@ where
         .get("n_probes")
         .and_then(|v| v.as_integer())
         .map(|v| v as usize);
+    let nnd_n_trees = nn_params
+        .get("nnd_n_trees")
+        .and_then(|v| v.as_integer())
+        .map(|v| v as usize);
+    let k_means = std::string::String::from(
+        nn_params
+            .get("k_means")
+            .and_then(|v| v.as_str())
+            .unwrap_or("emeans"),
+    );
 
     Ok(NearestNeighbourParams {
         dist_metric,
@@ -81,9 +111,12 @@ where
         ef_construction,
         ef_search,
         delta,
+        nnd_n_trees,
         bt_budget,
         n_list,
         n_probes,
+        k_means,
+        external_knn: None,
     })
 }
 

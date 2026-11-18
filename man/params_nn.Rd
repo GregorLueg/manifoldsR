@@ -12,9 +12,11 @@ params_nn(
   ef_construction = 200L,
   ef_search = 100L,
   delta = 0.001,
+  nnd_n_trees = NULL,
   bt_budget = 0.1,
   n_list = NULL,
-  n_probes = NULL
+  n_probes = NULL,
+  k_means = c("emeans", "lloyd")
 )
 }
 \arguments{
@@ -36,6 +38,10 @@ search. Defaults to \code{100L}.}
 \item{delta}{Numeric. Precision parameter for NN descent. Defaults to
 \code{0.001}.}
 
+\item{nnd_n_trees}{Integer or \code{NULL}. Number of trees seeding the NN-Descent
+graph. If \code{NULL}, uses \code{5 + sqrt(n) / 20}, capped at \code{64}. Defaults to
+\code{NULL}.}
+
 \item{bt_budget}{Numeric. Budget for ball tree search. Defaults to \code{0.1}.}
 
 \item{n_list}{Integer or \code{NULL}. Number of clusters to use for IVF. If
@@ -43,6 +49,11 @@ search. Defaults to \code{100L}.}
 
 \item{n_probes}{Integer or \code{NULL}. Number of clusters to probe for IVF. If
 \code{NULL}, uses \code{sqrt(n_list)}. Defaults to \code{NULL}.}
+
+\item{k_means}{String. k-means that trains the IVF and kMkNN centroids.
+\code{"emeans"} gives more even partitions than Lloyd's, so IVF may need a higher
+\code{n_probes} for the same recall. One of \code{c("emeans", "lloyd")}. Defaults to
+\code{"emeans"}.}
 }
 \value{
 A named list with the following elements:
@@ -60,11 +71,18 @@ HNSW construction. Defaults to \code{200L}.
 search. Defaults to \code{100L}.
 \item delta - Numeric. Precision parameter for NN descent. Defaults to
 \code{0.001}.
+\item nnd_n_trees - Integer or \code{NULL}. Number of trees seeding the
+NN-Descent graph. If \code{NULL}, uses \code{5 + sqrt(n) / 20}, capped at \code{64}.
+Defaults to \code{NULL}.
 \item bt_budget - Numeric. Budget for ball tree search. Defaults to \code{0.1}.
 \item n_list - Integer or \code{NULL}. Number of clusters to use for IVF. If
 \code{NULL}, uses \code{sqrt(n)}. Defaults to \code{NULL}.
 \item n_probes - Integer or \code{NULL}. Number of clusters to probe for IVF. If
 \code{NULL}, uses \code{sqrt(n_list)}. Defaults to \code{NULL}.
+\item k_means - String. k-means that trains the IVF and kMkNN centroids.
+\code{"emeans"} gives more even partitions than Lloyd's, so IVF may need a higher
+\code{n_probes} for the same recall. One of \code{c("emeans", "lloyd")}. Defaults to
+\code{"emeans"}.
 }
 }
 \description{

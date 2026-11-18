@@ -20,7 +20,7 @@ zeallot::`%<-%`(
 res_full <- kmeans_cluster(
   data = cluster_data,
   k = n_clusters,
-  method = "full",
+  method = "lloyd",
   seed = 42L,
   .verbose = FALSE
 )
@@ -103,14 +103,14 @@ expect_true(
 res_a <- kmeans_cluster(
   cluster_data,
   k = n_clusters,
-  method = "full",
+  method = "lloyd",
   seed = 99L,
   .verbose = FALSE
 )
 res_b <- kmeans_cluster(
   cluster_data,
   k = n_clusters,
-  method = "full",
+  method = "lloyd",
   seed = 99L,
   .verbose = FALSE
 )
@@ -146,7 +146,7 @@ df_input <- as.data.frame(cluster_data)
 res_df <- kmeans_cluster(
   df_input,
   k = n_clusters,
-  method = "full",
+  method = "lloyd",
   seed = 42L,
   .verbose = FALSE
 )
@@ -161,4 +161,53 @@ expect_equal(
 expect_true(
   current = calc_ari(res_full$assignments, res_mb$assignments) > 0.9,
   info = "full and minibatch agree on well-separated data"
+)
+
+## e-means ---------------------------------------------------------------------
+
+res_emeans <- kmeans_cluster(
+  data = cluster_data,
+  k = n_clusters,
+  seed = 42L,
+  .verbose = FALSE
+)
+
+expect_equal(
+  current = res_emeans$method,
+  target = "emeans",
+  info = "e-means is the default method"
+)
+expect_true(
+  current = calc_ari(as.integer(cluster_membership), res_emeans$assignments) >
+    0.9,
+  info = "e-means recovers well-separated clusters"
+)
+expect_equal(
+  current = kmeans_cluster(
+    data = cluster_data,
+    k = n_clusters,
+    seed = 42L,
+    .verbose = FALSE
+  )$assignments,
+  target = res_emeans$assignments,
+  info = "e-means is deterministic with same seed"
+)
+
+## deprecated "full" -----------------------------------------------------------
+
+expect_warning(
+  current = res_full_dep <- kmeans_cluster(
+    data = cluster_data,
+    k = n_clusters,
+    method = "full",
+    seed = 42L,
+    .verbose = FALSE
+  ),
+  pattern = "deprecated",
+  info = "method = 'full' warns"
+)
+expect_equal(
+  current = res_full_dep$assignments,
+  target = res_full$assignments,
+  info = "method = 'full' maps to lloyd"
 )

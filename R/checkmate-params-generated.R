@@ -114,7 +114,8 @@ checkDiffusionMapsParams <- function(x) {
       "t_custom",
       "n_landmarks",
       "landmark_method",
-      "n_svd"
+      "n_svd",
+      "landmark_k_means"
     )
   )
   if (!isTRUE(res)) {
@@ -142,7 +143,8 @@ checkDiffusionMapsParams <- function(x) {
     x,
     list(
       graph_symmetry = c("additive", "multiplicative", "mnn", "none"),
-      landmark_method = c("spectral", "random", "density")
+      landmark_method = c("spectral", "random", "density"),
+      landmark_k_means = c("emeans", "lloyd")
     ),
     label = "diffusion maps params"
   )
@@ -433,6 +435,7 @@ checkKmeansParams <- function(x) {
     c(
       "metric",
       "max_iters",
+      "e_means_epochs",
       "batch_size",
       "drift_threshold",
       "lr_alpha",
@@ -449,6 +452,7 @@ checkKmeansParams <- function(x) {
     x,
     list(
       max_iters = "I1[1,)",
+      e_means_epochs = "N1(0,)",
       batch_size = "I1[1,)",
       drift_threshold = "N1",
       lr_alpha = "N1",
@@ -489,6 +493,158 @@ checkKmeansParams <- function(x) {
 #' @keywords internal
 assertKmeansParams <- checkmate::makeAssertionFunction(checkKmeansParams)
 
+#' Check LocalMAP params
+#'
+#' @description Checkmate extension for the output of [params_localmap()].
+#'
+#' @param x The object to check.
+#'
+#' @returns `TRUE` if the check was successful, otherwise a
+#' checkmate-style error string.
+#'
+#' @keywords internal
+checkLocalmapParams <- function(x) {
+  res <- check_list_shape(
+    x,
+    c(
+      "n_near",
+      "n_mid_near",
+      "n_further",
+      "max_distance",
+      "init",
+      "optimiser",
+      "lr",
+      "n_epochs",
+      "beta1",
+      "beta2",
+      "eps",
+      "phase1_end",
+      "phase2_end"
+    )
+  )
+  if (!isTRUE(res)) {
+    return(res)
+  }
+
+  res <- apply_qtest_rules(
+    x,
+    list(
+      n_near = "I1",
+      n_mid_near = "I1",
+      n_further = "I1",
+      max_distance = "N1(0,)",
+      lr = "N1",
+      n_epochs = c("I1[1,)", "0"),
+      beta1 = "N1",
+      beta2 = "N1",
+      eps = "N1",
+      phase1_end = c("I1[1,)", "0"),
+      phase2_end = c("I1[1,)", "0")
+    ),
+    label = "LocalMAP params"
+  )
+  if (!isTRUE(res)) {
+    return(res)
+  }
+
+  res <- apply_choice_rules(
+    x,
+    list(
+      init = c("pca", "random"),
+      optimiser = c("adam_parallel", "adam")
+    ),
+    label = "LocalMAP params"
+  )
+  if (!isTRUE(res)) {
+    return(res)
+  }
+
+  return(TRUE)
+}
+
+#' Assert LocalMAP params
+#'
+#' @inheritParams checkLocalmapParams
+#' @param .var.name Name of the checked object to print in assertions.
+#' @param add Collection to store assertion messages. See
+#' [checkmate::makeAssertCollection()].
+#'
+#' @returns Invisibly returns the checked object if the assertion is
+#' successful.
+#'
+#' @keywords internal
+assertLocalmapParams <- checkmate::makeAssertionFunction(checkLocalmapParams)
+
+#' Check NCVis params
+#'
+#' @description Checkmate extension for the output of [params_ncvis()].
+#'
+#' @param x The object to check.
+#'
+#' @returns `TRUE` if the check was successful, otherwise a
+#' checkmate-style error string.
+#'
+#' @keywords internal
+checkNcvisParams <- function(x) {
+  res <- check_list_shape(
+    x,
+    c(
+      "n_epochs",
+      "n_negative",
+      "lr",
+      "lr_q",
+      "init",
+      "init_scale",
+      "randomised"
+    )
+  )
+  if (!isTRUE(res)) {
+    return(res)
+  }
+
+  res <- apply_qtest_rules(
+    x,
+    list(
+      n_epochs = "I1[1,)",
+      n_negative = "N1[1,)",
+      lr = "N1(0,)",
+      lr_q = "N1(0,)",
+      init_scale = "N1(0,)",
+      randomised = "B1"
+    ),
+    label = "NCVis params"
+  )
+  if (!isTRUE(res)) {
+    return(res)
+  }
+
+  res <- apply_choice_rules(
+    x,
+    list(
+      init = c("pca", "random")
+    ),
+    label = "NCVis params"
+  )
+  if (!isTRUE(res)) {
+    return(res)
+  }
+
+  return(TRUE)
+}
+
+#' Assert NCVis params
+#'
+#' @inheritParams checkNcvisParams
+#' @param .var.name Name of the checked object to print in assertions.
+#' @param add Collection to store assertion messages. See
+#' [checkmate::makeAssertCollection()].
+#'
+#' @returns Invisibly returns the checked object if the assertion is
+#' successful.
+#'
+#' @keywords internal
+assertNcvisParams <- checkmate::makeAssertionFunction(checkNcvisParams)
+
 #' Check nearest neighbour params
 #'
 #' @description Checkmate extension for the output of [params_nn()].
@@ -510,9 +666,11 @@ checkNnParams <- function(x) {
       "ef_construction",
       "ef_search",
       "delta",
+      "nnd_n_trees",
       "bt_budget",
       "n_list",
-      "n_probes"
+      "n_probes",
+      "k_means"
     )
   )
   if (!isTRUE(res)) {
@@ -528,6 +686,7 @@ checkNnParams <- function(x) {
       ef_construction = "I1",
       ef_search = "I1",
       delta = "N1",
+      nnd_n_trees = c("I1[1,)", "0"),
       bt_budget = "N1",
       n_list = c("I1", "0"),
       n_probes = c("I1", "0")
@@ -541,7 +700,8 @@ checkNnParams <- function(x) {
   res <- apply_choice_rules(
     x,
     list(
-      dist_metric = c("euclidean", "cosine")
+      dist_metric = c("euclidean", "cosine"),
+      k_means = c("emeans", "lloyd")
     ),
     label = "nearest neighbour params"
   )
@@ -668,6 +828,7 @@ checkPhateParams <- function(x) {
       "n_landmarks",
       "landmark_method",
       "n_svd",
+      "landmark_k_means",
       "mds_method",
       "mds_iter",
       "graph_symmetry"
@@ -700,6 +861,7 @@ checkPhateParams <- function(x) {
     x,
     list(
       landmark_method = c("spectral", "random", "density"),
+      landmark_k_means = c("emeans", "lloyd"),
       mds_method = c("sgd_dense", "classic"),
       graph_symmetry = c("additive", "multiplicative", "mnn", "none")
     ),
@@ -1005,8 +1167,8 @@ checkUmapParams <- function(x) {
   res <- apply_choice_rules(
     x,
     list(
-      optimiser = c("adam_parallel", "sgd", "sgd_parallel", "adam"),
-      init = c("spectral", "pca", "random")
+      optimiser = c("adam_parallel", "sgd", "sgd_parallel", "adam", "adam_v06"),
+      init = c("spectral", "pca", "random", "recursive")
     ),
     label = "UMAP params"
   )

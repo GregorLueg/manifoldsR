@@ -4,12 +4,11 @@
 \alias{params_densne}
 \title{Wrapper function to generate den-SNE parameters}
 \usage{
-params_densne(lambda = 0.5, frac = 0.3, var_shift = 0.1)
+params_densne(lambda = 0.1, frac = 0.3, var_shift = 0.1)
 }
 \arguments{
 \item{lambda}{Numeric. Weight of the density term. \code{0} disables it. The
-default is higher than the den-SNE reference value (original: \code{0.1}).
-Defaults to \code{0.5}.}
+default is the den-SNE reference value. Defaults to \code{0.1}.}
 
 \item{frac}{Numeric. Fraction of the total epochs, at the end of the run,
 over which the density term is active. Defaults to \code{0.3}.}
@@ -21,8 +20,7 @@ log-radii. Defaults to \code{0.1}.}
 A named list with the following elements:
 \itemize{
 \item lambda - Numeric. Weight of the density term. \code{0} disables it. The
-default is higher than the den-SNE reference value (original: \code{0.1}).
-Defaults to \code{0.5}.
+default is the den-SNE reference value. Defaults to \code{0.1}.
 \item frac - Numeric. Fraction of the total epochs, at the end of the run,
 over which the density term is active. Defaults to \code{0.3}.
 \item var_shift - Numeric. Additive shift on the variance of the embedding

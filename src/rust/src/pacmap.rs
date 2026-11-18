@@ -7,11 +7,12 @@ use bixverse_r::prelude::IntoExtendrErr;
 use extendr_api::{List, Robj};
 use faer::{Mat, MatRef};
 use manifolds_rs::prelude::*;
+use manifolds_rs::training::pacmap_optimiser::LOCALMAP_MAX_DISTANCE;
 use manifolds_rs::*;
 use rand_distr::{Distribution, StandardNormal};
 use std::collections::HashMap;
 
-use crate::utils::get_params_nn_manifolds;
+use crate::utils::{get_params_nn_manifolds, robj_to_f64};
 
 ////////////
 // Params //
@@ -205,6 +206,76 @@ where
     );
 
     let res = pacmap(data, pre_computed_knn, &params, seed, verbose).to_extendr()?;
+
+    let ncol = res.len();
+    let nrow = res[0].len();
+
+    Ok(Mat::from_fn(nrow, ncol, |i, j| res[j][i]))
+}
+
+//////////////
+// LocalMAP //
+//////////////
+
+/// Wrapper function into the LocalMAP implementation in `manifolds-rs`.
+///
+/// LocalMAP is PaCMAP with a different third phase: mid-near pairs drop out
+/// and further pairs are redrawn from within `max_distance` in the embedding.
+/// Takes the same R list as PaCMAP plus `max_distance`.
+///
+/// ### Params
+///
+/// * `data` - Input data matrix of shape samples x features.
+/// * `pre_computed_knn` - Optional pre-computed kNN to be used.
+/// * `n_dim` - Number of output dimensions.
+/// * `localmap_params` - R list that contains the LocalMAP parameters.
+/// * `seed` - Seed for reproducibility
+/// * `verbose` - If `0` -> silent or `1` for normal verbosity, `2` for detailed
+///   verbosity.
+///
+/// ### Returns
+///
+/// Returns the LocalMAP embeddings as matrix.
+///
+/// ### References
+///
+/// Wang et al., arXiv:2412.15426, 2024
+pub fn localmap_manifold<T>(
+    data: MatRef<T>,
+    pre_computed_knn: PreComputedKnn<T>,
+    n_dim: usize,
+    localmap_params: List,
+    seed: usize,
+    verbose: usize,
+) -> Result<Mat<T>, extendr_api::Error>
+where
+    T: ManifoldsFloat,
+    HnswIndex<T>: HnswState<T>,
+    NNDescent<T>: ApplySortedUpdates<T> + NNDescentQuery<T>,
+    StandardNormal: Distribution<T>,
+{
+    let internal = InternalPacmapParams::from_r_list(localmap_params.clone())?;
+    let r_params: HashMap<&str, Robj> = localmap_params.try_into()?;
+    let max_distance = r_params
+        .get("max_distance")
+        .and_then(robj_to_f64)
+        .unwrap_or(LOCALMAP_MAX_DISTANCE);
+
+    let params = LocalMapParams::new(
+        n_dim,
+        internal.knn_method,
+        internal.optimiser,
+        internal.n_near,
+        internal.n_mid_near,
+        internal.n_further,
+        internal.init,
+        None,
+        T::from_f64(max_distance).unwrap(),
+        internal.param_knn,
+        internal.param_optimiser,
+    );
+
+    let res = localmap(data, pre_computed_knn, &params, seed, verbose).to_extendr()?;
 
     let ncol = res.len();
     let nrow = res[0].len();

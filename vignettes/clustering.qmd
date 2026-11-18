@@ -139,7 +139,7 @@ k-means to find exactly that.
 km_correct <- kmeans_cluster(
   data = cluster_data$data,
   k = n_true,
-  method = "full",
+  method = "lloyd",
   seed = 42L,
   .verbose = TRUE
 )
@@ -182,7 +182,7 @@ k_over <- 25L
 km_full <- kmeans_cluster(
   data = cluster_data$data,
   k = k_over,
-  method = "full",
+  method = "lloyd",
   seed = 42L,
   .verbose = TRUE
 )
@@ -269,7 +269,7 @@ elbow_results <- lapply(k_values, function(k) {
   res <- kmeans_cluster(
     data = cluster_data$data,
     k = k,
-    method = "full",
+    method = "lloyd",
     seed = 42L,
     .verbose = FALSE
   )

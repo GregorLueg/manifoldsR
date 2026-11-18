@@ -8,7 +8,7 @@ densne(
   data,
   knn = NULL,
   n_dim = 2L,
-  perplexity = 20,
+  perplexity = 30,
   approx_type = c("bh", "bh_qd", "fft", "fft_3k"),
   knn_method = c("ivf", "kmknn", "balltree", "hnsw", "annoy", "nndescent", "exhaustive"),
   nn_params = params_nn(),
@@ -32,7 +32,7 @@ Currently only \code{2L} is supported. Defaults to \code{2L}.}
 
 \item{perplexity}{Numeric. Perplexity parameter, related to the number of
 nearest neighbours used in manifold learning. Typical values are between
-5 and 50. Defaults to \code{20.0}.}
+5 and 50. Defaults to \code{30.0}.}
 
 \item{approx_type}{Character. Approximation method for computing repulsive
 forces. One of \code{"bh"} for Barnes-Hut, \code{"bh_qd"} for the quick-and-dirty

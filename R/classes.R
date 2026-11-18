@@ -356,7 +356,7 @@ print.Evoc <- function(x, ...) {
 #' @param centroids Numeric matrix of shape k x features.
 #' @param assignments Integer vector of length samples (1-indexed).
 #' @param k Integer. Number of clusters.
-#' @param method Character. Either `"full"` or `"minibatch"`.
+#' @param method Character. One of `"emeans"`, `"lloyd"` or `"minibatch"`.
 #' @param metric Character. Distance metric used.
 #'
 #' @returns A `KMeansCluster` S3 object.

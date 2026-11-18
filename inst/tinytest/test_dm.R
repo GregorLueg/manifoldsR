@@ -303,7 +303,9 @@ expect_error(
     k = 15L,
     dm_params = params_diffusion_maps(
       n_landmarks = 50L,
-      graph_symmetry = "mnn"
+      graph_symmetry = "mnn",
+      # e-means picks 50 landmarks that all keep an edge here
+      landmark_k_means = "lloyd"
     ),
     .verbose = FALSE
   ),

@@ -104,6 +104,18 @@ where
         .and_then(|v| v.as_integer())
         .map(|v| v as usize);
 
+    let nnd_n_trees = nn_params
+        .get("nnd_n_trees")
+        .and_then(|v| v.as_integer())
+        .map(|v| v as usize);
+
+    let k_means = std::string::String::from(
+        nn_params
+            .get("k_means")
+            .and_then(|v| v.as_str())
+            .unwrap_or("emeans"),
+    );
+
     Ok(NearestNeighbourParamsEvoc {
         dist_metric,
         n_tree,
@@ -112,9 +124,11 @@ where
         ef_construction,
         ef_search,
         delta,
+        nnd_n_trees,
         bt_budget,
         n_list,
         n_probes,
+        k_means,
     })
 }
 

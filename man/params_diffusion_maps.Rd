@@ -13,7 +13,8 @@ params_diffusion_maps(
   t_custom = NULL,
   n_landmarks = NULL,
   landmark_method = c("spectral", "random", "density"),
-  n_svd = NULL
+  n_svd = NULL,
+  landmark_k_means = c("emeans", "lloyd")
 )
 }
 \arguments{
@@ -50,6 +51,9 @@ broad and the later coordinates shrink towards a line. Defaults to \code{NULL}.}
 \item{n_svd}{Integer or \code{NULL}. Number of singular vectors for spectral
 landmark selection. If \code{NULL}, uses \code{100}. Ignored by the other landmark
 methods. Defaults to \code{NULL}.}
+
+\item{landmark_k_means}{String. k-means used by the spectral landmark
+selection. Ignored by the other landmark methods. One of \code{c("emeans", "lloyd")}. Defaults to \code{"emeans"}.}
 }
 \value{
 A named list with the following elements:
@@ -79,6 +83,8 @@ broad and the later coordinates shrink towards a line. Defaults to \code{NULL}.
 \item n_svd - Integer or \code{NULL}. Number of singular vectors for spectral
 landmark selection. If \code{NULL}, uses \code{100}. Ignored by the other landmark
 methods. Defaults to \code{NULL}.
+\item landmark_k_means - String. k-means used by the spectral landmark
+selection. Ignored by the other landmark methods. One of \code{c("emeans", "lloyd")}. Defaults to \code{"emeans"}.
 }
 }
 \description{
