@@ -397,6 +397,94 @@ c(
 )
 ```
 
+## umap-learn 0.6: Adam and recursive initialisation
+
+umap-learn 0.6 switched its own optimiser to Adam and added a new
+initialisation. `manifoldsR` has both:
+
+- `optimiser = "adam_v06"`: a port of the umap-learn 0.6 Adam. Not the same as
+  `"adam_parallel"`: textbook Adam constants, a learning rate warm-up, a soft
+  clip on the repulsion, and on large layouts "hard negatives" drawn from
+  points that sit close in the current embedding.
+- `init = "recursive"`: umap-learn 0.6's recursive label propagation. It
+  coarsens the graph down to at most 1024 nodes, places that from a PCA
+  anchor, then lays out and expands each level on the way back up.
+
+The two are meant to go together: only with `init = "recursive"` does
+`"adam_v06"` treat the start as a good layout and use the short, gentle
+warm-up. UMAP only, `densmap()` rejects `"adam_v06"`.
+
+```{r}
+#| label: umap - adam_v06 clusters
+umap_clusters_v06 <- umap(
+  data = cluster_data$data,
+  knn = precomputed_knn,
+  k = 15L,
+  umap_params = params_umap(optimiser = "adam_v06", init = "recursive"),
+  .verbose = FALSE
+)
+
+umap_v06_df <- rbind(
+  as.data.table(umap_clusters_from_knn)[, optimiser := "adam_parallel"],
+  as.data.table(umap_clusters_v06)[, optimiser := "adam_v06 + recursive"]
+) %>%
+  `colnames<-`(c("UMAP1", "UMAP2", "optimiser")) %>%
+  .[, cluster := as.factor(rep(cluster_data$membership, 2L))]
+
+ggplot(
+  data = umap_v06_df,
+  mapping = aes(x = UMAP1, y = UMAP2)
+) +
+  geom_point(
+    mapping = aes(colour = cluster),
+    alpha = 0.5,
+    size = 0.75
+  ) +
+  facet_wrap(~optimiser, scales = "free") +
+  theme_bw() +
+  ggtitle("UMAP: default vs umap-learn 0.6")
+```
+
+All 15 clusters separate either way. The 0.6 pair packs each cluster tighter
+and leaves more empty space between them, closer to what umap-learn itself
+draws these days. The arrangement differs, as you'd expect from a different
+start.
+
+```{r}
+#| label: umap - adam_v06 trajectory
+umap_trajectory_v06 <- umap(
+  data = trajectory_data$data,
+  knn_method = "exhaustive",
+  umap_params = params_umap(optimiser = "adam_v06", init = "recursive"),
+  .verbose = FALSE
+)
+
+umap_trajectory_v06_df <- rbind(
+  as.data.table(umap_trajectory)[, optimiser := "adam_parallel"],
+  as.data.table(umap_trajectory_v06)[, optimiser := "adam_v06 + recursive"]
+) %>%
+  `colnames<-`(c("UMAP1", "UMAP2", "optimiser")) %>%
+  .[, branch := rep(trajectory_data$membership, 2L)]
+
+ggplot(
+  data = umap_trajectory_v06_df[sample(.N)],
+  mapping = aes(x = UMAP1, y = UMAP2)
+) +
+  geom_point(
+    mapping = aes(colour = branch),
+    alpha = 0.5,
+    size = 0.75
+  ) +
+  facet_wrap(~optimiser, scales = "free") +
+  theme_bw() +
+  scale_colour_viridis_c(option = "turbo") +
+  ggtitle("UMAP on trajectory data: default vs umap-learn 0.6")
+```
+
+Same tree, same branch order, same blobs where the branches are dense. The
+umap-learn 0.6 behaviour doesn't fix UMAP's habit of clumping a continuum;
+pick it when you want results that line up with current umap-learn.
+
 ## Benchmarks
 
 How does this compare against other UMAP implementations? Let's do a

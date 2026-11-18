@@ -1,6 +1,6 @@
 Package: manifoldsR
 Title: Fast Low-Dimensional Embeddings and Clustering via 'Rust'
-Version: 0.6.0
+Version: 0.7.0
 Authors@R:
     c(
         person(
