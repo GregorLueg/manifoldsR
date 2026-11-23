@@ -1,6 +1,7 @@
 # manifoldsR <img src="man/figures/logo.png" align="right" height="138" alt="manifoldsR logo" />
 
 [![r_package](https://img.shields.io/github/r-package/v/GregorLueg/manifoldsR?label=R_package&color=orange)](https://github.com/GregorLueg/manifoldsR/blob/main/DESCRIPTION)
+[![CRAN status](https://www.r-pkg.org/badges/version/manifoldsR)](https://CRAN.R-project.org/package=manifoldsR)
 [![manifoldsR status badge](https://gregorlueg.r-universe.dev/manifoldsR/badges/version)](https://gregorlueg.r-universe.dev/manifoldsR)
 [![CI](https://github.com/GregorLueg/manifoldsR/actions/workflows/R-cmd-check.yml/badge.svg)](https://github.com/GregorLueg/manifoldsR/actions/workflows/R-cmd-check.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -78,8 +79,15 @@ rustc --version
 
 ### Install manifoldsR
 
-You can install the package from [r-universe.dev](https://r-universe.dev/search)
-as a pre-compiled binary.
+The package is on [CRAN](https://CRAN.R-project.org/package=manifoldsR).
+
+```r
+# Install from CRAN
+install.packages("manifoldsR")
+```
+
+Want the latest development version? Grab it from
+[r-universe.dev](https://r-universe.dev/search) as a pre-compiled binary.
 
 ```r
 # Install from r-universe (pre-compiled)
