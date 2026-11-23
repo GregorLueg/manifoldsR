@@ -87,6 +87,8 @@ methods.
 
 ## manifoldsR 0.5.0
 
+CRAN release: 2026-11-17
+
 First CRAN release.
 
 ### Breaking changes
