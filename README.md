@@ -79,8 +79,15 @@ rustc --version
 
 ### Install manifoldsR
 
-You can install the package from [r-universe.dev](https://r-universe.dev/search)
-as a pre-compiled binary.
+The package is on [CRAN](https://CRAN.R-project.org/package=manifoldsR).
+
+```r
+# Install from CRAN
+install.packages("manifoldsR")
+```
+
+Want the latest development version? Grab it from
+[r-universe.dev](https://r-universe.dev/search) as a pre-compiled binary.
 
 ```r
 # Install from r-universe (pre-compiled)
