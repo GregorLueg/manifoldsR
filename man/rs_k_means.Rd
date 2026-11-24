@@ -4,13 +4,15 @@
 \alias{rs_k_means}
 \title{K-means clustering (full)}
 \usage{
-rs_k_means(data, k, kmeans_params, seed, verbose)
+rs_k_means(data, k, algorithm, kmeans_params, seed, verbose)
 }
 \arguments{
 \item{data}{Numerical matrix. The data to cluster, of dimensions
 samples x features.}
 
 \item{k}{Integer. Number of clusters.}
+
+\item{algorithm}{String. One of \code{"emeans"} or \code{"lloyd"}.}
 
 \item{kmeans_params}{Named list. Parameters produced by \code{params_kmeans()}.}
 
@@ -27,8 +29,8 @@ A named list with:
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-Rust interface for k-means clustering using Lloyd's algorithm with SIMD or
-GEMM acceleration depending on dimensionality. It exposes the high
-performance k-means clustering code from the Rust crate \code{ann-search-rs}
-for rapid clustering.
+Rust interface for k-means clustering via e-means (mini-batch EMA updates,
+Bessa et al. 2026) or Lloyd's algorithm with SIMD or GEMM acceleration
+depending on dimensionality. It exposes the k-means code from the Rust
+crate \code{ann-search-rs} through \code{bixverse-rs}.
 }

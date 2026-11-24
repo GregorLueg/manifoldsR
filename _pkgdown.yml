@@ -54,6 +54,8 @@ reference:
       - dreams
       - phate
       - pacmap
+      - localmap
+      - ncvis
       - diffusion_maps
   - title: "kNN helpers"
     desc: "Everything and anything around kNN graph generation"
@@ -90,6 +92,8 @@ reference:
       - params_fa2
       - params_hierarchical
       - params_kmeans
+      - params_localmap
+      - params_ncvis
       - params_nn
       - params_pacmap
       - params_diffusion_maps
@@ -126,6 +130,10 @@ reference:
       - rs_inertia
       - rs_k_means
       - rs_k_means_mini_batch
+      - rs_localmap
+      - rs_localmap_from_knn
+      - rs_ncvis
+      - rs_ncvis_from_knn
       - rs_pacmap
       - rs_pacmap_from_knn
       - rs_phate

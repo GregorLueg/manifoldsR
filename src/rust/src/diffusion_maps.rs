@@ -49,6 +49,9 @@ pub struct InternalDiffusionMapsParams<T> {
     pub landmark_method: String,
     /// SVD components for spectral landmark selection.
     pub n_svd: Option<usize>,
+    /// k-means for spectral landmark selection. One of `"emeans"` or
+    /// `"lloyd"`.
+    pub landmark_k_means: String,
 }
 
 impl<T> InternalDiffusionMapsParams<T>
@@ -129,6 +132,13 @@ where
             .and_then(|v| v.as_integer())
             .map(|v| v as usize);
 
+        let landmark_k_means = std::string::String::from(
+            dm_params
+                .get("landmark_k_means")
+                .and_then(|v| v.as_str())
+                .unwrap_or("emeans"),
+        );
+
         Ok(Self {
             knn_method,
             param_knn: nn_params,
@@ -141,6 +151,7 @@ where
             n_landmarks,
             landmark_method,
             n_svd,
+            landmark_k_means,
         })
     }
 }
@@ -201,6 +212,7 @@ where
         internal.n_landmarks,
         internal.landmark_method,
         internal.n_svd,
+        internal.landmark_k_means,
     );
 
     let res = diffusion_maps(data, pre_computed_knn, dm_rust_params, seed, verbose).to_extendr()?;

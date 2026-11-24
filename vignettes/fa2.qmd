@@ -1,9 +1,9 @@
 ---
-title: "Using ForceAtlas2"
+title: "Using ForceAtlas2 and NCVis"
 date: last-modified
 date-format: YYYY-MM-DD
 vignette: >
-  %\VignetteIndexEntry{Using ForceAtlas2}
+  %\VignetteIndexEntry{Using ForceAtlas2 and NCVis}
   %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
 knitr:
@@ -14,7 +14,7 @@ author:
   - name: Gregor Lueg
 ---
 
-# ForceAtlas2 in manifoldsR
+# ForceAtlas2 and NCVis in manifoldsR
 
 `manifoldsR` ships a Rust implementation of
 [ForceAtlas2](https://doi.org/10.1371/journal.pone.0098679) (FA2), the force
@@ -284,3 +284,165 @@ the orientation.
 Only the optimisation parameters in `params_fa2()` apply here. The graph
 building and initialisation ones (`local_connectivity`, `bandwidth`, `init`,
 `randomised`) belong to `forceatlas2()`.
+
+## NCVis
+
+[NCVis](https://github.com/stat-ml/ncvis) (Artemenkov & Panov 2020) is the
+other graph layout here that doesn't optimise UMAP's cross-entropy. It swaps it
+for noise-contrastive estimation. The graph is the plain kNN graph, made
+undirected, with no weights at all. Each edge pulls its two points together and
+draws uniform negatives that push apart, each weighted by how likely the pair
+is data rather than noise. The normalisation constant that turns that into a
+proper probability (`Q`) is learnt on the side, with its own learning rate
+`lr_q`. The negatives ramp up over the run, so the early epochs mostly attract
+and the late ones do most of the pushing.
+
+The defaults are Sean Pedersen's
+[NCVis+](https://github.com/SeanPedersen/ncvis-plus): a PCA start scaled to a
+standard deviation of 10 on its first axis, `min_dist = 0.001`, learning rate
+`2`, 50 epochs and on average 10 negatives per edge. The optimiser is Hogwild!
+SGD, so a fixed seed only reproduces on a single thread.
+
+### Hierarchical data
+
+```{r}
+#| label: hierarchical data - ncvis
+hierarchical_data <- manifold_synthetic_data(
+  type = "hierarchical",
+  n_samples = 10000L
+)
+
+hierarchical_knn <- generate_knn_graph(
+  data = hierarchical_data$data,
+  k = 15L,
+  knn_method = "nndescent",
+  .verbose = FALSE
+)
+
+hierarchical_embd <- list(
+  "UMAP" = umap(
+    data = hierarchical_data$data,
+    knn = hierarchical_knn,
+    k = 15L,
+    .verbose = FALSE
+  ),
+  "NCVis" = ncvis(
+    data = hierarchical_data$data,
+    knn = hierarchical_knn,
+    .verbose = FALSE
+  ),
+  "NCVis, random init" = ncvis(
+    data = hierarchical_data$data,
+    knn = hierarchical_knn,
+    ncvis_params = params_ncvis(init = "random"),
+    .verbose = FALSE
+  ),
+  "NCVis, original init" = ncvis(
+    data = hierarchical_data$data,
+    knn = hierarchical_knn,
+    ncvis_params = params_ncvis(init = "ncvis"),
+    .verbose = FALSE
+  )
+)
+
+hierarchical_df <- purrr::imap(hierarchical_embd, \(embd, method) {
+  as.data.table(embd) %>%
+    `colnames<-`(c("dim1", "dim2")) %>%
+    .[, `:=`(
+      method = method,
+      supergroup = as.factor(hierarchical_data$membership$supergroup),
+      subgroup = as.factor(hierarchical_data$membership$subgroup)
+    )]
+}) %>%
+  rbindlist() %>%
+  .[, method := factor(method, levels = names(hierarchical_embd))]
+
+ggplot(
+  data = hierarchical_df,
+  mapping = aes(x = dim1, y = dim2)
+) +
+  geom_point(
+    mapping = aes(colour = subgroup, shape = supergroup),
+    size = 0.75,
+    alpha = 0.5
+  ) +
+  facet_wrap(~method, scales = "free") +
+  theme_bw() +
+  scale_colour_viridis_d() +
+  ggtitle("UMAP vs NCVis on hierarchical data")
+```
+
+With the PCA start NCVis separates all nine subgroups, and the clusters come
+out tight, much like UMAP's. The supergroups land roughly where UMAP puts them
+too. Drop the PCA start and it falls apart: one subgroup gets smeared out and a
+cloud of stray points rings the layout that 50 epochs never pull back in.
+`init = "ncvis"` is the start of the original NCVis: uniform noise, smoothed
+over the kNN graph in 20 passes. It needs no PCA and does nearly as well, all
+nine subgroups come out clean with the odd stray point, though the clusters sit
+in a different arrangement than with PCA. Keep `init = "pca"` as the default,
+and reach for `"ncvis"` when you want to match the original.
+
+### Swiss roll and trajectory
+
+```{r}
+#| label: swissroll data - ncvis
+swissroll_data <- manifold_synthetic_data(
+  type = "swiss_roll",
+  n_samples = 1000L
+)
+
+swissroll_df <- purrr::map(c(15L, 30L), \(k) {
+  ncvis(
+    data = swissroll_data$data,
+    k = k,
+    knn_method = "exhaustive",
+    .verbose = FALSE
+  ) %>%
+    as.data.table() %>%
+    `colnames<-`(c("NCVis1", "NCVis2")) %>%
+    .[, `:=`(k = sprintf("k = %d", k), z_axis = swissroll_data$data[, 3])]
+}) %>%
+  rbindlist()
+
+ggplot(
+  data = swissroll_df,
+  mapping = aes(x = NCVis1, y = NCVis2)
+) +
+  geom_point(
+    mapping = aes(fill = z_axis),
+    shape = 21,
+    size = 2,
+    alpha = 0.5
+  ) +
+  facet_wrap(~k, scales = "free") +
+  scale_fill_viridis_c() +
+  theme_bw() +
+  ggtitle("NCVis on Swiss roll data")
+```
+
+The 1k swiss roll is NCVis' weak spot. With 15 neighbours on a sparse sheet it
+tears the roll into a dozen strips. Doubling `k` stitches most of them back
+together, but the sheet still doesn't unroll.
+
+```{r}
+#| label: trajectory data - ncvis
+ncvis_trajectory <- ncvis(
+  data = trajectory_data$data,
+  .verbose = FALSE
+)
+
+ncvis_trajectory_df <- as.data.table(ncvis_trajectory) %>%
+  `colnames<-`(c("NCVis1", "NCVis2")) %>%
+  .[, branch := trajectory_data$membership]
+
+ggplot(
+  data = ncvis_trajectory_df[sample(.N)],
+  mapping = aes(x = NCVis1, y = NCVis2)
+) +
+  geom_point(mapping = aes(colour = branch), size = 0.75, alpha = 0.5) +
+  theme_bw() +
+  ggtitle("NCVis on trajectory data")
+```
+
+On the trajectory every branch stays attached to its parent, and the dense
+stretches of each branch pull into blobs, a bit like UMAP's take on this data.

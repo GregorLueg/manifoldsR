@@ -26,6 +26,15 @@ spec_nn <- param_spec(
       doc = "Size of the dynamic candidate list during HNSW search."
     ),
     delta = p_dbl(0.001, doc = "Precision parameter for NN descent."),
+    nnd_n_trees = p_int(
+      NULL,
+      range = "[1,)",
+      null_ok = TRUE,
+      doc = paste(
+        "Number of trees seeding the NN-Descent graph. If `NULL`, uses",
+        "`5 + sqrt(n) / 20`, capped at `64`."
+      )
+    ),
     bt_budget = p_dbl(0.1, doc = "Budget for ball tree search."),
     n_list = p_int(
       NULL,
@@ -38,6 +47,15 @@ spec_nn <- param_spec(
       doc = paste(
         "Number of clusters to probe for IVF. If `NULL`, uses",
         "`sqrt(n_list)`."
+      )
+    ),
+    k_means = p_choice(
+      "emeans",
+      c("emeans", "lloyd"),
+      doc = paste(
+        "k-means that trains the IVF and kMkNN centroids. `\"emeans\"` gives",
+        "more even partitions than Lloyd's, so IVF may need a higher",
+        "`n_probes` for the same recall."
       )
     )
   )
@@ -82,16 +100,21 @@ spec_umap <- param_spec(
     gamma = p_dbl(1.0, doc = "Repulsion strength."),
     optimiser = p_choice(
       "adam_parallel",
-      c("adam_parallel", "sgd", "sgd_parallel", "adam"),
+      c("adam_parallel", "sgd", "sgd_parallel", "adam", "adam_v06"),
       doc = paste(
         "The optimiser. `\"sgd_parallel\"` is lock-free (Hogwild!) and not",
-        "reproducible run to run with more than one thread."
+        "reproducible run to run with more than one thread. `\"adam_v06\"` is",
+        "the Adam of umap-learn 0.6, meant to pair with",
+        "`init = \"recursive\"`. UMAP only, not densMAP."
       )
     ),
     init = p_choice(
       "spectral",
-      c("spectral", "pca", "random"),
-      doc = "Embedding initialisation method."
+      c("spectral", "pca", "random", "recursive"),
+      doc = paste(
+        "Embedding initialisation method. `\"recursive\"` is the recursive",
+        "label propagation initialisation of umap-learn 0.6."
+      )
     ),
     randomised = p_lgl(
       FALSE,
@@ -311,11 +334,11 @@ spec_densne <- param_spec(
   references = "Narayan, Berger & Cho, Nat. Biotechnol., 2021",
   fields = list(
     lambda = p_dbl(
-      0.5,
+      0.1,
       range = "[0,)",
       doc = paste(
-        "Weight of the density term. `0` disables it. The default is higher",
-        "than the den-SNE reference value (original: `0.1`)."
+        "Weight of the density term. `0` disables it. The default is the",
+        "den-SNE reference value."
       )
     ),
     frac = p_dbl(
@@ -440,6 +463,14 @@ spec_phate <- param_spec(
         "`NULL`, uses `100`. Ignored by the other landmark methods."
       )
     ),
+    landmark_k_means = p_choice(
+      "emeans",
+      c("emeans", "lloyd"),
+      doc = paste(
+        "k-means used by the spectral landmark selection. Ignored by the other",
+        "landmark methods."
+      )
+    ),
     mds_method = p_choice(
       "sgd_dense",
       c("sgd_dense", "classic"),
@@ -534,6 +565,145 @@ spec_pacmap <- param_spec(
   )
 )
 
+# localmap ---------------------------------------------------------------------
+
+spec_localmap <- param_spec(
+  name = "localmap",
+  title = "Wrapper function to generate LocalMAP parameters",
+  description = paste(
+    "LocalMAP is PaCMAP with a different third phase: the mid-near pairs drop",
+    "out, the near-pair pull is scaled by distance and every 10 epochs each",
+    "point redraws its further pairs from within `max_distance` in the",
+    "embedding. That pulls apart clusters PaCMAP leaves touching."
+  ),
+  label = "LocalMAP params",
+  references = "Wang, et al., arXiv:2412.15426, 2024",
+  fields = list(
+    n_near = p_int(
+      10L,
+      doc = paste(
+        "Near pairs per point (attractive). The kNN search runs `n_near + 50`",
+        "wide and the pairs are the best of those by locally scaled distance."
+      )
+    ),
+    n_mid_near = p_int(
+      5L,
+      doc = "Mid-near pairs per point. Used in phases 1 and 2 only."
+    ),
+    n_further = p_int(
+      20L,
+      doc = "Further (random) pairs per point. These exclude the near pairs."
+    ),
+    max_distance = p_dbl(
+      10.0,
+      range = "(0,)",
+      doc = paste(
+        "Radius in the embedding within which phase 3 redraws the further",
+        "pairs."
+      )
+    ),
+    init = p_choice(
+      "pca",
+      c("pca", "random"),
+      doc = paste(
+        "Embedding initialisation. `\"pca\"` uses the PC scores times `0.01`, so",
+        "the ratio between the components survives."
+      )
+    ),
+    optimiser = p_choice(
+      "adam_parallel",
+      c("adam_parallel", "adam"),
+      doc = "The optimiser."
+    ),
+    lr = p_dbl(1.0, doc = "Adam learning rate."),
+    n_epochs = p_int(
+      NULL,
+      range = "[1,)",
+      null_ok = TRUE,
+      doc = paste(
+        "Total optimisation epochs. If `NULL`, resolved downstream to",
+        "`450`."
+      )
+    ),
+    beta1 = p_dbl(0.9, doc = "Adam first moment decay."),
+    beta2 = p_dbl(0.999, doc = "Adam second moment decay."),
+    eps = p_dbl(1e-7, doc = "Adam numerical stability constant."),
+    phase1_end = p_int(
+      NULL,
+      range = "[1,)",
+      null_ok = TRUE,
+      doc = paste(
+        "Epoch at which phase 1 ends. If `NULL`, resolved downstream to",
+        "`100`."
+      )
+    ),
+    phase2_end = p_int(
+      NULL,
+      range = "[1,)",
+      null_ok = TRUE,
+      doc = paste(
+        "Epoch at which phase 2 ends. If `NULL`, resolved downstream to",
+        "`200`."
+      )
+    )
+  )
+)
+
+# ncvis ------------------------------------------------------------------------
+
+spec_ncvis <- param_spec(
+  name = "ncvis",
+  title = "Wrapper function to generate NCVis parameters",
+  description = paste(
+    "NCVis runs noise-contrastive Hogwild! SGD on the unweighted kNN graph.",
+    "The defaults are the NCVis+ ones: PCA start, a large learning rate and",
+    "10 negatives per edge. Only reproducible at a fixed seed on one thread."
+  ),
+  label = "NCVis params",
+  references = paste(
+    "Artemenkov & Panov, WWW, 2020; Pedersen, NCVis+, 2026",
+    "(https://github.com/SeanPedersen/ncvis-plus)"
+  ),
+  fields = list(
+    n_epochs = p_int(
+      50L,
+      range = "[1,)",
+      doc = "Number of optimisation epochs."
+    ),
+    n_negative = p_dbl(
+      10.0,
+      range = "[1,)",
+      doc = "Mean number of negative samples per edge."
+    ),
+    lr = p_dbl(2.0, range = "(0,)", doc = "Learning rate of the embedding."),
+    lr_q = p_dbl(
+      1.0,
+      range = "(0,)",
+      doc = "Learning rate of the noise normalisation constant `Q`."
+    ),
+    init = p_choice(
+      "pca",
+      c("pca", "random", "ncvis"),
+      doc = paste(
+        "Embedding initialisation method. `\"ncvis\"` is the original NCVis",
+        "start: uniform noise smoothed over the kNN graph in 20 passes."
+      )
+    ),
+    init_scale = p_dbl(
+      10.0,
+      range = "(0,)",
+      doc = paste(
+        "Standard deviation of the first axis of the initial layout. The other",
+        "axes are scaled by the same factor."
+      )
+    ),
+    randomised = p_lgl(
+      FALSE,
+      doc = "Use randomised SVD for PCA initialisation."
+    )
+  )
+)
+
 # diffusion maps ---------------------------------------------------------------
 
 spec_diffusion_maps <- param_spec(
@@ -604,6 +774,14 @@ spec_diffusion_maps <- param_spec(
       doc = paste(
         "Number of singular vectors for spectral landmark selection. If",
         "`NULL`, uses `100`. Ignored by the other landmark methods."
+      )
+    ),
+    landmark_k_means = p_choice(
+      "emeans",
+      c("emeans", "lloyd"),
+      doc = paste(
+        "k-means used by the spectral landmark selection. Ignored by the other",
+        "landmark methods."
       )
     )
   )
@@ -803,7 +981,18 @@ spec_kmeans <- param_spec(
     max_iters = p_int(
       1000L,
       range = "[1,)",
-      doc = "Maximum number of iterations."
+      doc = paste(
+        "Maximum number of iterations for Lloyd's and the mini-batch k-means.",
+        "Ignored by e-means."
+      )
+    ),
+    e_means_epochs = p_dbl(
+      5.0,
+      range = "(0,)",
+      doc = paste(
+        "Passes over the data for e-means, may be fractional. Ignored by the",
+        "other methods."
+      )
     ),
     batch_size = p_int(
       4096L,

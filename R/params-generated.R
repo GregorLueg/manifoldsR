@@ -81,8 +81,7 @@ params_densmap <- function(
 #' radius in the embedding. Setting `lambda` to `0` recovers plain t-SNE.
 #'
 #' @param lambda Numeric. Weight of the density term. `0` disables it. The
-#' default is higher than the den-SNE reference value (original: `0.1`).
-#' Defaults to `0.5`.
+#' default is the den-SNE reference value. Defaults to `0.1`.
 #' @param frac Numeric. Fraction of the total epochs, at the end of the run,
 #' over which the density term is active. Defaults to `0.3`.
 #' @param var_shift Numeric. Additive shift on the variance of the embedding
@@ -91,8 +90,7 @@ params_densmap <- function(
 #' @returns A named list with the following elements:
 #' \itemize{
 #'  \item lambda - Numeric. Weight of the density term. `0` disables it. The
-#'  default is higher than the den-SNE reference value (original: `0.1`).
-#'  Defaults to `0.5`.
+#'  default is the den-SNE reference value. Defaults to `0.1`.
 #'  \item frac - Numeric. Fraction of the total epochs, at the end of the run,
 #'  over which the density term is active. Defaults to `0.3`.
 #'  \item var_shift - Numeric. Additive shift on the variance of the embedding
@@ -103,7 +101,7 @@ params_densmap <- function(
 #'
 #' @export
 params_densne <- function(
-  lambda = 0.5,
+  lambda = 0.1,
   frac = 0.3,
   var_shift = 0.1
 ) {
@@ -147,6 +145,9 @@ params_densne <- function(
 #' @param n_svd Integer or `NULL`. Number of singular vectors for spectral
 #' landmark selection. If `NULL`, uses `100`. Ignored by the other landmark
 #' methods. Defaults to `NULL`.
+#' @param landmark_k_means String. k-means used by the spectral landmark
+#' selection. Ignored by the other landmark methods. One of `c("emeans",
+#' "lloyd")`. Defaults to `"emeans"`.
 #'
 #' @returns A named list with the following elements:
 #' \itemize{
@@ -175,6 +176,9 @@ params_densne <- function(
 #'  \item n_svd - Integer or `NULL`. Number of singular vectors for spectral
 #'  landmark selection. If `NULL`, uses `100`. Ignored by the other landmark
 #'  methods. Defaults to `NULL`.
+#'  \item landmark_k_means - String. k-means used by the spectral landmark
+#'  selection. Ignored by the other landmark methods. One of `c("emeans",
+#'  "lloyd")`. Defaults to `"emeans"`.
 #' }
 #'
 #' @export
@@ -187,10 +191,12 @@ params_diffusion_maps <- function(
   t_custom = NULL,
   n_landmarks = NULL,
   landmark_method = c("spectral", "random", "density"),
-  n_svd = NULL
+  n_svd = NULL,
+  landmark_k_means = c("emeans", "lloyd")
 ) {
   graph_symmetry <- match.arg(graph_symmetry)
   landmark_method <- match.arg(landmark_method)
+  landmark_k_means <- match.arg(landmark_k_means)
 
   # Checks
   checkmate::qassert(bandwidth_scale, "N1(0,)")
@@ -205,6 +211,7 @@ params_diffusion_maps <- function(
   checkmate::qassert(n_landmarks, c("I1[1,)", "0"))
   checkmate::assertChoice(landmark_method, c("spectral", "random", "density"))
   checkmate::qassert(n_svd, c("I1[1,)", "0"))
+  checkmate::assertChoice(landmark_k_means, c("emeans", "lloyd"))
 
   # Return
   list(
@@ -216,7 +223,8 @@ params_diffusion_maps <- function(
     t_custom = t_custom,
     n_landmarks = n_landmarks,
     landmark_method = landmark_method,
-    n_svd = n_svd
+    n_svd = n_svd,
+    landmark_k_means = landmark_k_means
   )
 }
 
@@ -512,7 +520,10 @@ params_hierarchical <- function(
 #'
 #' @param metric String. Distance metric to use. One of `c("euclidean",
 #' "cosine")`. Defaults to `"euclidean"`.
-#' @param max_iters Integer. Maximum number of iterations. Defaults to `1000L`.
+#' @param max_iters Integer. Maximum number of iterations for Lloyd's and the
+#' mini-batch k-means. Ignored by e-means. Defaults to `1000L`.
+#' @param e_means_epochs Numeric. Passes over the data for e-means, may be
+#' fractional. Ignored by the other methods. Defaults to `5.0`.
 #' @param batch_size Integer. Mini-batch size. Only used when `method =
 #' "minibatch"`. Defaults to `4096L`.
 #' @param drift_threshold Numeric. Below which centroid drift the mini-batch
@@ -532,8 +543,10 @@ params_hierarchical <- function(
 #' \itemize{
 #'  \item metric - String. Distance metric to use. One of `c("euclidean",
 #'  "cosine")`. Defaults to `"euclidean"`.
-#'  \item max_iters - Integer. Maximum number of iterations. Defaults to
-#'  `1000L`.
+#'  \item max_iters - Integer. Maximum number of iterations for Lloyd's and the
+#'  mini-batch k-means. Ignored by e-means. Defaults to `1000L`.
+#'  \item e_means_epochs - Numeric. Passes over the data for e-means, may be
+#'  fractional. Ignored by the other methods. Defaults to `5.0`.
 #'  \item batch_size - Integer. Mini-batch size. Only used when `method =
 #'  "minibatch"`. Defaults to `4096L`.
 #'  \item drift_threshold - Numeric. Below which centroid drift the mini-batch
@@ -554,6 +567,7 @@ params_hierarchical <- function(
 params_kmeans <- function(
   metric = c("euclidean", "cosine"),
   max_iters = 1000L,
+  e_means_epochs = 5.0,
   batch_size = 4096L,
   drift_threshold = 1e-04,
   lr_alpha = 1.0,
@@ -567,6 +581,7 @@ params_kmeans <- function(
   # Checks
   checkmate::assertChoice(metric, c("euclidean", "cosine"))
   checkmate::qassert(max_iters, "I1[1,)")
+  checkmate::qassert(e_means_epochs, "N1(0,)")
   checkmate::qassert(batch_size, "I1[1,)")
   checkmate::qassert(drift_threshold, "N1")
   checkmate::qassert(lr_alpha, "N1")
@@ -578,12 +593,202 @@ params_kmeans <- function(
   list(
     metric = metric,
     max_iters = max_iters,
+    e_means_epochs = e_means_epochs,
     batch_size = batch_size,
     drift_threshold = drift_threshold,
     lr_alpha = lr_alpha,
     init = init,
     use_hamerly = use_hamerly,
     use_gemm = use_gemm
+  )
+}
+
+#' Wrapper function to generate LocalMAP parameters
+#'
+#' @description LocalMAP is PaCMAP with a different third phase: the mid-near
+#' pairs drop out, the near-pair pull is scaled by distance and every 10 epochs
+#' each point redraws its further pairs from within `max_distance` in the
+#' embedding. That pulls apart clusters PaCMAP leaves touching.
+#'
+#' @param n_near Integer. Near pairs per point (attractive). The kNN search runs
+#' `n_near + 50` wide and the pairs are the best of those by locally scaled
+#' distance. Defaults to `10L`.
+#' @param n_mid_near Integer. Mid-near pairs per point. Used in phases 1 and 2
+#' only. Defaults to `5L`.
+#' @param n_further Integer. Further (random) pairs per point. These exclude the
+#' near pairs. Defaults to `20L`.
+#' @param max_distance Numeric. Radius in the embedding within which phase 3
+#' redraws the further pairs. Defaults to `10.0`.
+#' @param init String. Embedding initialisation. `"pca"` uses the PC scores
+#' times `0.01`, so the ratio between the components survives. One of `c("pca",
+#' "random")`. Defaults to `"pca"`.
+#' @param optimiser String. The optimiser. One of `c("adam_parallel", "adam")`.
+#' Defaults to `"adam_parallel"`.
+#' @param lr Numeric. Adam learning rate. Defaults to `1.0`.
+#' @param n_epochs Integer or `NULL`. Total optimisation epochs. If `NULL`,
+#' resolved downstream to `450`. Defaults to `NULL`.
+#' @param beta1 Numeric. Adam first moment decay. Defaults to `0.9`.
+#' @param beta2 Numeric. Adam second moment decay. Defaults to `0.999`.
+#' @param eps Numeric. Adam numerical stability constant. Defaults to `1e-07`.
+#' @param phase1_end Integer or `NULL`. Epoch at which phase 1 ends. If `NULL`,
+#' resolved downstream to `100`. Defaults to `NULL`.
+#' @param phase2_end Integer or `NULL`. Epoch at which phase 2 ends. If `NULL`,
+#' resolved downstream to `200`. Defaults to `NULL`.
+#'
+#' @returns A named list with the following elements:
+#' \itemize{
+#'  \item n_near - Integer. Near pairs per point (attractive). The kNN search
+#'  runs `n_near + 50` wide and the pairs are the best of those by locally
+#'  scaled distance. Defaults to `10L`.
+#'  \item n_mid_near - Integer. Mid-near pairs per point. Used in phases 1 and 2
+#'  only. Defaults to `5L`.
+#'  \item n_further - Integer. Further (random) pairs per point. These exclude
+#'  the near pairs. Defaults to `20L`.
+#'  \item max_distance - Numeric. Radius in the embedding within which phase 3
+#'  redraws the further pairs. Defaults to `10.0`.
+#'  \item init - String. Embedding initialisation. `"pca"` uses the PC scores
+#'  times `0.01`, so the ratio between the components survives. One of `c("pca",
+#'  "random")`. Defaults to `"pca"`.
+#'  \item optimiser - String. The optimiser. One of `c("adam_parallel",
+#'  "adam")`. Defaults to `"adam_parallel"`.
+#'  \item lr - Numeric. Adam learning rate. Defaults to `1.0`.
+#'  \item n_epochs - Integer or `NULL`. Total optimisation epochs. If `NULL`,
+#'  resolved downstream to `450`. Defaults to `NULL`.
+#'  \item beta1 - Numeric. Adam first moment decay. Defaults to `0.9`.
+#'  \item beta2 - Numeric. Adam second moment decay. Defaults to `0.999`.
+#'  \item eps - Numeric. Adam numerical stability constant. Defaults to `1e-07`.
+#'  \item phase1_end - Integer or `NULL`. Epoch at which phase 1 ends. If
+#'  `NULL`, resolved downstream to `100`. Defaults to `NULL`.
+#'  \item phase2_end - Integer or `NULL`. Epoch at which phase 2 ends. If
+#'  `NULL`, resolved downstream to `200`. Defaults to `NULL`.
+#' }
+#'
+#' @references Wang, et al., arXiv:2412.15426, 2024
+#'
+#' @export
+params_localmap <- function(
+  n_near = 10L,
+  n_mid_near = 5L,
+  n_further = 20L,
+  max_distance = 10.0,
+  init = c("pca", "random"),
+  optimiser = c("adam_parallel", "adam"),
+  lr = 1.0,
+  n_epochs = NULL,
+  beta1 = 0.9,
+  beta2 = 0.999,
+  eps = 1e-07,
+  phase1_end = NULL,
+  phase2_end = NULL
+) {
+  init <- match.arg(init)
+  optimiser <- match.arg(optimiser)
+
+  # Checks
+  checkmate::qassert(n_near, "I1")
+  checkmate::qassert(n_mid_near, "I1")
+  checkmate::qassert(n_further, "I1")
+  checkmate::qassert(max_distance, "N1(0,)")
+  checkmate::assertChoice(init, c("pca", "random"))
+  checkmate::assertChoice(optimiser, c("adam_parallel", "adam"))
+  checkmate::qassert(lr, "N1")
+  checkmate::qassert(n_epochs, c("I1[1,)", "0"))
+  checkmate::qassert(beta1, "N1")
+  checkmate::qassert(beta2, "N1")
+  checkmate::qassert(eps, "N1")
+  checkmate::qassert(phase1_end, c("I1[1,)", "0"))
+  checkmate::qassert(phase2_end, c("I1[1,)", "0"))
+
+  # Return
+  list(
+    n_near = n_near,
+    n_mid_near = n_mid_near,
+    n_further = n_further,
+    max_distance = max_distance,
+    init = init,
+    optimiser = optimiser,
+    lr = lr,
+    n_epochs = n_epochs,
+    beta1 = beta1,
+    beta2 = beta2,
+    eps = eps,
+    phase1_end = phase1_end,
+    phase2_end = phase2_end
+  )
+}
+
+#' Wrapper function to generate NCVis parameters
+#'
+#' @description NCVis runs noise-contrastive Hogwild! SGD on the unweighted kNN
+#' graph. The defaults are the NCVis+ ones: PCA start, a large learning rate and
+#' 10 negatives per edge. Only reproducible at a fixed seed on one thread.
+#'
+#' @param n_epochs Integer. Number of optimisation epochs. Defaults to `50L`.
+#' @param n_negative Numeric. Mean number of negative samples per edge. Defaults
+#' to `10.0`.
+#' @param lr Numeric. Learning rate of the embedding. Defaults to `2.0`.
+#' @param lr_q Numeric. Learning rate of the noise normalisation constant `Q`.
+#' Defaults to `1.0`.
+#' @param init String. Embedding initialisation method. `"ncvis"` is the
+#' original NCVis start: uniform noise smoothed over the kNN graph in 20 passes.
+#' One of `c("pca", "random", "ncvis")`. Defaults to `"pca"`.
+#' @param init_scale Numeric. Standard deviation of the first axis of the
+#' initial layout. The other axes are scaled by the same factor. Defaults to
+#' `10.0`.
+#' @param randomised Boolean. Use randomised SVD for PCA initialisation.
+#' Defaults to `FALSE`.
+#'
+#' @returns A named list with the following elements:
+#' \itemize{
+#'  \item n_epochs - Integer. Number of optimisation epochs. Defaults to `50L`.
+#'  \item n_negative - Numeric. Mean number of negative samples per edge.
+#'  Defaults to `10.0`.
+#'  \item lr - Numeric. Learning rate of the embedding. Defaults to `2.0`.
+#'  \item lr_q - Numeric. Learning rate of the noise normalisation constant `Q`.
+#'  Defaults to `1.0`.
+#'  \item init - String. Embedding initialisation method. `"ncvis"` is the
+#'  original NCVis start: uniform noise smoothed over the kNN graph in 20
+#'  passes. One of `c("pca", "random", "ncvis")`. Defaults to `"pca"`.
+#'  \item init_scale - Numeric. Standard deviation of the first axis of the
+#'  initial layout. The other axes are scaled by the same factor. Defaults to
+#'  `10.0`.
+#'  \item randomised - Boolean. Use randomised SVD for PCA initialisation.
+#'  Defaults to `FALSE`.
+#' }
+#'
+#' @references Artemenkov & Panov, WWW, 2020; Pedersen, NCVis+, 2026
+#' (https://github.com/SeanPedersen/ncvis-plus)
+#'
+#' @export
+params_ncvis <- function(
+  n_epochs = 50L,
+  n_negative = 10.0,
+  lr = 2.0,
+  lr_q = 1.0,
+  init = c("pca", "random", "ncvis"),
+  init_scale = 10.0,
+  randomised = FALSE
+) {
+  init <- match.arg(init)
+
+  # Checks
+  checkmate::qassert(n_epochs, "I1[1,)")
+  checkmate::qassert(n_negative, "N1[1,)")
+  checkmate::qassert(lr, "N1(0,)")
+  checkmate::qassert(lr_q, "N1(0,)")
+  checkmate::assertChoice(init, c("pca", "random", "ncvis"))
+  checkmate::qassert(init_scale, "N1(0,)")
+  checkmate::qassert(randomised, "B1")
+
+  # Return
+  list(
+    n_epochs = n_epochs,
+    n_negative = n_negative,
+    lr = lr,
+    lr_q = lr_q,
+    init = init,
+    init_scale = init_scale,
+    randomised = randomised
   )
 }
 
@@ -601,11 +806,18 @@ params_kmeans <- function(
 #' search. Defaults to `100L`.
 #' @param delta Numeric. Precision parameter for NN descent. Defaults to
 #' `0.001`.
+#' @param nnd_n_trees Integer or `NULL`. Number of trees seeding the NN-Descent
+#' graph. If `NULL`, uses `5 + sqrt(n) / 20`, capped at `64`. Defaults to
+#' `NULL`.
 #' @param bt_budget Numeric. Budget for ball tree search. Defaults to `0.1`.
 #' @param n_list Integer or `NULL`. Number of clusters to use for IVF. If
 #' `NULL`, uses `sqrt(n)`. Defaults to `NULL`.
 #' @param n_probes Integer or `NULL`. Number of clusters to probe for IVF. If
 #' `NULL`, uses `sqrt(n_list)`. Defaults to `NULL`.
+#' @param k_means String. k-means that trains the IVF and kMkNN centroids.
+#' `"emeans"` gives more even partitions than Lloyd's, so IVF may need a higher
+#' `n_probes` for the same recall. One of `c("emeans", "lloyd")`. Defaults to
+#' `"emeans"`.
 #'
 #' @returns A named list with the following elements:
 #' \itemize{
@@ -622,11 +834,18 @@ params_kmeans <- function(
 #'  search. Defaults to `100L`.
 #'  \item delta - Numeric. Precision parameter for NN descent. Defaults to
 #'  `0.001`.
+#'  \item nnd_n_trees - Integer or `NULL`. Number of trees seeding the
+#'  NN-Descent graph. If `NULL`, uses `5 + sqrt(n) / 20`, capped at `64`.
+#'  Defaults to `NULL`.
 #'  \item bt_budget - Numeric. Budget for ball tree search. Defaults to `0.1`.
 #'  \item n_list - Integer or `NULL`. Number of clusters to use for IVF. If
 #'  `NULL`, uses `sqrt(n)`. Defaults to `NULL`.
 #'  \item n_probes - Integer or `NULL`. Number of clusters to probe for IVF. If
 #'  `NULL`, uses `sqrt(n_list)`. Defaults to `NULL`.
+#'  \item k_means - String. k-means that trains the IVF and kMkNN centroids.
+#'  `"emeans"` gives more even partitions than Lloyd's, so IVF may need a higher
+#'  `n_probes` for the same recall. One of `c("emeans", "lloyd")`. Defaults to
+#'  `"emeans"`.
 #' }
 #'
 #' @export
@@ -638,11 +857,14 @@ params_nn <- function(
   ef_construction = 200L,
   ef_search = 100L,
   delta = 0.001,
+  nnd_n_trees = NULL,
   bt_budget = 0.1,
   n_list = NULL,
-  n_probes = NULL
+  n_probes = NULL,
+  k_means = c("emeans", "lloyd")
 ) {
   dist_metric <- match.arg(dist_metric)
+  k_means <- match.arg(k_means)
 
   # Checks
   checkmate::assertChoice(dist_metric, c("euclidean", "cosine"))
@@ -652,9 +874,11 @@ params_nn <- function(
   checkmate::qassert(ef_construction, "I1")
   checkmate::qassert(ef_search, "I1")
   checkmate::qassert(delta, "N1")
+  checkmate::qassert(nnd_n_trees, c("I1[1,)", "0"))
   checkmate::qassert(bt_budget, "N1")
   checkmate::qassert(n_list, c("I1", "0"))
   checkmate::qassert(n_probes, c("I1", "0"))
+  checkmate::assertChoice(k_means, c("emeans", "lloyd"))
 
   # Return
   list(
@@ -665,9 +889,11 @@ params_nn <- function(
     ef_construction = ef_construction,
     ef_search = ef_search,
     delta = delta,
+    nnd_n_trees = nnd_n_trees,
     bt_budget = bt_budget,
     n_list = n_list,
-    n_probes = n_probes
+    n_probes = n_probes,
+    k_means = k_means
   )
 }
 
@@ -794,6 +1020,9 @@ params_pacmap <- function(
 #' @param n_svd Integer or `NULL`. Number of singular vectors for spectral
 #' landmark selection. If `NULL`, uses `100`. Ignored by the other landmark
 #' methods. Defaults to `NULL`.
+#' @param landmark_k_means String. k-means used by the spectral landmark
+#' selection. Ignored by the other landmark methods. One of `c("emeans",
+#' "lloyd")`. Defaults to `"emeans"`.
 #' @param mds_method String. MDS algorithm used for the final embedding. One of
 #' `c("sgd_dense", "classic")`. Defaults to `"sgd_dense"`.
 #' @param mds_iter Integer or `NULL`. Number of SGD-MDS iterations. If `NULL`,
@@ -826,6 +1055,9 @@ params_pacmap <- function(
 #'  \item n_svd - Integer or `NULL`. Number of singular vectors for spectral
 #'  landmark selection. If `NULL`, uses `100`. Ignored by the other landmark
 #'  methods. Defaults to `NULL`.
+#'  \item landmark_k_means - String. k-means used by the spectral landmark
+#'  selection. Ignored by the other landmark methods. One of `c("emeans",
+#'  "lloyd")`. Defaults to `"emeans"`.
 #'  \item mds_method - String. MDS algorithm used for the final embedding. One
 #'  of `c("sgd_dense", "classic")`. Defaults to `"sgd_dense"`.
 #'  \item mds_iter - Integer or `NULL`. Number of SGD-MDS iterations. If `NULL`,
@@ -847,11 +1079,13 @@ params_phate <- function(
   n_landmarks = 2048L,
   landmark_method = c("spectral", "random", "density"),
   n_svd = NULL,
+  landmark_k_means = c("emeans", "lloyd"),
   mds_method = c("sgd_dense", "classic"),
   mds_iter = NULL,
   graph_symmetry = c("additive", "multiplicative", "mnn", "none")
 ) {
   landmark_method <- match.arg(landmark_method)
+  landmark_k_means <- match.arg(landmark_k_means)
   mds_method <- match.arg(mds_method)
   graph_symmetry <- match.arg(graph_symmetry)
 
@@ -865,6 +1099,7 @@ params_phate <- function(
   checkmate::qassert(n_landmarks, c("I1[1,)", "0"))
   checkmate::assertChoice(landmark_method, c("spectral", "random", "density"))
   checkmate::qassert(n_svd, c("I1[1,)", "0"))
+  checkmate::assertChoice(landmark_k_means, c("emeans", "lloyd"))
   checkmate::assertChoice(mds_method, c("sgd_dense", "classic"))
   checkmate::qassert(mds_iter, c("I1[1,)", "0"))
   checkmate::assertChoice(
@@ -883,6 +1118,7 @@ params_phate <- function(
     n_landmarks = n_landmarks,
     landmark_method = landmark_method,
     n_svd = n_svd,
+    landmark_k_means = landmark_k_means,
     mds_method = mds_method,
     mds_iter = mds_iter,
     graph_symmetry = graph_symmetry
@@ -1104,11 +1340,13 @@ params_tsne <- function(
 #' sample. Defaults to `5L`.
 #' @param gamma Numeric. Repulsion strength. Defaults to `1.0`.
 #' @param optimiser String. The optimiser. `"sgd_parallel"` is lock-free
-#' (Hogwild!) and not reproducible run to run with more than one thread. One of
-#' `c("adam_parallel", "sgd", "sgd_parallel", "adam")`. Defaults to
-#' `"adam_parallel"`.
-#' @param init String. Embedding initialisation method. One of `c("spectral",
-#' "pca", "random")`. Defaults to `"spectral"`.
+#' (Hogwild!) and not reproducible run to run with more than one thread.
+#' `"adam_v06"` is the Adam of umap-learn 0.6, meant to pair with `init =
+#' "recursive"`. UMAP only, not densMAP. One of `c("adam_parallel", "sgd",
+#' "sgd_parallel", "adam", "adam_v06")`. Defaults to `"adam_parallel"`.
+#' @param init String. Embedding initialisation method. `"recursive"` is the
+#' recursive label propagation initialisation of umap-learn 0.6. One of
+#' `c("spectral", "pca", "random", "recursive")`. Defaults to `"spectral"`.
 #' @param randomised Boolean. Use randomised SVD for PCA initialisation.
 #' Defaults to `FALSE`.
 #'
@@ -1127,11 +1365,13 @@ params_tsne <- function(
 #'  sample. Defaults to `5L`.
 #'  \item gamma - Numeric. Repulsion strength. Defaults to `1.0`.
 #'  \item optimiser - String. The optimiser. `"sgd_parallel"` is lock-free
-#'  (Hogwild!) and not reproducible run to run with more than one thread. One of
-#'  `c("adam_parallel", "sgd", "sgd_parallel", "adam")`. Defaults to
-#'  `"adam_parallel"`.
-#'  \item init - String. Embedding initialisation method. One of `c("spectral",
-#'  "pca", "random")`. Defaults to `"spectral"`.
+#'  (Hogwild!) and not reproducible run to run with more than one thread.
+#'  `"adam_v06"` is the Adam of umap-learn 0.6, meant to pair with `init =
+#'  "recursive"`. UMAP only, not densMAP. One of `c("adam_parallel", "sgd",
+#'  "sgd_parallel", "adam", "adam_v06")`. Defaults to `"adam_parallel"`.
+#'  \item init - String. Embedding initialisation method. `"recursive"` is the
+#'  recursive label propagation initialisation of umap-learn 0.6. One of
+#'  `c("spectral", "pca", "random", "recursive")`. Defaults to `"spectral"`.
 #'  \item randomised - Boolean. Use randomised SVD for PCA initialisation.
 #'  Defaults to `FALSE`.
 #' }
@@ -1145,8 +1385,8 @@ params_umap <- function(
   n_epochs = NULL,
   neg_sample_rate = 5L,
   gamma = 1.0,
-  optimiser = c("adam_parallel", "sgd", "sgd_parallel", "adam"),
-  init = c("spectral", "pca", "random"),
+  optimiser = c("adam_parallel", "sgd", "sgd_parallel", "adam", "adam_v06"),
+  init = c("spectral", "pca", "random", "recursive"),
   randomised = FALSE
 ) {
   optimiser <- match.arg(optimiser)
@@ -1162,9 +1402,9 @@ params_umap <- function(
   checkmate::qassert(gamma, "N1")
   checkmate::assertChoice(
     optimiser,
-    c("adam_parallel", "sgd", "sgd_parallel", "adam")
+    c("adam_parallel", "sgd", "sgd_parallel", "adam", "adam_v06")
   )
-  checkmate::assertChoice(init, c("spectral", "pca", "random"))
+  checkmate::assertChoice(init, c("spectral", "pca", "random", "recursive"))
   checkmate::qassert(randomised, "B1")
 
   # Return

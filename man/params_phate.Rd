@@ -14,6 +14,7 @@ params_phate(
   n_landmarks = 2048L,
   landmark_method = c("spectral", "random", "density"),
   n_svd = NULL,
+  landmark_k_means = c("emeans", "lloyd"),
   mds_method = c("sgd_dense", "classic"),
   mds_iter = NULL,
   graph_symmetry = c("additive", "multiplicative", "mnn", "none")
@@ -50,6 +51,9 @@ diffusion operator is used. Defaults to \code{2048L}.}
 landmark selection. If \code{NULL}, uses \code{100}. Ignored by the other landmark
 methods. Defaults to \code{NULL}.}
 
+\item{landmark_k_means}{String. k-means used by the spectral landmark
+selection. Ignored by the other landmark methods. One of \code{c("emeans", "lloyd")}. Defaults to \code{"emeans"}.}
+
 \item{mds_method}{String. MDS algorithm used for the final embedding. One of
 \code{c("sgd_dense", "classic")}. Defaults to \code{"sgd_dense"}.}
 
@@ -85,6 +89,8 @@ diffusion operator is used. Defaults to \code{2048L}.
 \item n_svd - Integer or \code{NULL}. Number of singular vectors for spectral
 landmark selection. If \code{NULL}, uses \code{100}. Ignored by the other landmark
 methods. Defaults to \code{NULL}.
+\item landmark_k_means - String. k-means used by the spectral landmark
+selection. Ignored by the other landmark methods. One of \code{c("emeans", "lloyd")}. Defaults to \code{"emeans"}.
 \item mds_method - String. MDS algorithm used for the final embedding. One
 of \code{c("sgd_dense", "classic")}. Defaults to \code{"sgd_dense"}.
 \item mds_iter - Integer or \code{NULL}. Number of SGD-MDS iterations. If \code{NULL},

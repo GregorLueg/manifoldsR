@@ -34,6 +34,10 @@
 ) {
   # checks
   assertDensParams(dens_params)
+  assertUmapParams(umap_params)
+  if (umap_params$optimiser == "adam_v06") {
+    stop("densmap() does not support optimiser = \"adam_v06\". UMAP only.")
+  }
 
   final_params <- .prepare_umap_params(
     n = n,

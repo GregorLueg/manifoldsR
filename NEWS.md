@@ -1,3 +1,40 @@
+# manifoldsR 0.7.0
+
+## Breaking changes
+
+Expect different coordinates than 0.6.0 at the same seed for every method that
+builds a kNN graph, and for PHATE and diffusion maps with spectral landmarks.
+
+- manifolds-rs 0.10.2, evoc-rs 0.8.0, ann-search-rs 0.13.1 and bixverse-r
+  0.11.0. UMAP, densMAP and ForceAtlas2 use a refitted `a`/`b` curve and the
+  `log2(k + 1)` bandwidth target of umap-learn and uwot.
+- IVF and kMkNN train their centroids with e-means, and NN-Descent builds its
+  graph differently. `params_nn(k_means = "lloyd")` gets the old centroids back.
+- `kmeans_cluster()` defaults to `method = "emeans"`. `"full"` is deprecated in
+  favour of `"lloyd"`.
+- `tsne()`, `densne()` and `dreams()` default to `perplexity = 30`, was `20`.
+  `params_densne()` `lambda` defaults to `0.1`, was `0.5`. Both now match the
+  Python package.
+- `rs_k_means()` takes an `algorithm` argument.
+
+## Features
+
+- `ncvis()`: NCVis with the NCVis+ defaults. Hogwild! SGD, so only reproducible
+  on one thread.
+- `params_ncvis()`: `init = "ncvis"`, the original NCVis start (uniform noise
+  smoothed over the kNN graph).
+- `localmap()`: LocalMAP, PaCMAP with local repulsion in the last phase.
+- `params_umap()`: `optimiser = "adam_v06"` and `init = "recursive"`, the
+  umap-learn 0.6 Adam and initialisation. `"adam_v06"` is UMAP only.
+- `params_nn()`: `nnd_n_trees` and `k_means`.
+- `params_phate()` and `params_diffusion_maps()`: `landmark_k_means`.
+- `params_kmeans()`: `e_means_epochs`.
+
+## Bug fixes
+
+- `rs_k_means()` fell back to 100 iterations instead of the documented 1000
+  when `max_iters` was missing from the list.
+
 # manifoldsR 0.6.0
 
 ## Breaking changes

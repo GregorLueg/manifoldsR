@@ -7,6 +7,7 @@
 params_kmeans(
   metric = c("euclidean", "cosine"),
   max_iters = 1000L,
+  e_means_epochs = 5,
   batch_size = 4096L,
   drift_threshold = 1e-04,
   lr_alpha = 1,
@@ -18,7 +19,11 @@ params_kmeans(
 \arguments{
 \item{metric}{String. Distance metric to use. One of \code{c("euclidean", "cosine")}. Defaults to \code{"euclidean"}.}
 
-\item{max_iters}{Integer. Maximum number of iterations. Defaults to \code{1000L}.}
+\item{max_iters}{Integer. Maximum number of iterations for Lloyd's and the
+mini-batch k-means. Ignored by e-means. Defaults to \code{1000L}.}
+
+\item{e_means_epochs}{Numeric. Passes over the data for e-means, may be
+fractional. Ignored by the other methods. Defaults to \code{5.0}.}
 
 \item{batch_size}{Integer. Mini-batch size. Only used when \code{method = "minibatch"}. Defaults to \code{4096L}.}
 
@@ -43,8 +48,10 @@ Defaults to \code{NULL}.}
 A named list with the following elements:
 \itemize{
 \item metric - String. Distance metric to use. One of \code{c("euclidean", "cosine")}. Defaults to \code{"euclidean"}.
-\item max_iters - Integer. Maximum number of iterations. Defaults to
-\code{1000L}.
+\item max_iters - Integer. Maximum number of iterations for Lloyd's and the
+mini-batch k-means. Ignored by e-means. Defaults to \code{1000L}.
+\item e_means_epochs - Numeric. Passes over the data for e-means, may be
+fractional. Ignored by the other methods. Defaults to \code{5.0}.
 \item batch_size - Integer. Mini-batch size. Only used when \code{method = "minibatch"}. Defaults to \code{4096L}.
 \item drift_threshold - Numeric. Below which centroid drift the mini-batch
 k-means is considered converged. Only used when \code{method = "minibatch"}.

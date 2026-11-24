@@ -21,17 +21,21 @@ k-means clustering for comparison purposes).
 reduction techniques:
 
 - **UMAP** (Uniform Manifold Approximation and Projection with various 
-  optimisers which makes this fast.)
+  optimisers which makes this fast, including the umap-learn 0.6 Adam and
+  recursive initialisation.)
 - **t-SNE** (t-Distributed Stochastic Neighbor Embedding - Barnes-Hut, 
   quick-and-dirty Barnes-Hut and FFT-accelerated Interpolation-based versions)
 - **PHATE** (Potential of Heat-diffusion for Affinity-based Trajectory 
   Embedding)
-- **PaCMAP** (Pairwise Controlled Manifold Approximation)
+- **PaCMAP** (Pairwise Controlled Manifold Approximation) and **LocalMAP**
+  (PaCMAP with local repulsion that pulls touching clusters apart)
 - **Diffusion map** (A classical method of Manifold learning)
 - **Density-preserving versions of UMAP and tSNE**
 - **DREAMS** (t-SNE regularised towards a global reference embedding, PCA by
   default, so cluster positions keep their meaning)
 - **ForceAtlas2 (2FA)** (Gephi's force-directed graph layout on the kNN graph)
+- **NCVis** (noise-contrastive estimation on the unweighted kNN graph, with the
+  NCVis+ defaults)
 
 The core algorithms are implemented purely in Rust without any kernel switching 
 for speed while providing user-friendly R interfaces. The optimisations here
@@ -49,8 +53,8 @@ Additionally, you might want to cluster your data and then visualise it. For
 this use case, the package also provides the following clustering methods (and
 of course various metrics around clusters)
 
-- **k-means clustering** (mini Batch version and full version with Hamerley's 
-  algorithm)
+- **k-means clustering** (e-means by default, plus mini-batch and Lloyd's with
+  Hamerly's algorithm)
 - **EVõC** (Embedding Vector Oriented Clustering ported from 
   [Python](https://github.com/TutteInstitute/evoc) into Rust and exposed here - 
   from Leland McInnes at the Tutte institute).

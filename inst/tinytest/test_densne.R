@@ -419,6 +419,6 @@ expect_equal(
 
 expect_equal(
   current = params_densne()$lambda,
-  target = 0.5,
+  target = 0.1,
   info = "densne default lambda matches the reference implementation"
 )

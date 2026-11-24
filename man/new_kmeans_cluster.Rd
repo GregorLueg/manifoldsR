@@ -13,7 +13,7 @@ new_kmeans_cluster(centroids, assignments, k, method, metric)
 
 \item{k}{Integer. Number of clusters.}
 
-\item{method}{Character. Either \code{"full"} or \code{"minibatch"}.}
+\item{method}{Character. One of \code{"emeans"}, \code{"lloyd"} or \code{"minibatch"}.}
 
 \item{metric}{Character. Distance metric used.}
 }

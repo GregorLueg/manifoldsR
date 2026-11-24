@@ -463,6 +463,104 @@ rs_pacmap <- function(embd, n_dim, pacmap_params, seed, verbose) .Call(wrap__rs_
 #' @export
 rs_pacmap_from_knn <- function(embd, knn_data, n_dim, pacmap_params, seed, verbose) .Call(wrap__rs_pacmap_from_knn, embd, knn_data, n_dim, pacmap_params, seed, verbose)
 
+#' LocalMAP implementation
+#'
+#' @description
+#' `r lifecycle::badge("experimental")`
+#' Leverages the LocalMAP implementation in manifolds-rs. LocalMAP is PaCMAP
+#' with a local repulsion phase that pulls apart clusters PaCMAP leaves
+#' touching.
+#'
+#' @param embd Numerical matrix. The data to use to generate the embeddings.
+#' Should be of dimensions samples x features.
+#' @param n_dim Integer. Number of dimensions to return.
+#' @param localmap_params Named list. List that contains all of the key
+#' parameters for the LocalMAP generation.
+#' @param seed Integer. Seed for reproducibility.
+#' @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
+#' for detailed verbosity.
+#'
+#' @return The LocalMAP embeddings.
+#'
+#' @export
+rs_localmap <- function(embd, n_dim, localmap_params, seed, verbose) .Call(wrap__rs_localmap, embd, n_dim, localmap_params, seed, verbose)
+
+#' LocalMAP implementation with pre-computed kNN
+#'
+#' @description
+#' `r lifecycle::badge("experimental")`
+#' Leverages the LocalMAP implementation in manifolds-rs. This version uses a
+#' pre-computed kNN graph, please see [new_nearest_neighbour()].
+#'
+#' @param embd Numerical matrix. The data to use to generate the embeddings.
+#' Should be of dimensions samples x features.
+#' @param knn_data `NearestNeighbours` class from R. Needs at least `n_near`
+#' neighbours, and should be `n_near + 50` wide to match the internal search.
+#' @param n_dim Integer. Number of dimensions to return.
+#' @param localmap_params Named list. List that contains all of the key
+#' parameters for the LocalMAP generation.
+#' @param seed Integer. Seed for reproducibility.
+#' @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
+#' for detailed verbosity.
+#'
+#' @return The LocalMAP embeddings.
+#'
+#' @export
+rs_localmap_from_knn <- function(embd, knn_data, n_dim, localmap_params, seed, verbose) .Call(wrap__rs_localmap_from_knn, embd, knn_data, n_dim, localmap_params, seed, verbose)
+
+#' NCVis implementation
+#'
+#' @description
+#' `r lifecycle::badge("experimental")`
+#' Leverages the NCVis implementation in manifolds-rs: noise-contrastive
+#' Hogwild! SGD on the unweighted kNN graph, with the NCVis+ defaults. Only
+#' reproducible at a fixed seed on a single thread.
+#'
+#' @param embd Numerical matrix. The data to use to generate the embeddings.
+#' Should be of dimensions samples x features.
+#' @param n_dim Integer. Number of dimensions to return.
+#' @param min_dist Numeric. Minimum distance, fits the kernel's `a` and `b`.
+#' @param spread Numeric. Spread, fits the kernel's `a` and `b`.
+#' @param k Integer. Number of nearest neighbours.
+#' @param ncvis_params Named list. List that contains all of the key
+#' parameters for the NCVis generation.
+#' @param seed Integer. Seed for reproducibility.
+#' @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
+#' for detailed verbosity.
+#'
+#' @return The NCVis embeddings.
+#'
+#' @export
+rs_ncvis <- function(embd, n_dim, min_dist, spread, k, ncvis_params, seed, verbose) .Call(wrap__rs_ncvis, embd, n_dim, min_dist, spread, k, ncvis_params, seed, verbose)
+
+#' NCVis implementation with pre-computed kNN
+#'
+#' @description
+#' `r lifecycle::badge("experimental")`
+#' Leverages the NCVis implementation in manifolds-rs. This version uses a
+#' pre-computed kNN graph, please see [new_nearest_neighbour()]. The
+#' distances are ignored; NCVis works on the unweighted graph. Graphs wider
+#' than `k` are cut to `k` with a warning.
+#'
+#' @param embd Numerical matrix. The data to use to generate the embeddings.
+#' Should be of dimensions samples x features. Needed for the PCA
+#' initialisation.
+#' @param knn_data `NearestNeighbours` class from R.
+#' @param n_dim Integer. Number of dimensions to return.
+#' @param min_dist Numeric. Minimum distance, fits the kernel's `a` and `b`.
+#' @param spread Numeric. Spread, fits the kernel's `a` and `b`.
+#' @param k Integer. Number of nearest neighbours.
+#' @param ncvis_params Named list. List that contains all of the key
+#' parameters for the NCVis generation.
+#' @param seed Integer. Seed for reproducibility.
+#' @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
+#' for detailed verbosity.
+#'
+#' @return The NCVis embeddings.
+#'
+#' @export
+rs_ncvis_from_knn <- function(embd, knn_data, n_dim, min_dist, spread, k, ncvis_params, seed, verbose) .Call(wrap__rs_ncvis_from_knn, embd, knn_data, n_dim, min_dist, spread, k, ncvis_params, seed, verbose)
+
 #' Diffusion maps implementation
 #'
 #' @description
@@ -564,14 +662,15 @@ rs_evoc_from_knn <- function(embd, knn_data, n_neighbours, evoc_params, seed, ve
 #'
 #' @description
 #' `r lifecycle::badge("experimental")`
-#' Rust interface for k-means clustering using Lloyd's algorithm with SIMD or
-#' GEMM acceleration depending on dimensionality. It exposes the high
-#' performance k-means clustering code from the Rust crate `ann-search-rs`
-#' for rapid clustering.
+#' Rust interface for k-means clustering via e-means (mini-batch EMA updates,
+#' Bessa et al. 2026) or Lloyd's algorithm with SIMD or GEMM acceleration
+#' depending on dimensionality. It exposes the k-means code from the Rust
+#' crate `ann-search-rs` through `bixverse-rs`.
 #'
 #' @param data Numerical matrix. The data to cluster, of dimensions
 #' samples x features.
 #' @param k Integer. Number of clusters.
+#' @param algorithm String. One of `"emeans"` or `"lloyd"`.
 #' @param kmeans_params Named list. Parameters produced by `params_kmeans()`.
 #' @param seed Integer. Seed for reproducibility.
 #' @param verbose Boolean. Controls verbosity.
@@ -583,7 +682,7 @@ rs_evoc_from_knn <- function(embd, knn_data, n_neighbours, evoc_params, seed, ve
 #' }
 #'
 #' @export
-rs_k_means <- function(data, k, kmeans_params, seed, verbose) .Call(wrap__rs_k_means, data, k, kmeans_params, seed, verbose)
+rs_k_means <- function(data, k, algorithm, kmeans_params, seed, verbose) .Call(wrap__rs_k_means, data, k, algorithm, kmeans_params, seed, verbose)
 
 #' Mini-batch k-means clustering
 #'

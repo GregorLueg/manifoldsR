@@ -7,7 +7,7 @@
 kmeans_cluster(
   data,
   k,
-  method = c("full", "minibatch"),
+  method = c("emeans", "lloyd", "minibatch"),
   kmeans_params = params_kmeans(),
   seed = 42L,
   .verbose = TRUE
@@ -19,8 +19,10 @@ samples x features. Will be coerced to a matrix.}
 
 \item{k}{Integer. Number of clusters to create. Must be >= 2.}
 
-\item{method}{Character. Clustering method. One of \code{"full"} (Lloyd's
-algorithm) or \code{"minibatch"} (mini-batch k-means). Defaults to \code{"full"}.}
+\item{method}{Character. Clustering method. One of \code{"emeans"} (e-means),
+\code{"lloyd"} (Lloyd's algorithm) or \code{"minibatch"} (Sculley's mini-batch
+k-means). \code{"full"} is a deprecated alias of \code{"lloyd"}. Defaults to
+\code{"emeans"}.}
 
 \item{kmeans_params}{Named list. K-means parameters, see \code{\link[=params_kmeans]{params_kmeans()}}.}
 
@@ -38,13 +40,18 @@ assignments (1-indexed).}
 }
 }
 \description{
-Performs k-means clustering on the input data. Supports both
-full Lloyd's iterations (with SIMD/GEMM acceleration) and mini-batch k-means
-for large data sets.
+Performs k-means clustering on the input data. Three methods:
+e-means (the default), full Lloyd's iterations (with SIMD/GEMM acceleration)
+and Sculley's mini-batch k-means. e-means runs mini-batch EMA updates with a
+batch size and step fitted to the data, and matches or beats Lloyd's loss in
+a handful of passes over the data.
 }
 \examples{
 d <- manifold_synthetic_data(type = "clusters", n_samples = 500L)
 km <- kmeans_cluster(d$data, k = 4L, .verbose = FALSE)
 km
 
+}
+\references{
+Bessa, et al., arXiv:2611.09501, 2026 (e-means)
 }

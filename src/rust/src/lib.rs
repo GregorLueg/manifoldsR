@@ -9,6 +9,7 @@ pub mod evoc;
 pub mod fa2;
 pub mod k_means;
 pub mod metrics;
+pub mod ncvis;
 pub mod pacmap;
 pub mod phate;
 pub mod tsne;
@@ -30,6 +31,7 @@ use crate::evoc::*;
 use crate::fa2::*;
 use crate::k_means::*;
 use crate::metrics::*;
+use crate::ncvis::*;
 use crate::pacmap::*;
 use crate::phate::*;
 use crate::tsne::*;
@@ -60,6 +62,10 @@ extendr_module! {
     fn rs_phate_from_knn;
     fn rs_pacmap;
     fn rs_pacmap_from_knn;
+    fn rs_localmap;
+    fn rs_localmap_from_knn;
+    fn rs_ncvis;
+    fn rs_ncvis_from_knn;
     fn rs_diffusion_maps;
     fn rs_diffusion_maps_from_knn;
     // clustering
@@ -977,6 +983,196 @@ fn rs_pacmap_from_knn(
     Ok(faer_to_r_matrix(res.as_ref()))
 }
 
+//////////////
+// LocalMAP //
+//////////////
+
+/// LocalMAP implementation
+///
+/// @description
+/// `r lifecycle::badge("experimental")`
+/// Leverages the LocalMAP implementation in manifolds-rs. LocalMAP is PaCMAP
+/// with a local repulsion phase that pulls apart clusters PaCMAP leaves
+/// touching.
+///
+/// @param embd Numerical matrix. The data to use to generate the embeddings.
+/// Should be of dimensions samples x features.
+/// @param n_dim Integer. Number of dimensions to return.
+/// @param localmap_params Named list. List that contains all of the key
+/// parameters for the LocalMAP generation.
+/// @param seed Integer. Seed for reproducibility.
+/// @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
+/// for detailed verbosity.
+///
+/// @return The LocalMAP embeddings.
+///
+/// @export
+#[extendr]
+fn rs_localmap(
+    embd: RMatrix<f64>,
+    n_dim: usize,
+    localmap_params: List,
+    seed: usize,
+    verbose: usize,
+) -> Result<RMatrix<f64>, extendr_api::Error> {
+    let embd = r_matrix_to_faer_fp32(&embd);
+    let res = localmap_manifold(embd.as_ref(), None, n_dim, localmap_params, seed, verbose)
+        .to_extendr()?;
+
+    Ok(faer_to_r_matrix(res.as_ref()))
+}
+
+/// LocalMAP implementation with pre-computed kNN
+///
+/// @description
+/// `r lifecycle::badge("experimental")`
+/// Leverages the LocalMAP implementation in manifolds-rs. This version uses a
+/// pre-computed kNN graph, please see [new_nearest_neighbour()].
+///
+/// @param embd Numerical matrix. The data to use to generate the embeddings.
+/// Should be of dimensions samples x features.
+/// @param knn_data `NearestNeighbours` class from R. Needs at least `n_near`
+/// neighbours, and should be `n_near + 50` wide to match the internal search.
+/// @param n_dim Integer. Number of dimensions to return.
+/// @param localmap_params Named list. List that contains all of the key
+/// parameters for the LocalMAP generation.
+/// @param seed Integer. Seed for reproducibility.
+/// @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
+/// for detailed verbosity.
+///
+/// @return The LocalMAP embeddings.
+///
+/// @export
+#[extendr]
+fn rs_localmap_from_knn(
+    embd: RMatrix<f64>,
+    knn_data: List,
+    n_dim: usize,
+    localmap_params: List,
+    seed: usize,
+    verbose: usize,
+) -> Result<RMatrix<f64>, extendr_api::Error> {
+    let embd = r_matrix_to_faer_fp32(&embd);
+    let knn = nearest_neighbours_to_rust(knn_data);
+    let res = localmap_manifold(embd.as_ref(), knn, n_dim, localmap_params, seed, verbose)
+        .to_extendr()?;
+
+    Ok(faer_to_r_matrix(res.as_ref()))
+}
+
+///////////
+// NCVis //
+///////////
+
+/// NCVis implementation
+///
+/// @description
+/// `r lifecycle::badge("experimental")`
+/// Leverages the NCVis implementation in manifolds-rs: noise-contrastive
+/// Hogwild! SGD on the unweighted kNN graph, with the NCVis+ defaults. Only
+/// reproducible at a fixed seed on a single thread.
+///
+/// @param embd Numerical matrix. The data to use to generate the embeddings.
+/// Should be of dimensions samples x features.
+/// @param n_dim Integer. Number of dimensions to return.
+/// @param min_dist Numeric. Minimum distance, fits the kernel's `a` and `b`.
+/// @param spread Numeric. Spread, fits the kernel's `a` and `b`.
+/// @param k Integer. Number of nearest neighbours.
+/// @param ncvis_params Named list. List that contains all of the key
+/// parameters for the NCVis generation.
+/// @param seed Integer. Seed for reproducibility.
+/// @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
+/// for detailed verbosity.
+///
+/// @return The NCVis embeddings.
+///
+/// @export
+#[extendr]
+#[allow(clippy::too_many_arguments)]
+fn rs_ncvis(
+    embd: RMatrix<f64>,
+    n_dim: usize,
+    min_dist: f64,
+    spread: f64,
+    k: usize,
+    ncvis_params: List,
+    seed: usize,
+    verbose: usize,
+) -> Result<RMatrix<f64>, extendr_api::Error> {
+    let embd = r_matrix_to_faer_fp32(&embd);
+    let res = ncvis_manifold(
+        embd.as_ref(),
+        None,
+        n_dim,
+        k,
+        min_dist,
+        spread,
+        ncvis_params,
+        seed,
+        verbose,
+    )
+    .to_extendr()?;
+
+    Ok(faer_to_r_matrix(res.as_ref()))
+}
+
+/// NCVis implementation with pre-computed kNN
+///
+/// @description
+/// `r lifecycle::badge("experimental")`
+/// Leverages the NCVis implementation in manifolds-rs. This version uses a
+/// pre-computed kNN graph, please see [new_nearest_neighbour()]. The
+/// distances are ignored; NCVis works on the unweighted graph. Graphs wider
+/// than `k` are cut to `k` with a warning.
+///
+/// @param embd Numerical matrix. The data to use to generate the embeddings.
+/// Should be of dimensions samples x features. Needed for the PCA
+/// initialisation.
+/// @param knn_data `NearestNeighbours` class from R.
+/// @param n_dim Integer. Number of dimensions to return.
+/// @param min_dist Numeric. Minimum distance, fits the kernel's `a` and `b`.
+/// @param spread Numeric. Spread, fits the kernel's `a` and `b`.
+/// @param k Integer. Number of nearest neighbours.
+/// @param ncvis_params Named list. List that contains all of the key
+/// parameters for the NCVis generation.
+/// @param seed Integer. Seed for reproducibility.
+/// @param verbose Integer. If `0L` -> silent or `1L` for normal verbosity; `2L`
+/// for detailed verbosity.
+///
+/// @return The NCVis embeddings.
+///
+/// @export
+#[extendr]
+#[allow(clippy::too_many_arguments)]
+fn rs_ncvis_from_knn(
+    embd: RMatrix<f64>,
+    knn_data: List,
+    n_dim: usize,
+    min_dist: f64,
+    spread: f64,
+    k: usize,
+    ncvis_params: List,
+    seed: usize,
+    verbose: usize,
+) -> Result<RMatrix<f64>, extendr_api::Error> {
+    let embd = r_matrix_to_faer_fp32(&embd);
+    let knn = nearest_neighbours_to_rust(knn_data);
+    let res = ncvis_manifold(
+        embd.as_ref(),
+        knn,
+        n_dim,
+        k,
+        min_dist,
+        spread,
+        ncvis_params,
+        seed,
+        verbose,
+    )
+    .to_extendr()?;
+
+    Ok(faer_to_r_matrix(res.as_ref()))
+}
+
 ////////////////////
 // Diffusion maps //
 ////////////////////
@@ -1078,10 +1274,14 @@ fn rs_diffusion_maps_from_knn(
 ///
 /// @export
 #[extendr]
-fn rs_data_swiss_roll(n_samples: usize, noise: f64, seed: usize) -> RMatrix<f64> {
-    let res = generate_swiss_roll(n_samples, noise, seed as u64);
+fn rs_data_swiss_roll(
+    n_samples: usize,
+    noise: f64,
+    seed: usize,
+) -> extendr_api::Result<RMatrix<f64>> {
+    let res = generate_swiss_roll(n_samples, noise, seed as u64).to_extendr()?;
 
-    faer_to_r_matrix(res.as_ref())
+    Ok(faer_to_r_matrix(res.as_ref()))
 }
 
 /// Generates biased Swiss roll data
@@ -1102,10 +1302,15 @@ fn rs_data_swiss_roll(n_samples: usize, noise: f64, seed: usize) -> RMatrix<f64>
 ///
 /// @export
 #[extendr]
-fn rs_data_biased_swiss_roll(n_samples: usize, noise: f64, bias: f64, seed: usize) -> RMatrix<f64> {
-    let (res, _) = generate_swiss_roll_biased(n_samples, noise, bias, seed as u64);
+fn rs_data_biased_swiss_roll(
+    n_samples: usize,
+    noise: f64,
+    bias: f64,
+    seed: usize,
+) -> extendr_api::Result<RMatrix<f64>> {
+    let (res, _) = generate_swiss_roll_biased(n_samples, noise, bias, seed as u64).to_extendr()?;
 
-    faer_to_r_matrix(res.as_ref())
+    Ok(faer_to_r_matrix(res.as_ref()))
 }
 
 /// Generates clustered data
@@ -1428,14 +1633,15 @@ fn rs_evoc_from_knn(
 ///
 /// @description
 /// `r lifecycle::badge("experimental")`
-/// Rust interface for k-means clustering using Lloyd's algorithm with SIMD or
-/// GEMM acceleration depending on dimensionality. It exposes the high
-/// performance k-means clustering code from the Rust crate `ann-search-rs`
-/// for rapid clustering.
+/// Rust interface for k-means clustering via e-means (mini-batch EMA updates,
+/// Bessa et al. 2026) or Lloyd's algorithm with SIMD or GEMM acceleration
+/// depending on dimensionality. It exposes the k-means code from the Rust
+/// crate `ann-search-rs` through `bixverse-rs`.
 ///
 /// @param data Numerical matrix. The data to cluster, of dimensions
 /// samples x features.
 /// @param k Integer. Number of clusters.
+/// @param algorithm String. One of `"emeans"` or `"lloyd"`.
 /// @param kmeans_params Named list. Parameters produced by `params_kmeans()`.
 /// @param seed Integer. Seed for reproducibility.
 /// @param verbose Boolean. Controls verbosity.
@@ -1451,6 +1657,7 @@ fn rs_evoc_from_knn(
 fn rs_k_means(
     data: RMatrix<f64>,
     k: usize,
+    algorithm: &str,
     kmeans_params: List,
     seed: usize,
     verbose: bool,
@@ -1464,7 +1671,11 @@ fn rs_k_means(
         (g, h) => Some(parse_kmean_path(g.unwrap_or(false), h.unwrap_or(false))),
     };
     let init = parse_kmeans_init(&params.init);
-    let bx_kmeans_params = KMeansParamsWrappers::new(params.max_iters, init, path);
+    let algorithm = parse_kmeans_algorithm(algorithm, params.e_means_epochs).ok_or_else(|| {
+        extendr_api::Error::Other(format!("Unknown k-means algorithm: {algorithm}"))
+    })?;
+    let bx_kmeans_params =
+        KMeansParamsWrappers::new(params.max_iters, init, path).with_algorithm(algorithm);
 
     let (centroids, assignments) = k_means_clusters(
         data.as_ref(),

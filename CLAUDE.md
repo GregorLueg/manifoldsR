@@ -5,7 +5,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## What this package is
 
 `manifoldsR` is a thin R wrapper over Rust. Every algorithm (UMAP, tSNE, densMAP,
-den-SNE, DREAMS, PHATE, PacMAP, diffusion maps, ForceAtlas2, EVoC, k-means)
+den-SNE, DREAMS, PHATE, PaCMAP, LocalMAP, diffusion maps, ForceAtlas2, NCVis,
+EVoC, k-means/e-means)
 lives in external crates
 (`manifolds-rs`, `ann-search-rs`, `evoc-rs`, `bixverse-rs`). The Rust code in
 `src/rust/src/` is a translation layer only: it parses R lists into the crates'
@@ -72,26 +73,35 @@ Each method repeats the same five-part structure. Follow it exactly when adding 
    struct, usually an `Internal<Algo>Params<T>` with a `from_r_list()` that pulls
    each key out of a `HashMap<&str, Robj>` with a fallback default. Variants of
    an existing method reuse its builder (den-SNE and DREAMS call
-   `build_tsne_params()` in `tsne.rs`). The corresponding `rs_*` function goes in `src/rust/src/lib.rs`
+   `build_tsne_params()` in `tsne.rs`; LocalMAP reuses `InternalPacmapParams`
+   in `pacmap.rs`). The corresponding `rs_*` function goes in `src/rust/src/lib.rs`
    and must be registered in the `extendr_module!` block there.
 
 The flat-list handoff means R and Rust agree on parameter names by convention only.
 A rename on one side silently falls back to the Rust default on the other. Check both.
 Same failure for types: `Robj::as_real()` returns `None` on an integer, so a
 `p_dbl` field passed as `1L` (which `N1` accepts) silently becomes the Rust
-default unless the parser also tries `as_integer()`.
+default unless the parser also tries `as_integer()`. New parsers use
+`robj_to_f64()` in `utils.rs`, which does both.
 
 ## Dependencies
 
-- `bixverse-rs` needs `features = ["r"]` for the extendr helpers
-  (`IntoExtendrErr`, `r_matrix_to_faer`, ...).
+- The extendr helpers (`IntoExtendrErr`, `r_matrix_to_faer`, ...) come from the
+  `bixverse-r` crate.
+- `ann-search-rs` enables `accelerate` by default (Apple Accelerate cblas for
+  GEMM). It is gated on `target_os = "macos"`, so a no-op elsewhere, and links
+  the system framework, so nothing is bundled. Cargo unifies features, so
+  `default-features = false` on one dependent does not turn it off.
 - `manifolds-rs` is built with `fft_tsne` (pure Rust `rustfft`/`realfft`), so the
   FFT t-SNE variants work on every platform. No `cfg(windows)` splits.
 - Unreleased crate versions come in via `[patch.crates-io]` entries in
   `src/rust/Cargo.toml` pointing at GitHub branches or local paths. Local paths
   must go before a push, as they break CI. Drop all of them before a release.
 - `ann-search-rs`, `faer` and `evoc-rs` must line up with what `manifolds-rs` and
-  `bixverse-rs` use, or the types do not unify. Check with `cargo tree -d`.
+  `bixverse-r` use, or the types do not unify. Check with `cargo tree -d`.
+  `ann-search-rs` declares `links = "mlxc"`, so two of its versions cannot sit in
+  one tree at all: cargo refuses to resolve. A bump there needs `bixverse-r` on
+  the same `ann-search-rs` minor.
 
 ## Cross-cutting conventions
 

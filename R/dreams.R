@@ -66,7 +66,7 @@
 #' Currently only `2L` is supported. Defaults to `2L`.
 #' @param perplexity Numeric. Perplexity parameter, related to the number of
 #' nearest neighbours used in manifold learning. Typical values are between
-#' 5 and 50. Defaults to `20.0`.
+#' 5 and 50. Defaults to `30.0`.
 #' @param approx_type Character. Approximation method for computing repulsive
 #' forces. One of `"bh"` for Barnes-Hut, `"bh_qd"` for the quick-and-dirty
 #' Barnes-Hut of qdtsne (tree depth capped at `max_depth` in [params_tsne()],
@@ -104,7 +104,7 @@ dreams <- function(
   knn = NULL,
   reference = NULL,
   n_dim = 2L,
-  perplexity = 20.0,
+  perplexity = 30.0,
   approx_type = c("bh", "bh_qd", "fft", "fft_3k"),
   knn_method = c(
     "ivf",

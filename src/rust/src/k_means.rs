@@ -20,6 +20,8 @@ pub struct InternalKmeansParams {
     pub init: String,
     /// Maximum number of Lloyd's / mini-batch iterations.
     pub max_iters: usize,
+    /// e-means epoch budget. Passes over the data, may be fractional.
+    pub e_means_epochs: f64,
     /// Mini-batch size. Only used by the mini-batch path.
     pub batch_size: usize,
     /// Drifting threshold
@@ -56,7 +58,11 @@ impl InternalKmeansParams {
         let max_iters = params
             .get("max_iters")
             .and_then(|v| v.as_integer())
-            .unwrap_or(100) as usize;
+            .unwrap_or(1000) as usize;
+        let e_means_epochs = params
+            .get("e_means_epochs")
+            .and_then(|v| v.as_real().or_else(|| v.as_integer().map(|i| i as f64)))
+            .unwrap_or(5.0);
         let batch_size = params
             .get("batch_size")
             .and_then(|v| v.as_integer())
@@ -82,6 +88,7 @@ impl InternalKmeansParams {
         Ok(Self {
             metric,
             max_iters,
+            e_means_epochs,
             batch_size,
             drift_threshold,
             lr_alpha,

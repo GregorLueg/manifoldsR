@@ -185,6 +185,48 @@ expect_true(
   info = "umap correctly separates clusters (adam)"
 )
 
+#### adam_v06 with recursive init ----------------------------------------------
+
+umap_res_v06 <- umap(
+  data = cluster_data,
+  k = 5L,
+  umap_params = params_umap(optimiser = "adam_v06", init = "recursive"),
+  .verbose = FALSE
+)
+
+umap_res_tests_v06 <- check_cluster_separation(
+  embd = umap_res_v06,
+  cluster_membership = cluster_membership
+)
+
+expect_true(
+  current = checkmate::testMatrix(
+    x = umap_res_v06,
+    mode = "numeric",
+    any.missing = FALSE,
+    ncols = 2L,
+    nrow = n_samples
+  ),
+  info = "umap result correctly returned (adam_v06 + recursive)"
+)
+
+expect_true(
+  current = mean(umap_res_tests_v06$within_dists) <
+    mean(umap_res_tests_v06$between_dists),
+  info = "umap correctly separates clusters (adam_v06 + recursive)"
+)
+
+expect_error(
+  current = densmap(
+    data = cluster_data,
+    k = 5L,
+    umap_params = params_umap(optimiser = "adam_v06"),
+    .verbose = FALSE
+  ),
+  pattern = "adam_v06",
+  info = "densmap rejects adam_v06"
+)
+
 ## .prepare_umap_params --------------------------------------------------------
 
 ### n_epochs resolution --------------------------------------------------------

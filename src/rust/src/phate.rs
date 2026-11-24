@@ -49,6 +49,9 @@ pub struct InternalPhateParams<T> {
     /// Singular vectors for spectral landmark selection. `None` uses
     /// `LANDMARK_DEFAULT_N_SVD` from `manifolds-rs`.
     pub n_svd: Option<usize>,
+    /// k-means for spectral landmark selection. One of `"emeans"` or
+    /// `"lloyd"`.
+    pub landmark_k_means: String,
     /// MDS algorithm. One of `"sgd_dense"` or `"classic"`.
     pub mds_method: String,
     /// Optional user-provided number of iterations
@@ -98,6 +101,7 @@ where
             n_landmarks: phate_params.n_landmarks,
             landmark_method: phate_params.landmark_method,
             n_svd: phate_params.n_svd,
+            landmark_k_means: phate_params.landmark_k_means,
             mds_method: phate_params.mds_method,
             mds_iter: phate_params.mds_iter,
             knn_method,
@@ -172,6 +176,11 @@ where
         .get("n_svd")
         .and_then(|v| v.as_integer())
         .map(|v| v as usize);
+    let landmark_k_means = std::string::String::from(
+        p.get("landmark_k_means")
+            .and_then(|v| v.as_str())
+            .unwrap_or("emeans"),
+    );
     let mds_method = std::string::String::from(
         p.get("mds_method")
             .and_then(|v| v.as_str())
@@ -193,6 +202,7 @@ where
         n_landmarks,
         landmark_method,
         n_svd,
+        landmark_k_means,
         mds_method,
         mds_iter,
         knn_method: "kmknn".to_string(),
@@ -257,6 +267,7 @@ where
         internal.n_landmarks,
         internal.landmark_method,
         internal.n_svd,
+        internal.landmark_k_means,
         internal.t_max,
         internal.t_custom,
         internal.gamma.unwrap_or(T::from_f64(1.0).unwrap()),
