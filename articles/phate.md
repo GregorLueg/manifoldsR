@@ -469,11 +469,10 @@ microbenchmark::microbenchmark(
   },
   times = 1L
 )
-#>     SGD-MDS may not have converged: stress changed by -1.0% in final iterations. Consider increasing n_iter or adjusting learning_rate.
 #> Unit: seconds
 #>            expr       min        lq      mean    median        uq       max
-#>          phateR 12.379879 12.379879 12.379879 12.379879 12.379879 12.379879
-#>  manifold_phate  3.510058  3.510058  3.510058  3.510058  3.510058  3.510058
+#>          phateR 10.099881 10.099881 10.099881 10.099881 10.099881 10.099881
+#>  manifold_phate  4.123788  4.123788  4.123788  4.123788  4.123788  4.123788
 #>  neval
 #>      1
 #>      1
@@ -517,15 +516,16 @@ microbenchmark::microbenchmark(
   },
   times = 1L
 )
+#>     SGD-MDS may not have converged: stress changed by -2.6% in final iterations. Consider increasing n_iter or adjusting learning_rate.
 #> Unit: seconds
 #>                     expr       min        lq      mean    median        uq
-#>                   phateR 57.989864 57.989864 57.989864 57.989864 57.989864
-#>  manifold_phate_spectral  9.853247  9.853247  9.853247  9.853247  9.853247
-#>    manifold_phate_random  5.016285  5.016285  5.016285  5.016285  5.016285
+#>                   phateR 46.493901 46.493901 46.493901 46.493901 46.493901
+#>  manifold_phate_spectral 10.872636 10.872636 10.872636 10.872636 10.872636
+#>    manifold_phate_random  5.260251  5.260251  5.260251  5.260251  5.260251
 #>        max neval
-#>  57.989864     1
-#>   9.853247     1
-#>   5.016285     1
+#>  46.493901     1
+#>  10.872636     1
+#>   5.260251     1
 ```
 
 As with t-SNE and UMAP, the speed advantage of the Rust implementation

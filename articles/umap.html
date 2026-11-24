@@ -647,17 +647,17 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: milliseconds</span></span>
 <span><span class="co">#&gt;             expr        min         lq       mean     median         uq</span></span>
-<span><span class="co">#&gt;             umap 20613.7166 20613.7166 20613.7166 20613.7166 20613.7166</span></span>
-<span><span class="co">#&gt;  umap_reticulate 31135.6589 31135.6589 31135.6589 31135.6589 31135.6589</span></span>
-<span><span class="co">#&gt;             uwot  5604.7323  5604.7323  5604.7323  5604.7323  5604.7323</span></span>
-<span><span class="co">#&gt;          uwot_v2  2840.6399  2840.6399  2840.6399  2840.6399  2840.6399</span></span>
-<span><span class="co">#&gt;    manifold_umap   757.8398   757.8398   757.8398   757.8398   757.8398</span></span>
+<span><span class="co">#&gt;             umap 21183.8543 21183.8543 21183.8543 21183.8543 21183.8543</span></span>
+<span><span class="co">#&gt;  umap_reticulate 28929.1161 28929.1161 28929.1161 28929.1161 28929.1161</span></span>
+<span><span class="co">#&gt;             uwot  6081.3642  6081.3642  6081.3642  6081.3642  6081.3642</span></span>
+<span><span class="co">#&gt;          uwot_v2  2941.2551  2941.2551  2941.2551  2941.2551  2941.2551</span></span>
+<span><span class="co">#&gt;    manifold_umap   726.1105   726.1105   726.1105   726.1105   726.1105</span></span>
 <span><span class="co">#&gt;         max neval</span></span>
-<span><span class="co">#&gt;  20613.7166     1</span></span>
-<span><span class="co">#&gt;  31135.6589     1</span></span>
-<span><span class="co">#&gt;   5604.7323     1</span></span>
-<span><span class="co">#&gt;   2840.6399     1</span></span>
-<span><span class="co">#&gt;    757.8398     1</span></span></code></pre></div>
+<span><span class="co">#&gt;  21183.8543     1</span></span>
+<span><span class="co">#&gt;  28929.1161     1</span></span>
+<span><span class="co">#&gt;   6081.3642     1</span></span>
+<span><span class="co">#&gt;   2941.2551     1</span></span>
+<span><span class="co">#&gt;    726.1105     1</span></span></code></pre></div>
 </div>
 <p>The standard R version is slow (as expected). The Python version (with numba behind the scenes) via reticulate gives some speed-up, once the numba parts are JIT compiled. <code><a href="https://jlmelville.github.io/uwot/reference/umap2.html" class="external-link">uwot::umap2()</a></code> and <code>manifoldsR</code> are the fastest here. Let’s pit them against each other on a larger data set, Adam against Adam and SGD against SGD, with umap-learn 0.6 in the mix:</p>
 <ul>
@@ -742,21 +742,21 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;                    expr       min        lq      mean    median        uq</span></span>
-<span><span class="co">#&gt;                 uwot_v2 20.697108 20.697108 20.697108 20.697108 20.697108</span></span>
-<span><span class="co">#&gt;  manifold_adam_parallel  8.018765  8.018765  8.018765  8.018765  8.018765</span></span>
-<span><span class="co">#&gt;         umap_learn_adam 22.489317 22.489317 22.489317 22.489317 22.489317</span></span>
-<span><span class="co">#&gt;       manifold_adam_v06 11.805500 11.805500 11.805500 11.805500 11.805500</span></span>
-<span><span class="co">#&gt;                uwot_sgd 12.590817 12.590817 12.590817 12.590817 12.590817</span></span>
-<span><span class="co">#&gt;          umap_learn_sgd 12.865750 12.865750 12.865750 12.865750 12.865750</span></span>
-<span><span class="co">#&gt;   manifold_sgd_parallel  4.630726  4.630726  4.630726  4.630726  4.630726</span></span>
+<span><span class="co">#&gt;                 uwot_v2 20.926223 20.926223 20.926223 20.926223 20.926223</span></span>
+<span><span class="co">#&gt;  manifold_adam_parallel  8.006081  8.006081  8.006081  8.006081  8.006081</span></span>
+<span><span class="co">#&gt;         umap_learn_adam 24.787822 24.787822 24.787822 24.787822 24.787822</span></span>
+<span><span class="co">#&gt;       manifold_adam_v06 45.530757 45.530757 45.530757 45.530757 45.530757</span></span>
+<span><span class="co">#&gt;                uwot_sgd 14.121128 14.121128 14.121128 14.121128 14.121128</span></span>
+<span><span class="co">#&gt;          umap_learn_sgd 10.673991 10.673991 10.673991 10.673991 10.673991</span></span>
+<span><span class="co">#&gt;   manifold_sgd_parallel  5.969445  5.969445  5.969445  5.969445  5.969445</span></span>
 <span><span class="co">#&gt;        max neval</span></span>
-<span><span class="co">#&gt;  20.697108     1</span></span>
-<span><span class="co">#&gt;   8.018765     1</span></span>
-<span><span class="co">#&gt;  22.489317     1</span></span>
-<span><span class="co">#&gt;  11.805500     1</span></span>
-<span><span class="co">#&gt;  12.590817     1</span></span>
-<span><span class="co">#&gt;  12.865750     1</span></span>
-<span><span class="co">#&gt;   4.630726     1</span></span></code></pre></div>
+<span><span class="co">#&gt;  20.926223     1</span></span>
+<span><span class="co">#&gt;   8.006081     1</span></span>
+<span><span class="co">#&gt;  24.787822     1</span></span>
+<span><span class="co">#&gt;  45.530757     1</span></span>
+<span><span class="co">#&gt;  14.121128     1</span></span>
+<span><span class="co">#&gt;  10.673991     1</span></span>
+<span><span class="co">#&gt;   5.969445     1</span></span></code></pre></div>
 </div>
 <p>Optimised memory layouts, aggressive in-lining, heavy parallelism and look-up tables (LUTs) make this version <strong>fast</strong>: likely(?) the fastest UMAP available in R. Memory stays minimal too, as the data lives in Rust from the moment it enters the kernel until the embedding is fitted. No round tripping through R, just compiled code throughout. The different nearest neighbour search algorithms give additional flexibility.</p>
 </section></section><script id="quarto-html-after-body" type="application/javascript">

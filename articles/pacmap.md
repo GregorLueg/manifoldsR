@@ -487,8 +487,8 @@ microbenchmark::microbenchmark(
 )
 #> Unit: milliseconds
 #>             expr       min        lq      mean    median        uq       max
-#>    manifold_umap 1515.4021 1516.4634 1517.7144 1517.5247 1518.8706 1520.2165
-#>  manifold_pacmap  514.4052  514.5111  517.5979  514.6171  519.1943  523.7715
+#>    manifold_umap 1435.1626 1435.8305 1438.0866 1436.4985 1439.5487 1442.5988
+#>  manifold_pacmap  489.6229  491.1113  491.9573  492.5996  493.1244  493.6492
 #>  neval
 #>      3
 #>      3

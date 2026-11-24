@@ -312,7 +312,7 @@ the one to reach for.
 cat("Lloyd's k-means:\n")
 #> Lloyd's k-means:
 cat("  ARI:", calc_ari(cluster_data$membership, membership(km_full)), "\n")
-#>   ARI: 0.7086227
+#>   ARI: 0.7085234
 cat("  Effective clusters:", length(unique(membership(km_full))), "\n")
 #>   Effective clusters: 25
 cat(
@@ -323,7 +323,7 @@ cat(
   )$mean_silhouette,
   "\n"
 )
-#>   Silhouette: 0.4140061
+#>   Silhouette: 0.4139893
 
 cat("\ne-means:\n")
 #> 
@@ -333,7 +333,7 @@ cat(
   calc_ari(cluster_data$membership, membership(km_emeans_over)),
   "\n"
 )
-#>   ARI: 0.7911874
+#>   ARI: 0.7683307
 cat("  Effective clusters:", length(unique(membership(km_emeans_over))), "\n")
 #>   Effective clusters: 25
 cat(
@@ -344,7 +344,7 @@ cat(
   )$mean_silhouette,
   "\n"
 )
-#>   Silhouette: 0.4206932
+#>   Silhouette: 0.3862118
 
 cat("\nMini-batch k-means:\n")
 #> 
@@ -441,9 +441,9 @@ evoc_res <- evoc(
 
 evoc_res
 #> Evoc
-#>   layers:               3 
-#>   best layer:           3 
-#>   best persistence:     2608.52 
+#>   layers:               2 
+#>   best layer:           2 
+#>   best persistence:     2607.747 
 #>   knn:                  not stored
 ```
 
@@ -452,9 +452,9 @@ evoc_res
 evoc_best <- best_membership(evoc_res)
 
 cat("Selected layer:", evoc_best$layer, "\n")
-#> Selected layer: 3
+#> Selected layer: 2
 cat("Persistence score:", round(evoc_best$persistence, 4), "\n")
-#> Persistence score: 2608.52
+#> Persistence score: 2607.747
 cat(
   "Clusters found:",
   length(unique(evoc_best$labels[evoc_best$labels != -1L])),

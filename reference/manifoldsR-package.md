@@ -13,9 +13,15 @@ R interface to the Rust crates 'manifolds-rs', 'ann-search-rs' and
 , PaCMAP (Wang et al., 2021) <https://jmlr.org/papers/v22/20-1061.html>,
 ForceAtlas2 (Jacomy et al., 2014)
 [doi:10.1371/journal.pone.0098679](https://doi.org/10.1371/journal.pone.0098679)
-, DREAMS and diffusion maps. Also generates approximate nearest
-neighbour graphs that every method can reuse, plus EVoC and k-means
-clustering. Multi-threaded via 'Rayon', with f32 or f64 precision.
+, LocalMAP (Wang et al., 2024)
+[doi:10.48550/arXiv.2412.15426](https://doi.org/10.48550/arXiv.2412.15426)
+, NCVis (Artemenkov and Panov, 2020)
+[doi:10.1145/3366423.3380061](https://doi.org/10.1145/3366423.3380061) ,
+DREAMS and diffusion maps. Also generates approximate nearest neighbour
+graphs that every method can reuse, plus EVoC, k-means and e-means
+(Bessa et al., 2026)
+[arXiv:2611.09501](https://arxiv.org/abs/2611.09501) clustering.
+Multi-threaded via 'Rayon'.
 
 ## See also
 

@@ -493,11 +493,10 @@
 <span>  <span class="op">}</span>,</span>
 <span>  times <span class="op">=</span> <span class="fl">1L</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt;     SGD-MDS may not have converged: stress changed by -1.0% in final iterations. Consider increasing n_iter or adjusting learning_rate.</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;            expr       min        lq      mean    median        uq       max</span></span>
-<span><span class="co">#&gt;          phateR 12.379879 12.379879 12.379879 12.379879 12.379879 12.379879</span></span>
-<span><span class="co">#&gt;  manifold_phate  3.510058  3.510058  3.510058  3.510058  3.510058  3.510058</span></span>
+<span><span class="co">#&gt;          phateR 10.099881 10.099881 10.099881 10.099881 10.099881 10.099881</span></span>
+<span><span class="co">#&gt;  manifold_phate  4.123788  4.123788  4.123788  4.123788  4.123788  4.123788</span></span>
 <span><span class="co">#&gt;  neval</span></span>
 <span><span class="co">#&gt;      1</span></span>
 <span><span class="co">#&gt;      1</span></span></code></pre></div>
@@ -539,15 +538,16 @@
 <span>  <span class="op">}</span>,</span>
 <span>  times <span class="op">=</span> <span class="fl">1L</span></span>
 <span><span class="op">)</span></span>
+<span><span class="co">#&gt;     SGD-MDS may not have converged: stress changed by -2.6% in final iterations. Consider increasing n_iter or adjusting learning_rate.</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;                     expr       min        lq      mean    median        uq</span></span>
-<span><span class="co">#&gt;                   phateR 57.989864 57.989864 57.989864 57.989864 57.989864</span></span>
-<span><span class="co">#&gt;  manifold_phate_spectral  9.853247  9.853247  9.853247  9.853247  9.853247</span></span>
-<span><span class="co">#&gt;    manifold_phate_random  5.016285  5.016285  5.016285  5.016285  5.016285</span></span>
+<span><span class="co">#&gt;                   phateR 46.493901 46.493901 46.493901 46.493901 46.493901</span></span>
+<span><span class="co">#&gt;  manifold_phate_spectral 10.872636 10.872636 10.872636 10.872636 10.872636</span></span>
+<span><span class="co">#&gt;    manifold_phate_random  5.260251  5.260251  5.260251  5.260251  5.260251</span></span>
 <span><span class="co">#&gt;        max neval</span></span>
-<span><span class="co">#&gt;  57.989864     1</span></span>
-<span><span class="co">#&gt;   9.853247     1</span></span>
-<span><span class="co">#&gt;   5.016285     1</span></span></code></pre></div>
+<span><span class="co">#&gt;  46.493901     1</span></span>
+<span><span class="co">#&gt;  10.872636     1</span></span>
+<span><span class="co">#&gt;   5.260251     1</span></span></code></pre></div>
 </div>
 <p>As with t-SNE and UMAP, the speed advantage of the Rust implementation comes from the entire pipeline (kNN construction, kernel computation, diffusion and MDS) running within the Rust kernel without round-tripping through Python in this case. Usually, the differences become more pronounced with larger data sets.</p>
 </section></section><script id="quarto-html-after-body" type="application/javascript">
