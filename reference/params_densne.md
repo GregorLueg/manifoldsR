@@ -8,7 +8,7 @@ in the embedding. Setting `lambda` to `0` recovers plain t-SNE.
 ## Usage
 
 ``` r
-params_densne(lambda = 0.5, frac = 0.3, var_shift = 0.1)
+params_densne(lambda = 0.1, frac = 0.3, var_shift = 0.1)
 ```
 
 ## Arguments
@@ -16,8 +16,7 @@ params_densne(lambda = 0.5, frac = 0.3, var_shift = 0.1)
 - lambda:
 
   Numeric. Weight of the density term. `0` disables it. The default is
-  higher than the den-SNE reference value (original: `0.1`). Defaults to
-  `0.5`.
+  the den-SNE reference value. Defaults to `0.1`.
 
 - frac:
 
@@ -34,8 +33,7 @@ params_densne(lambda = 0.5, frac = 0.3, var_shift = 0.1)
 A named list with the following elements:
 
 - lambda - Numeric. Weight of the density term. `0` disables it. The
-  default is higher than the den-SNE reference value (original: `0.1`).
-  Defaults to `0.5`.
+  default is the den-SNE reference value. Defaults to `0.1`.
 
 - frac - Numeric. Fraction of the total epochs, at the end of the run,
   over which the density term is active. Defaults to `0.3`.
@@ -52,7 +50,7 @@ Narayan, Berger & Cho, Nat. Biotechnol., 2021
 ``` r
 params_densne()
 #> $lambda
-#> [1] 0.5
+#> [1] 0.1
 #> 
 #> $frac
 #> [1] 0.3

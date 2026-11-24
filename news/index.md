@@ -1,5 +1,62 @@
 # Changelog
 
+## manifoldsR 0.7.0
+
+### Breaking changes
+
+Expect different coordinates than 0.6.0 at the same seed for every
+method that builds a kNN graph, and for PHATE and diffusion maps with
+spectral landmarks.
+
+- manifolds-rs 0.10.2, evoc-rs 0.8.0, ann-search-rs 0.13.1 and
+  bixverse-r 0.11.0. UMAP, densMAP and ForceAtlas2 use a refitted
+  `a`/`b` curve and the `log2(k + 1)` bandwidth target of umap-learn and
+  uwot.
+- IVF and kMkNN train their centroids with e-means, and NN-Descent
+  builds its graph differently. `params_nn(k_means = "lloyd")` gets the
+  old centroids back.
+- [`kmeans_cluster()`](https://gregorlueg.github.io/manifoldsR/reference/kmeans_cluster.md)
+  defaults to `method = "emeans"`. `"full"` is deprecated in favour of
+  `"lloyd"`.
+- [`tsne()`](https://gregorlueg.github.io/manifoldsR/reference/tsne.md),
+  [`densne()`](https://gregorlueg.github.io/manifoldsR/reference/densne.md)
+  and
+  [`dreams()`](https://gregorlueg.github.io/manifoldsR/reference/dreams.md)
+  default to `perplexity = 30`, was `20`.
+  [`params_densne()`](https://gregorlueg.github.io/manifoldsR/reference/params_densne.md)
+  `lambda` defaults to `0.1`, was `0.5`. Both now match the Python
+  package.
+- [`rs_k_means()`](https://gregorlueg.github.io/manifoldsR/reference/rs_k_means.md)
+  takes an `algorithm` argument.
+
+### Features
+
+- [`ncvis()`](https://gregorlueg.github.io/manifoldsR/reference/ncvis.md):
+  NCVis with the NCVis+ defaults. Hogwild! SGD, so only reproducible on
+  one thread.
+- [`params_ncvis()`](https://gregorlueg.github.io/manifoldsR/reference/params_ncvis.md):
+  `init = "ncvis"`, the original NCVis start (uniform noise smoothed
+  over the kNN graph).
+- [`localmap()`](https://gregorlueg.github.io/manifoldsR/reference/localmap.md):
+  LocalMAP, PaCMAP with local repulsion in the last phase.
+- [`params_umap()`](https://gregorlueg.github.io/manifoldsR/reference/params_umap.md):
+  `optimiser = "adam_v06"` and `init = "recursive"`, the umap-learn 0.6
+  Adam and initialisation. `"adam_v06"` is UMAP only.
+- [`params_nn()`](https://gregorlueg.github.io/manifoldsR/reference/params_nn.md):
+  `nnd_n_trees` and `k_means`.
+- [`params_phate()`](https://gregorlueg.github.io/manifoldsR/reference/params_phate.md)
+  and
+  [`params_diffusion_maps()`](https://gregorlueg.github.io/manifoldsR/reference/params_diffusion_maps.md):
+  `landmark_k_means`.
+- [`params_kmeans()`](https://gregorlueg.github.io/manifoldsR/reference/params_kmeans.md):
+  `e_means_epochs`.
+
+### Bug fixes
+
+- [`rs_k_means()`](https://gregorlueg.github.io/manifoldsR/reference/rs_k_means.md)
+  fell back to 100 iterations instead of the documented 1000 when
+  `max_iters` was missing from the list.
+
 ## manifoldsR 0.6.0
 
 ### Breaking changes

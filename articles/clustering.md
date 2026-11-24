@@ -49,6 +49,15 @@ control the exact dispatch. The
 [`params_kmeans()`](https://gregorlueg.github.io/manifoldsR/reference/params_kmeans.md)
 give you tight control if needed.)
 
+**e-means** ([Bessa et al. 2026](https://arxiv.org/abs/2611.09501)) is
+the default since 0.7.0. It’s a mini-batch method too, but each batch
+moves the centroids by an exponential moving average, and the batch size
+and step size come from scaling laws fitted to the data instead of from
+you. It runs a fixed budget of passes over the data (`e_means_epochs`,
+default `5`) rather than iterating to convergence. The same e-means
+trains the IVF and kMkNN centroids in the kNN searches, see
+`params_nn(k_means = ...)`.
+
 The **mini-batch** variant (Sculley 2010) samples a random subset of
 points per iteration and applies an incremental centroid update with a
 decaying learning rate (`eta = 1/count`). The appeal is that each
@@ -133,9 +142,9 @@ ggplot(base_df, aes(x = UMAP1, y = UMAP2)) +
 
 ### K-means clustering
 
-#### Full k-means at the correct k
+#### Lloyd’s k-means at the correct k
 
-Let’s start with the easy case – we know the true number of clusters and
+Let’s start with the easy case: we know the true number of clusters and
 ask k-means to find exactly that.
 
 ``` r
@@ -143,11 +152,11 @@ ask k-means to find exactly that.
 km_correct <- kmeans_cluster(
   data = cluster_data$data,
   k = n_true,
-  method = "full",
+  method = "lloyd",
   seed = 42L,
   .verbose = TRUE
 )
-#> Running full k-means (k=15, metric=euclidean)
+#> Running Lloyd's k-means (k=15, metric=euclidean)
 ```
 
 ``` r
@@ -157,7 +166,7 @@ base_df[, km_assignment := as.factor(membership(km_correct))]
 ggplot(base_df, aes(x = UMAP1, y = UMAP2)) +
   geom_point(aes(colour = km_assignment), size = 0.5, alpha = 0.5) +
   theme_bw() +
-  ggtitle(sprintf("Full k-means (k=%d)", n_true))
+  ggtitle(sprintf("Lloyd's k-means (k=%d)", n_true))
 ```
 
 ![](clustering_files/figure-html/kmeans%20-%20correct%20k%20plot-1.png)
@@ -179,7 +188,48 @@ cat(
 #> Silhouette: 0.6270099
 ```
 
-#### Over-specifying k: full vs mini-batch
+#### e-means at the correct k
+
+Same data, same `k`, default method:
+
+``` r
+
+km_emeans <- kmeans_cluster(
+  data = cluster_data$data,
+  k = n_true,
+  seed = 42L,
+  .verbose = TRUE
+)
+#> Running e-means (k=15, metric=euclidean)
+```
+
+``` r
+
+data.table(
+  method = c("lloyd", "emeans"),
+  ari = purrr::map_dbl(
+    list(km_correct, km_emeans),
+    \(km) calc_ari(cluster_data$membership, membership(km))
+  ),
+  inertia = purrr::map_dbl(
+    list(km_correct, km_emeans),
+    \(km) calc_inertia(km, data = cluster_data$data)
+  )
+)
+#>    method       ari inertia
+#>    <char>     <num>   <num>
+#> 1:  lloyd 0.8671586 4973336
+#> 2: emeans 1.0000000 3201178
+```
+
+On this run e-means recovers the 15 clusters exactly, at a clearly lower
+inertia than Lloyd’s. Lloyd’s got stuck in a local optimum: it splits
+two true clusters in half and has to merge others to pay for it. That’s
+the usual failure of Lloyd’s: it only polishes the seeding it starts
+from. e-means’ noisy batch updates and its revival of starved centroids
+get it out of those.
+
+#### Over-specifying k: Lloyd’s vs e-means vs mini-batch
 
 In practice, you rarely know the true number of clusters. A common
 approach is to set `k` higher than expected and see what happens. This
@@ -192,11 +242,19 @@ k_over <- 25L
 km_full <- kmeans_cluster(
   data = cluster_data$data,
   k = k_over,
-  method = "full",
+  method = "lloyd",
   seed = 42L,
   .verbose = TRUE
 )
-#> Running full k-means (k=25, metric=euclidean)
+#> Running Lloyd's k-means (k=25, metric=euclidean)
+
+km_emeans_over <- kmeans_cluster(
+  data = cluster_data$data,
+  k = k_over,
+  seed = 42L,
+  .verbose = TRUE
+)
+#> Running e-means (k=25, metric=euclidean)
 
 km_mini <- kmeans_cluster(
   data = cluster_data$data,
@@ -214,6 +272,7 @@ km_mini <- kmeans_cluster(
 
 base_df[, `:=`(
   km_full_over = as.factor(membership(km_full)),
+  km_emeans_over = as.factor(membership(km_emeans_over)),
   km_mini_over = as.factor(membership(km_mini))
 )]
 
@@ -221,7 +280,13 @@ p_full <- ggplot(base_df, aes(x = UMAP1, y = UMAP2)) +
   geom_point(aes(colour = km_full_over), size = 0.5, alpha = 0.5) +
   theme_bw() +
   theme(legend.position = "none") +
-  ggtitle(sprintf("Full k-means (k=%d)", k_over))
+  ggtitle(sprintf("Lloyd's k-means (k=%d)", k_over))
+
+p_emeans <- ggplot(base_df, aes(x = UMAP1, y = UMAP2)) +
+  geom_point(aes(colour = km_emeans_over), size = 0.5, alpha = 0.5) +
+  theme_bw() +
+  theme(legend.position = "none") +
+  ggtitle(sprintf("e-means (k=%d)", k_over))
 
 p_mini <- ggplot(base_df, aes(x = UMAP1, y = UMAP2)) +
   geom_point(aes(colour = km_mini_over), size = 0.5, alpha = 0.5) +
@@ -229,21 +294,23 @@ p_mini <- ggplot(base_df, aes(x = UMAP1, y = UMAP2)) +
   theme(legend.position = "none") +
   ggtitle(sprintf("Mini-batch k-means (k=%d)", k_over))
 
-gridExtra::grid.arrange(p_full, p_mini, ncol = 2)
+gridExtra::grid.arrange(p_full, p_emeans, p_mini, ncol = 3)
 ```
 
 ![](clustering_files/figure-html/kmeans%20-%20over-specified%20plot-1.png)
 
-Full k-means distributes points across all 25 centroids, splitting true
-clusters in two. Mini-batch k-means, due to its incremental learning
-rate, effectively lets some centroids starve; they settle in low-density
-regions and attract very few points. The result more closely mirrors the
-true structure.
+Lloyd’s and e-means both spread the points across all 25 centroids and
+split true clusters to do it. e-means revives starved centroids by
+design, so it won’t leave any idle either. Mini-batch k-means, due to
+its incremental learning rate, lets the extra centroids starve: they
+attract very few points and the result mirrors the true structure much
+more closely. If you over-specify `k` on purpose, mini-batch is still
+the one to reach for.
 
 ``` r
 
-cat("Full k-means:\n")
-#> Full k-means:
+cat("Lloyd's k-means:\n")
+#> Lloyd's k-means:
 cat("  ARI:", calc_ari(cluster_data$membership, membership(km_full)), "\n")
 #>   ARI: 0.7086227
 cat("  Effective clusters:", length(unique(membership(km_full))), "\n")
@@ -257,6 +324,27 @@ cat(
   "\n"
 )
 #>   Silhouette: 0.4140061
+
+cat("\ne-means:\n")
+#> 
+#> e-means:
+cat(
+  "  ARI:",
+  calc_ari(cluster_data$membership, membership(km_emeans_over)),
+  "\n"
+)
+#>   ARI: 0.7911874
+cat("  Effective clusters:", length(unique(membership(km_emeans_over))), "\n")
+#>   Effective clusters: 25
+cat(
+  "  Silhouette:",
+  calc_silhouette_score(
+    cluster_data$data,
+    membership(km_emeans_over)
+  )$mean_silhouette,
+  "\n"
+)
+#>   Silhouette: 0.4206932
 
 cat("\nMini-batch k-means:\n")
 #> 
@@ -290,7 +378,7 @@ elbow_results <- lapply(k_values, function(k) {
   res <- kmeans_cluster(
     data = cluster_data$data,
     k = k,
-    method = "full",
+    method = "lloyd",
     seed = 42L,
     .verbose = FALSE
   )
@@ -353,9 +441,9 @@ evoc_res <- evoc(
 
 evoc_res
 #> Evoc
-#>   layers:               2 
-#>   best layer:           2 
-#>   best persistence:     2593.49 
+#>   layers:               3 
+#>   best layer:           3 
+#>   best persistence:     2608.52 
 #>   knn:                  not stored
 ```
 
@@ -364,9 +452,9 @@ evoc_res
 evoc_best <- best_membership(evoc_res)
 
 cat("Selected layer:", evoc_best$layer, "\n")
-#> Selected layer: 2
+#> Selected layer: 3
 cat("Persistence score:", round(evoc_best$persistence, 4), "\n")
-#> Persistence score: 2593.49
+#> Persistence score: 2608.52
 cat(
   "Clusters found:",
   length(unique(evoc_best$labels[evoc_best$labels != -1L])),

@@ -323,6 +323,85 @@ arbitrary — subclusters from different supergroups may be placed closer
 together than subclusters within the same supergroup. The global
 structure is lost in UMAP compared to PacMAP.
 
+### LocalMAP
+
+[LocalMAP](https://arxiv.org/abs/2412.15426) (Wang et al. 2024) keeps
+PaCMAP’s first two phases and swaps out the third. The mid-near pairs
+drop out, the near-pair pull is scaled by distance, and every 10 epochs
+each point redraws its further pairs from points within `max_distance`
+in the current embedding. Repulsion then comes from points that are
+close in the layout but not in the data, which is exactly where PaCMAP
+leaves clusters touching. Same parameters as
+[`params_pacmap()`](https://gregorlueg.github.io/manifoldsR/reference/params_pacmap.md)
+plus `max_distance` (default `10`), and like PaCMAP it gives the same
+coordinates at a given seed whatever the thread count.
+
+``` r
+
+localmap_hierarchical <- localmap(
+  data = hierarchical_data$data,
+  seed = 42L
+)
+
+localmap_hierarchical_df <- as.data.table(localmap_hierarchical) %>%
+  `colnames<-`(c("LocalMAP1", "LocalMAP2")) %>%
+  .[, supergroup := as.factor(hierarchical_data$membership$supergroup)] %>%
+  .[, subgroup := as.factor(hierarchical_data$membership$subgroup)]
+
+ggplot(
+  data = localmap_hierarchical_df,
+  mapping = aes(x = LocalMAP1, y = LocalMAP2)
+) +
+  geom_point(
+    mapping = aes(colour = subgroup, shape = supergroup),
+    size = 1,
+    alpha = 0.5
+  ) +
+  theme_bw() +
+  ggtitle("LocalMAP on hierarchical data") +
+  scale_colour_viridis_d()
+```
+
+![](pacmap_files/figure-html/hierarchical%20data%20-%20localmap-1.png)
+
+Same arrangement as PaCMAP, supergroups in the same places. PaCMAP
+already keeps these clusters well apart, so there’s nothing for the
+local repulsion to fix here; the clusters just come out a bit wider.
+LocalMAP earns its keep where PaCMAP leaves neighbouring clusters fused.
+
+``` r
+
+localmap_swissroll <- localmap(
+  data = swissroll_data$data,
+  knn_method = "exhaustive",
+  seed = 42L
+)
+
+localmap_swissroll_df <- as.data.table(localmap_swissroll) %>%
+  `colnames<-`(c("LocalMAP1", "LocalMAP2")) %>%
+  .[, z_axis := swissroll_data$data[, 3]]
+
+ggplot(
+  data = localmap_swissroll_df,
+  mapping = aes(x = LocalMAP1, y = LocalMAP2)
+) +
+  geom_point(
+    mapping = aes(fill = z_axis),
+    shape = 21,
+    size = 2,
+    alpha = 0.5
+  ) +
+  scale_fill_viridis_c() +
+  theme_bw() +
+  ggtitle("LocalMAP on Swiss roll data")
+```
+
+![](pacmap_files/figure-html/swissroll%20data%20-%20localmap-1.png)
+
+The flip side: on a sparse continuous sheet the local repulsion works
+against you. The 1k swiss roll falls apart into strips where PaCMAP kept
+it in one piece. For continuous manifolds, stick with PaCMAP.
+
 ### Using pre-computed kNN graphs
 
 As with the other methods, if you want to vary PaCMAP-specific
@@ -406,10 +485,13 @@ microbenchmark::microbenchmark(
   },
   times = 3L
 )
-#> Unit: seconds
-#>             expr      min       lq     mean   median       uq      max neval
-#>    manifold_umap 1.301442 1.305003 1.306424 1.308565 1.308916 1.309266     3
-#>  manifold_pacmap 2.395078 2.405283 2.409552 2.415488 2.416789 2.418090     3
+#> Unit: milliseconds
+#>             expr       min        lq      mean    median        uq       max
+#>    manifold_umap 1515.4021 1516.4634 1517.7144 1517.5247 1518.8706 1520.2165
+#>  manifold_pacmap  514.4052  514.5111  517.5979  514.6171  519.1943  523.7715
+#>  neval
+#>      3
+#>      3
 ```
 
 PaCMAP is generally slower than UMAP on the same data since it processes

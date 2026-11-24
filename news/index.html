@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -26,7 +26,7 @@
     <li><a class="dropdown-item" href="../articles/dreams.html">DREAMS</a></li>
     <li><a class="dropdown-item" href="../articles/phate.html">Using PHATE</a></li>
     <li><a class="dropdown-item" href="../articles/pacmap.html">Using PaCMAP</a></li>
-    <li><a class="dropdown-item" href="../articles/fa2.html">Using ForceAtlas2</a></li>
+    <li><a class="dropdown-item" href="../articles/fa2.html">Using ForceAtlas2 and NCVis</a></li>
     <li><a class="dropdown-item" href="../articles/diffusion_map.html">Using diffusion maps</a></li>
     <li><a class="dropdown-item" href="../articles/clustering.html">Clustering methods in manifoldsR (with emphasis on EVoC)</a></li>
   </ul></li>
@@ -50,6 +50,43 @@
       <small>Source: <a href="https://github.com/GregorLueg/manifoldsR/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.7.0" id="manifoldsr-070">manifoldsR 0.7.0<a class="anchor" aria-label="anchor" href="#manifoldsr-070"></a></h2>
+<div class="section level3">
+<h3 id="breaking-changes-0-7-0">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-7-0"></a></h3>
+<p>Expect different coordinates than 0.6.0 at the same seed for every method that builds a kNN graph, and for PHATE and diffusion maps with spectral landmarks.</p>
+<ul><li>manifolds-rs 0.10.2, evoc-rs 0.8.0, ann-search-rs 0.13.1 and bixverse-r 0.11.0. UMAP, densMAP and ForceAtlas2 use a refitted <code>a</code>/<code>b</code> curve and the <code>log2(k + 1)</code> bandwidth target of umap-learn and uwot.</li>
+<li>IVF and kMkNN train their centroids with e-means, and NN-Descent builds its graph differently. <code>params_nn(k_means = "lloyd")</code> gets the old centroids back.</li>
+<li>
+<code><a href="../reference/kmeans_cluster.html">kmeans_cluster()</a></code> defaults to <code>method = "emeans"</code>. <code>"full"</code> is deprecated in favour of <code>"lloyd"</code>.</li>
+<li>
+<code><a href="../reference/tsne.html">tsne()</a></code>, <code><a href="../reference/densne.html">densne()</a></code> and <code><a href="../reference/dreams.html">dreams()</a></code> default to <code>perplexity = 30</code>, was <code>20</code>. <code><a href="../reference/params_densne.html">params_densne()</a></code> <code>lambda</code> defaults to <code>0.1</code>, was <code>0.5</code>. Both now match the Python package.</li>
+<li>
+<code><a href="../reference/rs_k_means.html">rs_k_means()</a></code> takes an <code>algorithm</code> argument.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="features-0-7-0">Features<a class="anchor" aria-label="anchor" href="#features-0-7-0"></a></h3>
+<ul><li>
+<code><a href="../reference/ncvis.html">ncvis()</a></code>: NCVis with the NCVis+ defaults. Hogwild! SGD, so only reproducible on one thread.</li>
+<li>
+<code><a href="../reference/params_ncvis.html">params_ncvis()</a></code>: <code>init = "ncvis"</code>, the original NCVis start (uniform noise smoothed over the kNN graph).</li>
+<li>
+<code><a href="../reference/localmap.html">localmap()</a></code>: LocalMAP, PaCMAP with local repulsion in the last phase.</li>
+<li>
+<code><a href="../reference/params_umap.html">params_umap()</a></code>: <code>optimiser = "adam_v06"</code> and <code>init = "recursive"</code>, the umap-learn 0.6 Adam and initialisation. <code>"adam_v06"</code> is UMAP only.</li>
+<li>
+<code><a href="../reference/params_nn.html">params_nn()</a></code>: <code>nnd_n_trees</code> and <code>k_means</code>.</li>
+<li>
+<code><a href="../reference/params_phate.html">params_phate()</a></code> and <code><a href="../reference/params_diffusion_maps.html">params_diffusion_maps()</a></code>: <code>landmark_k_means</code>.</li>
+<li>
+<code><a href="../reference/params_kmeans.html">params_kmeans()</a></code>: <code>e_means_epochs</code>.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-0-7-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-7-0"></a></h3>
+<ul><li>
+<code><a href="../reference/rs_k_means.html">rs_k_means()</a></code> fell back to 100 iterations instead of the documented 1000 when <code>max_iters</code> was missing from the list.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.6.0" id="manifoldsr-060">manifoldsR 0.6.0<a class="anchor" aria-label="anchor" href="#manifoldsr-060"></a></h2>
 <div class="section level3">

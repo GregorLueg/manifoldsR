@@ -28,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,7 +49,7 @@
     <li><a class="dropdown-item" href="../articles/dreams.html">DREAMS</a></li>
     <li><a class="dropdown-item" href="../articles/phate.html">Using PHATE</a></li>
     <li><a class="dropdown-item" href="../articles/pacmap.html">Using PaCMAP</a></li>
-    <li><a class="dropdown-item" href="../articles/fa2.html">Using ForceAtlas2</a></li>
+    <li><a class="dropdown-item" href="../articles/fa2.html">Using ForceAtlas2 and NCVis</a></li>
     <li><a class="dropdown-item" href="../articles/diffusion_map.html">Using diffusion maps</a></li>
     <li><a class="dropdown-item" href="../articles/clustering.html">Clustering methods in manifoldsR (with emphasis on EVoC)</a></li>
   </ul>
@@ -79,7 +79,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Clustering methods in manifoldsR (with emphasis on EVoC)</h1>
 
       <p class="author">Gregor Lueg</p>
-      <p class="date">2026-11-23</p>
+      <p class="date">2026-11-24</p>
 
       <small class="dont-index">Source: <a href="https://github.com/GregorLueg/manifoldsR/blob/main/vignettes/clustering.qmd" class="external-link"><code>vignettes/clustering.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
@@ -109,6 +109,7 @@
 </h3>
 <p><strong>K-means</strong> partitions data into exactly <code>k</code> clusters by iteratively assigning points to the nearest centroid and recomputing centroids as cluster means.</p>
 <p>The <strong>full</strong> (Lloyd’s) implementation in <code>manifoldsR</code> is heavily optimised (original from <a href="https://docs.rs/ann-search-rs" class="external-link">ann-search-rs</a>). For high-dimensional data (dim &gt;= 96), it defaults to the Hamerly’s algorithm: per-point upper and lower distance bounds prune the vast majority of distance computations after the first few iterations, while GEMM-based assignment (defaulted to when the dimensionality is high enough) keeps the remaining work cache-friendly. For Euclidean distance, this typically prunes 90%+ of point-centroid comparisons after 3-4 iterations, meaning convergence cost is closer to a handful of full passes than the theoretical worst case. For cosine distance (where Hamerly’s bounds do not apply, since cosine lacks the triangle inequality), a full GEMM reassignment is performed each iteration. Lower-dimensional data (dim &lt; 96) falls back to direct SIMD-accelerated loops, which avoid the GEMM kernel overhead at small dimensions. (If you wish you can actually control the exact dispatch. The <code><a href="../reference/params_kmeans.html">params_kmeans()</a></code> give you tight control if needed.)</p>
+<p><strong>e-means</strong> (<a href="https://arxiv.org/abs/2611.09501" class="external-link">Bessa et al. 2026</a>) is the default since 0.7.0. It’s a mini-batch method too, but each batch moves the centroids by an exponential moving average, and the batch size and step size come from scaling laws fitted to the data instead of from you. It runs a fixed budget of passes over the data (<code>e_means_epochs</code>, default <code>5</code>) rather than iterating to convergence. The same e-means trains the IVF and kMkNN centroids in the kNN searches, see <code>params_nn(k_means = ...)</code>.</p>
 <p>The <strong>mini-batch</strong> variant (Sculley 2010) samples a random subset of points per iteration and applies an incremental centroid update with a decaying learning rate (<code>eta = 1/count</code>). The appeal is that each iteration is cheap: only <code>batch_size</code> distance computations instead of <code>n</code>. In practice, however, the full version’s bound-based pruning is so aggressive that mini-batch does not offer a speed advantage until data sets become very large (roughly 10M+ points) or cluster structure is messy enough that Hamerly’s pruning cannot eliminate most candidates. At moderate scales (up to ~1M), the full version often converges faster in wall-clock time.</p>
 <p>Where mini-batch does differ meaningfully is in its <strong>behaviour under over-specification of <code>k</code></strong>. Because the incremental learning rate causes centroids near dense clusters to stabilise quickly (their counts grow large, shrinking eta), extra centroids in low-density regions receive few updates and effectively starve. The result is that mini-batch k-means is more robust to setting <code>k</code> higher than the true number of clusters, i.e., it naturally concentrates mass on the real structure rather than forcing every centroid to carve out territory.</p>
 <p><strong>EVoC</strong> (Embedding Vector Oriented Clustering) takes a fundamentally different approach. It constructs a k-nearest neighbour graph, learns a lower-dimensional embedding optimised for clustering (similar to UMAP, but with more target dimensions and a different loss focus), then applies hierarchical density-based clustering (in the spirit of HDBSCAN) with multi-layer persistence analysis. The key advantage is that EVoC <strong>does not require you to specify the number of clusters</strong> – it discovers them automatically and returns multiple layers of granularity ranked by persistence. It also handles noise and outliers naturally, assigning them a label of <code>-1</code>.</p>
@@ -160,19 +161,19 @@
 </div>
 </section><section class="level2"><h3 id="k-means-clustering">K-means clustering<a class="anchor" aria-label="anchor" href="#k-means-clustering"></a>
 </h3>
-<section class="level3"><h4 id="full-k-means-at-the-correct-k">Full k-means at the correct k<a class="anchor" aria-label="anchor" href="#full-k-means-at-the-correct-k"></a>
+<section class="level3"><h4 id="lloyds-k-means-at-the-correct-k">Lloyd’s k-means at the correct k<a class="anchor" aria-label="anchor" href="#lloyds-k-means-at-the-correct-k"></a>
 </h4>
-<p>Let’s start with the easy case – we know the true number of clusters and ask k-means to find exactly that.</p>
+<p>Let’s start with the easy case: we know the true number of clusters and ask k-means to find exactly that.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">km_correct</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/kmeans_cluster.html">kmeans_cluster</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">cluster_data</span><span class="op">$</span><span class="va">data</span>,</span>
 <span>  k <span class="op">=</span> <span class="va">n_true</span>,</span>
-<span>  method <span class="op">=</span> <span class="st">"full"</span>,</span>
+<span>  method <span class="op">=</span> <span class="st">"lloyd"</span>,</span>
 <span>  seed <span class="op">=</span> <span class="fl">42L</span>,</span>
 <span>  .verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; Running full k-means (k=15, metric=euclidean)</span></span></code></pre></div>
+<span><span class="co">#&gt; Running Lloyd's k-means (k=15, metric=euclidean)</span></span></code></pre></div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
@@ -181,7 +182,7 @@
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">base_df</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">UMAP1</span>, y <span class="op">=</span> <span class="va">UMAP2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="va">km_assignment</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">0.5</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Full k-means (k=%d)"</span>, <span class="va">n_true</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Lloyd's k-means (k=%d)"</span>, <span class="va">n_true</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div>
 <figure><p><img src="clustering_files/figure-html/kmeans%20-%20correct%20k%20plot-1.png" width="672"></p>
@@ -205,21 +206,61 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Silhouette: 0.6270099</span></span></code></pre></div>
 </div>
-</section><section class="level3"><h4 id="over-specifying-k-full-vs-mini-batch">Over-specifying k: full vs mini-batch<a class="anchor" aria-label="anchor" href="#over-specifying-k-full-vs-mini-batch"></a>
+</section><section class="level3"><h4 id="e-means-at-the-correct-k">e-means at the correct k<a class="anchor" aria-label="anchor" href="#e-means-at-the-correct-k"></a>
+</h4>
+<p>Same data, same <code>k</code>, default method:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">km_emeans</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/kmeans_cluster.html">kmeans_cluster</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">cluster_data</span><span class="op">$</span><span class="va">data</span>,</span>
+<span>  k <span class="op">=</span> <span class="va">n_true</span>,</span>
+<span>  seed <span class="op">=</span> <span class="fl">42L</span>,</span>
+<span>  .verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; Running e-means (k=15, metric=euclidean)</span></span></code></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/data.table.html" class="external-link">data.table</a></span><span class="op">(</span></span>
+<span>  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"lloyd"</span>, <span class="st">"emeans"</span><span class="op">)</span>,</span>
+<span>  ari <span class="op">=</span> <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map_dbl</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">km_correct</span>, <span class="va">km_emeans</span><span class="op">)</span>,</span>
+<span>    \<span class="op">(</span><span class="va">km</span><span class="op">)</span> <span class="fu"><a href="../reference/calc_ari.html">calc_ari</a></span><span class="op">(</span><span class="va">cluster_data</span><span class="op">$</span><span class="va">membership</span>, <span class="fu"><a href="../reference/membership.html">membership</a></span><span class="op">(</span><span class="va">km</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  inertia <span class="op">=</span> <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map_dbl</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">km_correct</span>, <span class="va">km_emeans</span><span class="op">)</span>,</span>
+<span>    \<span class="op">(</span><span class="va">km</span><span class="op">)</span> <span class="fu"><a href="../reference/calc_inertia.html">calc_inertia</a></span><span class="op">(</span><span class="va">km</span>, data <span class="op">=</span> <span class="va">cluster_data</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt;    method       ari inertia</span></span>
+<span><span class="co">#&gt;    &lt;char&gt;     &lt;num&gt;   &lt;num&gt;</span></span>
+<span><span class="co">#&gt; 1:  lloyd 0.8671586 4973336</span></span>
+<span><span class="co">#&gt; 2: emeans 1.0000000 3201178</span></span></code></pre></div>
+</div>
+<p>On this run e-means recovers the 15 clusters exactly, at a clearly lower inertia than Lloyd’s. Lloyd’s got stuck in a local optimum: it splits two true clusters in half and has to merge others to pay for it. That’s the usual failure of Lloyd’s: it only polishes the seeding it starts from. e-means’ noisy batch updates and its revival of starved centroids get it out of those.</p>
+</section><section class="level3"><h4 id="over-specifying-k-lloyds-vs-e-means-vs-mini-batch">Over-specifying k: Lloyd’s vs e-means vs mini-batch<a class="anchor" aria-label="anchor" href="#over-specifying-k-lloyds-vs-e-means-vs-mini-batch"></a>
 </h4>
 <p>In practice, you rarely know the true number of clusters. A common approach is to set <code>k</code> higher than expected and see what happens. This is where the two k-means variants behave quite differently.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">k_over</span> <span class="op">&lt;-</span> <span class="fl">25L</span></span>
 <span></span>
 <span><span class="va">km_full</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/kmeans_cluster.html">kmeans_cluster</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">cluster_data</span><span class="op">$</span><span class="va">data</span>,</span>
 <span>  k <span class="op">=</span> <span class="va">k_over</span>,</span>
-<span>  method <span class="op">=</span> <span class="st">"full"</span>,</span>
+<span>  method <span class="op">=</span> <span class="st">"lloyd"</span>,</span>
 <span>  seed <span class="op">=</span> <span class="fl">42L</span>,</span>
 <span>  .verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; Running full k-means (k=25, metric=euclidean)</span></span>
+<span><span class="co">#&gt; Running Lloyd's k-means (k=25, metric=euclidean)</span></span>
+<span></span>
+<span><span class="va">km_emeans_over</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/kmeans_cluster.html">kmeans_cluster</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">cluster_data</span><span class="op">$</span><span class="va">data</span>,</span>
+<span>  k <span class="op">=</span> <span class="va">k_over</span>,</span>
+<span>  seed <span class="op">=</span> <span class="fl">42L</span>,</span>
+<span>  .verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; Running e-means (k=25, metric=euclidean)</span></span>
 <span></span>
 <span><span class="va">km_mini</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/kmeans_cluster.html">kmeans_cluster</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">cluster_data</span><span class="op">$</span><span class="va">data</span>,</span>
@@ -233,9 +274,10 @@
 <span><span class="co">#&gt; Running mini-batch k-means (k=25, batch_size=1024, metric=euclidean)</span></span></code></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">base_df</span><span class="op">[</span>, <span class="fu">`:=`</span><span class="op">(</span></span>
 <span>  km_full_over <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="fu"><a href="../reference/membership.html">membership</a></span><span class="op">(</span><span class="va">km_full</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  km_emeans_over <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="fu"><a href="../reference/membership.html">membership</a></span><span class="op">(</span><span class="va">km_emeans_over</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  km_mini_over <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="fu"><a href="../reference/membership.html">membership</a></span><span class="op">(</span><span class="va">km_mini</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span><span class="op">]</span></span>
 <span></span>
@@ -243,7 +285,13 @@
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="va">km_full_over</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">0.5</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Full k-means (k=%d)"</span>, <span class="va">k_over</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Lloyd's k-means (k=%d)"</span>, <span class="va">k_over</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">p_emeans</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">base_df</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">UMAP1</span>, y <span class="op">=</span> <span class="va">UMAP2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="va">km_emeans_over</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">0.5</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"e-means (k=%d)"</span>, <span class="va">k_over</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">p_mini</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">base_df</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">UMAP1</span>, y <span class="op">=</span> <span class="va">UMAP2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="va">km_mini_over</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">0.5</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
@@ -251,19 +299,19 @@
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Mini-batch k-means (k=%d)"</span>, <span class="va">k_over</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">gridExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span><span class="va">p_full</span>, <span class="va">p_mini</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">gridExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span><span class="va">p_full</span>, <span class="va">p_emeans</span>, <span class="va">p_mini</span>, ncol <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div>
-<figure><p><img src="clustering_files/figure-html/kmeans%20-%20over-specified%20plot-1.png" width="960"></p>
+<figure><p><img src="clustering_files/figure-html/kmeans%20-%20over-specified%20plot-1.png" width="1440"></p>
 </figure>
 </div>
 </div>
 </div>
-<p>Full k-means distributes points across all 25 centroids, splitting true clusters in two. Mini-batch k-means, due to its incremental learning rate, effectively lets some centroids starve; they settle in low-density regions and attract very few points. The result more closely mirrors the true structure.</p>
+<p>Lloyd’s and e-means both spread the points across all 25 centroids and split true clusters to do it. e-means revives starved centroids by design, so it won’t leave any idle either. Mini-batch k-means, due to its incremental learning rate, lets the extra centroids starve: they attract very few points and the result mirrors the true structure much more closely. If you over-specify <code>k</code> on purpose, mini-batch is still the one to reach for.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Full k-means:\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Full k-means:</span></span>
+<div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Lloyd's k-means:\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Lloyd's k-means:</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"  ARI:"</span>, <span class="fu"><a href="../reference/calc_ari.html">calc_ari</a></span><span class="op">(</span><span class="va">cluster_data</span><span class="op">$</span><span class="va">membership</span>, <span class="fu"><a href="../reference/membership.html">membership</a></span><span class="op">(</span><span class="va">km_full</span><span class="op">)</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   ARI: 0.7086227</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"  Effective clusters:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="../reference/membership.html">membership</a></span><span class="op">(</span><span class="va">km_full</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
@@ -277,6 +325,27 @@
 <span>  <span class="st">"\n"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt;   Silhouette: 0.4140061</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"\ne-means:\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; e-means:</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span></span>
+<span>  <span class="st">"  ARI:"</span>,</span>
+<span>  <span class="fu"><a href="../reference/calc_ari.html">calc_ari</a></span><span class="op">(</span><span class="va">cluster_data</span><span class="op">$</span><span class="va">membership</span>, <span class="fu"><a href="../reference/membership.html">membership</a></span><span class="op">(</span><span class="va">km_emeans_over</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  <span class="st">"\n"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt;   ARI: 0.7911874</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"  Effective clusters:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="../reference/membership.html">membership</a></span><span class="op">(</span><span class="va">km_emeans_over</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   Effective clusters: 25</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span></span>
+<span>  <span class="st">"  Silhouette:"</span>,</span>
+<span>  <span class="fu"><a href="../reference/calc_silhouette_score.html">calc_silhouette_score</a></span><span class="op">(</span></span>
+<span>    <span class="va">cluster_data</span><span class="op">$</span><span class="va">data</span>,</span>
+<span>    <span class="fu"><a href="../reference/membership.html">membership</a></span><span class="op">(</span><span class="va">km_emeans_over</span><span class="op">)</span></span>
+<span>  <span class="op">)</span><span class="op">$</span><span class="va">mean_silhouette</span>,</span>
+<span>  <span class="st">"\n"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt;   Silhouette: 0.4206932</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"\nMini-batch k-means:\n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -299,14 +368,14 @@
 </h4>
 <p>Inertia (within-cluster sum of squares) decreases monotonically as <code>k</code> increases. The “elbow”, the point where adding more clusters stops yielding meaningful improvement, suggests a reasonable <code>k</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">k_values</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">2L</span>, <span class="fl">30L</span>, by <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">elbow_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">k_values</span>, <span class="kw">function</span><span class="op">(</span><span class="va">k</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/kmeans_cluster.html">kmeans_cluster</a></span><span class="op">(</span></span>
 <span>    data <span class="op">=</span> <span class="va">cluster_data</span><span class="op">$</span><span class="va">data</span>,</span>
 <span>    k <span class="op">=</span> <span class="va">k</span>,</span>
-<span>    method <span class="op">=</span> <span class="st">"full"</span>,</span>
+<span>    method <span class="op">=</span> <span class="st">"lloyd"</span>,</span>
 <span>    seed <span class="op">=</span> <span class="fl">42L</span>,</span>
 <span>    .verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span>  <span class="op">)</span></span>
@@ -341,7 +410,7 @@
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">elbow_results</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">k</span>, y <span class="op">=</span> <span class="va">ari</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
@@ -361,7 +430,7 @@
 </h3>
 <p>EVoC does not require specifying <code>k</code>. It discovers cluster structure automatically and returns multiple layers of granularity.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">evoc_res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/evoc.html">evoc</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">cluster_data</span><span class="op">$</span><span class="va">data</span>,</span>
 <span>  n_neighbours <span class="op">=</span> <span class="fl">15L</span>,</span>
@@ -371,19 +440,19 @@
 <span></span>
 <span><span class="va">evoc_res</span></span>
 <span><span class="co">#&gt; Evoc</span></span>
-<span><span class="co">#&gt;   layers:               2 </span></span>
-<span><span class="co">#&gt;   best layer:           2 </span></span>
-<span><span class="co">#&gt;   best persistence:     2593.49 </span></span>
+<span><span class="co">#&gt;   layers:               3 </span></span>
+<span><span class="co">#&gt;   best layer:           3 </span></span>
+<span><span class="co">#&gt;   best persistence:     2608.52 </span></span>
 <span><span class="co">#&gt;   knn:                  not stored</span></span></code></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">evoc_best</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/best_membership.html">best_membership</a></span><span class="op">(</span><span class="va">evoc_res</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Selected layer:"</span>, <span class="va">evoc_best</span><span class="op">$</span><span class="va">layer</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Selected layer: 2</span></span>
+<span><span class="co">#&gt; Selected layer: 3</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Persistence score:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">evoc_best</span><span class="op">$</span><span class="va">persistence</span>, <span class="fl">4</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Persistence score: 2593.49</span></span>
+<span><span class="co">#&gt; Persistence score: 2608.52</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span></span>
 <span>  <span class="st">"Clusters found:"</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">evoc_best</span><span class="op">$</span><span class="va">labels</span><span class="op">[</span><span class="va">evoc_best</span><span class="op">$</span><span class="va">labels</span> <span class="op">!=</span> <span class="op">-</span><span class="fl">1L</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>,</span>
@@ -394,7 +463,7 @@
 <span><span class="co">#&gt; Noise points: 0</span></span></code></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">base_df</span><span class="op">[</span>, <span class="va">evoc_label</span> <span class="op">:=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">evoc_best</span><span class="op">$</span><span class="va">labels</span><span class="op">)</span><span class="op">]</span></span>
 <span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">base_df</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">UMAP1</span>, y <span class="op">=</span> <span class="va">UMAP2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -410,7 +479,7 @@
 </div>
 <p>We can appreciate that EVoC identified (nearly) perfectly the ground truth…</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># exclude noise points for ARI</span></span>
 <span><span class="va">non_noise</span> <span class="op">&lt;-</span> <span class="va">evoc_best</span><span class="op">$</span><span class="va">labels</span> <span class="op">!=</span> <span class="op">-</span><span class="fl">1L</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span></span>
@@ -428,7 +497,7 @@
 </h4>
 <p>EVoC returns a hierarchy of clusterings at different granularities, ranked by persistence. Layers with higher persistence scores represent more stable cluster structures.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">n_layers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">evoc_res</span><span class="op">$</span><span class="va">persistence_scores</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">persistence_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/data.table.html" class="external-link">data.table</a></span><span class="op">(</span></span>
@@ -460,7 +529,7 @@
 </h4>
 <p>If you do have a rough idea of how many clusters to expect, you can guide EVoC with <code>approx_n_clusters</code>. This performs a binary search over the minimum cluster size parameter to target approximately that many clusters, returning a single layer.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">evoc_approx</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/evoc.html">evoc</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">cluster_data</span><span class="op">$</span><span class="va">data</span>,</span>
 <span>  n_neighbours <span class="op">=</span> <span class="fl">15L</span>,</span>
@@ -483,7 +552,7 @@
 </h3>
 <p>Let’s just compare at the end the methods</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">base_df</span><span class="op">[</span>, <span class="va">evoc_approx_label</span> <span class="op">:=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">evoc_approx_best</span><span class="op">$</span><span class="va">labels</span><span class="op">)</span><span class="op">]</span></span>
 <span></span>
 <span><span class="va">p_true</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">base_df</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">UMAP1</span>, y <span class="op">=</span> <span class="va">UMAP2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>

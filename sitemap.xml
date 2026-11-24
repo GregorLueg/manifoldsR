@@ -28,6 +28,8 @@
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/assertFa2Params.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/assertHierarchicalParams.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/assertKmeansParams.html</loc></url>
+<url><loc>https://gregorlueg.github.io/manifoldsR/reference/assertLocalmapParams.html</loc></url>
+<url><loc>https://gregorlueg.github.io/manifoldsR/reference/assertNcvisParams.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/assertNnParams.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/assertPacmapParams.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/assertPhateParams.html</loc></url>
@@ -49,6 +51,8 @@
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/checkFa2Params.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/checkHierarchicalParams.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/checkKmeansParams.html</loc></url>
+<url><loc>https://gregorlueg.github.io/manifoldsR/reference/checkLocalmapParams.html</loc></url>
+<url><loc>https://gregorlueg.github.io/manifoldsR/reference/checkNcvisParams.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/checkNnParams.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/checkPacmapParams.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/checkPhateParams.html</loc></url>
@@ -68,6 +72,8 @@
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/dot-prepare_dreams_params.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/dot-prepare_evoc_params.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/dot-prepare_fa2_params.html</loc></url>
+<url><loc>https://gregorlueg.github.io/manifoldsR/reference/dot-prepare_localmap_params.html</loc></url>
+<url><loc>https://gregorlueg.github.io/manifoldsR/reference/dot-prepare_ncvis_params.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/dot-prepare_pacmap_params.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/dot-prepare_phate_params.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/dot-prepare_tsne_params.html</loc></url>
@@ -86,10 +92,12 @@
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/get_nearest_neighbours.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/index.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/kmeans_cluster.html</loc></url>
+<url><loc>https://gregorlueg.github.io/manifoldsR/reference/localmap.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/manifold_synthetic_data.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/manifoldsR-deprecated.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/manifoldsR-package.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/membership.html</loc></url>
+<url><loc>https://gregorlueg.github.io/manifoldsR/reference/ncvis.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/new_evoc.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/new_kmeans_cluster.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/new_nearest_neighbour.html</loc></url>
@@ -103,6 +111,8 @@
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/params_fa2.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/params_hierarchical.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/params_kmeans.html</loc></url>
+<url><loc>https://gregorlueg.github.io/manifoldsR/reference/params_localmap.html</loc></url>
+<url><loc>https://gregorlueg.github.io/manifoldsR/reference/params_ncvis.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/params_nn.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/params_pacmap.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/params_phate.html</loc></url>
@@ -140,6 +150,10 @@
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/rs_inertia.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/rs_k_means.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/rs_k_means_mini_batch.html</loc></url>
+<url><loc>https://gregorlueg.github.io/manifoldsR/reference/rs_localmap.html</loc></url>
+<url><loc>https://gregorlueg.github.io/manifoldsR/reference/rs_localmap_from_knn.html</loc></url>
+<url><loc>https://gregorlueg.github.io/manifoldsR/reference/rs_ncvis.html</loc></url>
+<url><loc>https://gregorlueg.github.io/manifoldsR/reference/rs_ncvis_from_knn.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/rs_pacmap.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/rs_pacmap_from_knn.html</loc></url>
 <url><loc>https://gregorlueg.github.io/manifoldsR/reference/rs_phate.html</loc></url>

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -26,7 +26,7 @@
     <li><a class="dropdown-item" href="articles/dreams.html">DREAMS</a></li>
     <li><a class="dropdown-item" href="articles/phate.html">Using PHATE</a></li>
     <li><a class="dropdown-item" href="articles/pacmap.html">Using PaCMAP</a></li>
-    <li><a class="dropdown-item" href="articles/fa2.html">Using ForceAtlas2</a></li>
+    <li><a class="dropdown-item" href="articles/fa2.html">Using ForceAtlas2 and NCVis</a></li>
     <li><a class="dropdown-item" href="articles/diffusion_map.html">Using diffusion maps</a></li>
     <li><a class="dropdown-item" href="articles/clustering.html">Clustering methods in manifoldsR (with emphasis on EVoC)</a></li>
   </ul></li>
@@ -55,7 +55,7 @@
 <p>This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.</p>
 <div class="section level2">
 <h2 id="what-this-package-is">What this package is<a class="anchor" aria-label="anchor" href="#what-this-package-is"></a></h2>
-<p><code>manifoldsR</code> is a thin R wrapper over Rust. Every algorithm (UMAP, tSNE, densMAP, den-SNE, DREAMS, PHATE, PacMAP, diffusion maps, ForceAtlas2, EVoC, k-means) lives in external crates (<code>manifolds-rs</code>, <code>ann-search-rs</code>, <code>evoc-rs</code>, <code>bixverse-rs</code>). The Rust code in <code>src/rust/src/</code> is a translation layer only: it parses R lists into the crates’ parameter structs and converts matrices. If an algorithm needs a real change, it belongs upstream in the crate, not here.</p>
+<p><code>manifoldsR</code> is a thin R wrapper over Rust. Every algorithm (UMAP, tSNE, densMAP, den-SNE, DREAMS, PHATE, PaCMAP, LocalMAP, diffusion maps, ForceAtlas2, NCVis, EVoC, k-means/e-means) lives in external crates (<code>manifolds-rs</code>, <code>ann-search-rs</code>, <code>evoc-rs</code>, <code>bixverse-rs</code>). The Rust code in <code>src/rust/src/</code> is a translation layer only: it parses R lists into the crates’ parameter structs and converts matrices. If an algorithm needs a real change, it belongs upstream in the crate, not here.</p>
 </div>
 <div class="section level2">
 <h2 id="commands">Commands<a class="anchor" aria-label="anchor" href="#commands"></a></h2>
@@ -93,18 +93,19 @@
 <li>
 <code>&lt;algo&gt;()</code> in <code>R/&lt;algo&gt;.R</code>: the user-facing function. Coerces data frames to matrices, validates, then branches on whether a <code>NearestNeighbours</code> object was supplied: <code>rs_&lt;algo&gt;_from_knn()</code> if yes, <code>rs_&lt;algo&gt;()</code> if no. Rust errors propagate as is, no <code>tryCatch</code>.</li>
 <li>
-<code>src/rust/src/&lt;algo&gt;.rs</code>: parse the flat list into the crate’s parameter struct, usually an <code>Internal&lt;Algo&gt;Params&lt;T&gt;</code> with a <code>from_r_list()</code> that pulls each key out of a <code>HashMap&lt;&amp;str, Robj&gt;</code> with a fallback default. Variants of an existing method reuse its builder (den-SNE and DREAMS call <code>build_tsne_params()</code> in <code>tsne.rs</code>). The corresponding <code>rs_*</code> function goes in <code>src/rust/src/lib.rs</code> and must be registered in the <code>extendr_module!</code> block there.</li>
-</ol><p>The flat-list handoff means R and Rust agree on parameter names by convention only. A rename on one side silently falls back to the Rust default on the other. Check both. Same failure for types: <code>Robj::as_real()</code> returns <code>None</code> on an integer, so a <code>p_dbl</code> field passed as <code>1L</code> (which <code>N1</code> accepts) silently becomes the Rust default unless the parser also tries <code>as_integer()</code>.</p>
+<code>src/rust/src/&lt;algo&gt;.rs</code>: parse the flat list into the crate’s parameter struct, usually an <code>Internal&lt;Algo&gt;Params&lt;T&gt;</code> with a <code>from_r_list()</code> that pulls each key out of a <code>HashMap&lt;&amp;str, Robj&gt;</code> with a fallback default. Variants of an existing method reuse its builder (den-SNE and DREAMS call <code>build_tsne_params()</code> in <code>tsne.rs</code>; LocalMAP reuses <code>InternalPacmapParams</code> in <code>pacmap.rs</code>). The corresponding <code>rs_*</code> function goes in <code>src/rust/src/lib.rs</code> and must be registered in the <code>extendr_module!</code> block there.</li>
+</ol><p>The flat-list handoff means R and Rust agree on parameter names by convention only. A rename on one side silently falls back to the Rust default on the other. Check both. Same failure for types: <code>Robj::as_real()</code> returns <code>None</code> on an integer, so a <code>p_dbl</code> field passed as <code>1L</code> (which <code>N1</code> accepts) silently becomes the Rust default unless the parser also tries <code>as_integer()</code>. New parsers use <code>robj_to_f64()</code> in <code>utils.rs</code>, which does both.</p>
 </div>
 <div class="section level2">
 <h2 id="dependencies">Dependencies<a class="anchor" aria-label="anchor" href="#dependencies"></a></h2>
-<ul><li>
-<code>bixverse-rs</code> needs <code>features = ["r"]</code> for the extendr helpers (<code>IntoExtendrErr</code>, <code>r_matrix_to_faer</code>, …).</li>
+<ul><li>The extendr helpers (<code>IntoExtendrErr</code>, <code>r_matrix_to_faer</code>, …) come from the <code>bixverse-r</code> crate.</li>
+<li>
+<code>ann-search-rs</code> enables <code>accelerate</code> by default (Apple Accelerate cblas for GEMM). It is gated on <code>target_os = "macos"</code>, so a no-op elsewhere, and links the system framework, so nothing is bundled. Cargo unifies features, so <code>default-features = false</code> on one dependent does not turn it off.</li>
 <li>
 <code>manifolds-rs</code> is built with <code>fft_tsne</code> (pure Rust <code>rustfft</code>/<code>realfft</code>), so the FFT t-SNE variants work on every platform. No <code>cfg(windows)</code> splits.</li>
 <li>Unreleased crate versions come in via <code>[patch.crates-io]</code> entries in <code>src/rust/Cargo.toml</code> pointing at GitHub branches or local paths. Local paths must go before a push, as they break CI. Drop all of them before a release.</li>
 <li>
-<code>ann-search-rs</code>, <code>faer</code> and <code>evoc-rs</code> must line up with what <code>manifolds-rs</code> and <code>bixverse-rs</code> use, or the types do not unify. Check with <code>cargo tree -d</code>.</li>
+<code>ann-search-rs</code>, <code>faer</code> and <code>evoc-rs</code> must line up with what <code>manifolds-rs</code> and <code>bixverse-r</code> use, or the types do not unify. Check with <code>cargo tree -d</code>. <code>ann-search-rs</code> declares <code>links = "mlxc"</code>, so two of its versions cannot sit in one tree at all: cargo refuses to resolve. A bump there needs <code>bixverse-r</code> on the same <code>ann-search-rs</code> minor.</li>
 </ul></div>
 <div class="section level2">
 <h2 id="cross-cutting-conventions">Cross-cutting conventions<a class="anchor" aria-label="anchor" href="#cross-cutting-conventions"></a></h2>

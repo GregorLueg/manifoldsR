@@ -13,9 +13,11 @@ params_nn(
   ef_construction = 200L,
   ef_search = 100L,
   delta = 0.001,
+  nnd_n_trees = NULL,
   bt_budget = 0.1,
   n_list = NULL,
-  n_probes = NULL
+  n_probes = NULL,
+  k_means = c("emeans", "lloyd")
 )
 ```
 
@@ -53,6 +55,11 @@ params_nn(
 
   Numeric. Precision parameter for NN descent. Defaults to `0.001`.
 
+- nnd_n_trees:
+
+  Integer or `NULL`. Number of trees seeding the NN-Descent graph. If
+  `NULL`, uses `5 + sqrt(n) / 20`, capped at `64`. Defaults to `NULL`.
+
 - bt_budget:
 
   Numeric. Budget for ball tree search. Defaults to `0.1`.
@@ -66,6 +73,13 @@ params_nn(
 
   Integer or `NULL`. Number of clusters to probe for IVF. If `NULL`,
   uses `sqrt(n_list)`. Defaults to `NULL`.
+
+- k_means:
+
+  String. k-means that trains the IVF and kMkNN centroids. `"emeans"`
+  gives more even partitions than Lloyd's, so IVF may need a higher
+  `n_probes` for the same recall. One of `c("emeans", "lloyd")`.
+  Defaults to `"emeans"`.
 
 ## Value
 
@@ -91,6 +105,10 @@ A named list with the following elements:
 - delta - Numeric. Precision parameter for NN descent. Defaults to
   `0.001`.
 
+- nnd_n_trees - Integer or `NULL`. Number of trees seeding the
+  NN-Descent graph. If `NULL`, uses `5 + sqrt(n) / 20`, capped at `64`.
+  Defaults to `NULL`.
+
 - bt_budget - Numeric. Budget for ball tree search. Defaults to `0.1`.
 
 - n_list - Integer or `NULL`. Number of clusters to use for IVF. If
@@ -98,6 +116,11 @@ A named list with the following elements:
 
 - n_probes - Integer or `NULL`. Number of clusters to probe for IVF. If
   `NULL`, uses `sqrt(n_list)`. Defaults to `NULL`.
+
+- k_means - String. k-means that trains the IVF and kMkNN centroids.
+  `"emeans"` gives more even partitions than Lloyd's, so IVF may need a
+  higher `n_probes` for the same recall. One of `c("emeans", "lloyd")`.
+  Defaults to `"emeans"`.
 
 ## Examples
 
@@ -124,6 +147,9 @@ params_nn()
 #> $delta
 #> [1] 0.001
 #> 
+#> $nnd_n_trees
+#> NULL
+#> 
 #> $bt_budget
 #> [1] 0.1
 #> 
@@ -132,6 +158,9 @@ params_nn()
 #> 
 #> $n_probes
 #> NULL
+#> 
+#> $k_means
+#> [1] "emeans"
 #> 
 params_nn(dist_metric = "cosine", ef_search = 200L)
 #> $dist_metric
@@ -155,6 +184,9 @@ params_nn(dist_metric = "cosine", ef_search = 200L)
 #> $delta
 #> [1] 0.001
 #> 
+#> $nnd_n_trees
+#> NULL
+#> 
 #> $bt_budget
 #> [1] 0.1
 #> 
@@ -163,5 +195,8 @@ params_nn(dist_metric = "cosine", ef_search = 200L)
 #> 
 #> $n_probes
 #> NULL
+#> 
+#> $k_means
+#> [1] "emeans"
 #> 
 ```

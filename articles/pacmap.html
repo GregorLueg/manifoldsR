@@ -28,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,7 +49,7 @@
     <li><a class="dropdown-item" href="../articles/dreams.html">DREAMS</a></li>
     <li><a class="dropdown-item" href="../articles/phate.html">Using PHATE</a></li>
     <li><a class="dropdown-item" href="../articles/pacmap.html">Using PaCMAP</a></li>
-    <li><a class="dropdown-item" href="../articles/fa2.html">Using ForceAtlas2</a></li>
+    <li><a class="dropdown-item" href="../articles/fa2.html">Using ForceAtlas2 and NCVis</a></li>
     <li><a class="dropdown-item" href="../articles/diffusion_map.html">Using diffusion maps</a></li>
     <li><a class="dropdown-item" href="../articles/clustering.html">Clustering methods in manifoldsR (with emphasis on EVoC)</a></li>
   </ul>
@@ -79,7 +79,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Using PaCMAP</h1>
 
       <p class="author">Gregor Lueg</p>
-      <p class="date">2026-11-23</p>
+      <p class="date">2026-11-24</p>
 
       <small class="dont-index">Source: <a href="https://github.com/GregorLueg/manifoldsR/blob/main/vignettes/pacmap.qmd" class="external-link"><code>vignettes/pacmap.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
@@ -362,11 +362,79 @@
 </div>
 </div>
 <p>In the PaCMAP embedding, the three supergroups occupy clearly distinct regions of the embedding space at distances roughly proportional to their true separation. Within each supergroup the subclusters are cleanly resolved. In the UMAP embedding the supergroup distances are arbitrary — subclusters from different supergroups may be placed closer together than subclusters within the same supergroup. The global structure is lost in UMAP compared to PacMAP.</p>
-</section></section><section class="level2"><h3 id="using-pre-computed-knn-graphs">Using pre-computed kNN graphs<a class="anchor" aria-label="anchor" href="#using-pre-computed-knn-graphs"></a>
+</section></section><section class="level2"><h3 id="localmap">LocalMAP<a class="anchor" aria-label="anchor" href="#localmap"></a>
+</h3>
+<p><a href="https://arxiv.org/abs/2412.15426" class="external-link">LocalMAP</a> (Wang et al. 2024) keeps PaCMAP’s first two phases and swaps out the third. The mid-near pairs drop out, the near-pair pull is scaled by distance, and every 10 epochs each point redraws its further pairs from points within <code>max_distance</code> in the current embedding. Repulsion then comes from points that are close in the layout but not in the data, which is exactly where PaCMAP leaves clusters touching. Same parameters as <code><a href="../reference/params_pacmap.html">params_pacmap()</a></code> plus <code>max_distance</code> (default <code>10</code>), and like PaCMAP it gives the same coordinates at a given seed whatever the thread count.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">localmap_hierarchical</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/localmap.html">localmap</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">hierarchical_data</span><span class="op">$</span><span class="va">data</span>,</span>
+<span>  seed <span class="op">=</span> <span class="fl">42L</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">localmap_hierarchical_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/as.data.table.html" class="external-link">as.data.table</a></span><span class="op">(</span><span class="va">localmap_hierarchical</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu">`colnames&lt;-`</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"LocalMAP1"</span>, <span class="st">"LocalMAP2"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="va">.</span><span class="op">[</span>, <span class="va">supergroup</span> <span class="op">:=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">hierarchical_data</span><span class="op">$</span><span class="va">membership</span><span class="op">$</span><span class="va">supergroup</span><span class="op">)</span><span class="op">]</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="va">.</span><span class="op">[</span>, <span class="va">subgroup</span> <span class="op">:=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">hierarchical_data</span><span class="op">$</span><span class="va">membership</span><span class="op">$</span><span class="va">subgroup</span><span class="op">)</span><span class="op">]</span></span>
+<span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">localmap_hierarchical_df</span>,</span>
+<span>  mapping <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">LocalMAP1</span>, y <span class="op">=</span> <span class="va">LocalMAP2</span><span class="op">)</span></span>
+<span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span></span>
+<span>    mapping <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="va">subgroup</span>, shape <span class="op">=</span> <span class="va">supergroup</span><span class="op">)</span>,</span>
+<span>    size <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>    alpha <span class="op">=</span> <span class="fl">0.5</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"LocalMAP on hierarchical data"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html" class="external-link">scale_colour_viridis_d</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<div class="cell-output-display">
+<div>
+<figure><p><img src="pacmap_files/figure-html/hierarchical%20data%20-%20localmap-1.png" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Same arrangement as PaCMAP, supergroups in the same places. PaCMAP already keeps these clusters well apart, so there’s nothing for the local repulsion to fix here; the clusters just come out a bit wider. LocalMAP earns its keep where PaCMAP leaves neighbouring clusters fused.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">localmap_swissroll</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/localmap.html">localmap</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">swissroll_data</span><span class="op">$</span><span class="va">data</span>,</span>
+<span>  knn_method <span class="op">=</span> <span class="st">"exhaustive"</span>,</span>
+<span>  seed <span class="op">=</span> <span class="fl">42L</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">localmap_swissroll_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/as.data.table.html" class="external-link">as.data.table</a></span><span class="op">(</span><span class="va">localmap_swissroll</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu">`colnames&lt;-`</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"LocalMAP1"</span>, <span class="st">"LocalMAP2"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="va">.</span><span class="op">[</span>, <span class="va">z_axis</span> <span class="op">:=</span> <span class="va">swissroll_data</span><span class="op">$</span><span class="va">data</span><span class="op">[</span>, <span class="fl">3</span><span class="op">]</span><span class="op">]</span></span>
+<span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">localmap_swissroll_df</span>,</span>
+<span>  mapping <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">LocalMAP1</span>, y <span class="op">=</span> <span class="va">LocalMAP2</span><span class="op">)</span></span>
+<span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span></span>
+<span>    mapping <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="va">z_axis</span><span class="op">)</span>,</span>
+<span>    shape <span class="op">=</span> <span class="fl">21</span>,</span>
+<span>    size <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>    alpha <span class="op">=</span> <span class="fl">0.5</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html" class="external-link">scale_fill_viridis_c</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"LocalMAP on Swiss roll data"</span><span class="op">)</span></span></code></pre></div>
+<div class="cell-output-display">
+<div>
+<figure><p><img src="pacmap_files/figure-html/swissroll%20data%20-%20localmap-1.png" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The flip side: on a sparse continuous sheet the local repulsion works against you. The 1k swiss roll falls apart into strips where PaCMAP kept it in one piece. For continuous manifolds, stick with PaCMAP.</p>
+</section><section class="level2"><h3 id="using-pre-computed-knn-graphs">Using pre-computed kNN graphs<a class="anchor" aria-label="anchor" href="#using-pre-computed-knn-graphs"></a>
 </h3>
 <p>As with the other methods, if you want to vary PaCMAP-specific parameters without repeating the kNN search, precompute the graph first.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">precomputed_knn</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_knn_graph.html">generate_knn_graph</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">cluster_data</span><span class="op">$</span><span class="va">data</span>,</span>
 <span>  k <span class="op">=</span> <span class="fl">60L</span>, <span class="co"># n_near + 50, as the internal search</span></span>
@@ -382,7 +450,7 @@
 </div>
 <p>With the kNN fixed, we can quickly vary the phase schedule. For example, extending phase 1 to give the global structure more time to settle:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pacmap_long_phase1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pacmap.html">pacmap</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">cluster_data</span><span class="op">$</span><span class="va">data</span>,</span>
 <span>  knn <span class="op">=</span> <span class="va">precomputed_knn</span>,</span>
@@ -417,7 +485,7 @@
 </section><section class="level2"><h3 id="benchmarks">Benchmarks<a class="anchor" aria-label="anchor" href="#benchmarks"></a>
 </h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">benchmark_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/manifold_synthetic_data.html">manifold_synthetic_data</a></span><span class="op">(</span></span>
 <span>  type <span class="op">=</span> <span class="st">"cluster"</span>,</span>
 <span>  n_samples <span class="op">=</span> <span class="fl">10000L</span></span>
@@ -441,10 +509,13 @@
 <span>  <span class="op">}</span>,</span>
 <span>  times <span class="op">=</span> <span class="fl">3L</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; Unit: seconds</span></span>
-<span><span class="co">#&gt;             expr      min       lq     mean   median       uq      max neval</span></span>
-<span><span class="co">#&gt;    manifold_umap 1.301442 1.305003 1.306424 1.308565 1.308916 1.309266     3</span></span>
-<span><span class="co">#&gt;  manifold_pacmap 2.395078 2.405283 2.409552 2.415488 2.416789 2.418090     3</span></span></code></pre></div>
+<span><span class="co">#&gt; Unit: milliseconds</span></span>
+<span><span class="co">#&gt;             expr       min        lq      mean    median        uq       max</span></span>
+<span><span class="co">#&gt;    manifold_umap 1515.4021 1516.4634 1517.7144 1517.5247 1518.8706 1520.2165</span></span>
+<span><span class="co">#&gt;  manifold_pacmap  514.4052  514.5111  517.5979  514.6171  519.1943  523.7715</span></span>
+<span><span class="co">#&gt;  neval</span></span>
+<span><span class="co">#&gt;      3</span></span>
+<span><span class="co">#&gt;      3</span></span></code></pre></div>
 </div>
 <p>PaCMAP is generally slower than UMAP on the same data since it processes all pairs every epoch rather than sampling. The three-phase schedule with 450 epochs (vs UMAP’s 200 to 500) compounds this. For most datasets up to ~50k samples this is not a concern in practice, but on very large data the difference becomes noticeable.</p>
 </section></section><script id="quarto-html-after-body" type="application/javascript">

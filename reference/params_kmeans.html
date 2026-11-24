@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -26,7 +26,7 @@
     <li><a class="dropdown-item" href="../articles/dreams.html">DREAMS</a></li>
     <li><a class="dropdown-item" href="../articles/phate.html">Using PHATE</a></li>
     <li><a class="dropdown-item" href="../articles/pacmap.html">Using PaCMAP</a></li>
-    <li><a class="dropdown-item" href="../articles/fa2.html">Using ForceAtlas2</a></li>
+    <li><a class="dropdown-item" href="../articles/fa2.html">Using ForceAtlas2 and NCVis</a></li>
     <li><a class="dropdown-item" href="../articles/diffusion_map.html">Using diffusion maps</a></li>
     <li><a class="dropdown-item" href="../articles/clustering.html">Clustering methods in manifoldsR (with emphasis on EVoC)</a></li>
   </ul></li>
@@ -60,6 +60,7 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">params_kmeans</span><span class="op">(</span></span>
 <span>  metric <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"euclidean"</span>, <span class="st">"cosine"</span><span class="op">)</span>,</span>
 <span>  max_iters <span class="op">=</span> <span class="fl">1000L</span>,</span>
+<span>  e_means_epochs <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>  batch_size <span class="op">=</span> <span class="fl">4096L</span>,</span>
 <span>  drift_threshold <span class="op">=</span> <span class="fl">1e-04</span>,</span>
 <span>  lr_alpha <span class="op">=</span> <span class="fl">1</span>,</span>
@@ -78,7 +79,13 @@
 
 
 <dt id="arg-max-iters">max_iters<a class="anchor" aria-label="anchor" href="#arg-max-iters"></a></dt>
-<dd><p>Integer. Maximum number of iterations. Defaults to <code>1000L</code>.</p></dd>
+<dd><p>Integer. Maximum number of iterations for Lloyd's and the
+mini-batch k-means. Ignored by e-means. Defaults to <code>1000L</code>.</p></dd>
+
+
+<dt id="arg-e-means-epochs">e_means_epochs<a class="anchor" aria-label="anchor" href="#arg-e-means-epochs"></a></dt>
+<dd><p>Numeric. Passes over the data for e-means, may be
+fractional. Ignored by the other methods. Defaults to <code>5.0</code>.</p></dd>
 
 
 <dt id="arg-batch-size">batch_size<a class="anchor" aria-label="anchor" href="#arg-batch-size"></a></dt>
@@ -115,8 +122,10 @@ Defaults to <code>NULL</code>.</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A named list with the following elements:</p><ul><li><p>metric - String. Distance metric to use. One of <code>c("euclidean", "cosine")</code>. Defaults to <code>"euclidean"</code>.</p></li>
-<li><p>max_iters - Integer. Maximum number of iterations. Defaults to
-<code>1000L</code>.</p></li>
+<li><p>max_iters - Integer. Maximum number of iterations for Lloyd's and the
+mini-batch k-means. Ignored by e-means. Defaults to <code>1000L</code>.</p></li>
+<li><p>e_means_epochs - Numeric. Passes over the data for e-means, may be
+fractional. Ignored by the other methods. Defaults to <code>5.0</code>.</p></li>
 <li><p>batch_size - Integer. Mini-batch size. Only used when <code>method = "minibatch"</code>. Defaults to <code>4096L</code>.</p></li>
 <li><p>drift_threshold - Numeric. Below which centroid drift the mini-batch
 k-means is considered converged. Only used when <code>method = "minibatch"</code>.
@@ -140,6 +149,9 @@ Defaults to <code>NULL</code>.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $max_iters</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $e_means_epochs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $batch_size</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 4096</span>
@@ -165,6 +177,9 @@ Defaults to <code>NULL</code>.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $max_iters</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $e_means_epochs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $batch_size</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 4096</span>

@@ -22,6 +22,10 @@ The core functions to generate the 2D embeddings
   : Rust-based PHATE
 - [`pacmap()`](https://gregorlueg.github.io/manifoldsR/reference/pacmap.md)
   : Rust-based PaCMAP
+- [`localmap()`](https://gregorlueg.github.io/manifoldsR/reference/localmap.md)
+  : Rust-based LocalMAP
+- [`ncvis()`](https://gregorlueg.github.io/manifoldsR/reference/ncvis.md)
+  : Rust-based NCVis
 - [`diffusion_maps()`](https://gregorlueg.github.io/manifoldsR/reference/diffusion_maps.md)
   : Rust-based diffusion maps
 
@@ -91,6 +95,10 @@ Wrapper functions around core parameters
   : Parameters for hierarchical cluster data generation
 - [`params_kmeans()`](https://gregorlueg.github.io/manifoldsR/reference/params_kmeans.md)
   : Wrapper function to generate k-means parameters
+- [`params_localmap()`](https://gregorlueg.github.io/manifoldsR/reference/params_localmap.md)
+  : Wrapper function to generate LocalMAP parameters
+- [`params_ncvis()`](https://gregorlueg.github.io/manifoldsR/reference/params_ncvis.md)
+  : Wrapper function to generate NCVis parameters
 - [`params_nn()`](https://gregorlueg.github.io/manifoldsR/reference/params_nn.md)
   : Wrapper function to generate nearest neighbour parameters
 - [`params_pacmap()`](https://gregorlueg.github.io/manifoldsR/reference/params_pacmap.md)
@@ -164,6 +172,14 @@ Everything rusty - only use this if you know what you are doing…
   **\[experimental\]** : K-means clustering (full)
 - [`rs_k_means_mini_batch()`](https://gregorlueg.github.io/manifoldsR/reference/rs_k_means_mini_batch.md)
   **\[experimental\]** : Mini-batch k-means clustering
+- [`rs_localmap()`](https://gregorlueg.github.io/manifoldsR/reference/rs_localmap.md)
+  **\[experimental\]** : LocalMAP implementation
+- [`rs_localmap_from_knn()`](https://gregorlueg.github.io/manifoldsR/reference/rs_localmap_from_knn.md)
+  **\[experimental\]** : LocalMAP implementation with pre-computed kNN
+- [`rs_ncvis()`](https://gregorlueg.github.io/manifoldsR/reference/rs_ncvis.md)
+  **\[experimental\]** : NCVis implementation
+- [`rs_ncvis_from_knn()`](https://gregorlueg.github.io/manifoldsR/reference/rs_ncvis_from_knn.md)
+  **\[experimental\]** : NCVis implementation with pre-computed kNN
 - [`rs_pacmap()`](https://gregorlueg.github.io/manifoldsR/reference/rs_pacmap.md)
   **\[experimental\]** : PaCMAP implementation
 - [`rs_pacmap_from_knn()`](https://gregorlueg.github.io/manifoldsR/reference/rs_pacmap_from_knn.md)

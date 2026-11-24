@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Using ForceAtlas2 • manifoldsR</title>
+<title>Using ForceAtlas2 and NCVis • manifoldsR</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
 <link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
@@ -17,7 +17,7 @@
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><script src="fa2_files/libs/quarto-html/popper.min.js"></script><script src="fa2_files/libs/quarto-html/tippy.umd.min.js"></script><link href="fa2_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="fa2_files/libs/quarto-html/light-border.css" rel="stylesheet">
 <!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
-<meta property="og:title" content="Using ForceAtlas2">
+<meta property="og:title" content="Using ForceAtlas2 and NCVis">
 <meta property="og:image" content="https://gregorlueg.github.io/manifoldsR/logo.png">
 </head>
 <body>
@@ -28,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,7 +49,7 @@
     <li><a class="dropdown-item" href="../articles/dreams.html">DREAMS</a></li>
     <li><a class="dropdown-item" href="../articles/phate.html">Using PHATE</a></li>
     <li><a class="dropdown-item" href="../articles/pacmap.html">Using PaCMAP</a></li>
-    <li><a class="dropdown-item" href="../articles/fa2.html">Using ForceAtlas2</a></li>
+    <li><a class="dropdown-item" href="../articles/fa2.html">Using ForceAtlas2 and NCVis</a></li>
     <li><a class="dropdown-item" href="../articles/diffusion_map.html">Using diffusion maps</a></li>
     <li><a class="dropdown-item" href="../articles/clustering.html">Clustering methods in manifoldsR (with emphasis on EVoC)</a></li>
   </ul>
@@ -76,10 +76,10 @@
 </nav><div class="container template-quarto">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="../logo.png" class="logo" alt=""><h1>Using ForceAtlas2</h1>
+      <img src="../logo.png" class="logo" alt=""><h1>Using ForceAtlas2 and NCVis</h1>
 
       <p class="author">Gregor Lueg</p>
-      <p class="date">2026-11-23</p>
+      <p class="date">2026-11-24</p>
 
       <small class="dont-index">Source: <a href="https://github.com/GregorLueg/manifoldsR/blob/main/vignettes/fa2.qmd" class="external-link"><code>vignettes/fa2.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
@@ -90,7 +90,7 @@
 
 
 
-    <section class="section level2"><h2 id="forceatlas2-in-manifoldsr">ForceAtlas2 in manifoldsR<a class="anchor" aria-label="anchor" href="#forceatlas2-in-manifoldsr"></a>
+    <section class="section level2"><h2 id="forceatlas2-and-ncvis-in-manifoldsr">ForceAtlas2 and NCVis in manifoldsR<a class="anchor" aria-label="anchor" href="#forceatlas2-and-ncvis-in-manifoldsr"></a>
 </h2>
 <p><code>manifoldsR</code> ships a Rust implementation of <a href="https://doi.org/10.1371/journal.pone.0098679" class="external-link">ForceAtlas2</a> (FA2), the force directed layout from Gephi. Single cell folks know it from scanpy’s <code>draw_graph</code> and from PAGA initialised layouts.</p>
 <div class="cell">
@@ -280,8 +280,8 @@
 <span>  <span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://r.igraph.org/reference/simplify.html" class="external-link">simplify</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">knn_graph</span></span>
-<span><span class="co">#&gt; IGRAPH 263856d U--- 25000 323921 -- </span></span>
-<span><span class="co">#&gt; + edges from 263856d:</span></span>
+<span><span class="co">#&gt; IGRAPH a8844db U--- 25000 323921 -- </span></span>
+<span><span class="co">#&gt; + edges from a8844db:</span></span>
 <span><span class="co">#&gt;  [1] 1-- 114 1-- 133 1-- 309 1-- 528 1-- 643 1--1003 1--1081 1--1100 1--1213</span></span>
 <span><span class="co">#&gt; [10] 1--1219 1--1274 1--1477 1--1478 1--1577 1--2246 1--2260 1--2495 1--2541</span></span>
 <span><span class="co">#&gt; [19] 1--2601 1--2784 1--3249 1--3279 1--3843 1--4052 1--4080 2--  82 2-- 118</span></span>
@@ -351,7 +351,156 @@
 </div>
 <p>Both starts end in the same tree, just rotated and mirrored. The unweighted kNN graph carries enough structure on its own here; the init mostly decides the orientation.</p>
 <p>Only the optimisation parameters in <code><a href="../reference/params_fa2.html">params_fa2()</a></code> apply here. The graph building and initialisation ones (<code>local_connectivity</code>, <code>bandwidth</code>, <code>init</code>, <code>randomised</code>) belong to <code><a href="../reference/forceatlas2.html">forceatlas2()</a></code>.</p>
-</section></section><script id="quarto-html-after-body" type="application/javascript">
+</section><section class="level2"><h3 id="ncvis">NCVis<a class="anchor" aria-label="anchor" href="#ncvis"></a>
+</h3>
+<p><a href="https://github.com/stat-ml/ncvis" class="external-link">NCVis</a> (Artemenkov &amp; Panov 2020) is the other graph layout here that doesn’t optimise UMAP’s cross-entropy. It swaps it for noise-contrastive estimation. The graph is the plain kNN graph, made undirected, with no weights at all. Each edge pulls its two points together and draws uniform negatives that push apart, each weighted by how likely the pair is data rather than noise. The normalisation constant that turns that into a proper probability (<code>Q</code>) is learnt on the side, with its own learning rate <code>lr_q</code>. The negatives ramp up over the run, so the early epochs mostly attract and the late ones do most of the pushing.</p>
+<p>The defaults are Sean Pedersen’s <a href="https://github.com/SeanPedersen/ncvis-plus" class="external-link">NCVis+</a>: a PCA start scaled to a standard deviation of 10 on its first axis, <code>min_dist = 0.001</code>, learning rate <code>2</code>, 50 epochs and on average 10 negatives per edge. The optimiser is Hogwild! SGD, so a fixed seed only reproduces on a single thread.</p>
+<section class="level3"><h4 id="hierarchical-data">Hierarchical data<a class="anchor" aria-label="anchor" href="#hierarchical-data"></a>
+</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">hierarchical_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/manifold_synthetic_data.html">manifold_synthetic_data</a></span><span class="op">(</span></span>
+<span>  type <span class="op">=</span> <span class="st">"hierarchical"</span>,</span>
+<span>  n_samples <span class="op">=</span> <span class="fl">10000L</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">hierarchical_knn</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_knn_graph.html">generate_knn_graph</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">hierarchical_data</span><span class="op">$</span><span class="va">data</span>,</span>
+<span>  k <span class="op">=</span> <span class="fl">15L</span>,</span>
+<span>  knn_method <span class="op">=</span> <span class="st">"nndescent"</span>,</span>
+<span>  .verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">hierarchical_embd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  <span class="st">"UMAP"</span> <span class="op">=</span> <span class="fu"><a href="../reference/umap.html">umap</a></span><span class="op">(</span></span>
+<span>    data <span class="op">=</span> <span class="va">hierarchical_data</span><span class="op">$</span><span class="va">data</span>,</span>
+<span>    knn <span class="op">=</span> <span class="va">hierarchical_knn</span>,</span>
+<span>    k <span class="op">=</span> <span class="fl">15L</span>,</span>
+<span>    .verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  <span class="st">"NCVis"</span> <span class="op">=</span> <span class="fu"><a href="../reference/ncvis.html">ncvis</a></span><span class="op">(</span></span>
+<span>    data <span class="op">=</span> <span class="va">hierarchical_data</span><span class="op">$</span><span class="va">data</span>,</span>
+<span>    knn <span class="op">=</span> <span class="va">hierarchical_knn</span>,</span>
+<span>    .verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  <span class="st">"NCVis, random init"</span> <span class="op">=</span> <span class="fu"><a href="../reference/ncvis.html">ncvis</a></span><span class="op">(</span></span>
+<span>    data <span class="op">=</span> <span class="va">hierarchical_data</span><span class="op">$</span><span class="va">data</span>,</span>
+<span>    knn <span class="op">=</span> <span class="va">hierarchical_knn</span>,</span>
+<span>    ncvis_params <span class="op">=</span> <span class="fu"><a href="../reference/params_ncvis.html">params_ncvis</a></span><span class="op">(</span>init <span class="op">=</span> <span class="st">"random"</span><span class="op">)</span>,</span>
+<span>    .verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  <span class="st">"NCVis, original init"</span> <span class="op">=</span> <span class="fu"><a href="../reference/ncvis.html">ncvis</a></span><span class="op">(</span></span>
+<span>    data <span class="op">=</span> <span class="va">hierarchical_data</span><span class="op">$</span><span class="va">data</span>,</span>
+<span>    knn <span class="op">=</span> <span class="va">hierarchical_knn</span>,</span>
+<span>    ncvis_params <span class="op">=</span> <span class="fu"><a href="../reference/params_ncvis.html">params_ncvis</a></span><span class="op">(</span>init <span class="op">=</span> <span class="st">"ncvis"</span><span class="op">)</span>,</span>
+<span>    .verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">hierarchical_df</span> <span class="op">&lt;-</span> <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/imap.html" class="external-link">imap</a></span><span class="op">(</span><span class="va">hierarchical_embd</span>, \<span class="op">(</span><span class="va">embd</span>, <span class="va">method</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/as.data.table.html" class="external-link">as.data.table</a></span><span class="op">(</span><span class="va">embd</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu">`colnames&lt;-`</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dim1"</span>, <span class="st">"dim2"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="va">.</span><span class="op">[</span>, <span class="fu">`:=`</span><span class="op">(</span></span>
+<span>      method <span class="op">=</span> <span class="va">method</span>,</span>
+<span>      supergroup <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">hierarchical_data</span><span class="op">$</span><span class="va">membership</span><span class="op">$</span><span class="va">supergroup</span><span class="op">)</span>,</span>
+<span>      subgroup <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">hierarchical_data</span><span class="op">$</span><span class="va">membership</span><span class="op">$</span><span class="va">subgroup</span><span class="op">)</span></span>
+<span>    <span class="op">)</span><span class="op">]</span></span>
+<span><span class="op">}</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/rbindlist.html" class="external-link">rbindlist</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="va">.</span><span class="op">[</span>, <span class="va">method</span> <span class="op">:=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">method</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">hierarchical_embd</span><span class="op">)</span><span class="op">)</span><span class="op">]</span></span>
+<span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">hierarchical_df</span>,</span>
+<span>  mapping <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">dim1</span>, y <span class="op">=</span> <span class="va">dim2</span><span class="op">)</span></span>
+<span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span></span>
+<span>    mapping <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="va">subgroup</span>, shape <span class="op">=</span> <span class="va">supergroup</span><span class="op">)</span>,</span>
+<span>    size <span class="op">=</span> <span class="fl">0.75</span>,</span>
+<span>    alpha <span class="op">=</span> <span class="fl">0.5</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">method</span>, scales <span class="op">=</span> <span class="st">"free"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html" class="external-link">scale_colour_viridis_d</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"UMAP vs NCVis on hierarchical data"</span><span class="op">)</span></span></code></pre></div>
+<div class="cell-output-display">
+<div>
+<figure><p><img src="fa2_files/figure-html/hierarchical%20data%20-%20ncvis-1.png" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>With the PCA start NCVis separates all nine subgroups, and the clusters come out tight, much like UMAP’s. The supergroups land roughly where UMAP puts them too. Drop the PCA start and it falls apart: one subgroup gets smeared out and a cloud of stray points rings the layout that 50 epochs never pull back in. <code>init = "ncvis"</code> is the start of the original NCVis: uniform noise, smoothed over the kNN graph in 20 passes. It needs no PCA and does nearly as well, all nine subgroups come out clean with the odd stray point, though the clusters sit in a different arrangement than with PCA. Keep <code>init = "pca"</code> as the default, and reach for <code>"ncvis"</code> when you want to match the original.</p>
+</section><section class="level3"><h4 id="swiss-roll-and-trajectory">Swiss roll and trajectory<a class="anchor" aria-label="anchor" href="#swiss-roll-and-trajectory"></a>
+</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">swissroll_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/manifold_synthetic_data.html">manifold_synthetic_data</a></span><span class="op">(</span></span>
+<span>  type <span class="op">=</span> <span class="st">"swiss_roll"</span>,</span>
+<span>  n_samples <span class="op">=</span> <span class="fl">1000L</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">swissroll_df</span> <span class="op">&lt;-</span> <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">15L</span>, <span class="fl">30L</span><span class="op">)</span>, \<span class="op">(</span><span class="va">k</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="../reference/ncvis.html">ncvis</a></span><span class="op">(</span></span>
+<span>    data <span class="op">=</span> <span class="va">swissroll_data</span><span class="op">$</span><span class="va">data</span>,</span>
+<span>    k <span class="op">=</span> <span class="va">k</span>,</span>
+<span>    knn_method <span class="op">=</span> <span class="st">"exhaustive"</span>,</span>
+<span>    .verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/as.data.table.html" class="external-link">as.data.table</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu">`colnames&lt;-`</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NCVis1"</span>, <span class="st">"NCVis2"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="va">.</span><span class="op">[</span>, <span class="fu">`:=`</span><span class="op">(</span>k <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"k = %d"</span>, <span class="va">k</span><span class="op">)</span>, z_axis <span class="op">=</span> <span class="va">swissroll_data</span><span class="op">$</span><span class="va">data</span><span class="op">[</span>, <span class="fl">3</span><span class="op">]</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="op">}</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/rbindlist.html" class="external-link">rbindlist</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">swissroll_df</span>,</span>
+<span>  mapping <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">NCVis1</span>, y <span class="op">=</span> <span class="va">NCVis2</span><span class="op">)</span></span>
+<span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span></span>
+<span>    mapping <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="va">z_axis</span><span class="op">)</span>,</span>
+<span>    shape <span class="op">=</span> <span class="fl">21</span>,</span>
+<span>    size <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>    alpha <span class="op">=</span> <span class="fl">0.5</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">k</span>, scales <span class="op">=</span> <span class="st">"free"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html" class="external-link">scale_fill_viridis_c</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"NCVis on Swiss roll data"</span><span class="op">)</span></span></code></pre></div>
+<div class="cell-output-display">
+<div>
+<figure><p><img src="fa2_files/figure-html/swissroll%20data%20-%20ncvis-1.png" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The 1k swiss roll is NCVis’ weak spot. With 15 neighbours on a sparse sheet it tears the roll into a dozen strips. Doubling <code>k</code> stitches most of them back together, but the sheet still doesn’t unroll.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ncvis_trajectory</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ncvis.html">ncvis</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">trajectory_data</span><span class="op">$</span><span class="va">data</span>,</span>
+<span>  .verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">ncvis_trajectory_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/as.data.table.html" class="external-link">as.data.table</a></span><span class="op">(</span><span class="va">ncvis_trajectory</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu">`colnames&lt;-`</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NCVis1"</span>, <span class="st">"NCVis2"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="va">.</span><span class="op">[</span>, <span class="va">branch</span> <span class="op">:=</span> <span class="va">trajectory_data</span><span class="op">$</span><span class="va">membership</span><span class="op">]</span></span>
+<span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">ncvis_trajectory_df</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="va">.N</span><span class="op">)</span><span class="op">]</span>,</span>
+<span>  mapping <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">NCVis1</span>, y <span class="op">=</span> <span class="va">NCVis2</span><span class="op">)</span></span>
+<span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>mapping <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="va">branch</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">0.75</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"NCVis on trajectory data"</span><span class="op">)</span></span></code></pre></div>
+<div class="cell-output-display">
+<div>
+<figure><p><img src="fa2_files/figure-html/trajectory%20data%20-%20ncvis-1.png" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>On the trajectory every branch stays attached to its parent, and the dense stretches of each branch pull into blobs, a bit like UMAP’s take on this data.</p>
+</section></section></section><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);

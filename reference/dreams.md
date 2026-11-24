@@ -15,7 +15,7 @@ dreams(
   knn = NULL,
   reference = NULL,
   n_dim = 2L,
-  perplexity = 20,
+  perplexity = 30,
   approx_type = c("bh", "bh_qd", "fft", "fft_3k"),
   knn_method = c("ivf", "kmknn", "balltree", "hnsw", "annoy", "nndescent", "exhaustive"),
   nn_params = params_nn(),
@@ -56,7 +56,7 @@ dreams(
 
   Numeric. Perplexity parameter, related to the number of nearest
   neighbours used in manifold learning. Typical values are between 5
-  and 50. Defaults to `20.0`.
+  and 50. Defaults to `30.0`.
 
 - approx_type:
 

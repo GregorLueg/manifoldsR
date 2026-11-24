@@ -13,7 +13,7 @@ radius in the embedding. Setting lambda to 0 recovers plain t-SNE."><meta proper
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -32,7 +32,7 @@ radius in the embedding. Setting lambda to 0 recovers plain t-SNE."><meta proper
     <li><a class="dropdown-item" href="../articles/dreams.html">DREAMS</a></li>
     <li><a class="dropdown-item" href="../articles/phate.html">Using PHATE</a></li>
     <li><a class="dropdown-item" href="../articles/pacmap.html">Using PaCMAP</a></li>
-    <li><a class="dropdown-item" href="../articles/fa2.html">Using ForceAtlas2</a></li>
+    <li><a class="dropdown-item" href="../articles/fa2.html">Using ForceAtlas2 and NCVis</a></li>
     <li><a class="dropdown-item" href="../articles/diffusion_map.html">Using diffusion maps</a></li>
     <li><a class="dropdown-item" href="../articles/clustering.html">Clustering methods in manifoldsR (with emphasis on EVoC)</a></li>
   </ul></li>
@@ -66,7 +66,7 @@ radius in the embedding. Setting <code>lambda</code> to <code>0</code> recovers 
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">params_densne</span><span class="op">(</span>lambda <span class="op">=</span> <span class="fl">0.5</span>, frac <span class="op">=</span> <span class="fl">0.3</span>, var_shift <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">params_densne</span><span class="op">(</span>lambda <span class="op">=</span> <span class="fl">0.1</span>, frac <span class="op">=</span> <span class="fl">0.3</span>, var_shift <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -75,8 +75,7 @@ radius in the embedding. Setting <code>lambda</code> to <code>0</code> recovers 
 
 <dl><dt id="arg-lambda">lambda<a class="anchor" aria-label="anchor" href="#arg-lambda"></a></dt>
 <dd><p>Numeric. Weight of the density term. <code>0</code> disables it. The
-default is higher than the den-SNE reference value (original: <code>0.1</code>).
-Defaults to <code>0.5</code>.</p></dd>
+default is the den-SNE reference value. Defaults to <code>0.1</code>.</p></dd>
 
 
 <dt id="arg-frac">frac<a class="anchor" aria-label="anchor" href="#arg-frac"></a></dt>
@@ -92,8 +91,7 @@ log-radii. Defaults to <code>0.1</code>.</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A named list with the following elements:</p><ul><li><p>lambda - Numeric. Weight of the density term. <code>0</code> disables it. The
-default is higher than the den-SNE reference value (original: <code>0.1</code>).
-Defaults to <code>0.5</code>.</p></li>
+default is the den-SNE reference value. Defaults to <code>0.1</code>.</p></li>
 <li><p>frac - Numeric. Fraction of the total epochs, at the end of the run,
 over which the density term is active. Defaults to <code>0.3</code>.</p></li>
 <li><p>var_shift - Numeric. Additive shift on the variance of the embedding
@@ -108,7 +106,7 @@ log-radii. Defaults to <code>0.1</code>.</p></li>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">params_densne</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $lambda</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $frac</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.3</span>

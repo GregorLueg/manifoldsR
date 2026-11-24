@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -26,7 +26,7 @@
     <li><a class="dropdown-item" href="../articles/dreams.html">DREAMS</a></li>
     <li><a class="dropdown-item" href="../articles/phate.html">Using PHATE</a></li>
     <li><a class="dropdown-item" href="../articles/pacmap.html">Using PaCMAP</a></li>
-    <li><a class="dropdown-item" href="../articles/fa2.html">Using ForceAtlas2</a></li>
+    <li><a class="dropdown-item" href="../articles/fa2.html">Using ForceAtlas2 and NCVis</a></li>
     <li><a class="dropdown-item" href="../articles/diffusion_map.html">Using diffusion maps</a></li>
     <li><a class="dropdown-item" href="../articles/clustering.html">Clustering methods in manifoldsR (with emphasis on EVoC)</a></li>
   </ul></li>
@@ -67,6 +67,7 @@
 <span>  n_landmarks <span class="op">=</span> <span class="fl">2048L</span>,</span>
 <span>  landmark_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"spectral"</span>, <span class="st">"random"</span>, <span class="st">"density"</span><span class="op">)</span>,</span>
 <span>  n_svd <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  landmark_k_means <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"emeans"</span>, <span class="st">"lloyd"</span><span class="op">)</span>,</span>
 <span>  mds_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sgd_dense"</span>, <span class="st">"classic"</span><span class="op">)</span>,</span>
 <span>  mds_iter <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  graph_symmetry <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"additive"</span>, <span class="st">"multiplicative"</span>, <span class="st">"mnn"</span>, <span class="st">"none"</span><span class="op">)</span></span>
@@ -125,6 +126,11 @@ landmark selection. If <code>NULL</code>, uses <code>100</code>. Ignored by the 
 methods. Defaults to <code>NULL</code>.</p></dd>
 
 
+<dt id="arg-landmark-k-means">landmark_k_means<a class="anchor" aria-label="anchor" href="#arg-landmark-k-means"></a></dt>
+<dd><p>String. k-means used by the spectral landmark
+selection. Ignored by the other landmark methods. One of <code>c("emeans", "lloyd")</code>. Defaults to <code>"emeans"</code>.</p></dd>
+
+
 <dt id="arg-mds-method">mds_method<a class="anchor" aria-label="anchor" href="#arg-mds-method"></a></dt>
 <dd><p>String. MDS algorithm used for the final embedding. One of
 <code>c("sgd_dense", "classic")</code>. Defaults to <code>"sgd_dense"</code>.</p></dd>
@@ -165,6 +171,8 @@ diffusion operator is used. Defaults to <code>2048L</code>.</p></li>
 <li><p>n_svd - Integer or <code>NULL</code>. Number of singular vectors for spectral
 landmark selection. If <code>NULL</code>, uses <code>100</code>. Ignored by the other landmark
 methods. Defaults to <code>NULL</code>.</p></li>
+<li><p>landmark_k_means - String. k-means used by the spectral landmark
+selection. Ignored by the other landmark methods. One of <code>c("emeans", "lloyd")</code>. Defaults to <code>"emeans"</code>.</p></li>
 <li><p>mds_method - String. MDS algorithm used for the final embedding. One
 of <code>c("sgd_dense", "classic")</code>. Defaults to <code>"sgd_dense"</code>.</p></li>
 <li><p>mds_iter - Integer or <code>NULL</code>. Number of SGD-MDS iterations. If <code>NULL</code>,
@@ -205,6 +213,9 @@ One of <code>c("additive", "multiplicative", "mnn", "none")</code>. Defaults to
 <span class="r-out co"><span class="r-pr">#&gt;</span> $n_svd</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $landmark_k_means</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "emeans"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $mds_method</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "sgd_dense"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -241,6 +252,9 @@ One of <code>c("additive", "multiplicative", "mnn", "none")</code>. Defaults to
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $n_svd</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $landmark_k_means</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "emeans"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $mds_method</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "sgd_dense"</span>

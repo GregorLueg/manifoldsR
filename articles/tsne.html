@@ -28,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,7 +49,7 @@
     <li><a class="dropdown-item" href="../articles/dreams.html">DREAMS</a></li>
     <li><a class="dropdown-item" href="../articles/phate.html">Using PHATE</a></li>
     <li><a class="dropdown-item" href="../articles/pacmap.html">Using PaCMAP</a></li>
-    <li><a class="dropdown-item" href="../articles/fa2.html">Using ForceAtlas2</a></li>
+    <li><a class="dropdown-item" href="../articles/fa2.html">Using ForceAtlas2 and NCVis</a></li>
     <li><a class="dropdown-item" href="../articles/diffusion_map.html">Using diffusion maps</a></li>
     <li><a class="dropdown-item" href="../articles/clustering.html">Clustering methods in manifoldsR (with emphasis on EVoC)</a></li>
   </ul>
@@ -79,7 +79,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Using t-SNE</h1>
 
       <p class="author">Gregor Lueg</p>
-      <p class="date">2026-11-23</p>
+      <p class="date">2026-11-24</p>
 
       <small class="dont-index">Source: <a href="https://github.com/GregorLueg/manifoldsR/blob/main/vignettes/tsne.qmd" class="external-link"><code>vignettes/tsne.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
@@ -523,9 +523,9 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;            expr       min        lq      mean    median        uq       max</span></span>
-<span><span class="co">#&gt;           Rtsne 11.714434 11.714434 11.714434 11.714434 11.714434 11.714434</span></span>
-<span><span class="co">#&gt;     manifold_bh  3.688211  3.688211  3.688211  3.688211  3.688211  3.688211</span></span>
-<span><span class="co">#&gt;  manifold_bh_qd  1.693917  1.693917  1.693917  1.693917  1.693917  1.693917</span></span>
+<span><span class="co">#&gt;           Rtsne 11.871354 11.871354 11.871354 11.871354 11.871354 11.871354</span></span>
+<span><span class="co">#&gt;     manifold_bh  3.704087  3.704087  3.704087  3.704087  3.704087  3.704087</span></span>
+<span><span class="co">#&gt;  manifold_bh_qd  1.679260  1.679260  1.679260  1.679260  1.679260  1.679260</span></span>
 <span><span class="co">#&gt;  neval</span></span>
 <span><span class="co">#&gt;      1</span></span>
 <span><span class="co">#&gt;      1</span></span>
@@ -580,10 +580,10 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;             expr      min       lq     mean   median       uq      max neval</span></span>
-<span><span class="co">#&gt;      manifold_bh 93.63701 93.63701 93.63701 93.63701 93.63701 93.63701     1</span></span>
-<span><span class="co">#&gt;   manifold_bh_qd 23.71292 23.71292 23.71292 23.71292 23.71292 23.71292     1</span></span>
-<span><span class="co">#&gt;     manifold_fft 27.14037 27.14037 27.14037 27.14037 27.14037 27.14037     1</span></span>
-<span><span class="co">#&gt;  manifold_fft_3k 23.24564 23.24564 23.24564 23.24564 23.24564 23.24564     1</span></span></code></pre></div>
+<span><span class="co">#&gt;      manifold_bh 90.42666 90.42666 90.42666 90.42666 90.42666 90.42666     1</span></span>
+<span><span class="co">#&gt;   manifold_bh_qd 22.78009 22.78009 22.78009 22.78009 22.78009 22.78009     1</span></span>
+<span><span class="co">#&gt;     manifold_fft 26.41547 26.41547 26.41547 26.41547 26.41547 26.41547     1</span></span>
+<span><span class="co">#&gt;  manifold_fft_3k 22.20076 22.20076 22.20076 22.20076 22.20076 22.20076     1</span></span></code></pre></div>
 </div>
 <p>The speed advantage of the Rust implementation comes from a combination of optimised memory layout, aggressive inlining, and the fact that the entire pipeline (kNN construction, probability computation and gradient descent) runs within the Rust kernel without round-tripping through R. If you like tSNE, but thought it’s too slow… we got you.</p>
 </section></section><script id="quarto-html-after-body" type="application/javascript">

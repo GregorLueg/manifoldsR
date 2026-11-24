@@ -1,14 +1,14 @@
 # K-means clustering (full)
 
-**\[experimental\]** Rust interface for k-means clustering using Lloyd's
-algorithm with SIMD or GEMM acceleration depending on dimensionality. It
-exposes the high performance k-means clustering code from the Rust crate
-`ann-search-rs` for rapid clustering.
+**\[experimental\]** Rust interface for k-means clustering via e-means
+(mini-batch EMA updates, Bessa et al. 2026) or Lloyd's algorithm with
+SIMD or GEMM acceleration depending on dimensionality. It exposes the
+k-means code from the Rust crate `ann-search-rs` through `bixverse-rs`.
 
 ## Usage
 
 ``` r
-rs_k_means(data, k, kmeans_params, seed, verbose)
+rs_k_means(data, k, algorithm, kmeans_params, seed, verbose)
 ```
 
 ## Arguments
@@ -21,6 +21,10 @@ rs_k_means(data, k, kmeans_params, seed, verbose)
 - k:
 
   Integer. Number of clusters.
+
+- algorithm:
+
+  String. One of `"emeans"` or `"lloyd"`.
 
 - kmeans_params:
 

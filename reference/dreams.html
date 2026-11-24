@@ -17,7 +17,7 @@ validation before calling the Rust implementation."><meta property="og:image" co
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,7 +36,7 @@ validation before calling the Rust implementation."><meta property="og:image" co
     <li><a class="dropdown-item" href="../articles/dreams.html">DREAMS</a></li>
     <li><a class="dropdown-item" href="../articles/phate.html">Using PHATE</a></li>
     <li><a class="dropdown-item" href="../articles/pacmap.html">Using PaCMAP</a></li>
-    <li><a class="dropdown-item" href="../articles/fa2.html">Using ForceAtlas2</a></li>
+    <li><a class="dropdown-item" href="../articles/fa2.html">Using ForceAtlas2 and NCVis</a></li>
     <li><a class="dropdown-item" href="../articles/diffusion_map.html">Using diffusion maps</a></li>
     <li><a class="dropdown-item" href="../articles/clustering.html">Clustering methods in manifoldsR (with emphasis on EVoC)</a></li>
   </ul></li>
@@ -77,7 +77,7 @@ validation before calling the Rust implementation.</p>
 <span>  knn <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  reference <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  n_dim <span class="op">=</span> <span class="fl">2L</span>,</span>
-<span>  perplexity <span class="op">=</span> <span class="fl">20</span>,</span>
+<span>  perplexity <span class="op">=</span> <span class="fl">30</span>,</span>
 <span>  approx_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"bh"</span>, <span class="st">"bh_qd"</span>, <span class="st">"fft"</span>, <span class="st">"fft_3k"</span><span class="op">)</span>,</span>
 <span>  knn_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ivf"</span>, <span class="st">"kmknn"</span>, <span class="st">"balltree"</span>, <span class="st">"hnsw"</span>, <span class="st">"annoy"</span>, <span class="st">"nndescent"</span>, <span class="st">"exhaustive"</span><span class="op">)</span>,</span>
 <span>  nn_params <span class="op">=</span> <span class="fu"><a href="params_nn.html">params_nn</a></span><span class="op">(</span><span class="op">)</span>,</span>
@@ -119,7 +119,7 @@ Currently only <code>2L</code> is supported. Defaults to <code>2L</code>.</p></d
 <dt id="arg-perplexity">perplexity<a class="anchor" aria-label="anchor" href="#arg-perplexity"></a></dt>
 <dd><p>Numeric. Perplexity parameter, related to the number of
 nearest neighbours used in manifold learning. Typical values are between
-5 and 50. Defaults to <code>20.0</code>.</p></dd>
+5 and 50. Defaults to <code>30.0</code>.</p></dd>
 
 
 <dt id="arg-approx-type">approx_type<a class="anchor" aria-label="anchor" href="#arg-approx-type"></a></dt>

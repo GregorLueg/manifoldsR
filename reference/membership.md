@@ -29,5 +29,5 @@ km <- kmeans_cluster(d$data, k = 4L, .verbose = FALSE)
 table(membership(km))
 #> 
 #>   0   1   2   3 
-#> 242 121 114  23 
+#> 301 121  55  23 
 ```

@@ -28,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,7 +49,7 @@
     <li><a class="dropdown-item" href="../articles/dreams.html">DREAMS</a></li>
     <li><a class="dropdown-item" href="../articles/phate.html">Using PHATE</a></li>
     <li><a class="dropdown-item" href="../articles/pacmap.html">Using PaCMAP</a></li>
-    <li><a class="dropdown-item" href="../articles/fa2.html">Using ForceAtlas2</a></li>
+    <li><a class="dropdown-item" href="../articles/fa2.html">Using ForceAtlas2 and NCVis</a></li>
     <li><a class="dropdown-item" href="../articles/diffusion_map.html">Using diffusion maps</a></li>
     <li><a class="dropdown-item" href="../articles/clustering.html">Clustering methods in manifoldsR (with emphasis on EVoC)</a></li>
   </ul>
@@ -79,7 +79,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Using PHATE</h1>
 
       <p class="author">Gregor Lueg</p>
-      <p class="date">2026-11-23</p>
+      <p class="date">2026-11-24</p>
 
       <small class="dont-index">Source: <a href="https://github.com/GregorLueg/manifoldsR/blob/main/vignettes/phate.qmd" class="external-link"><code>vignettes/phate.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
@@ -493,10 +493,11 @@
 <span>  <span class="op">}</span>,</span>
 <span>  times <span class="op">=</span> <span class="fl">1L</span></span>
 <span><span class="op">)</span></span>
+<span><span class="co">#&gt;     SGD-MDS may not have converged: stress changed by -1.0% in final iterations. Consider increasing n_iter or adjusting learning_rate.</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;            expr       min        lq      mean    median        uq       max</span></span>
-<span><span class="co">#&gt;          phateR 13.205319 13.205319 13.205319 13.205319 13.205319 13.205319</span></span>
-<span><span class="co">#&gt;  manifold_phate  3.839417  3.839417  3.839417  3.839417  3.839417  3.839417</span></span>
+<span><span class="co">#&gt;          phateR 12.379879 12.379879 12.379879 12.379879 12.379879 12.379879</span></span>
+<span><span class="co">#&gt;  manifold_phate  3.510058  3.510058  3.510058  3.510058  3.510058  3.510058</span></span>
 <span><span class="co">#&gt;  neval</span></span>
 <span><span class="co">#&gt;      1</span></span>
 <span><span class="co">#&gt;      1</span></span></code></pre></div>
@@ -540,13 +541,13 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;                     expr       min        lq      mean    median        uq</span></span>
-<span><span class="co">#&gt;                   phateR 56.354279 56.354279 56.354279 56.354279 56.354279</span></span>
-<span><span class="co">#&gt;  manifold_phate_spectral 18.762554 18.762554 18.762554 18.762554 18.762554</span></span>
-<span><span class="co">#&gt;    manifold_phate_random  5.863323  5.863323  5.863323  5.863323  5.863323</span></span>
+<span><span class="co">#&gt;                   phateR 57.989864 57.989864 57.989864 57.989864 57.989864</span></span>
+<span><span class="co">#&gt;  manifold_phate_spectral  9.853247  9.853247  9.853247  9.853247  9.853247</span></span>
+<span><span class="co">#&gt;    manifold_phate_random  5.016285  5.016285  5.016285  5.016285  5.016285</span></span>
 <span><span class="co">#&gt;        max neval</span></span>
-<span><span class="co">#&gt;  56.354279     1</span></span>
-<span><span class="co">#&gt;  18.762554     1</span></span>
-<span><span class="co">#&gt;   5.863323     1</span></span></code></pre></div>
+<span><span class="co">#&gt;  57.989864     1</span></span>
+<span><span class="co">#&gt;   9.853247     1</span></span>
+<span><span class="co">#&gt;   5.016285     1</span></span></code></pre></div>
 </div>
 <p>As with t-SNE and UMAP, the speed advantage of the Rust implementation comes from the entire pipeline (kNN construction, kernel computation, diffusion and MDS) running within the Rust kernel without round-tripping through Python in this case. Usually, the differences become more pronounced with larger data sets.</p>
 </section></section><script id="quarto-html-after-body" type="application/javascript">

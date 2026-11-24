@@ -422,6 +422,103 @@ c(
 #>          TRUE         FALSE
 ```
 
+### umap-learn 0.6: Adam and recursive initialisation
+
+umap-learn 0.6 switched its own optimiser to Adam and added a new
+initialisation. `manifoldsR` has both:
+
+- `optimiser = "adam_v06"`: a port of the umap-learn 0.6 Adam. Not the
+  same as `"adam_parallel"`: textbook Adam constants, a learning rate
+  warm-up, a soft clip on the repulsion, and on large layouts “hard
+  negatives” drawn from points that sit close in the current embedding.
+- `init = "recursive"`: umap-learn 0.6’s recursive label propagation. It
+  coarsens the graph down to at most 1024 nodes, places that from a PCA
+  anchor, then lays out and expands each level on the way back up.
+
+The two are meant to go together: only with `init = "recursive"` does
+`"adam_v06"` treat the start as a good layout and use the short, gentle
+warm-up. UMAP only,
+[`densmap()`](https://gregorlueg.github.io/manifoldsR/reference/densmap.md)
+rejects `"adam_v06"`.
+
+``` r
+
+umap_clusters_v06 <- umap(
+  data = cluster_data$data,
+  knn = precomputed_knn,
+  k = 15L,
+  umap_params = params_umap(optimiser = "adam_v06", init = "recursive"),
+  .verbose = TRUE
+)
+#> Using n_epochs = 500 (Adam optimiser or dataset <=10k samples)
+
+umap_v06_df <- rbind(
+  as.data.table(umap_clusters_from_knn)[, optimiser := "adam_parallel"],
+  as.data.table(umap_clusters_v06)[, optimiser := "adam_v06 + recursive"]
+) %>%
+  `colnames<-`(c("UMAP1", "UMAP2", "optimiser")) %>%
+  .[, cluster := as.factor(rep(cluster_data$membership, 2L))]
+
+ggplot(
+  data = umap_v06_df,
+  mapping = aes(x = UMAP1, y = UMAP2)
+) +
+  geom_point(
+    mapping = aes(colour = cluster),
+    alpha = 0.5,
+    size = 0.75
+  ) +
+  facet_wrap(~optimiser, scales = "free") +
+  theme_bw() +
+  ggtitle("UMAP: default vs umap-learn 0.6")
+```
+
+![](umap_files/figure-html/umap%20-%20adam_v06%20clusters-1.png)
+
+All 15 clusters separate either way. The 0.6 pair packs each cluster
+tighter and leaves more empty space between them, closer to what
+umap-learn itself draws these days. The arrangement differs, as you’d
+expect from a different start.
+
+``` r
+
+umap_trajectory_v06 <- umap(
+  data = trajectory_data$data,
+  knn_method = "exhaustive",
+  umap_params = params_umap(optimiser = "adam_v06", init = "recursive"),
+  .verbose = TRUE
+)
+#> Using n_epochs = 500 (Adam optimiser or dataset <=10k samples)
+
+umap_trajectory_v06_df <- rbind(
+  as.data.table(umap_trajectory)[, optimiser := "adam_parallel"],
+  as.data.table(umap_trajectory_v06)[, optimiser := "adam_v06 + recursive"]
+) %>%
+  `colnames<-`(c("UMAP1", "UMAP2", "optimiser")) %>%
+  .[, branch := rep(trajectory_data$membership, 2L)]
+
+ggplot(
+  data = umap_trajectory_v06_df[sample(.N)],
+  mapping = aes(x = UMAP1, y = UMAP2)
+) +
+  geom_point(
+    mapping = aes(colour = branch),
+    alpha = 0.5,
+    size = 0.75
+  ) +
+  facet_wrap(~optimiser, scales = "free") +
+  theme_bw() +
+  scale_colour_viridis_c(option = "turbo") +
+  ggtitle("UMAP on trajectory data: default vs umap-learn 0.6")
+```
+
+![](umap_files/figure-html/umap%20-%20adam_v06%20trajectory-1.png)
+
+Same tree, same branch order, same blobs where the branches are dense.
+The umap-learn 0.6 behaviour doesn’t fix UMAP’s habit of clumping a
+continuum; pick it when you want results that line up with current
+umap-learn.
+
 ### Benchmarks
 
 How does this compare against other UMAP implementations? Let’s do a
@@ -432,7 +529,8 @@ benchmark:
 # set up the venv for the Python part/dependencies
 local({
   env_name <- "r-manifolds"
-  py_pkgs <- c("phate", "umap-learn", "numpy", "scipy")
+  # umap-learn 0.6 for the Adam + recursive init path
+  py_pkgs <- c("phate", "umap-learn>=0.6", "numpy", "scipy")
 
   if (!reticulate::virtualenv_exists(env_name)) {
     reticulate::virtualenv_create(env_name)
@@ -447,7 +545,11 @@ local({
     Negate(reticulate::py_module_available),
     c("phate", "umap")
   )
-  if (length(missing_pkgs) > 0L) {
+  installed <- reticulate::py_list_packages(env_name)
+  umap_version <- installed$version[installed$package == "umap-learn"]
+  outdated <- length(umap_version) == 0L ||
+    utils::compareVersion(umap_version, "0.6") < 0L
+  if (length(missing_pkgs) > 0L || outdated) {
     reticulate::virtualenv_install(env_name, packages = py_pkgs)
   }
 })
@@ -466,6 +568,7 @@ umap_py <- reticulate::import("umap")
 # run a small dataset...
 test_reducer <- umap_py$UMAP(
   n_neighbors = 15L,
+  compatibility_layout = TRUE,
   n_jobs = parallel::detectCores() - 1L
 )
 test <- test_reducer$fit_transform(benchmark_data$data[1:500, ])
@@ -481,6 +584,7 @@ microbenchmark::microbenchmark(
   umap_reticulate = {
     reducer <- umap_py$UMAP(
       n_neighbors = 15L,
+      compatibility_layout = TRUE,
       n_jobs = parallel::detectCores() - 1L
     )
     reducer$fit_transform(benchmark_data$data)
@@ -506,17 +610,17 @@ microbenchmark::microbenchmark(
 )
 #> Unit: milliseconds
 #>             expr        min         lq       mean     median         uq
-#>             umap 21011.7105 21011.7105 21011.7105 21011.7105 21011.7105
-#>  umap_reticulate 31437.9742 31437.9742 31437.9742 31437.9742 31437.9742
-#>             uwot  5507.7469  5507.7469  5507.7469  5507.7469  5507.7469
-#>          uwot_v2  2870.3590  2870.3590  2870.3590  2870.3590  2870.3590
-#>    manifold_umap   653.4937   653.4937   653.4937   653.4937   653.4937
+#>             umap 20613.7166 20613.7166 20613.7166 20613.7166 20613.7166
+#>  umap_reticulate 31135.6589 31135.6589 31135.6589 31135.6589 31135.6589
+#>             uwot  5604.7323  5604.7323  5604.7323  5604.7323  5604.7323
+#>          uwot_v2  2840.6399  2840.6399  2840.6399  2840.6399  2840.6399
+#>    manifold_umap   757.8398   757.8398   757.8398   757.8398   757.8398
 #>         max neval
-#>  21011.7105     1
-#>  31437.9742     1
-#>   5507.7469     1
-#>   2870.3590     1
-#>    653.4937     1
+#>  20613.7166     1
+#>  31135.6589     1
+#>   5604.7323     1
+#>   2840.6399     1
+#>    757.8398     1
 ```
 
 The standard R version is slow (as expected). The Python version (with
@@ -524,10 +628,19 @@ numba behind the scenes) via reticulate gives some speed-up, once the
 numba parts are JIT compiled.
 [`uwot::umap2()`](https://jlmelville.github.io/uwot/reference/umap2.html)
 and `manifoldsR` are the fastest here. Let’s pit them against each other
-on a larger data set, Adam against Adam and SGD against SGD.
-[`uwot::umap()`](https://jlmelville.github.io/uwot/reference/umap.html)
-gets all cores for the SGD step, which makes it lock-free and
-non-reproducible too, so the comparison is fair.
+on a larger data set, Adam against Adam and SGD against SGD, with
+umap-learn 0.6 in the mix:
+
+- Parallel Adam:
+  [`uwot::umap2()`](https://jlmelville.github.io/uwot/reference/umap2.html)
+  against the default `"adam_parallel"`.
+- umap-learn 0.6 Adam: umap-learn with `optimizer = "adam"` (recursive
+  init plus its Adam) against `"adam_v06"` with `init = "recursive"`.
+- Hogwild! SGD:
+  [`uwot::umap()`](https://jlmelville.github.io/uwot/reference/umap.html)
+  and umap-learn’s legacy layout (`compatibility_layout = TRUE`) against
+  `"sgd_parallel"`. All three write to the embedding lock-free on all
+  cores and none of them is reproducible, so the comparison is fair.
 
 ``` r
 
@@ -537,6 +650,19 @@ benchmark_data_2 <- manifold_synthetic_data(
 )
 
 n_cores <- parallel::detectCores()
+
+umap_py <- reticulate::import("umap")
+
+# warm up the numba JIT of both umap-learn paths
+test <- umap_py$UMAP(optimizer = "adam", n_jobs = n_cores)$fit_transform(
+  benchmark_data_2$data[1:500, ]
+)
+test <- umap_py$UMAP(
+  compatibility_layout = TRUE,
+  n_jobs = n_cores
+)$fit_transform(
+  benchmark_data_2$data[1:500, ]
+)
 
 microbenchmark::microbenchmark(
   # parallel Adam
@@ -550,6 +676,22 @@ microbenchmark::microbenchmark(
       .verbose = FALSE
     )
   },
+  # umap-learn 0.6 Adam with recursive init
+  umap_learn_adam = {
+    umap_py$UMAP(
+      n_neighbors = 15L,
+      optimizer = "adam",
+      n_jobs = n_cores
+    )$fit_transform(benchmark_data_2$data)
+  },
+  manifold_adam_v06 = {
+    umap(
+      data = benchmark_data_2$data,
+      k = 15L,
+      umap_params = params_umap(optimiser = "adam_v06", init = "recursive"),
+      .verbose = FALSE
+    )
+  },
   # multi-threaded SGD
   uwot_sgd = {
     uwot::umap(
@@ -557,6 +699,13 @@ microbenchmark::microbenchmark(
       n_threads = n_cores,
       n_sgd_threads = n_cores
     )
+  },
+  umap_learn_sgd = {
+    umap_py$UMAP(
+      n_neighbors = 15L,
+      compatibility_layout = TRUE,
+      n_jobs = n_cores
+    )$fit_transform(benchmark_data_2$data)
   },
   manifold_sgd_parallel = {
     umap(
@@ -570,15 +719,21 @@ microbenchmark::microbenchmark(
 )
 #> Unit: seconds
 #>                    expr       min        lq      mean    median        uq
-#>                 uwot_v2 20.629017 20.629017 20.629017 20.629017 20.629017
-#>  manifold_adam_parallel  6.820662  6.820662  6.820662  6.820662  6.820662
-#>                uwot_sgd 12.724202 12.724202 12.724202 12.724202 12.724202
-#>   manifold_sgd_parallel  4.153024  4.153024  4.153024  4.153024  4.153024
+#>                 uwot_v2 20.697108 20.697108 20.697108 20.697108 20.697108
+#>  manifold_adam_parallel  8.018765  8.018765  8.018765  8.018765  8.018765
+#>         umap_learn_adam 22.489317 22.489317 22.489317 22.489317 22.489317
+#>       manifold_adam_v06 11.805500 11.805500 11.805500 11.805500 11.805500
+#>                uwot_sgd 12.590817 12.590817 12.590817 12.590817 12.590817
+#>          umap_learn_sgd 12.865750 12.865750 12.865750 12.865750 12.865750
+#>   manifold_sgd_parallel  4.630726  4.630726  4.630726  4.630726  4.630726
 #>        max neval
-#>  20.629017     1
-#>   6.820662     1
-#>  12.724202     1
-#>   4.153024     1
+#>  20.697108     1
+#>   8.018765     1
+#>  22.489317     1
+#>  11.805500     1
+#>  12.590817     1
+#>  12.865750     1
+#>   4.630726     1
 ```
 
 Optimised memory layouts, aggressive in-lining, heavy parallelism and

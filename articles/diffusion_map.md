@@ -433,8 +433,8 @@ microbenchmark::microbenchmark(
 )
 #> Unit: milliseconds
 #>        expr        min         lq       mean     median         uq        max
-#>     destiny 24119.1212 24119.1212 24119.1212 24119.1212 24119.1212 24119.1212
-#>  manifoldsR   505.9912   505.9912   505.9912   505.9912   505.9912   505.9912
+#>     destiny 23381.3720 23381.3720 23381.3720 23381.3720 23381.3720 23381.3720
+#>  manifoldsR   490.5322   490.5322   490.5322   490.5322   490.5322   490.5322
 #>  neval
 #>      1
 #>      1
@@ -484,9 +484,9 @@ microbenchmark::microbenchmark(
 )
 #> Unit: seconds
 #>                expr      min       lq     mean   median       uq      max neval
-#>       full_operator 1.317822 1.317822 1.317822 1.317822 1.317822 1.317822     1
-#>  landmarks_spectral 4.935512 4.935512 4.935512 4.935512 4.935512 4.935512     1
-#>    landmarks_random 1.494522 1.494522 1.494522 1.494522 1.494522 1.494522     1
+#>       full_operator 1.269406 1.269406 1.269406 1.269406 1.269406 1.269406     1
+#>  landmarks_spectral 2.992629 2.992629 2.992629 2.992629 2.992629 2.992629     1
+#>    landmarks_random 1.480293 1.480293 1.480293 1.480293 1.480293 1.480293     1
 ```
 
 The landmark path pays a fixed cost for choosing t on the dense landmark

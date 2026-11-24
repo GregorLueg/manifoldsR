@@ -24,7 +24,7 @@ new_kmeans_cluster(centroids, assignments, k, method, metric)
 
 - method:
 
-  Character. Either `"full"` or `"minibatch"`.
+  Character. One of `"emeans"`, `"lloyd"` or `"minibatch"`.
 
 - metric:
 

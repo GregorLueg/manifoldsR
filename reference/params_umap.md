@@ -13,8 +13,8 @@ params_umap(
   n_epochs = NULL,
   neg_sample_rate = 5L,
   gamma = 1,
-  optimiser = c("adam_parallel", "sgd", "sgd_parallel", "adam"),
-  init = c("spectral", "pca", "random"),
+  optimiser = c("adam_parallel", "sgd", "sgd_parallel", "adam", "adam_v06"),
+  init = c("spectral", "pca", "random", "recursive"),
   randomised = FALSE
 )
 ```
@@ -57,14 +57,18 @@ params_umap(
 - optimiser:
 
   String. The optimiser. `"sgd_parallel"` is lock-free (Hogwild!) and
-  not reproducible run to run with more than one thread. One of
-  `c("adam_parallel", "sgd", "sgd_parallel", "adam")`. Defaults to
-  `"adam_parallel"`.
+  not reproducible run to run with more than one thread. `"adam_v06"` is
+  the Adam of umap-learn 0.6, meant to pair with `init = "recursive"`.
+  UMAP only, not densMAP. One of
+  `c("adam_parallel", "sgd", "sgd_parallel", "adam", "adam_v06")`.
+  Defaults to `"adam_parallel"`.
 
 - init:
 
-  String. Embedding initialisation method. One of
-  `c("spectral", "pca", "random")`. Defaults to `"spectral"`.
+  String. Embedding initialisation method. `"recursive"` is the
+  recursive label propagation initialisation of umap-learn 0.6. One of
+  `c("spectral", "pca", "random", "recursive")`. Defaults to
+  `"spectral"`.
 
 - randomised:
 
@@ -96,11 +100,15 @@ A named list with the following elements:
 
 - optimiser - String. The optimiser. `"sgd_parallel"` is lock-free
   (Hogwild!) and not reproducible run to run with more than one thread.
-  One of `c("adam_parallel", "sgd", "sgd_parallel", "adam")`. Defaults
-  to `"adam_parallel"`.
+  `"adam_v06"` is the Adam of umap-learn 0.6, meant to pair with
+  `init = "recursive"`. UMAP only, not densMAP. One of
+  `c("adam_parallel", "sgd", "sgd_parallel", "adam", "adam_v06")`.
+  Defaults to `"adam_parallel"`.
 
-- init - String. Embedding initialisation method. One of
-  `c("spectral", "pca", "random")`. Defaults to `"spectral"`.
+- init - String. Embedding initialisation method. `"recursive"` is the
+  recursive label propagation initialisation of umap-learn 0.6. One of
+  `c("spectral", "pca", "random", "recursive")`. Defaults to
+  `"spectral"`.
 
 - randomised - Boolean. Use randomised SVD for PCA initialisation.
   Defaults to `FALSE`.

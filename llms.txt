@@ -24,19 +24,24 @@ methods with focus on [EVoC](https://github.com/TutteInstitute/evoc)
 dimensionality reduction techniques:
 
 - **UMAP** (Uniform Manifold Approximation and Projection with various
-  optimisers which makes this fast.)
+  optimisers which makes this fast, including the umap-learn 0.6 Adam
+  and recursive initialisation.)
 - **t-SNE** (t-Distributed Stochastic Neighbor Embedding - Barnes-Hut,
   quick-and-dirty Barnes-Hut and FFT-accelerated Interpolation-based
   versions)
 - **PHATE** (Potential of Heat-diffusion for Affinity-based Trajectory
   Embedding)
-- **PaCMAP** (Pairwise Controlled Manifold Approximation)
+- **PaCMAP** (Pairwise Controlled Manifold Approximation) and
+  **LocalMAP** (PaCMAP with local repulsion that pulls touching clusters
+  apart)
 - **Diffusion map** (A classical method of Manifold learning)
 - **Density-preserving versions of UMAP and tSNE**
 - **DREAMS** (t-SNE regularised towards a global reference embedding,
   PCA by default, so cluster positions keep their meaning)
 - **ForceAtlas2 (2FA)** (Gephi’s force-directed graph layout on the kNN
   graph)
+- **NCVis** (noise-contrastive estimation on the unweighted kNN graph,
+  with the NCVis+ defaults)
 
 The core algorithms are implemented purely in Rust without any kernel
 switching for speed while providing user-friendly R interfaces. The
@@ -57,8 +62,8 @@ Additionally, you might want to cluster your data and then visualise it.
 For this use case, the package also provides the following clustering
 methods (and of course various metrics around clusters)
 
-- **k-means clustering** (mini Batch version and full version with
-  Hamerley’s algorithm)
+- **k-means clustering** (e-means by default, plus mini-batch and
+  Lloyd’s with Hamerly’s algorithm)
 - **EVõC** (Embedding Vector Oriented Clustering ported from
   [Python](https://github.com/TutteInstitute/evoc) into Rust and exposed
   here - from Leland McInnes at the Tutte institute).
@@ -192,6 +197,10 @@ The core functions to generate the 2D embeddings
   : Rust-based PHATE
 - [`pacmap()`](https://gregorlueg.github.io/manifoldsR/reference/pacmap.md)
   : Rust-based PaCMAP
+- [`localmap()`](https://gregorlueg.github.io/manifoldsR/reference/localmap.md)
+  : Rust-based LocalMAP
+- [`ncvis()`](https://gregorlueg.github.io/manifoldsR/reference/ncvis.md)
+  : Rust-based NCVis
 - [`diffusion_maps()`](https://gregorlueg.github.io/manifoldsR/reference/diffusion_maps.md)
   : Rust-based diffusion maps
 
@@ -261,6 +270,10 @@ Wrapper functions around core parameters
   : Parameters for hierarchical cluster data generation
 - [`params_kmeans()`](https://gregorlueg.github.io/manifoldsR/reference/params_kmeans.md)
   : Wrapper function to generate k-means parameters
+- [`params_localmap()`](https://gregorlueg.github.io/manifoldsR/reference/params_localmap.md)
+  : Wrapper function to generate LocalMAP parameters
+- [`params_ncvis()`](https://gregorlueg.github.io/manifoldsR/reference/params_ncvis.md)
+  : Wrapper function to generate NCVis parameters
 - [`params_nn()`](https://gregorlueg.github.io/manifoldsR/reference/params_nn.md)
   : Wrapper function to generate nearest neighbour parameters
 - [`params_pacmap()`](https://gregorlueg.github.io/manifoldsR/reference/params_pacmap.md)
@@ -334,6 +347,14 @@ Everything rusty - only use this if you know what you are doing…
   **\[experimental\]** : K-means clustering (full)
 - [`rs_k_means_mini_batch()`](https://gregorlueg.github.io/manifoldsR/reference/rs_k_means_mini_batch.md)
   **\[experimental\]** : Mini-batch k-means clustering
+- [`rs_localmap()`](https://gregorlueg.github.io/manifoldsR/reference/rs_localmap.md)
+  **\[experimental\]** : LocalMAP implementation
+- [`rs_localmap_from_knn()`](https://gregorlueg.github.io/manifoldsR/reference/rs_localmap_from_knn.md)
+  **\[experimental\]** : LocalMAP implementation with pre-computed kNN
+- [`rs_ncvis()`](https://gregorlueg.github.io/manifoldsR/reference/rs_ncvis.md)
+  **\[experimental\]** : NCVis implementation
+- [`rs_ncvis_from_knn()`](https://gregorlueg.github.io/manifoldsR/reference/rs_ncvis_from_knn.md)
+  **\[experimental\]** : NCVis implementation with pre-computed kNN
 - [`rs_pacmap()`](https://gregorlueg.github.io/manifoldsR/reference/rs_pacmap.md)
   **\[experimental\]** : PaCMAP implementation
 - [`rs_pacmap_from_knn()`](https://gregorlueg.github.io/manifoldsR/reference/rs_pacmap_from_knn.md)
@@ -371,8 +392,8 @@ Everything rusty - only use this if you know what you are doing…
   PHATE](https://gregorlueg.github.io/manifoldsR/articles/phate.md):
 - [Using
   PaCMAP](https://gregorlueg.github.io/manifoldsR/articles/pacmap.md):
-- [Using
-  ForceAtlas2](https://gregorlueg.github.io/manifoldsR/articles/fa2.md):
+- [Using ForceAtlas2 and
+  NCVis](https://gregorlueg.github.io/manifoldsR/articles/fa2.md):
 - [Using diffusion
   maps](https://gregorlueg.github.io/manifoldsR/articles/diffusion_map.md):
 - [Clustering methods in manifoldsR (with emphasis on

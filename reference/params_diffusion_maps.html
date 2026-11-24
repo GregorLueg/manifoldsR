@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -26,7 +26,7 @@
     <li><a class="dropdown-item" href="../articles/dreams.html">DREAMS</a></li>
     <li><a class="dropdown-item" href="../articles/phate.html">Using PHATE</a></li>
     <li><a class="dropdown-item" href="../articles/pacmap.html">Using PaCMAP</a></li>
-    <li><a class="dropdown-item" href="../articles/fa2.html">Using ForceAtlas2</a></li>
+    <li><a class="dropdown-item" href="../articles/fa2.html">Using ForceAtlas2 and NCVis</a></li>
     <li><a class="dropdown-item" href="../articles/diffusion_map.html">Using diffusion maps</a></li>
     <li><a class="dropdown-item" href="../articles/clustering.html">Clustering methods in manifoldsR (with emphasis on EVoC)</a></li>
   </ul></li>
@@ -66,7 +66,8 @@
 <span>  t_custom <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  n_landmarks <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  landmark_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"spectral"</span>, <span class="st">"random"</span>, <span class="st">"density"</span><span class="op">)</span>,</span>
-<span>  n_svd <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  n_svd <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  landmark_k_means <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"emeans"</span>, <span class="st">"lloyd"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -125,6 +126,11 @@ broad and the later coordinates shrink towards a line. Defaults to <code>NULL</c
 landmark selection. If <code>NULL</code>, uses <code>100</code>. Ignored by the other landmark
 methods. Defaults to <code>NULL</code>.</p></dd>
 
+
+<dt id="arg-landmark-k-means">landmark_k_means<a class="anchor" aria-label="anchor" href="#arg-landmark-k-means"></a></dt>
+<dd><p>String. k-means used by the spectral landmark
+selection. Ignored by the other landmark methods. One of <code>c("emeans", "lloyd")</code>. Defaults to <code>"emeans"</code>.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -153,6 +159,8 @@ broad and the later coordinates shrink towards a line. Defaults to <code>NULL</c
 <li><p>n_svd - Integer or <code>NULL</code>. Number of singular vectors for spectral
 landmark selection. If <code>NULL</code>, uses <code>100</code>. Ignored by the other landmark
 methods. Defaults to <code>NULL</code>.</p></li>
+<li><p>landmark_k_means - String. k-means used by the spectral landmark
+selection. Ignored by the other landmark methods. One of <code>c("emeans", "lloyd")</code>. Defaults to <code>"emeans"</code>.</p></li>
 </ul></div>
 
     <div class="section level2">
@@ -185,6 +193,9 @@ methods. Defaults to <code>NULL</code>.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $n_svd</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $landmark_k_means</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "emeans"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="fu">params_diffusion_maps</span><span class="op">(</span>t_max <span class="op">=</span> <span class="fl">50L</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $bandwidth_scale</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
@@ -212,6 +223,9 @@ methods. Defaults to <code>NULL</code>.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $n_svd</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $landmark_k_means</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "emeans"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>

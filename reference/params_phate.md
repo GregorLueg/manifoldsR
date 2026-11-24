@@ -15,6 +15,7 @@ params_phate(
   n_landmarks = 2048L,
   landmark_method = c("spectral", "random", "density"),
   n_svd = NULL,
+  landmark_k_means = c("emeans", "lloyd"),
   mds_method = c("sgd_dense", "classic"),
   mds_iter = NULL,
   graph_symmetry = c("additive", "multiplicative", "mnn", "none")
@@ -71,6 +72,12 @@ params_phate(
   selection. If `NULL`, uses `100`. Ignored by the other landmark
   methods. Defaults to `NULL`.
 
+- landmark_k_means:
+
+  String. k-means used by the spectral landmark selection. Ignored by
+  the other landmark methods. One of `c("emeans", "lloyd")`. Defaults to
+  `"emeans"`.
+
 - mds_method:
 
   String. MDS algorithm used for the final embedding. One of
@@ -124,6 +131,10 @@ A named list with the following elements:
   landmark selection. If `NULL`, uses `100`. Ignored by the other
   landmark methods. Defaults to `NULL`.
 
+- landmark_k_means - String. k-means used by the spectral landmark
+  selection. Ignored by the other landmark methods. One of
+  `c("emeans", "lloyd")`. Defaults to `"emeans"`.
+
 - mds_method - String. MDS algorithm used for the final embedding. One
   of `c("sgd_dense", "classic")`. Defaults to `"sgd_dense"`.
 
@@ -166,6 +177,9 @@ params_phate()
 #> $n_svd
 #> NULL
 #> 
+#> $landmark_k_means
+#> [1] "emeans"
+#> 
 #> $mds_method
 #> [1] "sgd_dense"
 #> 
@@ -202,6 +216,9 @@ params_phate(decay = 20, n_landmarks = 500L)
 #> 
 #> $n_svd
 #> NULL
+#> 
+#> $landmark_k_means
+#> [1] "emeans"
 #> 
 #> $mds_method
 #> [1] "sgd_dense"

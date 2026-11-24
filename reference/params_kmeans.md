@@ -8,6 +8,7 @@ Wrapper function to generate k-means parameters
 params_kmeans(
   metric = c("euclidean", "cosine"),
   max_iters = 1000L,
+  e_means_epochs = 5,
   batch_size = 4096L,
   drift_threshold = 1e-04,
   lr_alpha = 1,
@@ -26,7 +27,13 @@ params_kmeans(
 
 - max_iters:
 
-  Integer. Maximum number of iterations. Defaults to `1000L`.
+  Integer. Maximum number of iterations for Lloyd's and the mini-batch
+  k-means. Ignored by e-means. Defaults to `1000L`.
+
+- e_means_epochs:
+
+  Numeric. Passes over the data for e-means, may be fractional. Ignored
+  by the other methods. Defaults to `5.0`.
 
 - batch_size:
 
@@ -67,8 +74,11 @@ A named list with the following elements:
 - metric - String. Distance metric to use. One of
   `c("euclidean", "cosine")`. Defaults to `"euclidean"`.
 
-- max_iters - Integer. Maximum number of iterations. Defaults to
-  `1000L`.
+- max_iters - Integer. Maximum number of iterations for Lloyd's and the
+  mini-batch k-means. Ignored by e-means. Defaults to `1000L`.
+
+- e_means_epochs - Numeric. Passes over the data for e-means, may be
+  fractional. Ignored by the other methods. Defaults to `5.0`.
 
 - batch_size - Integer. Mini-batch size. Only used when
   `method = "minibatch"`. Defaults to `4096L`.
@@ -100,6 +110,9 @@ params_kmeans()
 #> $max_iters
 #> [1] 1000
 #> 
+#> $e_means_epochs
+#> [1] 5
+#> 
 #> $batch_size
 #> [1] 4096
 #> 
@@ -124,6 +137,9 @@ params_kmeans(metric = "cosine", max_iters = 100L)
 #> 
 #> $max_iters
 #> [1] 100
+#> 
+#> $e_means_epochs
+#> [1] 5
 #> 
 #> $batch_size
 #> [1] 4096

@@ -14,7 +14,8 @@ params_diffusion_maps(
   t_custom = NULL,
   n_landmarks = NULL,
   landmark_method = c("spectral", "random", "density"),
-  n_svd = NULL
+  n_svd = NULL,
+  landmark_k_means = c("emeans", "lloyd")
 )
 ```
 
@@ -73,6 +74,12 @@ params_diffusion_maps(
   selection. If `NULL`, uses `100`. Ignored by the other landmark
   methods. Defaults to `NULL`.
 
+- landmark_k_means:
+
+  String. k-means used by the spectral landmark selection. Ignored by
+  the other landmark methods. One of `c("emeans", "lloyd")`. Defaults to
+  `"emeans"`.
+
 ## Value
 
 A named list with the following elements:
@@ -112,6 +119,10 @@ A named list with the following elements:
   landmark selection. If `NULL`, uses `100`. Ignored by the other
   landmark methods. Defaults to `NULL`.
 
+- landmark_k_means - String. k-means used by the spectral landmark
+  selection. Ignored by the other landmark methods. One of
+  `c("emeans", "lloyd")`. Defaults to `"emeans"`.
+
 ## Examples
 
 ``` r
@@ -143,6 +154,9 @@ params_diffusion_maps()
 #> $n_svd
 #> NULL
 #> 
+#> $landmark_k_means
+#> [1] "emeans"
+#> 
 params_diffusion_maps(t_max = 50L)
 #> $bandwidth_scale
 #> [1] 1
@@ -170,5 +184,8 @@ params_diffusion_maps(t_max = 50L)
 #> 
 #> $n_svd
 #> NULL
+#> 
+#> $landmark_k_means
+#> [1] "emeans"
 #> 
 ```

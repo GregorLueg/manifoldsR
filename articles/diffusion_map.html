@@ -28,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,7 +49,7 @@
     <li><a class="dropdown-item" href="../articles/dreams.html">DREAMS</a></li>
     <li><a class="dropdown-item" href="../articles/phate.html">Using PHATE</a></li>
     <li><a class="dropdown-item" href="../articles/pacmap.html">Using PaCMAP</a></li>
-    <li><a class="dropdown-item" href="../articles/fa2.html">Using ForceAtlas2</a></li>
+    <li><a class="dropdown-item" href="../articles/fa2.html">Using ForceAtlas2 and NCVis</a></li>
     <li><a class="dropdown-item" href="../articles/diffusion_map.html">Using diffusion maps</a></li>
     <li><a class="dropdown-item" href="../articles/clustering.html">Clustering methods in manifoldsR (with emphasis on EVoC)</a></li>
   </ul>
@@ -79,7 +79,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Using diffusion maps</h1>
 
       <p class="author">Gregor Lueg</p>
-      <p class="date">2026-11-23</p>
+      <p class="date">2026-11-24</p>
 
       <small class="dont-index">Source: <a href="https://github.com/GregorLueg/manifoldsR/blob/main/vignettes/diffusion_map.qmd" class="external-link"><code>vignettes/diffusion_map.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
@@ -443,8 +443,8 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: milliseconds</span></span>
 <span><span class="co">#&gt;        expr        min         lq       mean     median         uq        max</span></span>
-<span><span class="co">#&gt;     destiny 24119.1212 24119.1212 24119.1212 24119.1212 24119.1212 24119.1212</span></span>
-<span><span class="co">#&gt;  manifoldsR   505.9912   505.9912   505.9912   505.9912   505.9912   505.9912</span></span>
+<span><span class="co">#&gt;     destiny 23381.3720 23381.3720 23381.3720 23381.3720 23381.3720 23381.3720</span></span>
+<span><span class="co">#&gt;  manifoldsR   490.5322   490.5322   490.5322   490.5322   490.5322   490.5322</span></span>
 <span><span class="co">#&gt;  neval</span></span>
 <span><span class="co">#&gt;      1</span></span>
 <span><span class="co">#&gt;      1</span></span></code></pre></div>
@@ -489,9 +489,9 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: seconds</span></span>
 <span><span class="co">#&gt;                expr      min       lq     mean   median       uq      max neval</span></span>
-<span><span class="co">#&gt;       full_operator 1.317822 1.317822 1.317822 1.317822 1.317822 1.317822     1</span></span>
-<span><span class="co">#&gt;  landmarks_spectral 4.935512 4.935512 4.935512 4.935512 4.935512 4.935512     1</span></span>
-<span><span class="co">#&gt;    landmarks_random 1.494522 1.494522 1.494522 1.494522 1.494522 1.494522     1</span></span></code></pre></div>
+<span><span class="co">#&gt;       full_operator 1.269406 1.269406 1.269406 1.269406 1.269406 1.269406     1</span></span>
+<span><span class="co">#&gt;  landmarks_spectral 2.992629 2.992629 2.992629 2.992629 2.992629 2.992629     1</span></span>
+<span><span class="co">#&gt;    landmarks_random 1.480293 1.480293 1.480293 1.480293 1.480293 1.480293     1</span></span></code></pre></div>
 </div>
 <p>The landmark path pays a fixed cost for choosing t on the dense landmark operator, and spectral selection adds to it. The Nystroem extension itself is cheap. Landmarks are there for data where the full operator no longer fits comfortably.</p>
 </section></section></section><script id="quarto-html-after-body" type="application/javascript">

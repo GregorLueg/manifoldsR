@@ -28,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="index.html">manifoldsR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,7 +49,7 @@
     <li><a class="dropdown-item" href="articles/dreams.html">DREAMS</a></li>
     <li><a class="dropdown-item" href="articles/phate.html">Using PHATE</a></li>
     <li><a class="dropdown-item" href="articles/pacmap.html">Using PaCMAP</a></li>
-    <li><a class="dropdown-item" href="articles/fa2.html">Using ForceAtlas2</a></li>
+    <li><a class="dropdown-item" href="articles/fa2.html">Using ForceAtlas2 and NCVis</a></li>
     <li><a class="dropdown-item" href="articles/diffusion_map.html">Using diffusion maps</a></li>
     <li><a class="dropdown-item" href="articles/clustering.html">Clustering methods in manifoldsR (with emphasis on EVoC)</a></li>
   </ul>
@@ -91,13 +91,13 @@
 <p><code>manifoldsR</code> provides high-performance implementations of popular dimensionality reduction techniques:</p>
 <ul>
 <li>
-<strong>UMAP</strong> (Uniform Manifold Approximation and Projection with various optimisers which makes this fast.)</li>
+<strong>UMAP</strong> (Uniform Manifold Approximation and Projection with various optimisers which makes this fast, including the umap-learn 0.6 Adam and recursive initialisation.)</li>
 <li>
 <strong>t-SNE</strong> (t-Distributed Stochastic Neighbor Embedding - Barnes-Hut, quick-and-dirty Barnes-Hut and FFT-accelerated Interpolation-based versions)</li>
 <li>
 <strong>PHATE</strong> (Potential of Heat-diffusion for Affinity-based Trajectory Embedding)</li>
 <li>
-<strong>PaCMAP</strong> (Pairwise Controlled Manifold Approximation)</li>
+<strong>PaCMAP</strong> (Pairwise Controlled Manifold Approximation) and <strong>LocalMAP</strong> (PaCMAP with local repulsion that pulls touching clusters apart)</li>
 <li>
 <strong>Diffusion map</strong> (A classical method of Manifold learning)</li>
 <li><strong>Density-preserving versions of UMAP and tSNE</strong></li>
@@ -105,6 +105,8 @@
 <strong>DREAMS</strong> (t-SNE regularised towards a global reference embedding, PCA by default, so cluster positions keep their meaning)</li>
 <li>
 <strong>ForceAtlas2 (2FA)</strong> (Gephi’s force-directed graph layout on the kNN graph)</li>
+<li>
+<strong>NCVis</strong> (noise-contrastive estimation on the unweighted kNN graph, with the NCVis+ defaults)</li>
 </ul>
 <p>The core algorithms are implemented purely in Rust without any kernel switching for speed while providing user-friendly R interfaces. The optimisations here make them in parts substantially faster than other libraries typically used in the R ecosystem to run these methods. The backbone here are the Rust crates that enable <a href="https://github.com/GregorLueg/ann-search-rs" class="external-link">approximate nearest neighbour searches</a> and the underlying <a href="https://github.com/GregorLueg/manifolds-rs" class="external-link">manifold learning methods</a>. The underlying philosophy is to strip out most additional features and focus on the core mechanics and make them as fast as possible, avoid abstraction layers and indirection wherever possible and let llvm do its magic to generate fast code.</p>
 </div>
@@ -114,7 +116,7 @@
 <p>Additionally, you might want to cluster your data and then visualise it. For this use case, the package also provides the following clustering methods (and of course various metrics around clusters)</p>
 <ul>
 <li>
-<strong>k-means clustering</strong> (mini Batch version and full version with Hamerley’s algorithm)</li>
+<strong>k-means clustering</strong> (e-means by default, plus mini-batch and Lloyd’s with Hamerly’s algorithm)</li>
 <li>
 <strong>EVõC</strong> (Embedding Vector Oriented Clustering ported from <a href="https://github.com/TutteInstitute/evoc" class="external-link">Python</a> into Rust and exposed here - from Leland McInnes at the Tutte institute).</li>
 </ul>
