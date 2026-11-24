@@ -729,8 +729,9 @@ params_localmap <- function(
 #' @param lr Numeric. Learning rate of the embedding. Defaults to `2.0`.
 #' @param lr_q Numeric. Learning rate of the noise normalisation constant `Q`.
 #' Defaults to `1.0`.
-#' @param init String. Embedding initialisation method. One of `c("pca",
-#' "random")`. Defaults to `"pca"`.
+#' @param init String. Embedding initialisation method. `"ncvis"` is the
+#' original NCVis start: uniform noise smoothed over the kNN graph in 20 passes.
+#' One of `c("pca", "random", "ncvis")`. Defaults to `"pca"`.
 #' @param init_scale Numeric. Standard deviation of the first axis of the
 #' initial layout. The other axes are scaled by the same factor. Defaults to
 #' `10.0`.
@@ -745,8 +746,9 @@ params_localmap <- function(
 #'  \item lr - Numeric. Learning rate of the embedding. Defaults to `2.0`.
 #'  \item lr_q - Numeric. Learning rate of the noise normalisation constant `Q`.
 #'  Defaults to `1.0`.
-#'  \item init - String. Embedding initialisation method. One of `c("pca",
-#'  "random")`. Defaults to `"pca"`.
+#'  \item init - String. Embedding initialisation method. `"ncvis"` is the
+#'  original NCVis start: uniform noise smoothed over the kNN graph in 20
+#'  passes. One of `c("pca", "random", "ncvis")`. Defaults to `"pca"`.
 #'  \item init_scale - Numeric. Standard deviation of the first axis of the
 #'  initial layout. The other axes are scaled by the same factor. Defaults to
 #'  `10.0`.
@@ -763,7 +765,7 @@ params_ncvis <- function(
   n_negative = 10.0,
   lr = 2.0,
   lr_q = 1.0,
-  init = c("pca", "random"),
+  init = c("pca", "random", "ncvis"),
   init_scale = 10.0,
   randomised = FALSE
 ) {
@@ -774,7 +776,7 @@ params_ncvis <- function(
   checkmate::qassert(n_negative, "N1[1,)")
   checkmate::qassert(lr, "N1(0,)")
   checkmate::qassert(lr_q, "N1(0,)")
-  checkmate::assertChoice(init, c("pca", "random"))
+  checkmate::assertChoice(init, c("pca", "random", "ncvis"))
   checkmate::qassert(init_scale, "N1(0,)")
   checkmate::qassert(randomised, "B1")
 

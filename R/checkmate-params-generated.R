@@ -621,7 +621,7 @@ checkNcvisParams <- function(x) {
   res <- apply_choice_rules(
     x,
     list(
-      init = c("pca", "random")
+      init = c("pca", "random", "ncvis")
     ),
     label = "NCVis params"
   )

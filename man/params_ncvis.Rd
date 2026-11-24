@@ -9,7 +9,7 @@ params_ncvis(
   n_negative = 10,
   lr = 2,
   lr_q = 1,
-  init = c("pca", "random"),
+  init = c("pca", "random", "ncvis"),
   init_scale = 10,
   randomised = FALSE
 )
@@ -25,7 +25,9 @@ to \code{10.0}.}
 \item{lr_q}{Numeric. Learning rate of the noise normalisation constant \code{Q}.
 Defaults to \code{1.0}.}
 
-\item{init}{String. Embedding initialisation method. One of \code{c("pca", "random")}. Defaults to \code{"pca"}.}
+\item{init}{String. Embedding initialisation method. \code{"ncvis"} is the
+original NCVis start: uniform noise smoothed over the kNN graph in 20 passes.
+One of \code{c("pca", "random", "ncvis")}. Defaults to \code{"pca"}.}
 
 \item{init_scale}{Numeric. Standard deviation of the first axis of the
 initial layout. The other axes are scaled by the same factor. Defaults to
@@ -43,7 +45,9 @@ Defaults to \code{10.0}.
 \item lr - Numeric. Learning rate of the embedding. Defaults to \code{2.0}.
 \item lr_q - Numeric. Learning rate of the noise normalisation constant \code{Q}.
 Defaults to \code{1.0}.
-\item init - String. Embedding initialisation method. One of \code{c("pca", "random")}. Defaults to \code{"pca"}.
+\item init - String. Embedding initialisation method. \code{"ncvis"} is the
+original NCVis start: uniform noise smoothed over the kNN graph in 20
+passes. One of \code{c("pca", "random", "ncvis")}. Defaults to \code{"pca"}.
 \item init_scale - Numeric. Standard deviation of the first axis of the
 initial layout. The other axes are scaled by the same factor. Defaults to
 \code{10.0}.

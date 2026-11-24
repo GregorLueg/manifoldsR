@@ -683,8 +683,11 @@ spec_ncvis <- param_spec(
     ),
     init = p_choice(
       "pca",
-      c("pca", "random"),
-      doc = "Embedding initialisation method."
+      c("pca", "random", "ncvis"),
+      doc = paste(
+        "Embedding initialisation method. `\"ncvis\"` is the original NCVis",
+        "start: uniform noise smoothed over the kNN graph in 20 passes."
+      )
     ),
     init_scale = p_dbl(
       10.0,
