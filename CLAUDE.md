@@ -87,8 +87,11 @@ default unless the parser also tries `as_integer()`. New parsers use
 ## Dependencies
 
 - The extendr helpers (`IntoExtendrErr`, `r_matrix_to_faer`, ...) come from the
-  `bixverse-r` crate, pulled in with `default-features = false` to drop
-  `accelerate`.
+  `bixverse-r` crate.
+- `ann-search-rs` enables `accelerate` by default (Apple Accelerate cblas for
+  GEMM). It is gated on `target_os = "macos"`, so a no-op elsewhere, and links
+  the system framework, so nothing is bundled. Cargo unifies features, so
+  `default-features = false` on one dependent does not turn it off.
 - `manifolds-rs` is built with `fft_tsne` (pure Rust `rustfft`/`realfft`), so the
   FFT t-SNE variants work on every platform. No `cfg(windows)` splits.
 - Unreleased crate versions come in via `[patch.crates-io]` entries in

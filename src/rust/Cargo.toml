@@ -11,7 +11,7 @@ name = 'manifoldsR'
 
 [dependencies]
 ann-search-rs = "0.13.1"
-bixverse-r = { version = "0.11.0", default-features = false }
+bixverse-r = "0.11.0"
 extendr-api = "0.9.0"
 evoc-rs = "0.8.0"
 faer = "0.24.4"
