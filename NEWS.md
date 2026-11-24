@@ -5,9 +5,9 @@
 Expect different coordinates than 0.6.0 at the same seed for every method that
 builds a kNN graph, and for PHATE and diffusion maps with spectral landmarks.
 
-- manifolds-rs 0.10.0, evoc-rs 0.8.0 and ann-search-rs 0.13.1. UMAP, densMAP
-  and ForceAtlas2 use a refitted `a`/`b` curve and the `log2(k + 1)` bandwidth
-  target of umap-learn and uwot.
+- manifolds-rs 0.10.2, evoc-rs 0.8.0, ann-search-rs 0.13.1 and bixverse-r
+  0.11.0. UMAP, densMAP and ForceAtlas2 use a refitted `a`/`b` curve and the
+  `log2(k + 1)` bandwidth target of umap-learn and uwot.
 - IVF and kMkNN train their centroids with e-means, and NN-Descent builds its
   graph differently. `params_nn(k_means = "lloyd")` gets the old centroids back.
 - `kmeans_cluster()` defaults to `method = "emeans"`. `"full"` is deprecated in
@@ -21,6 +21,8 @@ builds a kNN graph, and for PHATE and diffusion maps with spectral landmarks.
 
 - `ncvis()`: NCVis with the NCVis+ defaults. Hogwild! SGD, so only reproducible
   on one thread.
+- `params_ncvis()`: `init = "ncvis"`, the original NCVis start (uniform noise
+  smoothed over the kNN graph).
 - `localmap()`: LocalMAP, PaCMAP with local repulsion in the last phase.
 - `params_umap()`: `optimiser = "adam_v06"` and `init = "recursive"`, the
   umap-learn 0.6 Adam and initialisation. `"adam_v06"` is UMAP only.

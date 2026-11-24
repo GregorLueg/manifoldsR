@@ -86,15 +86,16 @@ default unless the parser also tries `as_integer()`. New parsers use
 
 ## Dependencies
 
-- `bixverse-rs` needs `features = ["r"]` for the extendr helpers
-  (`IntoExtendrErr`, `r_matrix_to_faer`, ...).
+- The extendr helpers (`IntoExtendrErr`, `r_matrix_to_faer`, ...) come from the
+  `bixverse-r` crate, pulled in with `default-features = false` to drop
+  `accelerate`.
 - `manifolds-rs` is built with `fft_tsne` (pure Rust `rustfft`/`realfft`), so the
   FFT t-SNE variants work on every platform. No `cfg(windows)` splits.
 - Unreleased crate versions come in via `[patch.crates-io]` entries in
   `src/rust/Cargo.toml` pointing at GitHub branches or local paths. Local paths
   must go before a push, as they break CI. Drop all of them before a release.
 - `ann-search-rs`, `faer` and `evoc-rs` must line up with what `manifolds-rs` and
-  `bixverse-rs` use, or the types do not unify. Check with `cargo tree -d`.
+  `bixverse-r` use, or the types do not unify. Check with `cargo tree -d`.
   `ann-search-rs` declares `links = "mlxc"`, so two of its versions cannot sit in
   one tree at all: cargo refuses to resolve. A bump there needs `bixverse-r` on
   the same `ann-search-rs` minor.

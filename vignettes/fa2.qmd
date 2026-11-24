@@ -336,6 +336,12 @@ hierarchical_embd <- list(
     knn = hierarchical_knn,
     ncvis_params = params_ncvis(init = "random"),
     .verbose = FALSE
+  ),
+  "NCVis, original init" = ncvis(
+    data = hierarchical_data$data,
+    knn = hierarchical_knn,
+    ncvis_params = params_ncvis(init = "ncvis"),
+    .verbose = FALSE
   )
 )
 
@@ -369,8 +375,12 @@ ggplot(
 With the PCA start NCVis separates all nine subgroups, and the clusters come
 out tight, much like UMAP's. The supergroups land roughly where UMAP puts them
 too. Drop the PCA start and it falls apart: one subgroup gets smeared out and a
-cloud of stray points rings the layout that 50 epochs never pull back in. Keep
-`init = "pca"`.
+cloud of stray points rings the layout that 50 epochs never pull back in.
+`init = "ncvis"` is the start of the original NCVis: uniform noise, smoothed
+over the kNN graph in 20 passes. It needs no PCA and does nearly as well, all
+nine subgroups come out clean with the odd stray point, though the clusters sit
+in a different arrangement than with PCA. Keep `init = "pca"` as the default,
+and reach for `"ncvis"` when you want to match the original.
 
 ### Swiss roll and trajectory
 
